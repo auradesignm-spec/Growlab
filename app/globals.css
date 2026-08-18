@@ -9,6 +9,23 @@ html {
 body {
   background-color: #F1F3EE;
   color: #12241F;
+  overflow-x: hidden;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+/* Custom subtle scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #E6E9E0;
+}
+::-webkit-scrollbar-thumb {
+  background: #BDC5B7;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9AA593;
 }
 
 .eyebrow {
@@ -17,15 +34,17 @@ body {
   gap: 8px;
   font-family: var(--font-plex-mono), monospace;
   font-size: 13px;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
   color: #AD7A2A;
   margin-bottom: 14px;
+  font-weight: 600;
 }
 .eyebrow::before {
   content: "";
-  width: 16px;
-  height: 1px;
+  width: 18px;
+  height: 2px;
   background: #AD7A2A;
+  border-radius: 2px;
 }
 
 .tear {
@@ -36,5 +55,15 @@ body {
   background-repeat: repeat-x;
 }
 .tear-dark {
-  background-image: linear-gradient(to left, rgba(241,243,238,0.28) 0 6px, transparent 6px 14px);
+  background-image: linear-gradient(to left, rgba(241,243,238,0.24) 0 6px, transparent 6px 14px);
 }
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.05); }
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 4s ease-in-out infinite;
+}
+

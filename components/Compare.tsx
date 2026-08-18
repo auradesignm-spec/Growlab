@@ -1,53 +1,116 @@
+import { Check, X, Sparkles } from "lucide-react";
+
 const rows = [
-  { label: "التواصل", us: "مباشر مع المؤسسين", them: "عبر مدير حساب" },
-  { label: "من يدير حسابك", us: "المؤسسين أنفسهم", them: "موظف جونيور غالبًا" },
-  { label: "التقارير", us: "أسبوعية، ومربوطة بمبيعاتك", them: "شهرية ومعقدة" },
-  { label: "الالتزام بالنتيجة", us: "نسبة من نتائجك جزء من الاتفاق", them: "بدون ضمان" },
-  { label: "مدة الالتزام", us: "شهر بشهر", them: "عقود طويلة غالبًا" },
+  {
+    label: "طريقة التواصل",
+    us: "مباشر وفوري مع المؤسسين (واتساب خاص)",
+    them: "عبر مدير حساب وبيروقراطية إيميلات",
+    usWins: true,
+  },
+  {
+    label: "من يدير وينفذ الحملات",
+    us: "المؤسسون المتخصصون أنفسهم",
+    them: "موظفون متدربون جدد على حسابك",
+    usWins: true,
+  },
+  {
+    label: "متابعة وإغلاق العملاء",
+    us: "وكيل ذكاء اصطناعي 24/7 يرد بثوانٍ ويقفل الطلبات",
+    them: "ردود متأخرة بالدوام الرسمي وضياع المشترين",
+    usWins: true,
+  },
+  {
+    label: "وضوح التقارير والأرباح",
+    us: "لوحة تحكم حية مربوطة برقم الكاش والمبيعات",
+    them: "تقارير PDF معقدة بأرقام وصول بلا مبيعات",
+    usWins: true,
+  },
+  {
+    label: "الالتزام بنتيجة الحملة",
+    us: "شراكة بنسبة.. لا نكسب إلا إذا زادت مبيعاتك",
+    them: "راتب شهري ثابت سواء ربحت أو خسرت",
+    usWins: true,
+  },
+  {
+    label: "مدة الالتزام والتعاقد",
+    us: "شهر بشهر أو 3 أشهر تجدد حسب رضاك التام",
+    them: "عقود ملزمة لـ ٦ أو ١٢ شهرًا مع شروط جزائية",
+    usWins: true,
+  },
 ];
 
 export default function Compare() {
   return (
-    <section id="compare" className="py-20 md:py-24">
-      <div className="mx-auto max-w-wrap px-6">
-        <div className="eyebrow">الفرق واضح</div>
-        <h2 className="font-display text-3xl font-extrabold md:text-4xl">
-          Growlab مقابل وكالات التسويق التقليدية
-        </h2>
-
-        <div className="mt-10 overflow-x-auto rounded-card border border-line bg-white">
-          <table className="w-full min-w-[520px] border-collapse text-[14.5px]">
-            <thead>
-              <tr>
-                <th className="w-[36%] bg-paper-alt p-4 text-right text-sm font-semibold text-muted" style={{ backgroundColor: "#E6E9E0" }}></th>
-                <th
-                  className="p-4 text-right text-sm font-semibold text-teal"
-                  style={{ backgroundColor: "#E4EEEA" }}
-                >
-                  Growlab
-                </th>
-                <th className="bg-paper-alt p-4 text-right text-sm font-semibold text-muted" style={{ backgroundColor: "#E6E9E0" }}>
-                  الوكالات التقليدية
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((r) => (
-                <tr key={r.label}>
-                  <td className="border-t border-line p-4">{r.label}</td>
-                  <td
-                    className="border-t border-line p-4 font-medium text-ink-3"
-                    style={{ backgroundColor: "#F2F7F4" }}
-                  >
-                    {r.us}
-                  </td>
-                  <td className="border-t border-line p-4 text-muted">{r.them}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+    <section id="compare" className="py-20 md:py-28 bg-white">
+      <div className="mx-auto max-w-wrap px-5 md:px-6">
+        
+        {/* Header */}
+        <div className="text-center max-w-2xl mx-auto mb-14">
+          <div className="eyebrow justify-center">المقارنة الشاملة</div>
+          <h2 className="font-display text-3xl font-extrabold sm:text-4xl text-ink leading-tight">
+            Growlab مقابل وكالات التسويق التقليدية
+          </h2>
+          <p className="mt-4 text-base sm:text-lg text-muted">
+            لماذا يختار أصحاب المتاجر والمشاريع النمو الذكي معنا بدلاً من الوكالات التقليدية؟
+          </p>
         </div>
+
+        {/* Comparison Table / Cards */}
+        <div className="overflow-hidden rounded-2xl border border-line bg-paper/30 shadow-md">
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[620px] border-collapse text-right text-xs sm:text-sm">
+              <thead>
+                <tr className="border-b border-line bg-paper">
+                  <th className="p-4 sm:p-5 font-bold text-ink w-[30%]">المعيار</th>
+                  <th className="p-4 sm:p-5 font-bold text-teal bg-teal/10 w-[38%] border-x border-teal/20">
+                    <div className="flex items-center gap-1.5 font-display text-base sm:text-lg text-teal">
+                      <Sparkles className="h-4 w-4 text-gold" />
+                      <span>Growlab (شريك النمو)</span>
+                    </div>
+                  </th>
+                  <th className="p-4 sm:p-5 font-semibold text-muted w-[32%]">الوكالات التقليدية</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-line/70">
+                {rows.map((r, i) => (
+                  <tr
+                    key={r.label}
+                    className={`transition-colors hover:bg-paper-alt/50 ${
+                      i % 2 === 0 ? "bg-white" : "bg-paper/20"
+                    }`}
+                  >
+                    <td className="p-4 sm:p-5 font-medium text-ink">
+                      {r.label}
+                    </td>
+                    
+                    {/* Growlab Column */}
+                    <td className="p-4 sm:p-5 bg-teal/[0.04] border-x border-teal/15 font-semibold text-ink">
+                      <div className="flex items-start gap-2 text-ink">
+                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-teal/20 text-teal mt-0.5">
+                          <Check className="h-3 w-3 text-teal" />
+                        </span>
+                        <span>{r.us}</span>
+                      </div>
+                    </td>
+
+                    {/* Traditional Agency Column */}
+                    <td className="p-4 sm:p-5 text-muted">
+                      <div className="flex items-start gap-2">
+                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-danger/15 text-danger mt-0.5">
+                          <X className="h-3 w-3 text-danger" />
+                        </span>
+                        <span>{r.them}</span>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
       </div>
     </section>
   );
 }
+
