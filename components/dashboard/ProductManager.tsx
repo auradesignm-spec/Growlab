@@ -19,7 +19,9 @@ import {
   UploadCloud,
   Check,
   TrendingUp,
+  Video,
 } from "lucide-react";
+import AIAdScriptModal from "./AIAdScriptModal";
 
 interface ProductManagerProps {
   products: Product[];
@@ -40,6 +42,7 @@ export default function ProductManager({
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [selectedProductForAdScript, setSelectedProductForAdScript] = useState<Product | null>(null);
 
   // Form State
   const [formData, setFormData] = useState<Partial<Product>>({
@@ -258,13 +261,25 @@ export default function ProductManager({
 
               {/* Actions Footer */}
               <div className="border-t border-line/70 bg-paper/30 p-3.5 flex items-center justify-between gap-2">
-                <button
-                  onClick={() => onTestProductInAi(p.name)}
-                  className="flex items-center gap-1.5 rounded-lg bg-teal/10 px-3 py-2 text-xs font-bold text-teal transition-all hover:bg-teal hover:text-white"
-                >
-                  <Sparkles className="h-3.5 w-3.5" />
-                  <span>اختبر رد الوكيل</span>
-                </button>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    onClick={() => onTestProductInAi(p.name)}
+                    className="flex items-center gap-1 rounded-lg bg-teal/10 px-2.5 py-2 text-xs font-bold text-teal transition-all hover:bg-teal hover:text-white"
+                    title="اختبار رد الوكيل على هذا المنتج"
+                  >
+                    <Sparkles className="h-3.5 w-3.5" />
+                    <span>اختبر الوكيل</span>
+                  </button>
+
+                  <button
+                    onClick={() => setSelectedProductForAdScript(p)}
+                    className="flex items-center gap-1 rounded-lg bg-gold/15 px-2.5 py-2 text-xs font-bold text-[#AD7A2A] transition-all hover:bg-gold hover:text-[#241A08]"
+                    title="توليد سيناريو فيديو إعلاني UGC بالذكاء"
+                  >
+                    <Video className="h-3.5 w-3.5" />
+                    <span>سكريبت إعلان UGC</span>
+                  </button>
+                </div>
 
                 <div className="flex items-center gap-1">
                   <button
@@ -287,6 +302,13 @@ export default function ProductManager({
           );
         })}
       </div>
+
+      {/* AI UGC Video Script Modal */}
+      <AIAdScriptModal
+        isOpen={!!selectedProductForAdScript}
+        onClose={() => setSelectedProductForAdScript(null)}
+        product={selectedProductForAdScript}
+      />
 
       {/* Add / Edit Product Modal */}
       {isModalOpen && (

@@ -1,6 +1,6 @@
 {
   "name": "Growlab AI Platform",
-  "description": "Growlab — AI Growth Partner & SaaS platform for companies: AI sales agent automation, product catalog management, Meta Ads campaigns, and subscription & revenue-share monetization.",
-  "requestFramePermissions": [],
+  "description": "Growlab — AI Growth Partner & SaaS platform for companies: AI sales agent automation, multi-turn AI copilot, audio transcription, deep high-thinking market analysis, AI creative image studio, product catalog management, and Meta Ads scaling.",
+  "requestFramePermissions": ["microphone"],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

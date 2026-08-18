@@ -15,6 +15,7 @@ export const initialCompany: CompanyAccount = {
   agentAutoDiscountMax: 10,
   whatsappConnected: true,
   whatsappNumber: "+968 9123 4567",
+  recipientPhone: "96897844742",
 };
 
 export const sampleDemoCompanies: CompanyAccount[] = [
@@ -34,6 +35,7 @@ export const sampleDemoCompanies: CompanyAccount[] = [
     agentAutoDiscountMax: 8,
     whatsappConnected: true,
     whatsappNumber: "+968 9888 1234",
+    recipientPhone: "96897844742",
   },
   {
     id: "comp_03",
@@ -50,6 +52,7 @@ export const sampleDemoCompanies: CompanyAccount[] = [
     agentAutoDiscountMax: 5,
     whatsappConnected: true,
     whatsappNumber: "+968 9777 6543",
+    recipientPhone: "96897844742",
   },
 ];
 
