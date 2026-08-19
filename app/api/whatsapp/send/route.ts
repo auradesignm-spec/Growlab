@@ -1,12 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 
-// Default Infobip configuration provided for Growlab
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 const DEFAULT_INFOBIP_API_KEY =
   process.env.INFOBIP_API_KEY || "b9a2ac1b7e039099892b0defa7cd9e58-f1cf66c8-86db-472a-b22d-196f982d1825";
 const DEFAULT_INFOBIP_BASE_URL =
   process.env.INFOBIP_BASE_URL || "https://pdv3ge.api.infobip.com";
 const DEFAULT_INFOBIP_SENDER =
   process.env.INFOBIP_SENDER_NUMBER || "447860088970";
+
+export async function GET() {
+  return NextResponse.json({ status: "active", endpoint: "/api/whatsapp/send" });
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -26,13 +32,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing recipient phone number ('to')" }, { status: 400 });
     }
 
-    // Clean phone number (remove +, spaces, dashes)
     const cleanTo = to.replace(/[\s\+\-\(\)]/g, "");
     const cleanFrom = (from || DEFAULT_INFOBIP_SENDER).replace(/[\s\+\-\(\)]/g, "");
     const activeApiKey = apiKey || DEFAULT_INFOBIP_API_KEY;
     const activeBaseUrl = (baseUrl || DEFAULT_INFOBIP_BASE_URL).replace(/\/+$/, "");
 
-    // Format Authorization header for Infobip (must start with "App ")
     const authHeader = activeApiKey.startsWith("App ") ? activeApiKey : `App ${activeApiKey}`;
 
     let endpoint = "";
@@ -59,7 +63,6 @@ export async function POST(req: NextRequest) {
         ],
       };
     } else {
-      // Standard Text message
       endpoint = `${activeBaseUrl}/whatsapp/1/message/text`;
       payload = {
         from: cleanFrom,

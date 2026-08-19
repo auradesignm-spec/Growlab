@@ -1,6 +1,6 @@
 {
-  "name": "Growlab AI Platform",
-  "description": "Growlab — AI Growth Partner & SaaS platform for companies: AI sales agent automation, multi-turn AI copilot, audio transcription, deep high-thinking market analysis, AI creative image studio, product catalog management, and Meta Ads scaling.",
+  "name": "Growlab UGC Commerce Platform",
+  "description": "منصة تجارة صناع المحتوى الأولى في الخليج — متاجر مصغرة لصناع المحتوى، كتالوج موحد للتجار، وتوزيع أرباح لحظي وشفاف مدعوم بالذكاء الاصطناعي ولوحة ترتيب تنافسية.",
   "requestFramePermissions": ["microphone"],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

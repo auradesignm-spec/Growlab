@@ -37,7 +37,7 @@ export default function AIAdScriptModal({
     setIsLoading(true);
     setScriptText("");
     try {
-      const res = await fetch("/api/ads/generate-script", {
+      const res = await fetch("/api/ads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

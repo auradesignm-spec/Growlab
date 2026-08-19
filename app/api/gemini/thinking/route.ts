@@ -1,6 +1,9 @@
 import { GoogleGenAI, ThinkingLevel } from "@google/genai";
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 function getGeminiClient(): GoogleGenAI {
   return new GoogleGenAI({
     apiKey: process.env.GEMINI_API_KEY || "",
@@ -12,6 +15,10 @@ function getGeminiClient(): GoogleGenAI {
   });
 }
 
+export async function GET() {
+  return NextResponse.json({ status: "active", endpoint: "/api/gemini/thinking" });
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -19,7 +26,7 @@ export async function POST(req: NextRequest) {
       topic,
       storeData,
       marketCategory = "تجارة إلكترونية",
-      analysisType = "growth_strategy", // growth_strategy, unit_economics, ad_scaling, pricing_elasticity, objection_matrix
+      analysisType = "growth_strategy",
       customPrompt = "",
     } = body;
 

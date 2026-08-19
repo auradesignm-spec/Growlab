@@ -188,8 +188,20 @@ export default function OrdersManager({
                   </td>
 
                   <td className="p-4 font-mono">
-                    <span className="block font-bold text-ink text-base">${o.totalAmount}</span>
-                    <span className="text-[11px] text-muted">
+                    <div className="flex items-center gap-1.5">
+                      <span className="block font-bold text-ink text-base">${o.totalAmount}</span>
+                      {o.originalAmount && o.originalAmount > o.totalAmount && (
+                        <span className="text-[11px] text-muted line-through">
+                          ${o.originalAmount}
+                        </span>
+                      )}
+                    </div>
+                    {o.discountApplied && o.discountApplied > 0 ? (
+                      <span className="inline-block rounded bg-gold/15 px-1.5 py-0.2 text-[10px] font-mono text-[#AD7A2A] font-bold">
+                        خصم تفاوضي -${o.discountApplied}
+                      </span>
+                    ) : null}
+                    <span className="text-[11px] text-muted block mt-0.5">
                       {o.paymentMethod === "cash_on_delivery" ? "الدفع عند الاستلام" : "رابط دفع إلكتروني"}
                     </span>
                   </td>

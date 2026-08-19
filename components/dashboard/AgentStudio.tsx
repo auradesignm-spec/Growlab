@@ -217,27 +217,36 @@ export default function AgentStudio({
       const data = await res.json();
       const aiReply = data.reply || "أهلاً بك! نسعد بخدمتك وتقديم كل التفاصيل فوراً.";
 
-      // Handle real order extraction if customer closed a deal
+      // Handle real order extraction if customer closed a deal / negotiated price
       if (data.extractedOrder && onOrderCreated) {
         const orderData = data.extractedOrder;
         const matchedProduct = products.find((p) =>
           p.name.toLowerCase().includes((orderData.productName || "").toLowerCase())
         ) || products[0];
 
+        const rawAgreedAmount = Number(orderData.totalAmount || orderData.agreedFinalPrice || orderData.finalPrice);
+        const catalogPrice = matchedProduct ? matchedProduct.price * (orderData.quantity || 1) : 35;
+        const finalTotalAmount = (!isNaN(rawAgreedAmount) && rawAgreedAmount > 0) ? rawAgreedAmount : catalogPrice;
+        const originalCatalogPrice = Number(orderData.originalPrice) || catalogPrice;
+        const discountValue = Number(orderData.discountApplied) || (originalCatalogPrice > finalTotalAmount ? originalCatalogPrice - finalTotalAmount : 0);
+
         const newRealOrder: Order = {
           id: `ORD-${Date.now().toString().slice(-4)}`,
           customerName: orderData.customerName || "عميل محادثة الوكيل",
-          customerPhone: orderData.customerPhone || company.whatsappNumber || "+968 9000 0000",
+          customerPhone: orderData.customerPhone || company.recipientPhone || company.whatsappNumber || "+968 9000 0000",
           city: orderData.city || "مسقط",
           address: orderData.address || "توصيل لباب المنزل والدفع عند الاستلام",
           productId: matchedProduct?.id || "p1",
           productName: matchedProduct?.name || orderData.productName || "طلب من محادثة الوكيل",
           quantity: orderData.quantity || 1,
-          totalAmount: matchedProduct ? matchedProduct.price * (orderData.quantity || 1) : 35,
+          totalAmount: finalTotalAmount,
+          originalAmount: originalCatalogPrice,
+          discountApplied: discountValue,
+          agreedPriceNote: orderData.negotiationSummary || `تم الاتفاق على سعر نهائي ${finalTotalAmount} ر.ع في المحادثة`,
           paymentMethod: "cash_on_delivery",
           status: "confirmed_by_ai",
           createdAt: "الآن",
-          aiConversationSnippet: `العميل: "${q}" \nالوكيل: "${aiReply.slice(0, 80)}..."`,
+          aiConversationSnippet: `العميل: "${q}" \nالوكيل: "${aiReply.slice(0, 90)}..." \nالسعر المتفق عليه: ${finalTotalAmount} ر.ع (خصم: ${discountValue} ر.ع)`,
           source: "whatsapp_ai",
         };
 
@@ -521,6 +530,29 @@ export default function AgentStudio({
                     <span className="text-[9px]">{m.time}</span>
                   </div>
                   <p className="whitespace-pre-wrap">{m.text}</p>
+
+                  {m.extractedOrder && (
+                    <div className="mt-2.5 rounded-xl border border-gold/40 bg-gold/15 p-2.5 text-xs text-onDark space-y-1">
+                      <div className="flex items-center justify-between font-bold text-gold-soft">
+                        <span className="flex items-center gap-1">
+                          <CheckCircle2 className="h-3.5 w-3.5 text-teal" />
+                          <span>تم استنتاج السعر المتفق عليه وتسجيل الطلب!</span>
+                        </span>
+                        <span className="font-mono text-xs bg-gold/25 text-gold px-2 py-0.5 rounded-md">
+                          ${m.extractedOrder.totalAmount || m.extractedOrder.agreedFinalPrice || 25}
+                        </span>
+                      </div>
+                      {m.extractedOrder.negotiationSummary && (
+                        <p className="text-[11px] text-onDarkSoft">
+                          💡 {m.extractedOrder.negotiationSummary}
+                        </p>
+                      )}
+                      <div className="text-[10px] font-mono text-onDarkSoft/80 flex items-center justify-between pt-1 border-t border-onDark/10">
+                        <span>المنتج: {m.extractedOrder.productName} ({m.extractedOrder.quantity || 1} قطعة)</span>
+                        <span>الوجهة: {m.extractedOrder.city || "مسقط"}</span>
+                      </div>
+                    </div>
+                  )}
 
                   {m.sender === "agent" && (
                     <div className="mt-2 flex items-center justify-end border-t border-onDark/10 pt-1.5">

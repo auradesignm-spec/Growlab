@@ -261,6 +261,32 @@ export default function DashboardView({ onBackToLanding }: DashboardViewProps) {
   const isAdmin = currentUser?.role === "admin";
   const isMerchant = currentUser?.role === "merchant";
 
+  // If no user is logged in, show the Dedicated SaaS Login Screen (Auth Gate)
+  if (!currentUser) {
+    return (
+      <div className="min-h-screen bg-[#FAF9F5] text-ink flex flex-col justify-center items-center p-4 font-body antialiased selection:bg-gold/30 selection:text-ink">
+        <div className="w-full max-w-lg mb-4 flex items-center justify-between">
+          <button
+            onClick={onBackToLanding}
+            className="flex items-center gap-2 text-xs font-mono font-bold text-muted hover:text-ink transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4 rotate-180" />
+            <span>العودة للموقع التعريفي</span>
+          </button>
+          <span className="text-[11px] font-mono text-muted">بوابة الدخول الموحدة (SaaS Portal)</span>
+        </div>
+
+        <AuthModal
+          isOpen={true}
+          onClose={onBackToLanding}
+          onLoginSuccess={handleLoginSuccess}
+          existingAccounts={companies}
+          isMandatory={true}
+        />
+      </div>
+    );
+  }
+
   // Quick Stats
   const totalSalesAmount = orders.reduce((acc, o) => (o.status !== "cancelled" ? acc + o.totalAmount : acc), 0);
   const activeOrdersCount = orders.filter((o) => o.status === "confirmed_by_ai" || o.status === "shipped").length;

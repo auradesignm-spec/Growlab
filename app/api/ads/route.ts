@@ -1,6 +1,9 @@
 import { GoogleGenAI } from "@google/genai";
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 function getGeminiClient(): GoogleGenAI {
   return new GoogleGenAI({
     apiKey: process.env.GEMINI_API_KEY || "",
@@ -10,6 +13,10 @@ function getGeminiClient(): GoogleGenAI {
       },
     },
   });
+}
+
+export async function GET() {
+  return NextResponse.json({ status: "active", endpoint: "/api/ads" });
 }
 
 export async function POST(req: NextRequest) {

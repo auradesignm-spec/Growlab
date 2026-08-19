@@ -1,6 +1,9 @@
 import { GoogleGenAI } from "@google/genai";
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 function getGeminiClient(): GoogleGenAI {
   return new GoogleGenAI({
     apiKey: process.env.GEMINI_API_KEY || "",
@@ -12,6 +15,10 @@ function getGeminiClient(): GoogleGenAI {
   });
 }
 
+export async function GET() {
+  return NextResponse.json({ status: "active", endpoint: "/api/gemini/transcribe" });
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -21,14 +28,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "بيانات الصوت مطلوبة للتفريغ" }, { status: 400 });
     }
 
-    // Clean base64 string if it contains data URI header
     const cleanData = audioBase64.replace(/^data:[^;]+;base64,/, "");
-
     const ai = getGeminiClient();
 
     const audioPart = {
       inlineData: {
-        mimeType: mimeType.split(";")[0], // e.g. "audio/webm"
+        mimeType: mimeType.split(";")[0],
         data: cleanData,
       },
     };

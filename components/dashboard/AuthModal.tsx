@@ -180,9 +180,13 @@ export default function AuthModal({
 
         {/* Quick Demo Access Bar */}
         <div className="bg-paper border-b border-line p-4">
+          <div className="rounded-xl border border-teal/30 bg-teal/10 p-2.5 mb-3 text-[11px] text-ink leading-relaxed">
+            <span className="font-bold text-teal">🔐 نظام الجلسات والأمان:</span> بمجرد تسجيل الدخول، تحفظ المنصة جلستك في المتصفح محلياً لراحتك. إذا رغبت بالدخول كحساب آخر أو كتاجر محدد، يمكنك النقر على زر <span className="font-bold">«تبديل الحساب / خروج»</span> في أي لحظة.
+          </div>
+
           <div className="text-[11px] font-bold text-ink mb-2 flex items-center gap-1.5">
             <Sparkles className="h-3.5 w-3.5 text-gold" />
-            <span>تجربة سريعة للحسابات والصلاحيات (بنقرة واحدة):</span>
+            <span>تسجيل دخول سريع للتجربة (اختر الصلاحية):</span>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-2 gap-2">
             <button

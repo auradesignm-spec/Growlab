@@ -1,6 +1,9 @@
 import { GoogleGenAI } from "@google/genai";
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 function getGeminiClient(): GoogleGenAI {
   return new GoogleGenAI({
     apiKey: process.env.GEMINI_API_KEY || "",
@@ -12,6 +15,10 @@ function getGeminiClient(): GoogleGenAI {
   });
 }
 
+export async function GET() {
+  return NextResponse.json({ status: "active", endpoint: "/api/gemini/image" });
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -21,7 +28,7 @@ export async function POST(req: NextRequest) {
       imageSize = "1K",
       sourceImageBase64,
       sourceMimeType = "image/jpeg",
-      action = "generate", // "generate" or "edit"
+      action = "generate",
     } = body;
 
     if (!prompt) {
@@ -49,7 +56,6 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Call Gemini Image Model
     const response = await ai.models.generateContent({
       model: "gemini-3.1-flash-image",
       contents: {

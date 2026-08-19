@@ -25,6 +25,9 @@ export interface Order {
   productName: string;
   quantity: number;
   totalAmount: number;
+  originalAmount?: number;
+  discountApplied?: number;
+  agreedPriceNote?: string;
   paymentMethod: "cash_on_delivery" | "online_link";
   status: "pending" | "confirmed_by_ai" | "shipped" | "delivered" | "cancelled";
   createdAt: string;

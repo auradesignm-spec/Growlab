@@ -1,0 +1,593 @@
+import {
+  Creator,
+  Merchant,
+  Product,
+  Order,
+  LeaderboardEntry,
+  CurrencyCode,
+  CurrencyConfig,
+  TimePeriod,
+  ProductCategory,
+  TargetAudienceGender,
+  CountryCode,
+  OrderSplit,
+} from "./ugc-types";
+
+export const CURRENCIES: Record<CurrencyCode, CurrencyConfig> = {
+  OMR: {
+    code: "OMR",
+    nameAr: "ريال عُماني",
+    nameEn: "Omani Rial",
+    symbol: "ر.ع",
+    rateToUSD: 0.385, // 1 USD = 0.385 OMR (so priceUSD * 0.385 = OMR)
+    flag: "🇴🇲",
+  },
+  SAR: {
+    code: "SAR",
+    nameAr: "ريال سعودي",
+    nameEn: "Saudi Riyal",
+    symbol: "ر.س",
+    rateToUSD: 3.75, // 1 USD = 3.75 SAR
+    flag: "🇸🇦",
+  },
+  AED: {
+    code: "AED",
+    nameAr: "درهم إماراتي",
+    nameEn: "UAE Dirham",
+    symbol: "د.إ",
+    rateToUSD: 3.67, // 1 USD = 3.67 AED
+    flag: "🇦🇪",
+  },
+  USD: {
+    code: "USD",
+    nameAr: "دولار أمريكي",
+    nameEn: "US Dollar",
+    symbol: "$",
+    rateToUSD: 1.0,
+    flag: "🌐",
+  },
+};
+
+export const INITIAL_MERCHANTS: Merchant[] = [
+  {
+    id: "m_royal_oud",
+    businessName: "دار العود الملكي الفاخر",
+    businessNameEn: "Royal Oud House",
+    logo: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=150&auto=format&fit=crop&q=80",
+    country: "OM",
+    category: "perfume",
+    verifiedAt: "2024-01-15",
+    contactEmail: "orders@royaloud-oman.com",
+    phone: "+968 9123 4567",
+    rating: 4.95,
+    totalOrders: 1420,
+    netRevenue: 78500,
+  },
+  {
+    id: "m_aura_tech",
+    businessName: "أورا تك للأجهزة الذكية",
+    businessNameEn: "Aura Tech Electronics",
+    logo: "https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=150&auto=format&fit=crop&q=80",
+    country: "AE",
+    category: "tech",
+    verifiedAt: "2024-02-01",
+    contactEmail: "sales@auratech-gulf.com",
+    phone: "+971 50 889 1234",
+    rating: 4.88,
+    totalOrders: 2150,
+    netRevenue: 134200,
+  },
+  {
+    id: "m_nova_elegance",
+    businessName: "نوفا للأزياء والعبايات المعاصرة",
+    businessNameEn: "Nova Gulf Fashion",
+    logo: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=150&auto=format&fit=crop&q=80",
+    country: "SA",
+    category: "fashion",
+    verifiedAt: "2024-02-20",
+    contactEmail: "care@novafashion.sa",
+    phone: "+966 55 432 9876",
+    rating: 4.92,
+    totalOrders: 1890,
+    netRevenue: 92400,
+  },
+  {
+    id: "m_pure_glow",
+    businessName: "بيور جلو للعناية الطبيعية",
+    businessNameEn: "Pure Glow Naturals",
+    logo: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=150&auto=format&fit=crop&q=80",
+    country: "KW",
+    category: "beauty",
+    verifiedAt: "2024-03-05",
+    contactEmail: "hello@pureglow.co",
+    phone: "+965 9988 7766",
+    rating: 4.86,
+    totalOrders: 980,
+    netRevenue: 43600,
+  },
+];
+
+export const INITIAL_PRODUCTS: Product[] = [
+  {
+    id: "prod_oud_sultan",
+    merchantId: "m_royal_oud",
+    merchantName: "دار العود الملكي",
+    name: "دهن عود كمبودي معتق مع خشب الصندل النقي",
+    nameEn: "Aged Cambodian Oud & Pure Sandalwood",
+    description: "تركيبة شرقية ملكية تدوم لأكثر من 48 ساعة، مستخلصة من أندر غابات كمبوديا مع ثبات عالي وضمان أصالة 100%.",
+    descriptionEn: "Royal oriental formula lasting over 48 hours, extracted from rare Cambodian reserves with 100% authenticity guarantee.",
+    category: "perfume",
+    genderTarget: "all",
+    priceUSD: 78,
+    costUSD: 24,
+    commissionRate: 0.18, // 18% commission
+    image: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=600&auto=format&fit=crop&q=80",
+    stock: 45,
+    rating: 4.98,
+    reviewsCount: 342,
+    sellingPoints: ["ثبات يفوق 48 ساعة", "تعتيق طبيعي 12 سنة", "علبة هدايا جلدية فاخرة", "شحن مجاني ودفع عند الاستلام"],
+    isFeatured: true,
+  },
+  {
+    id: "prod_smart_mic",
+    merchantId: "m_aura_tech",
+    merchantName: "أورا تك",
+    name: "مايكروفون UGC اللاسلكي الذكي بعزل الضوضاء AI",
+    nameEn: "Aura Smart Wireless AI Noise-Cancelling Mic",
+    description: "مايكروفون صناع المحتوى المفضل في الخليج، يشبك مباشرة على الآيفون والتايب سي مع عزل ضوضاء بالذكاء الاصطناعي وبطارية 24 ساعة.",
+    descriptionEn: "The creator favorite wireless clip-on mic with AI noise cancellation and 24-hour battery case.",
+    category: "tech",
+    genderTarget: "all",
+    priceUSD: 52,
+    costUSD: 16,
+    commissionRate: 0.20, // 20% commission
+    image: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=600&auto=format&fit=crop&q=80",
+    stock: 120,
+    rating: 4.92,
+    reviewsCount: 512,
+    sellingPoints: ["عزل ذكي بضغطة زر", "مدى 30 متر بدون تقطيع", "توافق فوري مع آيفون وتيك توك", "ضمان استبدال ذهبي سنتين"],
+    isFeatured: true,
+  },
+  {
+    id: "prod_abaya_silk",
+    merchantId: "m_nova_elegance",
+    merchantName: "نوفا للأزياء",
+    name: "عباية حرير ياباني كريب مع طرحة ليزر مطرزة",
+    nameEn: "Japanese Silk Crepe Abaya with Embroidered Veil",
+    description: "قصة انسيابية راقية تناسب الإطلالات اليومية والمناسبات، قماش خفيف ومقاوم للتجاعيد بدرجة سواد ملكي فاخرة.",
+    descriptionEn: "Elegant Japanese crepe flow suitable for daily and evening wear with supreme midnight black shade.",
+    category: "fashion",
+    genderTarget: "women",
+    priceUSD: 65,
+    costUSD: 20,
+    commissionRate: 0.17, // 17% commission
+    image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&auto=format&fit=crop&q=80",
+    stock: 60,
+    rating: 4.95,
+    reviewsCount: 289,
+    sellingPoints: ["حرير ياباني بارد لا يحتاج كوي", "قصة نص كلوش مريحة", "طرحة متطابقة مجانية", "تعديل القياس مجاناً"],
+    isFeatured: true,
+  },
+  {
+    id: "prod_gulf_watch",
+    merchantId: "m_aura_tech",
+    merchantName: "أورا تك",
+    name: "ساعة كرونوغراف ستيل تيتانيوم مقاومة للماء",
+    nameEn: "Titanium Steel Chronograph Luxury Timepiece",
+    description: "تصميم كلاسيكي فخم من معدن الستانلس ستيل 316L المقاوم للخدش والصدأ مع زجاج ياقوتي ومينا مضيئة في الظلام.",
+    descriptionEn: "Scratch-resistant 316L surgical steel chronograph with sapphire crystal and luminous dials.",
+    category: "lifestyle",
+    genderTarget: "men",
+    priceUSD: 95,
+    costUSD: 30,
+    commissionRate: 0.19, // 19% commission
+    image: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=600&auto=format&fit=crop&q=80",
+    stock: 35,
+    rating: 4.89,
+    reviewsCount: 194,
+    sellingPoints: ["زجاج سفير ياقوتي غير قابل للخدش", "مقاومة ماء 50 متر", "ماكينة يابانية دقيقة", "ضمان 3 سنوات"],
+    isFeatured: true,
+  },
+  {
+    id: "prod_serum_gold",
+    merchantId: "m_pure_glow",
+    merchantName: "بيور جلو",
+    name: "سيروم النضارة الفورية مع رقائق الذهب والنياسيناميد",
+    nameEn: "24K Gold & Niacinamide Radiance Serum",
+    description: "تركيبة فريدة لتوحيد لون البشرة وترطيب عميق يعيد النضارة والشباب خلال 7 أيام من الاستخدام المنتظم.",
+    descriptionEn: "Radiance boosting formula with 24K gold flakes and hyaluronic complex for glass skin glow.",
+    category: "beauty",
+    genderTarget: "women",
+    priceUSD: 38,
+    costUSD: 9,
+    commissionRate: 0.22, // 22% commission
+    image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=600&auto=format&fit=crop&q=80",
+    stock: 150,
+    rating: 4.87,
+    reviewsCount: 420,
+    sellingPoints: ["خالي من العطور والبارابين", "نتائج ملموسة من الأسبوع الأول", "مناسب لجميع أنواع البشرة", "معتمد من هيئة الغذاء والدواء"],
+  },
+  {
+    id: "prod_espresso_portable",
+    merchantId: "m_aura_tech",
+    merchantName: "أورا تك",
+    name: "ماكينة الإسبريسو المحمولة اللاسلكية بضغط 19 بار",
+    nameEn: "Portable 19-Bar Wireless Electric Espresso Maker",
+    description: "استمتع بقهوتك المختصة في الدوام، السفر، والرحلات البرية مع تسخين ذاتي ذكي للماء واستخلاص غني بالكريمة.",
+    descriptionEn: "Travel-friendly wireless espresso maker with self-heating water chamber and 19-bar rich crema pump.",
+    category: "lifestyle",
+    genderTarget: "all",
+    priceUSD: 72,
+    costUSD: 25,
+    commissionRate: 0.16,
+    image: "https://images.unsplash.com/photo-1517668808822-9ebb02f2a0e6?w=600&auto=format&fit=crop&q=80",
+    stock: 80,
+    rating: 4.91,
+    reviewsCount: 231,
+    sellingPoints: ["تسخين ذاتي خلال 3 دقائق", "تقبل كبسولات Nespresso والبن المطحون", "بطارية تكفي 5 أكواب متتالية", "حجم مدمج لحقيبة الظهر"],
+  },
+];
+
+export const INITIAL_CREATORS: Creator[] = [
+  {
+    id: "c_salem",
+    username: "salem_reviews",
+    displayName: "سالم الشامسي — مراجعات وتجارب",
+    displayNameEn: "Salem Al-Shamsi Reviews",
+    bio: "أجرب أفضل المنتجات التقنية وأدوات صناعة المحتوى في عُمان والخليج وأعطيكم الخلاصة الصادقة بدون مجاملة 🎙️✨",
+    bioEn: "Testing the best tech gear & lifestyle tools in Oman & GCC with honest uncensored reviews.",
+    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80",
+    banner: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1200&auto=format&fit=crop&q=80",
+    gender: "male",
+    country: "OM",
+    language: "ar",
+    subscriptionTier: "pro",
+    verifiedAt: "2024-01-10",
+    isFirstCampaignFree: false,
+    paymentVerified: true,
+    paymentMethod: {
+      type: "stripe",
+      identifier: "•••• 9842",
+      bankName: "Bank Muscat (Stripe Connect)",
+    },
+    socialLinks: {
+      instagram: "salem.om",
+      tiktok: "@salem_creator",
+      followersCount: "185K",
+    },
+    selectedProductIds: ["prod_smart_mic", "prod_espresso_portable", "prod_gulf_watch", "prod_oud_sultan"],
+    stats: {
+      salesValue: 14850,
+      conversionRate: 6.4,
+      orderCount: 248,
+      totalCommission: 2840,
+      pendingPayout: 620,
+      profileViews: 18400,
+    },
+    badges: [
+      {
+        id: "b_top_sales",
+        title: "صانع الأسبوع الذهبي",
+        titleEn: "Golden Creator of the Week",
+        description: "حقق أعلى معدل مبيعات في فئة التقنية",
+        icon: "👑",
+        unlockedAt: "2024-04-14",
+      },
+      {
+        id: "b_high_converter",
+        title: "ماستر التحويل 6%+",
+        titleEn: "High Conversion Master",
+        description: "تجاوز معدل تحويل متجره 6%",
+        icon: "🎯",
+      },
+    ],
+  },
+  {
+    id: "c_noura",
+    username: "noura_style",
+    displayName: "نورة القحطاني — ستايل وأناقة",
+    displayNameEn: "Noura Al-Qahtani Style",
+    bio: "مساحتي الخاصة لتنسيقات العبايات، العطور الملكية، وأسرار الجمال اليومي لنساء الخليج الراقيات 🌸✨",
+    bioEn: "Curating modest luxury abayas, royal perfumes & beauty secrets for modern GCC women.",
+    avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&auto=format&fit=crop&q=80",
+    banner: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1200&auto=format&fit=crop&q=80",
+    gender: "female",
+    country: "SA",
+    language: "ar",
+    subscriptionTier: "pro",
+    verifiedAt: "2024-01-20",
+    isFirstCampaignFree: false,
+    paymentVerified: true,
+    paymentMethod: {
+      type: "iban",
+      identifier: "SA84NCB0000...",
+      bankName: "AlAhli SNB Bank",
+    },
+    socialLinks: {
+      instagram: "noura_fashion",
+      tiktok: "@noura_gulf",
+      followersCount: "320K",
+    },
+    selectedProductIds: ["prod_abaya_silk", "prod_oud_sultan", "prod_serum_gold"],
+    stats: {
+      salesValue: 19400,
+      conversionRate: 7.2,
+      orderCount: 310,
+      totalCommission: 3680,
+      pendingPayout: 940,
+      profileViews: 29800,
+    },
+    badges: [
+      {
+        id: "b_fashion_queen",
+        title: "ملكة الفاشن والجمال",
+        titleEn: "Fashion & Beauty Icon",
+        description: "الأكثر مبيعاً في فئة العبايات والعطور",
+        icon: "💎",
+      },
+      {
+        id: "b_100k_views",
+        title: "صانعة النخبة",
+        titleEn: "Elite Creator",
+        description: "أكثر من 300 طلب مؤكد",
+        icon: "⭐",
+      },
+    ],
+  },
+  {
+    id: "c_faisal",
+    username: "faisal_tech",
+    displayName: "فيصل الهاشمي — جيك الخليج",
+    displayNameEn: "Faisal Al-Hashimi Tech",
+    bio: "كل ما يخص التكنولوجيا، أدوات الإنتاجية، وساعات الفخامة مع خصومات وتجارب حية ⚡⌚",
+    bioEn: "Gadgets, productivity tools & luxury watches tested live.",
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80",
+    banner: "https://images.unsplash.com/photo-1526738549149-8e07eca6c147?w=1200&auto=format&fit=crop&q=80",
+    gender: "male",
+    country: "AE",
+    language: "ar",
+    subscriptionTier: "basic",
+    verifiedAt: "2024-02-12",
+    isFirstCampaignFree: false,
+    paymentVerified: true,
+    paymentMethod: {
+      type: "stripe",
+      identifier: "•••• 3311",
+      bankName: "Emirates NBD",
+    },
+    socialLinks: {
+      tiktok: "@faisal_gadgets",
+      youtube: "FaisalTechUAE",
+      followersCount: "95K",
+    },
+    selectedProductIds: ["prod_smart_mic", "prod_gulf_watch", "prod_espresso_portable"],
+    stats: {
+      salesValue: 9800,
+      conversionRate: 5.1,
+      orderCount: 145,
+      totalCommission: 1810,
+      pendingPayout: 420,
+      profileViews: 12500,
+    },
+    badges: [
+      {
+        id: "b_speed_shipper",
+        title: "نجم التفاعل السريع",
+        titleEn: "Fast Engagement Star",
+        description: "معدل تفاعل استثنائي على فيديوهات UGC",
+        icon: "🚀",
+      },
+    ],
+  },
+  {
+    id: "c_reem",
+    username: "reem_elegance",
+    displayName: "ريم البلوشي — لايف ستايل مسقط",
+    displayNameEn: "Reem Al-Balushi Muscat",
+    bio: "مختارات حصرية لحياة يومية متألقة وعطور تدوم طويلاً، منتجات جربتها وأحببتها 🌿🇴🇲",
+    bioEn: "Curated perfumes & skincare favorites from Muscat.",
+    avatar: "https://images.unsplash.com/photo-1534751516642-a171ed2c6686?w=200&auto=format&fit=crop&q=80",
+    banner: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=1200&auto=format&fit=crop&q=80",
+    gender: "female",
+    country: "OM",
+    language: "ar",
+    subscriptionTier: "free",
+    verifiedAt: "2024-03-01",
+    isFirstCampaignFree: true, // Has 0% platform fee on first campaign!
+    paymentVerified: true,
+    paymentMethod: {
+      type: "card",
+      identifier: "•••• 7712",
+      bankName: "Ahli Bank Oman",
+    },
+    socialLinks: {
+      instagram: "reem.muscat",
+      followersCount: "48K",
+    },
+    selectedProductIds: ["prod_oud_sultan", "prod_serum_gold"],
+    stats: {
+      salesValue: 4250,
+      conversionRate: 4.8,
+      orderCount: 68,
+      totalCommission: 820,
+      pendingPayout: 310,
+      profileViews: 6400,
+    },
+    badges: [
+      {
+        id: "b_newbie_rising",
+        title: "الصانع الصاعد",
+        titleEn: "Rising Creator",
+        description: "حملة أولى مجانية بنجاح باهر",
+        icon: "🌱",
+      },
+    ],
+  },
+];
+
+export const INITIAL_ORDERS: Order[] = [
+  {
+    id: "ord_1001",
+    orderNumber: "GL-98214",
+    createdAt: new Date(Date.now() - 1000 * 60 * 25).toISOString(), // 25 mins ago
+    productId: "prod_oud_sultan",
+    productName: "دهن عود كمبودي معتق مع خشب الصندل النقي",
+    productImage: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=600&auto=format&fit=crop&q=80",
+    creatorId: "c_noura",
+    creatorUsername: "noura_style",
+    merchantId: "m_royal_oud",
+    merchantName: "دار العود الملكي",
+    customerName: "سعود بن فهد الدوسري",
+    customerPhone: "+966 50 123 4567",
+    customerCity: "الرياض",
+    customerCountry: "SA",
+    quantity: 1,
+    currency: "SAR",
+    paidAmountLocal: 292.5,
+    splits: {
+      totalAmountUSD: 78,
+      merchantAmountUSD: 60.06, // 77%
+      merchantRate: 0.77,
+      creatorCommissionUSD: 14.04, // 18%
+      creatorCommissionRate: 0.18,
+      platformFeeUSD: 3.9, // 5%
+      platformFeeRate: 0.05,
+    },
+    status: "completed",
+    attributionSource: "creator_storefront",
+  },
+  {
+    id: "ord_1002",
+    orderNumber: "GL-98215",
+    createdAt: new Date(Date.now() - 1000 * 60 * 85).toISOString(), // 1.4 hrs ago
+    productId: "prod_smart_mic",
+    productName: "مايكروفون UGC اللاسلكي الذكي بعزل الضوضاء AI",
+    productImage: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=600&auto=format&fit=crop&q=80",
+    creatorId: "c_salem",
+    creatorUsername: "salem_reviews",
+    merchantId: "m_aura_tech",
+    merchantName: "أورا تك",
+    customerName: "خالد بن خلفان المعمري",
+    customerPhone: "+968 99 876 543",
+    customerCity: "مسقط (السيب)",
+    customerCountry: "OM",
+    quantity: 1,
+    currency: "OMR",
+    paidAmountLocal: 20.02,
+    splits: {
+      totalAmountUSD: 52,
+      merchantAmountUSD: 39.0, // 75%
+      merchantRate: 0.75,
+      creatorCommissionUSD: 10.4, // 20%
+      creatorCommissionRate: 0.20,
+      platformFeeUSD: 2.6, // 5%
+      platformFeeRate: 0.05,
+    },
+    status: "completed",
+    attributionSource: "creator_storefront",
+  },
+  {
+    id: "ord_1003",
+    orderNumber: "GL-98216",
+    createdAt: new Date(Date.now() - 1000 * 60 * 180).toISOString(),
+    productId: "prod_abaya_silk",
+    productName: "عباية حرير ياباني كريب مع طرحة ليزر مطرزة",
+    productImage: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&auto=format&fit=crop&q=80",
+    creatorId: "c_noura",
+    creatorUsername: "noura_style",
+    merchantId: "m_nova_elegance",
+    merchantName: "نوفا للأزياء",
+    customerName: "مريم بنت عبدالله المهيري",
+    customerPhone: "+971 52 345 6789",
+    customerCity: "دبي",
+    customerCountry: "AE",
+    quantity: 1,
+    currency: "AED",
+    paidAmountLocal: 238.55,
+    splits: {
+      totalAmountUSD: 65,
+      merchantAmountUSD: 50.7, // 78%
+      merchantRate: 0.78,
+      creatorCommissionUSD: 11.05, // 17%
+      creatorCommissionRate: 0.17,
+      platformFeeUSD: 3.25, // 5%
+      platformFeeRate: 0.05,
+    },
+    status: "completed",
+    attributionSource: "creator_storefront",
+  },
+  {
+    id: "ord_1004",
+    orderNumber: "GL-98217",
+    createdAt: new Date(Date.now() - 1000 * 60 * 300).toISOString(),
+    productId: "prod_gulf_watch",
+    productName: "ساعة كرونوغراف ستيل تيتانيوم مقاومة للماء",
+    productImage: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=600&auto=format&fit=crop&q=80",
+    creatorId: "c_faisal",
+    creatorUsername: "faisal_tech",
+    merchantId: "m_aura_tech",
+    merchantName: "أورا تك",
+    customerName: "أحمد بن راشد النعيمي",
+    customerPhone: "+971 50 765 4321",
+    customerCity: "أبوظبي",
+    customerCountry: "AE",
+    quantity: 1,
+    currency: "AED",
+    paidAmountLocal: 348.65,
+    splits: {
+      totalAmountUSD: 95,
+      merchantAmountUSD: 72.2, // 76%
+      merchantRate: 0.76,
+      creatorCommissionUSD: 18.05, // 19%
+      creatorCommissionRate: 0.19,
+      platformFeeUSD: 4.75, // 5%
+      platformFeeRate: 0.05,
+    },
+    status: "completed",
+    attributionSource: "creator_storefront",
+  },
+];
+
+// Helper to calculate composite leaderboard score
+// Composite formula: Score = (Sales Value USD * 0.5) + (Conversion Rate % * 10 * 0.3) + (Order Count * 5 * 0.2)
+export function computeLeaderboardScore(salesValue: number, conversionRate: number, orderCount: number): number {
+  const salesWeight = salesValue * 0.5;
+  const conversionWeight = conversionRate * 100 * 0.3; // scale up percentage
+  const orderWeight = orderCount * 10 * 0.2;
+  return Math.round(salesWeight + conversionWeight + orderWeight);
+}
+
+// Convert price from USD to target currency
+export function convertPrice(priceUSD: number, targetCurrency: CurrencyCode): { amount: number; formatted: string; symbol: string } {
+  const config = CURRENCIES[targetCurrency] || CURRENCIES.USD;
+  const converted = priceUSD * config.rateToUSD;
+  const rounded = targetCurrency === "OMR" ? Number(converted.toFixed(3)) : Number(converted.toFixed(2));
+  return {
+    amount: rounded,
+    formatted: targetCurrency === "OMR" ? `${rounded.toFixed(3)} ${config.symbol}` : `${rounded.toFixed(2)} ${config.symbol}`,
+    symbol: config.symbol,
+  };
+}
+
+// Calculate the 3-way split for an order
+export function calculateOrderSplit(
+  productPriceUSD: number,
+  creatorCommissionRate: number,
+  isFirstCampaignFree: boolean = false
+): OrderSplit {
+  const platformFeeRate = isFirstCampaignFree ? 0.0 : 0.05; // 5% platform fee (or 0% if first campaign free)
+  const creatorCommissionUSD = Number((productPriceUSD * creatorCommissionRate).toFixed(2));
+  const platformFeeUSD = Number((productPriceUSD * platformFeeRate).toFixed(2));
+  const merchantAmountUSD = Number((productPriceUSD - creatorCommissionUSD - platformFeeUSD).toFixed(2));
+  const merchantRate = Number((merchantAmountUSD / productPriceUSD).toFixed(2));
+
+  return {
+    totalAmountUSD: productPriceUSD,
+    merchantAmountUSD,
+    merchantRate,
+    creatorCommissionUSD,
+    creatorCommissionRate,
+    platformFeeUSD,
+    platformFeeRate,
+  };
+}
