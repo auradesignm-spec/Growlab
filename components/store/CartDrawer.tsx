@@ -16,7 +16,6 @@ import {
   Sparkles,
   ArrowRight,
 } from "lucide-react";
-import confetti from "canvas-confetti";
 import { useUgc } from "@/lib/UgcContext";
 import { convertPrice } from "@/lib/ugc-store";
 
@@ -75,11 +74,13 @@ export const CartDrawer: React.FC = () => {
       clearCart();
 
       // Trigger celebration confetti
-      confetti({
-        particleCount: 100,
-        spread: 80,
-        origin: { y: 0.5 },
-        colors: ["#AD7A2A", "#10B981", "#34D399", "#F59E0B"],
+      import("canvas-confetti").then((confetti) => {
+        confetti.default({
+          particleCount: 100,
+          spread: 80,
+          origin: { y: 0.5 },
+          colors: ["#AD7A2A", "#10B981", "#34D399", "#F59E0B"],
+        });
       });
     }, 750);
   };

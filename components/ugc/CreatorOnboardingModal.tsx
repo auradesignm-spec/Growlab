@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
 import {
   Sparkles,
   ShieldCheck,
@@ -15,7 +14,6 @@ import {
   Globe,
   Lock,
 } from "lucide-react";
-import confetti from "canvas-confetti";
 import { useUgc } from "@/lib/UgcContext";
 import { CountryCode, Gender, LanguageCode } from "@/lib/ugc-types";
 
@@ -28,7 +26,6 @@ export const CreatorOnboardingModal: React.FC<CreatorOnboardingModalProps> = ({
   isOpen,
   onClose,
 }) => {
-  const router = useRouter();
   const { registerCreator, products } = useUgc();
 
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
@@ -90,15 +87,19 @@ export const CreatorOnboardingModal: React.FC<CreatorOnboardingModalProps> = ({
       selectedProductIds,
     });
 
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 },
-      colors: ["#AD7A2A", "#10B981", "#34D399"],
+    import("canvas-confetti").then((confetti) => {
+      confetti.default({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ["#AD7A2A", "#10B981", "#34D399"],
+      });
     });
 
     onClose();
-    router.push(`/creator/${newCreator.username}`);
+    if (typeof window !== "undefined") {
+      window.location.href = `/creator/${newCreator.username}`;
+    }
   };
 
   return (

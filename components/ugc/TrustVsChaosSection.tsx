@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLanguage } from "@/lib/i18n";
 import {
   Flame,
   ShieldAlert,
@@ -35,160 +36,180 @@ export const TrustVsChaosSection: React.FC<TrustVsChaosSectionProps> = ({
   onOpenOnboarding,
   onNavigateToMerchantPortal,
 }) => {
+  const { lang, dir } = useLanguage();
+  const isAr = lang === "ar";
+
   const [activePerspective, setActivePerspective] = useState<Perspective>("merchant");
   const [selectedProofIndex, setSelectedProofIndex] = useState<number>(0);
 
   // Content Matrix Data
   const merchantContent = {
-    title: "منظومة الأمان للتاجر والمورد",
-    subtitle: "تخلص نهائياً من نزيف الميزانيات الإعلانية ومخاطر التسويق الفوضوي",
+    title: isAr ? "منظومة الأمان للتاجر والمورد" : "Security Framework for Merchants & Brands",
+    subtitle: isAr ? "تخلص نهائياً من نزيف الميزانيات الإعلانية ومخاطر التسويق الفوضوي" : "Eliminate ad budget waste and chaotic influencer outreach risks completely",
     oldWay: {
-      tag: "الطريقة العشوائية القديمة (مخاطر وخسارة)",
-      summary: "دفع مسبق، وعينات مهدرة، ونزاعات تتبع مستمرة دون ضمان أي بيعة حقيقية.",
+      tag: isAr ? "الطريقة العشوائية القديمة (مخاطر وخسارة)" : "Legacy Chaotic Outreach (High Risk & Waste)",
+      summary: isAr ? "دفع مسبق، وعينات مهدرة، ونزاعات تتبع مستمرة دون ضمان أي بيعة حقيقية." : "Upfront fees, wasted product samples, and zero guarantee of verified sales.",
       points: [
         {
           id: "m-old-1",
           icon: Flame,
-          title: "حرق الميزانيات الإعلانية",
-          desc: "الدفع مقدماً لشركات الإعلانات (Meta / TikTok) بمبالغ طائلة دون أي ضمان لتحقيق مبيعات أو أرباح فعلية.",
-          badMetric: "تكلفة اكتساب عميل غير متوقعة (CPA متذبذب)",
+          title: isAr ? "حرق الميزانيات الإعلانية" : "Wasted Ad Spend",
+          desc: isAr ? "الدفع مقدماً لشركات الإعلانات (Meta / TikTok) بمبالغ طائلة دون أي ضمان لتحقيق مبيعات أو أرباح فعلية." : "Paying Meta/TikTok huge ad fees upfront with no sales guarantee.",
+          badMetric: isAr ? "تكلفة اكتساب عميل غير متوقعة (CPA متذبذب)" : "Unpredictable CPA spike",
         },
         {
           id: "m-old-2",
           icon: UserX,
-          title: "مخاطرة النصب واختفاء العينات",
-          desc: "إرسال منتجات غالية الثمن لأشخاص وهميين أو مؤثرين عشوائيين يختفون بعد الاستلام دون تصوير أو ترويج.",
-          badMetric: "فقدان 40-60% من عينات المنتجات هباءً",
+          title: isAr ? "مخاطرة النصب واختفاء العينات" : "Sample Theft & Ghosting",
+          desc: isAr ? "إرسال منتجات غالية الثمن لأشخاص وهميين أو مؤثرين عشوائيين يختفون بعد الاستلام دون تصوير أو ترويج." : "Sending expensive items to random accounts who disappear after receiving.",
+          badMetric: isAr ? "فقدان 40-60% من عينات المنتجات هباءً" : "40-60% product sample loss",
         },
         {
           id: "m-old-3",
           icon: ShieldAlert,
-          title: "ضياع الحقوق وانعدام التتبع",
-          desc: "عدم القدرة على تتبع مصدر المبيعات بدقة بالروابط اليدوية، مما يؤدي لنزاعات مالية وفوضى في الحسابات.",
-          badMetric: "إسناد مبيعات عشوائي ونزاعات مستمرة",
+          title: isAr ? "ضياع الحقوق وانعدام التتبع" : "Untracked Conversions",
+          desc: isAr ? "عدم القدرة على تتبع مصدر المبيعات بدقة بالروابط اليدوية، مما يؤدي لنزاعات مالية وفوضى في الحسابات." : "Inability to accurately trace sales via manual promo codes.",
+          badMetric: isAr ? "إسناد مبيعات عشوائي ونزاعات مستمرة" : "Untracked conversions & disputes",
         },
       ],
     },
     newWay: {
-      tag: "منظومة Growlab الموثوقة (أمان وأرباح مضمونة)",
-      summary: "ادفع فقط بعد اكتمال البيع وتسليم المنتج للعميل بنظام إسناد آلي دقيق بالهللة.",
+      tag: isAr ? "منظومة Growlab الموثوقة (أمان وأرباح مضمونة)" : "Growlab Ecosystem (Guaranteed Performance & Escrow)",
+      summary: isAr ? "ادفع فقط بعد اكتمال البيع وتسليم المنتج للعميل بنظام إسناد آلي دقيق بالهللة." : "Pay commission strictly after order completion & customer delivery.",
       points: [
         {
           id: "m-new-1",
           icon: BadgePercent,
-          title: "الدفع مقابل النتيجة الفعلية فقط",
-          desc: "صفر تكاليف إعلانية مسبقة. التاجر يدفع حصة العمولة (15-20%) فقط بعد استلام العميل للطلب وتأكيد المبيعات المكتملة.",
-          goodMetric: "0 مخاطرة مالية • 100% مدفوع على الأداء",
+          title: isAr ? "الدفع مقابل النتيجة الفعلية فقط" : "Pay-For-Performance Only",
+          desc: isAr ? "صفر تكاليف إعلانية مسبقة. التاجر يدفع حصة العمولة (15-20%) فقط بعد استلام العميل للطلب وتأكيد المبيعات المكتملة." : "$0 upfront ad fee. Merchants pay commission only when an order is delivered.",
+          goodMetric: isAr ? "0 مخاطرة مالية • 100% مدفوع على الأداء" : "0% Financial Risk • 100% Performance-Based",
         },
         {
           id: "m-new-2",
           icon: ShieldCheck,
-          title: "صناع محتوى موثوقون ومدققون",
-          desc: "نظام تدقيق وخوارزميات تقييم تضمن أن كل صانع محتوى هو شخص حقيقي وجدي يمتلك سجلاً احترافياً موثقاً.",
-          goodMetric: "صناع محتوى معتمدون بهوية ونظام تقييم",
+          title: isAr ? "صناع محتوى موثوقون ومدققون" : "Verified & Vetted Creators",
+          desc: isAr ? "نظام تدقيق وخوارزميات تقييم تضمن أن كل صانع محتوى هو شخص حقيقي وجدي يمتلك سجلاً احترافياً موثقاً." : "Audit algorithms ensure creators have verified metrics and identity checks.",
+          goodMetric: isAr ? "صناع محتوى معتمدون بهوية ونظام تقييم" : "ID Verified & Ranked Creators",
         },
         {
           id: "m-new-3",
           icon: Receipt,
-          title: "تتبع مالي وتقني دقيق بالهللة",
-          desc: "صفحة متجر مركزية ورابط فريد لكل صانع تضمن إسناد كل طلب وتوزيع الأرباح آلياً عبر دفتر العمليات اللحظي دون أي تدخل بشري.",
-          goodMetric: "إسناد فوري مع تقرير أرباح لحظي",
+          title: isAr ? "تتبع مالي وتقني دقيق بالهللة" : "Automated Financial Escrow",
+          desc: isAr ? "صفحة متجر مركزية ورابط فريد لكل صانع تضمن إسناد كل طلب وتوزيع الأرباح آلياً عبر دفتر العمليات اللحظي دون أي تدخل بشري." : "Dedicated micro-store links attribute every sale & handle payouts instantly.",
+          goodMetric: isAr ? "إسناد فوري مع تقرير أرباح لحظي" : "Instant Attribution & Real-time Ledger",
         },
       ],
     },
     cta: {
-      merchantBtn: "انضم كتاجر موثق - ابدأ بدون مخاطرة 🏢",
-      subtext: "سجل متجرك الآن • لا توجد أي رسوم اشتراك شهرية أو تكاليف مسبقة",
+      merchantBtn: isAr ? "انضم كتاجر موثق - ابدأ بدون مخاطرة 🏢" : "Join as Verified Merchant - Start Risk-Free 🏢",
+      subtext: isAr ? "سجل متجرك الآن • لا توجد أي رسوم اشتراك شهرية أو تكاليف مسبقة" : "Register your store • $0 subscription fees or upfront cost",
     },
   };
 
   const creatorContent = {
-    title: "بوابة الانطلاق لصانع المحتوى",
-    subtitle: "حول شغفك بهاتفك إلى مصدر دخل احترافي محمي بنظام عقود وأرباح آلية",
+    title: isAr ? "بوابة الانطلاق لصانع المحتوى" : "Launchpad for Creators",
+    subtitle: isAr ? "حول شغفك بهاتفك إلى مصدر دخل احترافي محمي بنظام عقود وأرباح آلية" : "Turn your phone content into steady earnings backed by financial escrow",
     oldWay: {
-      tag: "الطريقة العشوائية القديمة (تشتت واستغلال)",
-      summary: "محاولات فردية مرهقة، مماطلة في العمولات، وغياب أي غطاء قانوني أو تنظيمي.",
+      tag: isAr ? "الطريقة العشوائية القديمة (تشتت واستغلال)" : "Legacy Manual Outreach (Exploitation & Chaos)",
+      summary: isAr ? "محاولات فردية مرهقة، مماطلة في العمولات، وغياب أي غطاء قانوني أو تنظيمي." : "Unpaid promises, delayed commissions, and zero legal protection.",
       points: [
         {
           id: "c-old-1",
           icon: FileQuestion,
-          title: "انعدام المصداقية وصعوبة الوصول",
-          desc: "البراندات الكبرى والتجار الموثوقون يتجاهلون رسائل صناع المحتوى الهواة أو المبتدئين عند التواصل الفردي.",
-          badMetric: "تجاهل 90% من طلبات التعاون الفردية",
+          title: isAr ? "انعدام المصداقية وصعوبة الوصول" : "Hard to Access Big Brands",
+          desc: isAr ? "البراندات الكبرى والتجار الموثوقون يتجاهلون رسائل صناع المحتوى الهواة أو المبتدئين عند التواصل الفردي." : "Top brands ignore direct DMs from emerging creators.",
+          badMetric: isAr ? "تجاهل 90% من طلبات التعاون الفردية" : "90% DM rejection rate",
         },
         {
           id: "c-old-2",
           icon: AlertTriangle,
-          title: "مماطلة وتهرب من دفع العمولات",
-          desc: "العمل الفردي ينتهي غالباً برفض التاجر دفع العمولة المتفق عليها بعد نجاح الفيديو وانتشاره دون أي حماية قانونية.",
-          badMetric: "ضياع الأرباح بعد بذل الجهد وصناعة الفيديو",
+          title: isAr ? "مماطلة وتهرب من دفع العمولات" : "Commission Delays & Non-Payment",
+          desc: isAr ? "العمل الفردي ينتهي غالباً برفض التاجر دفع العمولة المتفق عليها بعد نجاح الفيديو وانتشاره دون أي حماية قانونية." : "Brands dodging commission payouts after content goes viral.",
+          badMetric: isAr ? "ضياع الأرباح بعد بذل الجهد وصناعة الفيديو" : "Unpaid commission losses",
         },
         {
           id: "c-old-3",
           icon: TrendingDown,
-          title: "تشتت في اللوجستيات والعقود",
-          desc: "الاضطرار لبناء متاجر، صياغة اتفاقيات، متابعة الشحن والتوصيل، وإدارة الاسترجاع بشكل يدوي ومربك.",
-          badMetric: "إهدار 80% من الوقت في أمور غير إبداعية",
+          title: isAr ? "تشتت في اللوجستيات والعقود" : "Logistical Overhead",
+          desc: isAr ? "الاضطرار لبناء متاجر، صياغة اتفاقيات، متابعة الشحن والتوصيل، وإدارة الاسترجاع بشكل يدوي ومربك." : "Wasting time setting up stores, contracts, & shipping tracking.",
+          badMetric: isAr ? "إهدار 80% من الوقت في أمور غير إبداعية" : "80% time lost on admin tasks",
         },
       ],
     },
     newWay: {
-      tag: "منظومة Growlab الموثوقة (حماية وتمكين فوري)",
-      summary: "متجر شخصي جاهز فوراً، وصول لبراندات مرخصة، وحماية أرباحك بنظام مالي لحظي.",
+      tag: isAr ? "منظومة Growlab الموثوقة (حماية وتمكين فوري)" : "Growlab Ecosystem (Instant Enablement & Escrow)",
+      summary: isAr ? "متجر شخصي جاهز فوراً، وصول لبراندات مرخصة، وحماية أرباحك بنظام مالي لحظي." : "Turnkey micro-store, licensed products, & guaranteed payout escrow.",
       points: [
         {
           id: "c-new-1",
           icon: Award,
-          title: "الغطاء والمصداقية الفورية",
-          desc: "تواصل فوري مع كتالوج ضخم من المنتجات الأصلية لتجار مرخصين وموثوقين بضغطة زر واحدة دون الحاجة لمراسلات فردية.",
-          goodMetric: "شراكة فورية مع أكبر الموردين المرخصين",
+          title: isAr ? "الغطاء والمصداقية الفورية" : "Instant Brand Partnerships",
+          desc: isAr ? "تواصل فوري مع كتالوج ضخم من المنتجات الأصلية لتجار مرخصين وموثوقين بضغطة زر واحدة دون الحاجة لمراسلات فردية." : "One-click access to thousands of verified brand items.",
+          goodMetric: isAr ? "شراكة فورية مع أكبر الموردين المرخصين" : "Instant partnership with licensed suppliers",
         },
         {
           id: "c-new-2",
           icon: Lock,
-          title: "حماية حقوقك المالية (Automated Ledger)",
-          desc: "نظام إسناد وتقسيم أرباح آلي يضمن نزول عمولتك من كل عملية شراء في محفظتك دون تدخل أو تلاعب من التاجر.",
-          goodMetric: "توزيع فوري ومحفظة محمية بنظام الضمان",
+          title: isAr ? "حماية حقوقك المالية (Automated Ledger)" : "Automated Financial Escrow",
+          desc: isAr ? "نظام إسناد وتقسيم أرباح آلي يضمن نزول عمولتك من كل عملية شراء في محفظتك دون تدخل أو تلاعب من التاجر." : "Commission split is guaranteed & deposited straight to your wallet.",
+          goodMetric: isAr ? "توزيع فوري ومحفظة محمية بنظام الضمان" : "Real-time payout & protected wallet",
         },
         {
           id: "c-new-3",
           icon: Smartphone,
-          title: "جاهزية تامة: متجرك بلمسة زر",
-          desc: "احصل على متجر مصغر متكامل باسمك ورابطك فوراً؛ فقط صور بهاتفك وشارك الرابط لتبدأ جني الأرباح بلا أي تعقيد لوجستي.",
-          goodMetric: "جاهز خلال 60 ثانية • لا شحن ولا تخزين",
+          title: isAr ? "جاهزية تامة: متجرك بلمسة زر" : "Turnkey Micro-Store in Seconds",
+          desc: isAr ? "احصل على متجر مصغر متكامل باسمك ورابطك فوراً؛ فقط صور بهاتفك وشارك الرابط لتبدأ جني الأرباح بلا أي تعقيد لوجستي." : "Get your turnkey storefront link in 60 seconds. Zero shipping or storage hassle.",
+          goodMetric: isAr ? "جاهز خلال 60 ثانية • لا شحن ولا تخزين" : "Live Storefront in 60 Seconds",
         },
       ],
     },
     cta: {
-      creatorBtn: "انضم كصانع محتوى - ابدأ الربح الآن 📱",
-      subtext: "أول حملة 0% رسوم منصة • متجر مجاني متكامل فور إتمام التسجيل",
+      creatorBtn: isAr ? "انضم كصانع محتوى - ابدأ الربح الآن 📱" : "Join as Creator - Start Earning Now 📱",
+      subtext: isAr ? "أول حملة 0% رسوم منصة • متجر مجاني متكامل فور إتمام التسجيل" : "$0 platform fee on 1st campaign • Free turnkey store upon registration",
     },
   };
 
   const current = activePerspective === "merchant" ? merchantContent : creatorContent;
 
   return (
-    <section id="trust-vs-chaos" className="relative space-y-8 my-12" dir="rtl">
+    <section id="trust-vs-chaos" className="relative space-y-8 my-12" dir={dir}>
       {/* 1. Header & Persuasion Framing */}
       <div className="text-center max-w-3xl mx-auto space-y-3">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-growlab-gold/15 text-growlab-gold border border-growlab-gold/30 text-xs font-bold shadow-sm">
           <Sparkles className="h-3.5 w-3.5 animate-pulse text-growlab-gold" />
-          <span>معمارية الثقة والقيمة • The Trust & Value Architecture</span>
+          <span>{isAr ? "معمارية الثقة والقيمة • The Trust & Value Architecture" : "The Trust & Value Architecture"}</span>
         </div>
 
         <h2 className="text-2xl sm:text-4xl font-bold font-display text-white tracking-tight leading-snug">
-          لماذا تعد منظومتنا الخيار{" "}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-growlab-gold via-amber-300 to-growlab-goldLight">
-            الأكثر أماناً
-          </span>{" "}
-          و
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-growlab-emerald via-emerald-300 to-teal-300">
-            الأعلى ربحية؟
-          </span>
+          {isAr ? (
+            <>
+              لماذا تعد منظومتنا الخيار{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-growlab-gold via-amber-300 to-growlab-goldLight">
+                الأكثر أماناً
+              </span>{" "}
+              و
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-growlab-emerald via-emerald-300 to-teal-300">
+                الأعلى ربحية؟
+              </span>
+            </>
+          ) : (
+            <>
+              Why Our Ecosystem is{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-growlab-gold via-amber-300 to-growlab-goldLight">
+                The Safest
+              </span>{" "}
+              &{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-growlab-emerald via-emerald-300 to-teal-300">
+                Most Profitable
+              </span>
+            </>
+          )}
         </h2>
 
         <p className="text-xs sm:text-sm text-onDarkSoft leading-relaxed max-w-2xl mx-auto">
-          مقارنة واقعية بين التسويق الفوضوي التقليدي عبر وسائل التواصل، وبين منظومة التجارة القائمة على الأداء المضمون في Growlab.
+          {isAr
+            ? "مقارنة واقعية بين التسويق الفوضوي التقليدي عبر وسائل التواصل، وبين منظومة التجارة القائمة على الأداء المضمون في Growlab."
+            : "A realistic comparison between chaotic legacy social marketing vs Growlab's performance-based escrow ecosystem."}
         </p>
       </div>
 
@@ -207,12 +228,13 @@ export const TrustVsChaosSection: React.FC<TrustVsChaosSectionProps> = ({
             }`}
           >
             <Store className={`h-4 w-4 ${activePerspective === "merchant" ? "text-growlab-bgDark" : "text-amber-400"}`} />
-            <span>منظور التاجر والمورد 🏢</span>
+            <span>{isAr ? "منظور التاجر والمورد 🏢" : "Merchant & Brand View 🏢"}</span>
             {activePerspective === "merchant" && (
               <motion.div
-                layoutId="activePerspectivePill"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
                 className="absolute inset-0 bg-gradient-to-r from-growlab-gold to-amber-300 rounded-xl -z-10 shadow-md"
-                transition={{ type: "spring", stiffness: 450, damping: 35 }}
+                transition={{ duration: 0.2 }}
               />
             )}
           </button>
@@ -229,12 +251,13 @@ export const TrustVsChaosSection: React.FC<TrustVsChaosSectionProps> = ({
             }`}
           >
             <Smartphone className={`h-4 w-4 ${activePerspective === "creator" ? "text-growlab-bgDark" : "text-growlab-emerald"}`} />
-            <span>منظور صانع المحتوى 📱</span>
+            <span>{isAr ? "منظور صانع المحتوى 📱" : "Creator View 📱"}</span>
             {activePerspective === "creator" && (
               <motion.div
-                layoutId="activePerspectivePill"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
                 className="absolute inset-0 bg-gradient-to-r from-growlab-emerald to-teal-300 rounded-xl -z-10 shadow-md"
-                transition={{ type: "spring", stiffness: 450, damping: 35 }}
+                transition={{ duration: 0.2 }}
               />
             )}
           </button>

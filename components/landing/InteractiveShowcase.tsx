@@ -21,7 +21,7 @@ import {
   Lock,
 } from "lucide-react";
 
-export default function InteractiveShowcase() {
+export function InteractiveShowcase() {
   const { t, isRtl, lang } = useLanguage();
   const [activeTab, setActiveTab] = useState<"sales" | "creative" | "rules" | "feed">("sales");
 
@@ -200,9 +200,10 @@ Scratch-proof sapphire glass, Japanese precision movement, and a 1-year full rep
                 <span className="relative z-10">{tab.label}</span>
                 {activeTab === tab.id && (
                   <motion.div
-                    layoutId="activeShowcaseTabPill"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
                     className="absolute inset-0 rounded-xl bg-gradient-to-r from-emerald to-teal shadow-glow-emerald"
-                    transition={{ type: "spring", stiffness: 450, damping: 32 }}
+                    transition={{ duration: 0.2 }}
                   />
                 )}
               </button>

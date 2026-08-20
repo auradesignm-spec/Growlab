@@ -19,6 +19,7 @@ import {
 import { useUgc } from "@/lib/UgcContext";
 import { CURRENCIES } from "@/lib/ugc-store";
 import { CurrencyCode, UserRole } from "@/lib/ugc-types";
+import LanguageSwitcher from "@/components/motion/LanguageSwitcher";
 
 interface UgcHeaderProps {
   currentTab: "overview" | "leaderboard" | "creator-portal" | "merchant-portal" | "admin-ledger";
@@ -62,7 +63,7 @@ export const UgcHeader: React.FC<UgcHeaderProps> = ({
               ✨ أول حملة مجانية لكل صانع محتوى موثق (0% رسوم منصة)
             </span>
             <div className="flex items-center gap-1 font-mono">
-              {(["OMR", "SAR", "AED", "USD"] as CurrencyCode[]).map((c) => (
+              {(["USD", "SAR", "AED", "OMR"] as CurrencyCode[]).map((c) => (
                 <button
                   key={c}
                   onClick={() => setCurrentCurrency(c)}
@@ -76,6 +77,7 @@ export const UgcHeader: React.FC<UgcHeaderProps> = ({
                 </button>
               ))}
             </div>
+            <LanguageSwitcher />
           </div>
         </div>
       </div>

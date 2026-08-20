@@ -21,7 +21,6 @@ import {
   Zap,
   Globe,
 } from "lucide-react";
-import confetti from "canvas-confetti";
 import { useUgc } from "@/lib/UgcContext";
 import { convertPrice } from "@/lib/ugc-store";
 import { Product, ProductCategory, TargetAudienceGender } from "@/lib/ugc-types";
@@ -87,11 +86,13 @@ export const PlatformOverview: React.FC<PlatformOverviewProps> = ({
       setIsOrdering(false);
       setOrderSuccessData(result);
 
-      confetti({
-        particleCount: 80,
-        spread: 70,
-        origin: { y: 0.6 },
-        colors: ["#AD7A2A", "#10B981", "#34D399"],
+      import("canvas-confetti").then((confetti) => {
+        confetti.default({
+          particleCount: 80,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ["#AD7A2A", "#10B981", "#34D399"],
+        });
       });
     }, 600);
   };

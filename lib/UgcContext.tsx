@@ -79,7 +79,42 @@ interface UgcContextType {
   resetToDefaults: () => void;
 }
 
-const UgcContext = createContext<UgcContextType | null>(null);
+const mockContext: UgcContextType = {
+  creators: INITIAL_CREATORS,
+  merchants: INITIAL_MERCHANTS,
+  products: INITIAL_PRODUCTS,
+  orders: INITIAL_ORDERS,
+  cart: [],
+  isCartOpen: false,
+  setIsCartOpen: () => {},
+  addToCart: () => {},
+  removeFromCart: () => {},
+  updateCartQuantity: () => {},
+  clearCart: () => {},
+  cartTotalUSD: 0,
+  cartItemCount: 0,
+  activeRole: "visitor",
+  setActiveRole: () => {},
+  activeCreatorId: "c_salem",
+  setActiveCreatorId: () => {},
+  activeMerchantId: "m_royal_oud",
+  setActiveMerchantId: () => {},
+  currentCurrency: "USD",
+  setCurrentCurrency: () => {},
+  currentLanguage: "ar",
+  setCurrentLanguage: () => {},
+  placeOrder: () => ({ order: INITIAL_ORDERS[0], split: {} as OrderSplit }),
+  toggleCreatorProduct: () => {},
+  registerCreator: () => ({} as Creator),
+  registerMerchant: () => ({} as Merchant),
+  addProduct: () => ({} as Product),
+  getCreatorByUsername: () => undefined,
+  getProductsForCreator: () => INITIAL_PRODUCTS,
+  getLeaderboard: () => [],
+  resetToDefaults: () => {},
+};
+
+const UgcContext = createContext<UgcContextType>(mockContext);
 
 const STORAGE_KEY = "growlab_ugc_state_v1";
 
@@ -91,7 +126,7 @@ export const UgcProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [activeRole, setActiveRole] = useState<UserRole>("visitor");
   const [activeCreatorId, setActiveCreatorId] = useState<string>("c_salem");
   const [activeMerchantId, setActiveMerchantId] = useState<string>("m_royal_oud");
-  const [currentCurrency, setCurrentCurrency] = useState<CurrencyCode>("OMR");
+  const [currentCurrency, setCurrentCurrency] = useState<CurrencyCode>("USD");
   const [currentLanguage, setCurrentLanguage] = useState<LanguageCode>("ar");
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
@@ -514,8 +549,5 @@ export const UgcProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
 export const useUgc = () => {
   const context = useContext(UgcContext);
-  if (!context) {
-    throw new Error("useUgc must be used within a UgcProvider");
-  }
-  return context;
+  return context || mockContext;
 };

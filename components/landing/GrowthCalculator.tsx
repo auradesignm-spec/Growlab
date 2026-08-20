@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/lib/i18n";
 import MagneticButton from "@/components/motion/MagneticButton";
-import confetti from "canvas-confetti";
 import {
   TrendingUp,
   DollarSign,
@@ -38,11 +37,13 @@ export default function GrowthCalculator({ onOpenDashboard }: GrowthCalculatorPr
   const estimatedRoi = ((projectedRevenueLift / (monthlySpend * 0.3 + 200)) * 1.5).toFixed(1);
 
   const triggerConfetti = () => {
-    confetti({
-      particleCount: 50,
-      spread: 60,
-      origin: { y: 0.8 },
-      colors: ["#10B981", "#06B6D4", "#F59E0B"],
+    import("canvas-confetti").then((confetti) => {
+      confetti.default({
+        particleCount: 50,
+        spread: 60,
+        origin: { y: 0.8 },
+        colors: ["#10B981", "#06B6D4", "#F59E0B"],
+      });
     });
   };
 

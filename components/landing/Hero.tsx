@@ -26,7 +26,7 @@ interface HeroProps {
   onScrollToCalculator?: () => void;
 }
 
-export default function Hero({
+export function Hero({
   onOpenDashboard,
   onScrollToShowcase,
   onScrollToCalculator,

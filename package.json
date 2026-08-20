@@ -3,15 +3,14 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3000 -H 0.0.0.0",
-    "build": "next build && mkdir -p dist && cp -r .next/. dist/ && echo '<!DOCTYPE html><html lang=\"ar\" dir=\"rtl\"><head><meta charset=\"utf-8\"><title>Growlab</title></head><body><div id=\"__next\"></div></body></html>' > dist/index.html",
-    "start": "node server.ts",
+    "dev": "NEXT_IGNORE_INCORRECT_LOCKFILE=1 next dev -p 3000 -H 0.0.0.0",
+    "build": "rm -rf .next out dist && NEXT_IGNORE_INCORRECT_LOCKFILE=1 next build && mkdir -p dist && cp -r out/. dist/",
     "lint": "next lint"
   },
   "dependencies": {
     "@google/genai": "^2.17.1",
     "canvas-confetti": "^1.9.4",
-    "framer-motion": "^13.1.0",
+    "framer-motion": "^10.18.0",
     "lucide-react": "^1.32.0",
     "next": "14.2.35",
     "react": "^18.3.1",

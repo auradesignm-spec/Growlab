@@ -1,6 +1,6 @@
 {
-  "name": "Growlab UGC Commerce Platform",
-  "description": "منصة تجارة صناع المحتوى الأولى في الخليج — متاجر مصغرة لصناع المحتوى، كتالوج موحد للتجار، وتوزيع أرباح لحظي وشفاف مدعوم بالذكاء الاصطناعي ولوحة ترتيب تنافسية.",
-  "requestFramePermissions": ["microphone"],
+  "name": "Growlab — Pan-Arab UGC Commerce Ecosystem",
+  "description": "The premier Pan-Arab UGC Commerce Ecosystem. Connect verified merchants with top creators across the Arab world with multi-currency support, automated escrow ledger, and secure micro-storefronts.",
+  "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

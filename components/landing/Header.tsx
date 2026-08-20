@@ -101,9 +101,10 @@ export default function Header({ onOpenDashboard, onScrollToSection }: HeaderPro
                 <span className="relative z-10">{link.label}</span>
                 {hoveredNav === link.id && (
                   <motion.div
-                    layoutId="navHoverIndicator"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
                     className="absolute inset-0 rounded-xl bg-white/10"
-                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    transition={{ duration: 0.15 }}
                   />
                 )}
               </button>

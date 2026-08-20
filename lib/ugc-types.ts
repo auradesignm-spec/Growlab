@@ -1,8 +1,8 @@
 export type Gender = "male" | "female" | "unisex";
 export type TargetAudienceGender = "men" | "women" | "all";
-export type CountryCode = "OM" | "SA" | "AE" | "KW" | "QA" | "BH" | "GLOBAL";
+export type CountryCode = "OM" | "SA" | "AE" | "KW" | "QA" | "BH" | "EG" | "JO" | "GLOBAL";
 export type LanguageCode = "ar" | "en";
-export type CurrencyCode = "OMR" | "SAR" | "AED" | "USD";
+export type CurrencyCode = "OMR" | "SAR" | "AED" | "EGP" | "JOD" | "USD";
 export type SubscriptionTier = "free" | "basic" | "pro";
 export type UserRole = "visitor" | "creator" | "merchant" | "admin";
 export type TimePeriod = "weekly" | "monthly" | "all-time";

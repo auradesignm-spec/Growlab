@@ -19,6 +19,7 @@ import {
 import { CurrencyCode, ProductCategory } from "@/lib/ugc-types";
 import { CURRENCIES } from "@/lib/ugc-store";
 import { useUgc } from "@/lib/UgcContext";
+import LanguageSwitcher from "@/components/motion/LanguageSwitcher";
 
 interface StorefrontNavProps {
   searchQuery: string;
@@ -64,7 +65,7 @@ export const StorefrontNav: React.FC<StorefrontNavProps> = ({
           <div className="flex items-center gap-3 shrink-0">
             {/* Currency Selector */}
             <div className="flex items-center gap-1 bg-growlab-bgSurface border border-growlab-border/70 rounded-lg p-0.5">
-              {(["OMR", "SAR", "AED", "USD"] as CurrencyCode[]).map((c) => (
+              {(["USD", "SAR", "AED", "OMR"] as CurrencyCode[]).map((c) => (
                 <button
                   key={c}
                   onClick={() => setCurrentCurrency(c)}
@@ -78,6 +79,8 @@ export const StorefrontNav: React.FC<StorefrontNavProps> = ({
                 </button>
               ))}
             </div>
+
+            <LanguageSwitcher />
 
             <span className="text-growlab-border">|</span>
 

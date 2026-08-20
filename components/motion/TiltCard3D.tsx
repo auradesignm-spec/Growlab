@@ -20,6 +20,11 @@ export default function TiltCard3D({
 }: TiltCard3DProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -35,6 +40,19 @@ export default function TiltCard3D({
 
   const spotlightX = useMotionValue(0);
   const spotlightY = useMotionValue(0);
+
+  const glowStyles = {
+    emerald: "rgba(16, 185, 129, 0.15)",
+    cyan: "rgba(6, 182, 212, 0.15)",
+    gold: "rgba(245, 158, 11, 0.15)",
+    purple: "rgba(168, 85, 247, 0.15)",
+  };
+
+  const spotlightBg = useTransform(
+    [spotlightX, spotlightY],
+    ([x, y]) =>
+      `radial-gradient(400px circle at ${x}px ${y}px, ${glowStyles[glowColor]}, transparent 80%)`
+  );
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
@@ -60,13 +78,6 @@ export default function TiltCard3D({
     setIsHovered(false);
     mouseX.set(0);
     mouseY.set(0);
-  };
-
-  const glowStyles = {
-    emerald: "rgba(16, 185, 129, 0.15)",
-    cyan: "rgba(6, 182, 212, 0.15)",
-    gold: "rgba(245, 158, 11, 0.15)",
-    purple: "rgba(168, 85, 247, 0.15)",
   };
 
   const borderHoverStyles = {
@@ -103,11 +114,7 @@ export default function TiltCard3D({
           className="pointer-events-none absolute -inset-px opacity-0 transition-opacity duration-300"
           style={{
             opacity: isHovered ? 1 : 0,
-            background: useTransform(
-              [spotlightX, spotlightY],
-              ([x, y]) =>
-                `radial-gradient(400px circle at ${x}px ${y}px, ${glowStyles[glowColor]}, transparent 80%)`
-            ),
+            background: spotlightBg,
           }}
         />
 

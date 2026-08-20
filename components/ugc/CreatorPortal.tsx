@@ -22,7 +22,6 @@ import {
   CheckCircle2,
   RefreshCw,
 } from "lucide-react";
-import confetti from "canvas-confetti";
 import { useUgc } from "@/lib/UgcContext";
 import { convertPrice } from "@/lib/ugc-store";
 import { Product, SubscriptionTier } from "@/lib/ugc-types";
@@ -73,11 +72,13 @@ export const CreatorPortal: React.FC = () => {
       });
       setIsSimulatingSale(false);
 
-      confetti({
-        particleCount: 50,
-        spread: 60,
-        origin: { y: 0.7 },
-        colors: ["#10B981", "#AD7A2A", "#F59E0B"],
+      import("canvas-confetti").then((confetti) => {
+        confetti.default({
+          particleCount: 50,
+          spread: 60,
+          origin: { y: 0.7 },
+          colors: ["#10B981", "#AD7A2A", "#F59E0B"],
+        });
       });
     }, 400);
   };

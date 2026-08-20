@@ -38,6 +38,22 @@ export const CURRENCIES: Record<CurrencyCode, CurrencyConfig> = {
     rateToUSD: 3.67, // 1 USD = 3.67 AED
     flag: "🇦🇪",
   },
+  EGP: {
+    code: "EGP",
+    nameAr: "جنيه مصري",
+    nameEn: "Egyptian Pound",
+    symbol: "ج.م",
+    rateToUSD: 48.5, // 1 USD = 48.5 EGP (approximate)
+    flag: "🇪🇬",
+  },
+  JOD: {
+    code: "JOD",
+    nameAr: "دينار أردني",
+    nameEn: "Jordanian Dinar",
+    symbol: "د.أ",
+    rateToUSD: 0.71, // 1 USD = 0.71 JOD
+    flag: "🇯🇴",
+  },
   USD: {
     code: "USD",
     nameAr: "دولار أمريكي",
@@ -104,6 +120,34 @@ export const INITIAL_MERCHANTS: Merchant[] = [
     rating: 4.86,
     totalOrders: 980,
     netRevenue: 43600,
+  },
+  {
+    id: "m_nile_beauty",
+    businessName: "نيل بيوتي للمستحضرات",
+    businessNameEn: "Nile Beauty Cosmetics",
+    logo: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=150&auto=format&fit=crop&q=80",
+    country: "EG",
+    category: "beauty",
+    verifiedAt: "2024-04-10",
+    contactEmail: "info@nilebeauty.eg",
+    phone: "+20 100 123 4567",
+    rating: 4.82,
+    totalOrders: 650,
+    netRevenue: 28400,
+  },
+  {
+    id: "m_petra_home",
+    businessName: "بترا للمفروشات الراقية",
+    businessNameEn: "Petra Home Luxury",
+    logo: "https://images.unsplash.com/photo-1513584684031-4345abc4f2ad?w=150&auto=format&fit=crop&q=80",
+    country: "JO",
+    category: "home",
+    verifiedAt: "2024-05-01",
+    contactEmail: "sales@petrahome.jo",
+    phone: "+962 6 500 0000",
+    rating: 4.90,
+    totalOrders: 420,
+    netRevenue: 31200,
   },
 ];
 
@@ -423,13 +467,85 @@ export const INITIAL_CREATORS: Creator[] = [
       },
     ],
   },
+  {
+    id: "c_omar",
+    username: "omar_cairo",
+    displayName: "عمر كمال — لايف ستايل القاهرة",
+    displayNameEn: "Omar Kamal Cairo",
+    bio: "أجمل أماكن الخروجات في مصر وأفضل عروض التسوق لنمط حياة عصري 🇪🇬✨",
+    bioEn: "Exploring Cairo's best spots and modern lifestyle deals.",
+    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&auto=format&fit=crop&q=80",
+    banner: "https://images.unsplash.com/photo-1539109132314-34a9c6157f5c?w=1200&auto=format&fit=crop&q=80",
+    gender: "male",
+    country: "EG",
+    language: "ar",
+    subscriptionTier: "pro",
+    verifiedAt: "2024-04-15",
+    isFirstCampaignFree: false,
+    paymentVerified: true,
+    paymentMethod: {
+      type: "card",
+      identifier: "•••• 1122",
+      bankName: "CIB Egypt",
+    },
+    socialLinks: {
+      instagram: "omar.cairo",
+      followersCount: "1.2M",
+    },
+    selectedProductIds: ["prod_smart_mic", "prod_espresso_portable"],
+    stats: {
+      salesValue: 45200,
+      conversionRate: 5.8,
+      orderCount: 890,
+      totalCommission: 9100,
+      pendingPayout: 1450,
+      profileViews: 145000,
+    },
+    badges: [],
+  },
+  {
+    id: "c_dana",
+    username: "dana_amman",
+    displayName: "دانا منصور — موضة وديكور",
+    displayNameEn: "Dana Mansour Fashion",
+    bio: "تصاميم عصرية وديكورات منزلية من قلب عمان 🇯🇴🌿 تسوقي مختاراتي المفضلة",
+    bioEn: "Modern fashion and home decor from Amman. Shop my favorites.",
+    avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&auto=format&fit=crop&q=80",
+    banner: "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=1200&auto=format&fit=crop&q=80",
+    gender: "female",
+    country: "JO",
+    language: "ar",
+    subscriptionTier: "free",
+    verifiedAt: "2024-05-12",
+    isFirstCampaignFree: true,
+    paymentVerified: true,
+    paymentMethod: {
+      type: "card",
+      identifier: "•••• 3344",
+      bankName: "Arab Bank",
+    },
+    socialLinks: {
+      tiktok: "dana.amman",
+      followersCount: "450K",
+    },
+    selectedProductIds: ["prod_essential_set"],
+    stats: {
+      salesValue: 12400,
+      conversionRate: 4.2,
+      orderCount: 310,
+      totalCommission: 2480,
+      pendingPayout: 620,
+      profileViews: 56000,
+    },
+    badges: [],
+  },
 ];
 
 export const INITIAL_ORDERS: Order[] = [
   {
     id: "ord_1001",
     orderNumber: "GL-98214",
-    createdAt: new Date(Date.now() - 1000 * 60 * 25).toISOString(), // 25 mins ago
+    createdAt: "2024-08-19T06:00:00Z",
     productId: "prod_oud_sultan",
     productName: "دهن عود كمبودي معتق مع خشب الصندل النقي",
     productImage: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=600&auto=format&fit=crop&q=80",
@@ -459,7 +575,7 @@ export const INITIAL_ORDERS: Order[] = [
   {
     id: "ord_1002",
     orderNumber: "GL-98215",
-    createdAt: new Date(Date.now() - 1000 * 60 * 85).toISOString(), // 1.4 hrs ago
+    createdAt: "2024-08-19T05:00:00Z",
     productId: "prod_smart_mic",
     productName: "مايكروفون UGC اللاسلكي الذكي بعزل الضوضاء AI",
     productImage: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=600&auto=format&fit=crop&q=80",
@@ -489,7 +605,7 @@ export const INITIAL_ORDERS: Order[] = [
   {
     id: "ord_1003",
     orderNumber: "GL-98216",
-    createdAt: new Date(Date.now() - 1000 * 60 * 180).toISOString(),
+    createdAt: "2024-08-19T04:00:00Z",
     productId: "prod_abaya_silk",
     productName: "عباية حرير ياباني كريب مع طرحة ليزر مطرزة",
     productImage: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&auto=format&fit=crop&q=80",
@@ -519,7 +635,7 @@ export const INITIAL_ORDERS: Order[] = [
   {
     id: "ord_1004",
     orderNumber: "GL-98217",
-    createdAt: new Date(Date.now() - 1000 * 60 * 300).toISOString(),
+    createdAt: "2024-08-19T03:00:00Z",
     productId: "prod_gulf_watch",
     productName: "ساعة كرونوغراف ستيل تيتانيوم مقاومة للماء",
     productImage: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=600&auto=format&fit=crop&q=80",
@@ -561,6 +677,14 @@ export function computeLeaderboardScore(salesValue: number, conversionRate: numb
 export function convertPrice(priceUSD: number, targetCurrency: CurrencyCode): { amount: number; formatted: string; symbol: string } {
   const config = CURRENCIES[targetCurrency] || CURRENCIES.USD;
   const converted = priceUSD * config.rateToUSD;
+  if (targetCurrency === "USD") {
+    const rounded = Number(converted.toFixed(2));
+    return {
+      amount: rounded,
+      formatted: `$${rounded.toFixed(2)}`,
+      symbol: "$",
+    };
+  }
   const rounded = targetCurrency === "OMR" ? Number(converted.toFixed(3)) : Number(converted.toFixed(2));
   return {
     amount: rounded,
