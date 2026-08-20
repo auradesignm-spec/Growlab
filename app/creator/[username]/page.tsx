@@ -1,16 +1,25 @@
-"use client";
-
 import React from "react";
-import { useParams } from "next/navigation";
 import { CreatorStorefront } from "@/components/creator/CreatorStorefront";
 
-export default function Page() {
-  const params = useParams();
-  const rawUsername = params?.username;
-  const username = typeof rawUsername === "string" ? rawUsername : Array.isArray(rawUsername) ? rawUsername[0] : "";
-  
-  return <CreatorStorefront username={username} />;
+export const dynamicParams = false;
+
+export function generateStaticParams() {
+  return [
+    { username: "demo" },
+    { username: "sarah" },
+    { username: "ahmed" },
+    { username: "layla" },
+    { username: "omar" },
+    { username: "nour" },
+    { username: "creator" },
+  ];
 }
+
+export default function Page({ params }: { params: { username: string } }) {
+  return <CreatorStorefront username={params?.username} />;
+}
+
+
 
 
 

@@ -4,8 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "NEXT_IGNORE_INCORRECT_LOCKFILE=1 next dev -p 3000 -H 0.0.0.0",
-    "build": "NEXT_IGNORE_INCORRECT_LOCKFILE=1 next build && mkdir -p dist && cp -r .next/* dist/ && cp -r .next dist/.next",
-    "start": "node server.ts",
+    "build": "NEXT_IGNORE_INCORRECT_LOCKFILE=1 next build && mkdir -p dist && cp -r out/. dist/",
     "lint": "next lint"
   },
   "dependencies": {
