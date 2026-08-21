@@ -8,14 +8,21 @@ export default function GrowthLine() {
   useEffect(() => {
     const line = ref.current;
     if (!line) return;
+
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const length = line.getTotalLength();
+
     line.style.strokeDasharray = `${length}`;
-    line.style.strokeDashoffset = `${length}`;
-    line.style.transition = "stroke-dashoffset 1.8s ease-out";
-    const t = setTimeout(() => {
+    line.style.strokeDashoffset = prefersReducedMotion ? "0" : `${length}`;
+    line.style.transition = prefersReducedMotion ? "none" : "stroke-dashoffset 1.8s ease-out";
+
+    if (prefersReducedMotion) return;
+
+    const timer = window.setTimeout(() => {
       line.style.strokeDashoffset = "0";
     }, 150);
-    return () => clearTimeout(t);
+
+    return () => window.clearTimeout(timer);
   }, []);
 
   return (
@@ -29,8 +36,9 @@ export default function GrowthLine() {
         ref={ref}
         points="0,420 150,400 300,430 450,340 600,360 750,250 900,270 1050,140 1200,110"
         fill="none"
-        stroke="#AD7A2A"
+        stroke="currentColor"
         strokeWidth="2"
+        className="text-gold"
       />
     </svg>
   );

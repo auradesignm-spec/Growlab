@@ -1,4 +1,6 @@
-const steps = [
+import type { StepItem } from "@/lib/types";
+
+const STEPS: readonly StepItem[] = [
   {
     n: "01",
     title: "محتوى وإعلانات مصممة لك",
@@ -14,34 +16,36 @@ const steps = [
     title: "لوحة تحكم شفافة بالكامل",
     text: "تتابع كل رقم — مبيعات، مصروف إعلانات، أرباح — بلوحة تحكم خاصة فيك، تتحدث أول بأول.",
   },
-];
+] as const;
 
 export default function HowItWorks() {
   return (
-    <section id="how" className="py-20 md:py-24">
-      <div className="mx-auto max-w-wrap px-6">
+    <section id="how" className="section-padding">
+      <div className="container-wrap">
         <div className="eyebrow">كيف نشتغل</div>
-        <h2 className="font-display text-3xl font-extrabold md:text-4xl">ثلاث خطوات، وضوح كامل</h2>
-        <p className="mt-3.5 max-w-xl text-lg text-muted">
+        <h2 className="section-heading">ثلاث خطوات، وضوح كامل</h2>
+        <p className="section-lead">
           من أول محتوى تسويقي، إلى بيع فعلي، إلى رقم تشوفه بعينك.
         </p>
 
-        <div className="mt-10">
-          {steps.map((s, i) => (
-            <div
-              key={s.n}
-              className={`grid grid-cols-[56px_1fr] gap-6 border-t border-line py-8 md:grid-cols-[90px_1fr] ${
-                i === steps.length - 1 ? "border-b" : ""
+        <ol className="mt-10 list-none">
+          {STEPS.map((step, index) => (
+            <li
+              key={step.n}
+              className={`grid grid-cols-[56px_1fr] gap-6 border-t border-line py-8 transition-colors duration-250 hover:bg-paper/40 md:grid-cols-[90px_1fr] ${
+                index === STEPS.length - 1 ? "border-b" : ""
               }`}
             >
-              <div className="font-mono text-2xl font-medium text-gold md:text-[28px]">{s.n}</div>
+              <span className="font-mono text-2xl font-medium text-gold md:text-[28px]" aria-hidden="true">
+                {step.n}
+              </span>
               <div>
-                <h3 className="mb-2 text-[19px] font-bold">{s.title}</h3>
-                <p className="max-w-xl text-[15.5px] text-muted">{s.text}</p>
+                <h3 className="mb-2 text-[19px] font-bold">{step.title}</h3>
+                <p className="max-w-xl text-[15.5px] text-muted">{step.text}</p>
               </div>
-            </div>
+            </li>
           ))}
-        </div>
+        </ol>
       </div>
     </section>
   );
