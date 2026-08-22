@@ -22,7 +22,7 @@ export default async function Pricing() {
             <SplitCard
               title={t("merchantTitle")}
               subtitle={t("merchantSubtitle")}
-              stat="62%"
+              stat={t("merchantStat")}
               statNote={t("merchantStatNote")}
               features={merchantFeatures}
             />

@@ -13,7 +13,7 @@ export default function MediaKitManager({
   assets: MerchantMediaAssetRow[];
 }) {
   const t = useTranslations("dashboardApp.merchant.products.mediaKit");
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(assets.length === 0);
   const [type, setType] = useState<"image" | "video">("image");
   const [url, setUrl] = useState("");
   const [caption, setCaption] = useState("");

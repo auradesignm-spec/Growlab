@@ -24,11 +24,11 @@ function isPlausibleUrl(value: string): boolean {
 export async function addMediaAsset(productId: string, type: string, url: string, caption: string) {
   const viewer = await getCurrentUser();
   if (!viewer || viewer.role !== "merchant" || !viewer.merchantProfile) {
-    throw new Error("Only the owning merchant can manage a product's media kit.");
+    throw new Error("Only the owning merchant can manage a product's media.");
   }
   if (viewer.accountStatus === "banned") throw new Error("This account has been suspended.");
   if (viewer.merchantProfile.verificationStatus !== "verified") {
-    throw new Error("Your business must be verified before you can upload a media kit.");
+    throw new Error("Your business must be verified before you can upload product media.");
   }
 
   if (!MEDIA_ASSET_TYPES.includes(type as MediaAssetType)) {
@@ -47,7 +47,7 @@ export async function addMediaAsset(productId: string, type: string, url: string
 
   const count = await prisma.mediaAsset.count({ where: { productId } });
   if (count >= MAX_ASSETS_PER_PRODUCT) {
-    throw new Error(`A product can have at most ${MAX_ASSETS_PER_PRODUCT} media kit assets.`);
+    throw new Error(`A product can have at most ${MAX_ASSETS_PER_PRODUCT} media assets.`);
   }
 
   await prisma.mediaAsset.create({
@@ -66,7 +66,7 @@ export async function addMediaAsset(productId: string, type: string, url: string
 export async function removeMediaAsset(assetId: string) {
   const viewer = await getCurrentUser();
   if (!viewer || viewer.role !== "merchant" || !viewer.merchantProfile) {
-    throw new Error("Only the owning merchant can manage a product's media kit.");
+    throw new Error("Only the owning merchant can manage a product's media.");
   }
 
   const asset = await prisma.mediaAsset.findUnique({ where: { id: assetId }, include: { product: true } });

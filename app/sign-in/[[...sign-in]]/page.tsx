@@ -13,7 +13,7 @@ export default function SignInPage() {
         </Link>
       </header>
       <div className="flex flex-1 flex-col items-center justify-center px-5 pb-16">
-        <h1 className="mb-6 text-[20px] font-semibold">دخول إلى اللوحة</h1>
+        <h1 className="mb-6 text-[20px] font-semibold">تسجيل دخول إلى اللوحة</h1>
         <ClerkAuthScreen mode="sign-in" enabled={Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY)} />
       </div>
     </div>

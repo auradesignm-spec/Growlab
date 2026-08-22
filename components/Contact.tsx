@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState, useTransition, type FormEvent } from "react";
 import { useTranslations } from "next-intl";
 import Reveal from "@/components/Reveal";
+import { submitContactLead } from "@/app/(marketing)/contact-actions";
+import { WHATSAPP_CONSULTATION_URL, WHATSAPP_GENERAL_URL } from "@/lib/constants";
 import type {
   ContactFieldErrors,
   ContactFieldName,
@@ -24,6 +26,7 @@ export default function Contact() {
   const [sent, setSent] = useState(false);
   const [errors, setErrors] = useState<ContactFieldErrors>({});
   const [values, setValues] = useState<ContactFormData>(EMPTY_FORM);
+  const [pending, startTransition] = useTransition();
 
   function handleChange(field: ContactFieldName, value: string) {
     const sanitized =
@@ -58,9 +61,15 @@ export default function Contact() {
 
     setValues(sanitized);
     setErrors({});
-    setSent(true);
-    setValues(EMPTY_FORM);
-    event.currentTarget.reset();
+    startTransition(async () => {
+      const result = await submitContactLead(sanitized);
+      if (!result.ok) {
+        setErrors({ form: t("sendFailed") });
+        return;
+      }
+      setSent(true);
+      setValues(EMPTY_FORM);
+    });
   }
 
   return (
@@ -137,8 +146,8 @@ export default function Contact() {
               </p>
             )}
 
-            <button type="submit" className="gl-btn-primary">
-              {t("submit")}
+            <button type="submit" className="gl-btn-primary" disabled={pending}>
+              {pending ? t("sending") : t("submit")}
             </button>
 
             {sent && (
@@ -150,8 +159,8 @@ export default function Contact() {
           </Reveal>
 
           <Reveal delay={100} className="flex flex-col gap-4 pt-2">
-            <ContactCard href="#contact" title={t("whatsappTitle")} subtitle={t("whatsappSubtitle")} />
-            <ContactCard href="#contact" title={t("callTitle")} subtitle={t("callSubtitle")} />
+            <ContactCard href={WHATSAPP_GENERAL_URL} title={t("whatsappTitle")} subtitle={t("whatsappSubtitle")} />
+            <ContactCard href={WHATSAPP_CONSULTATION_URL} title={t("callTitle")} subtitle={t("callSubtitle")} />
           </Reveal>
         </div>
       </div>
@@ -167,7 +176,12 @@ interface ContactCardProps {
 
 function ContactCard({ href, title, subtitle }: ContactCardProps) {
   return (
-    <a href={href} className="gl-tile gl-tile-hover flex items-center px-5 py-4 text-frost">
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="gl-tile gl-tile-hover flex items-center px-5 py-4 text-frost"
+    >
       <span>
         <strong className="block text-[15px] font-medium">{title}</strong>
         <span className="text-[13px] text-frost-faint">{subtitle}</span>

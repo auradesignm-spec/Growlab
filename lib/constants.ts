@@ -8,7 +8,12 @@ export function getWhatsAppUrl(message?: string): string {
   return `${WHATSAPP_BASE_URL}?text=${encodeURIComponent(message)}`;
 }
 
-export const WHATSAPP_GENERAL_URL = getWhatsAppUrl("مرحباً Growlab، أبي أستفسر عن خدماتكم.");
+/** Opens WhatsApp with a prefilled message so the marketer picks the chat. */
+export function getWhatsAppShareUrl(text: string): string {
+  return `https://wa.me/?text=${encodeURIComponent(text)}`;
+}
+
+export const WHATSAPP_GENERAL_URL = getWhatsAppUrl("مرحباً Growlab، أريد الاستفسار عن خدماتكم.");
 export const WHATSAPP_CONSULTATION_URL = getWhatsAppUrl(
-  "مرحباً Growlab، أبي أحجز استشارة مجانية 15 دقيقة."
+  "مرحباً Growlab، أريد حجز استشارة مجانية لمدة 15 دقيقة."
 );

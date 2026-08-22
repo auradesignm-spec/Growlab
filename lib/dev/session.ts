@@ -1,12 +1,8 @@
 import { cookies } from "next/headers";
 import { prisma } from "@/lib/db";
 
-/**
- * Dev-only "viewing as" account switcher. NOT real authentication — there is
- * no password, token, or session security here, just a cookie holding a
- * seeded user id so both dashboards are demoable locally. Real auth
- * (NextAuth/Clerk/phone OTP/etc.) is an explicit open decision, not built here.
- */
+export { isDevImpersonationEnabled } from "@/lib/dev/guard";
+
 export const DEV_VIEWER_COOKIE = "gl_dev_uid";
 
 export async function getCurrentDevUser() {

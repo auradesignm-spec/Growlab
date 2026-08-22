@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth/session";
 import { CONTACT_LEAK_WARNING_AR, generateShippingRef, scanForContactLeak } from "@/lib/security/antiLeak";
-import { computeUgcDeadline } from "@/lib/domain/ugc";
+import { computeUgcDeadline, sampleDepositAmount, samplePolicyForTier } from "@/lib/domain/ugc";
 
 const MAX_VIDEO_URL_LENGTH = 500;
 
@@ -19,9 +19,9 @@ function isPlausibleUrl(value: string): boolean {
 
 /**
  * A creator asks a merchant to physically ship a product sample for
- * filming/content. The full product price is locked as a deposit at request
- * time — the UGC financial-hold policy — and the 7-day upload clock only
- * starts once the sample is actually marked shipped (see respondToSampleRequest).
+ * filming/content. NEW marketers use the media kit only. RISING posts a
+ * 25% deposit; ELITE samples are merchant-funded. The 7-day upload clock
+ * starts once the sample is marked shipped.
  */
 export async function requestSample(productId: string, note: string) {
   const viewer = await getCurrentUser();
@@ -43,6 +43,11 @@ export async function requestSample(productId: string, note: string) {
     throw new Error("This product isn't available for sample requests.");
   }
 
+  const policy = samplePolicyForTier(viewer.creatorProfile.tier);
+  if (!policy.allowed) {
+    throw new Error("المسوّق الجديد يروّج من المحتوى الجاهز. العينة تنفتح بعد أول مبيعات.");
+  }
+
   const existing = await prisma.sampleRequest.findFirst({
     where: {
       creatorId: viewer.creatorProfile.id,
@@ -62,7 +67,7 @@ export async function requestSample(productId: string, note: string) {
       merchantId: product.merchantId,
       note: trimmedNote || null,
       status: "pending",
-      depositAmount: product.basePrice,
+      depositAmount: sampleDepositAmount(product.basePrice, viewer.creatorProfile.tier),
       depositCurrency: product.currency,
       ugcStatus: "pending",
     },

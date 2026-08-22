@@ -6,6 +6,7 @@ import CreatorStorefront from "@/components/creator/CreatorStorefront";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 import { getCreatorStorefront } from "@/lib/storefront";
 import { cartItemCount, readCartCookie } from "@/lib/shop/cookies";
+import { recordStorefrontVisit } from "@/lib/shop/visits";
 
 interface CreatorPageProps {
   params: { username: string };
@@ -32,6 +33,8 @@ export default async function CreatorPage({ params }: CreatorPageProps) {
   if (!storefront) {
     notFound();
   }
+
+  await recordStorefrontVisit(storefront.username, storefront.heroDeal?.dealId);
 
   if (!storefront.heroDeal) {
     return (
@@ -65,6 +68,7 @@ export default async function CreatorPage({ params }: CreatorPageProps) {
       initial={initialOf(storefront.name)}
       heroProduct={{
         dealId: hero.dealId,
+        slug: hero.slug,
         title: hero.productTitle,
         note: noteParts.join(" · "),
         priceOmr: hero.priceOmr,
@@ -73,6 +77,7 @@ export default async function CreatorPage({ params }: CreatorPageProps) {
       }}
       otherDeals={storefront.otherDeals.map((deal) => ({
         dealId: deal.dealId,
+        slug: deal.slug,
         title: deal.productTitle,
         priceOmr: deal.priceOmr,
         currency: deal.currency,

@@ -2,7 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import type { CSSProperties } from "react";
-import { SIGN_IN_HREF, signUpHref } from "@/lib/auth/paths";
+import { ENTER_HREF } from "@/lib/auth/paths";
 import { track } from "@/lib/analytics";
 
 const BILLS = [
@@ -28,6 +28,11 @@ const BILLS = [
   { src: 3, dx: -96, dy: 16, fall: 110, sway: -20, w: 34, delay: 240, spin: -12, dur: 2.8 },
 ] as const;
 
+function isCashWord(word: string, locale: string): boolean {
+  const clean = word.replace(/[^\p{L}]/gu, "").toLowerCase();
+  return locale === "ar" ? clean === "اربح" : clean === "earn";
+}
+
 export default function Hero() {
   const t = useTranslations("marketing.hero");
   const locale = useLocale();
@@ -36,76 +41,62 @@ export default function Hero() {
   return (
     <section
       id="manifesto"
-      className="relative overflow-hidden scroll-mt-24 px-5 pb-8 pt-32 sm:px-8 sm:pb-10 sm:pt-40"
+      className="relative overflow-hidden scroll-mt-24 pb-8 pt-20 sm:pb-10 sm:pt-28"
     >
-      <div className="relative z-[1] mx-auto max-w-wrap">
-        <div className="grid items-end gap-6 md:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] md:grid-rows-[auto_auto] md:gap-x-10">
-          <div className="relative max-w-2xl md:col-start-1 md:row-start-1">
-            <div className="gl-hero-cash" aria-hidden="true">
-              {BILLS.map((bill, index) => (
-                <span
-                  key={index}
-                  className="gl-bill"
-                  style={
-                    {
-                      "--dx": `${bill.dx}px`,
-                      "--dy": `${bill.dy}px`,
-                      "--fall": `${bill.fall}px`,
-                      "--sway": `${bill.sway}px`,
-                      "--turn": `${bill.spin > 0 ? 200 + bill.spin * 3 : -200 + bill.spin * 3}deg`,
-                      "--bill-w": `${bill.w}px`,
-                      "--bill-delay": `${bill.delay}ms`,
-                      "--path-dur": `${bill.dur}s`,
-                    } as CSSProperties
-                  }
-                >
-                  <img src={`/hero-bill-${bill.src}.png`} alt="" />
-                </span>
-              ))}
-            </div>
-            <h1
-              key={locale}
-              className="relative z-[1] text-balance text-start text-display-xl font-semibold text-frost"
-            >
-              {words.map((word, index) => (
-                <span key={`${locale}-${index}`} className="gl-word">
-                  <span className="gl-word-inner" style={{ animationDelay: `${90 + index * 78}ms` }}>
-                    {word}
+      <div className="relative z-[1] mx-auto max-w-wrap px-5 sm:px-8">
+        <div className="relative max-w-4xl overflow-hidden px-3 pt-20 sm:px-4 sm:pt-24">
+          <h1
+            key={locale}
+            className="gl-hero-title relative z-[1] text-start font-semibold text-frost"
+          >
+            {words.map((word, index) => {
+              const cashWord = isCashWord(word, locale);
+              return (
+                <span key={`${locale}-${index}`} className={cashWord ? "gl-word-cash" : undefined}>
+                  {cashWord ? (
+                    <span className="gl-hero-cash" aria-hidden="true">
+                      {BILLS.map((bill, billIndex) => (
+                        <span
+                          key={billIndex}
+                          className="gl-bill"
+                          style={
+                            {
+                              "--dx": `${bill.dx * 0.78}px`,
+                              "--dy": `${bill.dy * 0.72}px`,
+                              "--fall": `${bill.fall * 0.7}px`,
+                              "--sway": `${bill.sway * 0.85}px`,
+                              "--turn": `${bill.spin > 0 ? 200 + bill.spin * 3 : -200 + bill.spin * 3}deg`,
+                              "--bill-w": `${Math.round(bill.w * 1.15)}px`,
+                              "--bill-delay": `${bill.delay}ms`,
+                              "--path-dur": `${bill.dur}s`,
+                            } as CSSProperties
+                          }
+                        >
+                          <img src={`/hero-bill-${bill.src}.png`} alt="" />
+                        </span>
+                      ))}
+                    </span>
+                  ) : null}
+                  <span className="gl-word">
+                    <span className="gl-word-inner" style={{ animationDelay: `${90 + index * 78}ms` }}>
+                      {word}
+                    </span>
                   </span>
                 </span>
-              ))}
-            </h1>
-          </div>
-          <p className="gl-enter-2 max-w-md text-start text-[16px] leading-relaxed text-frost-dim md:col-start-2 md:row-span-2 md:row-start-1 md:justify-self-end md:self-end md:pb-2">
+              );
+            })}
+          </h1>
+          <p className="gl-enter-2 relative z-[1] mt-6 max-w-md text-start text-[16px] leading-relaxed text-frost-dim">
             {t("lede")}
           </p>
-          <div className="md:col-start-1 md:row-start-2">
-            <div className="flex flex-wrap items-center justify-start gap-3">
-              <a
-                href={signUpHref("merchant")}
-                className="gl-btn-primary"
-                onClick={() => track("Sign Up Started", { role: "merchant", source: "hero" })}
-              >
-                {t("ctaMerchant")}
-              </a>
-              <a
-                href={signUpHref("creator")}
-                className="gl-btn-ghost"
-                onClick={() => track("Sign Up Started", { role: "creator", source: "hero" })}
-              >
-                {t("ctaCreator")}
-              </a>
-            </div>
-            <p className="mt-4 text-start text-[14px] text-frost-dim">
-              {t("hasAccount")}{" "}
-              <a
-                href={SIGN_IN_HREF}
-                className="font-medium text-frost underline underline-offset-4"
-                onClick={() => track("Sign In Started", { source: "hero" })}
-              >
-                {t("signIn")}
-              </a>
-            </p>
+          <div className="relative z-[1] mt-6 flex flex-wrap items-center justify-start gap-3">
+            <a
+              href={ENTER_HREF}
+              className="gl-btn-primary"
+              onClick={() => track("Sign Up Started", { source: "hero-earn" })}
+            >
+              {t("startEarning")}
+            </a>
           </div>
         </div>
       </div>

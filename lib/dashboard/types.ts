@@ -15,17 +15,11 @@ export interface OrderLedgerRow {
   currency: string;
   attributionSource: string;
   status: string;
+  shippingRef?: string | null;
   createdAt: string;
   ledger: {
     attributedGmv: number;
-    returnsReserve: number;
-    netAttributedSales: number;
     paymentFee: number;
-    cogs: number;
-    adSpendAllocated: number;
-    contributionPool: number;
-    creatorFloorAmount: number;
-    creatorProfitShare: number;
     creatorShare: number;
     merchantShare: number;
     platformShare: number;

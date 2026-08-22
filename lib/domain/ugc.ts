@@ -1,8 +1,29 @@
-import type { UgcStatus } from "@/lib/domain/enums";
+import type { CreatorTierId, UgcStatus } from "@/lib/domain/enums";
 
 /** Strict window a creator has to upload an approved UGC video after a
  * sample is marked shipped, before the deposit is forfeited. */
 export const UGC_DEADLINE_DAYS = 7;
+
+/** NEW marketers start on the media kit. Physical samples unlock later. */
+export const RISING_SAMPLE_DEPOSIT_PCT = 0.25;
+
+export interface SamplePolicy {
+  readonly allowed: boolean;
+  readonly depositPct: number;
+  readonly reason: "new_tier" | "rising" | "elite";
+}
+
+export function samplePolicyForTier(tier: CreatorTierId | string): SamplePolicy {
+  if (tier === "ELITE") return { allowed: true, depositPct: 0, reason: "elite" };
+  if (tier === "RISING") return { allowed: true, depositPct: RISING_SAMPLE_DEPOSIT_PCT, reason: "rising" };
+  return { allowed: false, depositPct: 0, reason: "new_tier" };
+}
+
+export function sampleDepositAmount(basePrice: number, tier: CreatorTierId | string): number | null {
+  const policy = samplePolicyForTier(tier);
+  if (!policy.allowed) return null;
+  return Math.round(basePrice * policy.depositPct * 100) / 100;
+}
 
 export function computeUgcDeadline(shippedAt: Date): Date {
   const deadline = new Date(shippedAt);

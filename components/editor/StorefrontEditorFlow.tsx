@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import CreatorStorefront from "@/components/creator/CreatorStorefront";
 import { formatMoney } from "@/lib/format";
+import { uniqueDealSlugs } from "@/lib/storefront";
 
 export interface EditorDealOption {
   dealId: string;
@@ -58,6 +59,9 @@ export default function StorefrontEditorFlow({ initial }: { initial: StorefrontE
 
   const previewProps = useMemo(() => {
     if (!heroDeal) return null;
+    const slugs = uniqueDealSlugs(
+      eligible.map((deal) => ({ dealId: deal.dealId, productTitle: deal.productTitle }))
+    );
     return {
       username: initial.username,
       name: initial.name,
@@ -65,6 +69,7 @@ export default function StorefrontEditorFlow({ initial }: { initial: StorefrontE
       initial: initialOf(initial.name),
       heroProduct: {
         dealId: heroDeal.dealId,
+        slug: slugs.get(heroDeal.dealId) ?? heroDeal.productTitle,
         title: heroDeal.productTitle,
         note: resolvedNote,
         priceOmr: heroDeal.lockedUnitPrice,
@@ -73,6 +78,7 @@ export default function StorefrontEditorFlow({ initial }: { initial: StorefrontE
       },
       otherDeals: otherDeals.map((deal) => ({
         dealId: deal.dealId,
+        slug: slugs.get(deal.dealId) ?? deal.productTitle,
         title: deal.productTitle,
         priceOmr: deal.lockedUnitPrice,
         currency: "OMR",
@@ -80,7 +86,7 @@ export default function StorefrontEditorFlow({ initial }: { initial: StorefrontE
       })),
       cartCount: 0,
     };
-  }, [bio, heroDeal, initial.bio, initial.name, initial.username, otherDeals, resolvedNote]);
+  }, [bio, eligible, heroDeal, initial.bio, initial.name, initial.username, otherDeals, resolvedNote]);
 
   if (eligible.length === 0) {
     return (

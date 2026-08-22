@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import Reveal from "@/components/Reveal";
 import StageGlow from "@/components/StageGlow";
-import { signUpHref, type PartnerRole } from "@/lib/auth/paths";
+import { enterHref, type PartnerRole } from "@/lib/auth/paths";
 import { track } from "@/lib/analytics";
 
 interface Step {
@@ -87,7 +87,7 @@ export default function Roadmap() {
             </div>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Link
-                href={signUpHref(role)}
+                href={enterHref(role)}
                 className="gl-btn-primary"
                 onClick={() => track("Sign Up Started", { role, source: "roadmap" })}
               >

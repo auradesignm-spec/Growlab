@@ -4,8 +4,7 @@ import { randomBytes } from "crypto";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { computeWaterfall } from "@/lib/ledger/waterfall";
-import { tierMultiplier } from "@/lib/ledger/tiers";
-import type { AttributionSource, CreatorTierId } from "@/lib/domain/enums";
+import type { AttributionSource } from "@/lib/domain/enums";
 import { CONTACT_LEAK_WARNING_AR, scanForContactLeak } from "@/lib/security/antiLeak";
 import { productVariants } from "@/lib/catalog-db";
 import {
@@ -183,10 +182,8 @@ export async function placeCodCheckout(input: {
       unitPriceCharged,
       lockedUnitPrice: deal.lockedUnitPrice,
       lockedCommissionPct: deal.lockedCommissionPct,
-      lockedCogsPct: deal.lockedCogsPct,
       discountCapPct: deal.discountCapPct,
-      adSpendAllocated: 0,
-      tierMultiplier: tierMultiplier(deal.creator.tier as CreatorTierId),
+      settlementChannel: "cod",
     });
 
     const order = await prisma.$transaction(async (tx) => {
@@ -202,6 +199,7 @@ export async function placeCodCheckout(input: {
           unitPriceCharged,
           currency: deal.product.currency,
           attributionSource: attributionFor(deal.creator.username),
+          settlementChannel: "cod",
           trackingToken,
           escrowStatus: "held",
           status: "pending",
@@ -211,14 +209,7 @@ export async function placeCodCheckout(input: {
         data: {
           orderId: created.id,
           attributedGmv: waterfall.attributedGmv,
-          returnsReserve: waterfall.returnsReserve,
-          netAttributedSales: waterfall.netAttributedSales,
           paymentFee: waterfall.paymentFee,
-          cogs: waterfall.cogs,
-          adSpendAllocated: waterfall.adSpendAllocated,
-          contributionPool: waterfall.contributionPool,
-          creatorFloorAmount: waterfall.creatorFloorAmount,
-          creatorProfitShare: waterfall.creatorProfitShare,
           platformShare: waterfall.platformShare,
           merchantShare: waterfall.merchantShare,
           creatorShare: waterfall.creatorShare,

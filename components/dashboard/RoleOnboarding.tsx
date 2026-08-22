@@ -25,11 +25,11 @@ export default function RoleOnboarding({ initialRole }: RoleOnboardingProps) {
         />
         <RoleCard
           role="creator"
-          title="أنا صانع محتوى"
+          title="أنا مسوّق"
           lede="صوّر بطاقتك من الأمام والخلف، ثم وجهك يمين ويسار وفوق وتحت. بعد التوثيق تبني متجرك وتختار الحملات."
           fieldLabel="اسمك أو اسمك الفني"
           placeholder="مثال: ليلى"
-          cta="ابدأ كصانع"
+          cta="ابدأ كمسوّق"
           highlighted={initialRole === "creator"}
         />
       </div>

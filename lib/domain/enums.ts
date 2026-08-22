@@ -36,7 +36,7 @@ export type KycDocumentKind = (typeof KYC_DOCUMENT_KINDS)[number];
 export const CREATOR_TIERS = ["NEW", "RISING", "ELITE"] as const;
 export type CreatorTierId = (typeof CREATOR_TIERS)[number];
 
-export const DEAL_STATUSES = ["active", "paused", "ended"] as const;
+export const DEAL_STATUSES = ["pending", "active", "paused", "ended"] as const;
 export type DealStatus = (typeof DEAL_STATUSES)[number];
 
 export const ORDER_STATUSES = ["pending", "confirmed", "fulfilled", "returned", "cancelled"] as const;
@@ -54,11 +54,15 @@ export type AttributionSource = (typeof ATTRIBUTION_SOURCES)[number];
 export const ESCROW_STATUSES = ["held", "released", "refunded"] as const;
 export type EscrowStatus = (typeof ESCROW_STATUSES)[number];
 
-export const AD_WALLET_STATUSES = ["unfunded", "funded", "live", "paused", "depleted", "closed"] as const;
-export type AdWalletStatus = (typeof AD_WALLET_STATUSES)[number];
+/** How the buyer settles. COD is cash at the door — no gateway fee. */
+export const SETTLEMENT_CHANNELS = ["cod", "card"] as const;
+export type SettlementChannel = (typeof SETTLEMENT_CHANNELS)[number];
 
-export const AD_SPEND_SOURCES = ["meta_api", "manual_ops", "adjustment"] as const;
-export type AdSpendSource = (typeof AD_SPEND_SOURCES)[number];
+export const WALLET_TXN_TYPES = ["credit", "debit"] as const;
+export type WalletTxnType = (typeof WALLET_TXN_TYPES)[number];
+
+export const WALLET_TXN_REASONS = ["topup", "order_settlement", "order_reversal", "admin_adjust"] as const;
+export type WalletTxnReason = (typeof WALLET_TXN_REASONS)[number];
 
 export const PAYOUT_TYPES = ["instant", "scheduled"] as const;
 export type PayoutTypeId = (typeof PAYOUT_TYPES)[number];

@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import { computeSimpleSplit } from "@/lib/domain/commission";
+import { getWalletSnapshot } from "@/lib/ledger/wallet";
 import { storeQualityFromOrders, type StoreQualityRow } from "@/lib/shop/storeQuality";
 
 export interface AdminKycDoc {
@@ -20,7 +21,14 @@ export interface AdminMerchantRow {
   accountStatus: string;
   banReason: string | null;
   inviteEmail: string | null;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  email: string;
   productsCount: number;
+  walletBalance: number;
+  walletReserved: number;
+  walletAvailable: number;
   documents: AdminKycDoc[];
 }
 
@@ -29,6 +37,10 @@ export interface AdminCreatorRow {
   userId: string;
   username: string;
   legalName: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  email: string;
   tier: string;
   verificationStatus: string;
   kycReviewNote: string | null;
@@ -98,6 +110,9 @@ export interface AdminPayoutRow {
   feeAmount: number;
   status: string;
   requestedAt: string;
+  bankName: string;
+  accountName: string;
+  accountNumber: string;
 }
 
 export interface AdminDashboardData {
@@ -113,7 +128,6 @@ export interface AdminDashboardData {
     creatorShare: number;
     merchantShare: number;
     platformShare: number;
-    autoPausedWallets: number;
     pendingSampleRequests: number;
     pendingPayouts: number;
     escrowHeld: number;
@@ -142,13 +156,12 @@ export async function loadAdminDashboardData(): Promise<AdminDashboardData> {
     recentOrders,
     samples,
     payouts,
-    autoPausedWallets,
     pendingSampleRequests,
     pendingPayouts,
     bannedAccounts,
   ] = await Promise.all([
       prisma.merchantProfile.findMany({
-        include: { products: true, user: { include: { kycDocuments: true } } },
+        include: { products: true, wallet: true, user: { include: { kycDocuments: true } } },
       }),
       prisma.creatorProfile.findMany({
         include: { deals: true, user: { include: { kycDocuments: true } } },
@@ -173,7 +186,6 @@ export async function loadAdminDashboardData(): Promise<AdminDashboardData> {
         orderBy: { requestedAt: "desc" },
         include: { creator: true },
       }),
-      prisma.adWallet.count({ where: { autoPauseFlag: true } }),
       prisma.sampleRequest.count({ where: { status: "pending" } }),
       prisma.payoutRequest.count({ where: { status: "requested" } }),
       prisma.user.count({ where: { accountStatus: "banned" } }),
@@ -211,7 +223,6 @@ export async function loadAdminDashboardData(): Promise<AdminDashboardData> {
       creatorShare: round2(creatorShare),
       merchantShare: round2(merchantShare),
       platformShare: round2(platformShare),
-      autoPausedWallets,
       pendingSampleRequests,
       pendingPayouts,
       escrowHeld: escrowCounts.held,
@@ -219,30 +230,46 @@ export async function loadAdminDashboardData(): Promise<AdminDashboardData> {
       escrowRefunded: escrowCounts.refunded,
       flaggedStores,
     },
-    merchants: merchants
-      .map((m) => ({
-        id: m.id,
-        userId: m.userId,
-        businessName: m.businessName,
-        commercialRegNo: m.commercialRegNo,
-        ownerFullName: m.ownerFullName,
-        city: m.city,
-        verificationStatus: m.verificationStatus,
-        kycReviewNote: m.kycReviewNote,
-        kycSubmittedAt: m.kycSubmittedAt?.toISOString() ?? null,
-        accountStatus: m.user.accountStatus,
-        banReason: m.user.banReason,
-        inviteEmail: m.user.inviteEmail,
-        productsCount: m.products.length,
-        documents: m.user.kycDocuments.map((d) => ({ id: d.id, kind: d.kind })),
-      }))
-      .sort((a, b) => a.businessName.localeCompare(b.businessName)),
+    merchants: (
+      await Promise.all(
+        merchants.map(async (m) => {
+          const wallet = await getWalletSnapshot(m.id);
+          return {
+            id: m.id,
+            userId: m.userId,
+            businessName: m.businessName,
+            commercialRegNo: m.commercialRegNo,
+            ownerFullName: m.ownerFullName,
+            city: m.city,
+            verificationStatus: m.verificationStatus,
+            kycReviewNote: m.kycReviewNote,
+            kycSubmittedAt: m.kycSubmittedAt?.toISOString() ?? null,
+            accountStatus: m.user.accountStatus,
+            banReason: m.user.banReason,
+            inviteEmail: m.user.inviteEmail,
+            firstName: m.user.firstName,
+            lastName: m.user.lastName,
+            phone: m.user.phone,
+            email: m.user.email,
+            productsCount: m.products.length,
+            walletBalance: wallet.balance,
+            walletReserved: wallet.reserved,
+            walletAvailable: wallet.available,
+            documents: m.user.kycDocuments.map((d) => ({ id: d.id, kind: d.kind })),
+          };
+        })
+      )
+    ).sort((a, b) => a.businessName.localeCompare(b.businessName)),
     creators: creators
       .map((c) => ({
         id: c.id,
         userId: c.userId,
         username: c.username,
         legalName: c.legalName,
+        firstName: c.user.firstName,
+        lastName: c.user.lastName,
+        phone: c.user.phone,
+        email: c.user.email,
         tier: c.tier,
         verificationStatus: c.verificationStatus,
         kycReviewNote: c.kycReviewNote,
@@ -317,6 +344,9 @@ export async function loadAdminDashboardData(): Promise<AdminDashboardData> {
         feeAmount: p.feeAmount,
         status: p.status,
         requestedAt: p.requestedAt.toISOString(),
+        bankName: p.creator.bankName,
+        accountName: p.creator.accountName,
+        accountNumber: p.creator.accountNumber,
       }))
       .sort((a, b) => Number(b.status === "requested") - Number(a.status === "requested")),
     storeQuality,

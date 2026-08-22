@@ -40,6 +40,14 @@ export function isValidPhone(value: string): boolean {
   return digits.length >= 7 && digits.length <= 15;
 }
 
+export function sanitizeEmailInput(value: string): string {
+  return value.replace(CONTROL_CHAR_PATTERN, "").trim().toLowerCase().slice(0, 120);
+}
+
+export function isValidEmail(value: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) && value.length <= 120;
+}
+
 export function isValidMessage(value: string): boolean {
   return value.length <= FIELD_LIMITS.msg;
 }

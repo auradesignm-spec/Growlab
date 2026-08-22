@@ -3,20 +3,35 @@ import path from "path";
 import { PrismaClient } from "@prisma/client";
 
 /**
- * Prisma singleton — avoids exhausting SQLite connections from Next.js dev
- * server hot-reloads, which would otherwise create a new PrismaClient per
- * module reload.
+ * Prisma singleton — avoids exhausting connections from Next.js hot reload.
  *
- * On Vercel the bundled SQLite file is read-only, so runtime copies it to /tmp.
+ * Postgres (Neon) is used when DATABASE_URL is a postgres URL.
+ * SQLite /tmp copy is only for leftover Vercel sqlite deploys — not durable.
  */
 
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 
-function datasourceUrl(): string {
-  const bundled = path.join(process.cwd(), "prisma", "dev.db");
-  const vercelRuntime = Boolean(process.env.VERCEL) && process.env.NEXT_PHASE !== "phase-production-build";
+export function isPostgresUrl(url: string | undefined): boolean {
+  return Boolean(url && /^postgres(ql)?:\/\//i.test(url));
+}
 
-  if (vercelRuntime) {
+function resolveSqliteFile(raw: string): string {
+  const bundled = path.join(process.cwd(), "prisma", "dev.db");
+  const trimmed = raw.replace(/^file:/, "").trim();
+  // Schema-relative "./dev.db" must not open a second empty DB at the repo root.
+  if (!trimmed || trimmed === "./dev.db" || trimmed === "dev.db") return bundled;
+  return path.isAbsolute(trimmed) ? trimmed : path.resolve(process.cwd(), trimmed);
+}
+
+function datasourceUrl(): string {
+  const fromEnv = process.env.DATABASE_URL || "";
+  if (isPostgresUrl(fromEnv)) return fromEnv;
+
+  const bundled = path.join(process.cwd(), "prisma", "dev.db");
+  const vercelSqlite =
+    Boolean(process.env.VERCEL) && process.env.NEXT_PHASE !== "phase-production-build";
+
+  if (vercelSqlite) {
     const tmp = "/tmp/growlab.db";
     if (existsSync(bundled) && !existsSync(tmp)) {
       copyFileSync(bundled, tmp);
@@ -24,7 +39,8 @@ function datasourceUrl(): string {
     return `file:${tmp}`;
   }
 
-  return process.env.DATABASE_URL || `file:${bundled}`;
+  if (fromEnv.startsWith("file:")) return `file:${resolveSqliteFile(fromEnv)}`;
+  return fromEnv || `file:${bundled}`;
 }
 
 export const prisma =

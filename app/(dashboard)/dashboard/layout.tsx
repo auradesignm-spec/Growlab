@@ -1,13 +1,18 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
 import { getTranslations } from "next-intl/server";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 import AppShell from "@/components/AppShell";
+import PwaInstall from "@/components/PwaInstall";
+import MarketerAppNav from "@/components/dashboard/MarketerAppNav";
+import AppAlerts from "@/components/dashboard/AppAlerts";
+import DevRoleSwitcher from "@/components/dev/DevRoleSwitcher";
 import { isCurrentUserAdmin } from "@/lib/auth/admin";
-
-// Real Clerk session now guards this layout (see middleware.ts). The dev-only
-// cookie switcher (components/dev/DevRoleSwitcher.tsx, lib/dev/session.ts) is
-// intentionally no longer wired in here — kept as dead code, safe to delete later.
+import { getCurrentUser } from "@/lib/auth/session";
+import { listDevUsers } from "@/lib/dev/session";
+import { isDevImpersonationEnabled } from "@/lib/dev/guard";
+import { loadCreatorAlerts, loadMerchantAlerts } from "@/lib/dashboard/alerts";
 
 export default async function DashboardLayout({
   children,
@@ -17,14 +22,37 @@ export default async function DashboardLayout({
   const t = await getTranslations("dashboard");
   const nav = await getTranslations("nav");
   const isAdmin = await isCurrentUserAdmin();
+  const viewer = await getCurrentUser();
+  const isVerifiedCreator =
+    viewer?.role === "creator" && viewer.creatorProfile?.verificationStatus === "verified";
+  const isVerifiedMerchant =
+    viewer?.role === "merchant" && viewer.merchantProfile?.verificationStatus === "verified";
+
+  const alerts = isVerifiedCreator && viewer.creatorProfile
+    ? await loadCreatorAlerts(viewer.creatorProfile.id)
+    : isVerifiedMerchant && viewer.merchantProfile
+      ? await loadMerchantAlerts(viewer.merchantProfile.id)
+      : [];
+
+  const devUsers = isDevImpersonationEnabled()
+      ? (await listDevUsers()).map((user) => ({
+          id: user.id,
+          name: user.name,
+          role: user.role,
+          label: `${user.role} — ${user.merchantProfile?.businessName ?? user.creatorProfile?.username ?? user.name}`,
+        }))
+      : [];
 
   return (
     <AppShell>
-      <header className="relative z-40 border-b border-line bg-white">
-        <div className="mx-auto flex max-w-wrap items-stretch justify-between px-5 sm:px-8">
+      {devUsers.length > 0 ? (
+        <DevRoleSwitcher users={devUsers} currentUserId={viewer?.id ?? null} />
+      ) : null}
+      <header className="relative z-40 border-b border-line bg-white pt-[env(safe-area-inset-top,0px)]">
+        <div className="mx-auto flex max-w-wrap items-stretch justify-between px-4 sm:px-8">
           <Link
-            href="/"
-            className="flex items-center py-5 text-[15px] font-medium text-frost"
+            href={isVerifiedCreator ? "/dashboard/browse" : "/"}
+            className="flex min-h-11 items-center py-3 text-[15px] font-medium text-frost sm:py-5"
             aria-label={nav("homeAria")}
           >
             {nav("brand")}
@@ -37,27 +65,34 @@ export default async function DashboardLayout({
             {isAdmin && (
               <Link
                 href="/dashboard/admin"
-                className="inline-flex items-center border-s border-white/10 px-5 text-[14px] text-frost-dim sm:px-7"
+                className="gl-web-only hidden items-center border-s border-white/10 px-5 text-[14px] text-frost-dim sm:inline-flex sm:px-7"
               >
                 {nav("admin")}
               </Link>
             )}
-            <div className="flex items-center border-s border-white/10 px-5">
+            <div className="flex items-center border-s border-white/10 px-3 sm:px-5">
               <LocaleSwitcher compact tone="light" />
             </div>
             <Link
               href="/"
-              className="gl-nav-link inline-flex items-center border-s border-white/10 px-5 sm:px-7"
+              className="gl-web-only gl-nav-link hidden items-center border-s border-white/10 px-5 sm:inline-flex sm:px-7"
             >
               {nav("backHome")}
             </Link>
-            <div className="flex items-center border-s border-white/10 px-5">
+            <div className="flex items-center border-s border-white/10 px-4 sm:px-5">
               <UserButton afterSignOutUrl="/" />
             </div>
           </div>
         </div>
       </header>
-      {children}
+      {alerts.length > 0 ? <AppAlerts alerts={alerts} /> : null}
+      <PwaInstall />
+      <div className={isVerifiedCreator ? "pb-24" : ""}>{children}</div>
+      {isVerifiedCreator ? (
+        <Suspense fallback={null}>
+          <MarketerAppNav />
+        </Suspense>
+      ) : null}
     </AppShell>
   );
 }

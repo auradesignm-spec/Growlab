@@ -10,21 +10,31 @@ import { prisma } from "@/lib/db";
  */
 export async function claimRole(formData: FormData) {
   const { userId } = await auth();
-  if (!userId) return;
+  if (!userId) throw new Error("سجّل دخولك أولاً.");
 
   const role = String(formData.get("role") ?? "");
   const displayName = String(formData.get("displayName") ?? "").trim();
-  if (role !== "merchant" && role !== "creator") return;
-  if (!displayName) return;
+  if (role !== "merchant" && role !== "creator") throw new Error("اختر تاجراً أو مسوّقاً.");
+  if (!displayName) throw new Error("أدخل الاسم.");
 
-  const user = await prisma.user.findUnique({ where: { clerkUserId: userId } });
-  if (!user || user.role !== "unassigned") return;
+  let user = await prisma.user.findUnique({ where: { clerkUserId: userId } });
+  if (!user) {
+    user = await prisma.user.create({
+      data: { clerkUserId: userId, name: displayName, role: "unassigned" },
+    });
+  }
+  if (user.role !== "unassigned") throw new Error("هذا الحساب له دور مسبقاً.");
 
   if (role === "merchant") {
     await prisma.$transaction([
       prisma.user.update({ where: { id: user.id }, data: { role: "merchant" } }),
       prisma.merchantProfile.create({
-        data: { userId: user.id, businessName: displayName, verificationStatus: "pending" },
+        data: {
+          userId: user.id,
+          businessName: displayName,
+          verificationStatus: "pending",
+          wallet: { create: { balance: 0, currency: "OMR" } },
+        },
       }),
     ]);
   } else {

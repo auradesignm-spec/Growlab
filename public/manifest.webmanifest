@@ -1,0 +1,27 @@
+{
+  "name": "Growlab",
+  "short_name": "Growlab",
+  "description": "كتالوج منتجات التجار، قبول، رابط إحالة، دفتر مكشوف.",
+  "start_url": "/dashboard/browse",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F7F8FA",
+  "theme_color": "#F7F8FA",
+  "dir": "rtl",
+  "lang": "ar",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

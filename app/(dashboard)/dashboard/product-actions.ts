@@ -5,12 +5,24 @@ import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth/session";
 import { serializeList } from "@/lib/catalog-db";
 import { COMMISSION_TYPES, type CommissionType } from "@/lib/domain/enums";
+import { assertPublishableProduct } from "@/lib/domain/commission";
 import { CONTACT_LEAK_WARNING_AR, scanForContactLeak } from "@/lib/security/antiLeak";
 
 const MAX_TITLE_LENGTH = 120;
 const MAX_CATEGORY_LENGTH = 60;
 const MAX_TAG_COUNT = 8;
 const MAX_VARIANT_COUNT = 8;
+const MAX_URL_LENGTH = 500;
+
+function isPlausibleUrl(value: string): boolean {
+  if (value.startsWith("/") && !value.startsWith("//") && value.length > 1) return true;
+  try {
+    const parsed = new URL(value);
+    return parsed.protocol === "https:" || parsed.protocol === "http:";
+  } catch {
+    return false;
+  }
+}
 
 export interface ProductFormInput {
   title: string;
@@ -21,6 +33,7 @@ export interface ProductFormInput {
   costPrice: number;
   commissionType: string;
   commissionValue: number;
+  coverImageUrl?: string;
 }
 
 function sanitizeAndValidate(input: ProductFormInput) {
@@ -53,6 +66,14 @@ function sanitizeAndValidate(input: ProductFormInput) {
     throw new Error("A fixed commission can't exceed the retail price.");
   }
 
+  assertPublishableProduct({
+    retailPrice: basePrice,
+    costPrice,
+    commissionType: input.commissionType,
+    commissionValue,
+    settlementChannel: "cod",
+  });
+
   return {
     title,
     category,
@@ -80,10 +101,18 @@ export async function createProduct(input: ProductFormInput) {
   }
 
   const data = sanitizeAndValidate(input);
+  const cover = input.coverImageUrl?.trim().slice(0, MAX_URL_LENGTH) ?? "";
+  if (cover && !isPlausibleUrl(cover)) throw new Error("Enter a valid image URL.");
 
   const product = await prisma.product.create({
     data: { ...data, merchantId: viewer.merchantProfile.id, active: true },
   });
+
+  if (cover) {
+    await prisma.mediaAsset.create({
+      data: { productId: product.id, type: "image", url: cover },
+    });
+  }
 
   revalidatePath("/dashboard");
   revalidatePath("/dashboard/browse");

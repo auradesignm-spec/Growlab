@@ -1,12 +1,21 @@
 import { PrismaClient } from "@prisma/client";
 import { computeWaterfall } from "../lib/ledger/waterfall";
-import { tierMultiplier } from "../lib/ledger/tiers";
-import { computeMerDay, evaluateAutoPause, type DailySpendPoint } from "../lib/ledger/mer";
-import { computeCreatorBalances, computeInstantPayoutFee } from "../lib/ledger/payouts";
+import { settleOrderOnFulfill } from "../lib/ledger/wallet";
+import { computeCreatorBalances, computeInstantPayoutFee, MIN_PAYOUT_OMR } from "../lib/ledger/payouts";
 import { serializeList } from "../lib/catalog-db";
 import { escrowForOrderStatus } from "../lib/shop/escrow";
 
 const prisma = new PrismaClient();
+
+function seedContact(firstName: string, lastName: string, handle: string) {
+  return {
+    firstName,
+    lastName,
+    phone: "+96890000000",
+    email: `${handle}@growlab.local`,
+    profileCompletedAt: new Date(),
+  };
+}
 
 function daysAgo(n: number): Date {
   const d = new Date();
@@ -15,23 +24,19 @@ function daysAgo(n: number): Date {
   return d;
 }
 
-function dayKey(d: Date): string {
-  return d.toISOString().slice(0, 10);
-}
-
 async function resetDatabase() {
   await prisma.kycDocument.deleteMany();
+  await prisma.contactLead.deleteMany();
+  await prisma.storefrontVisit.deleteMany();
   await prisma.payoutRequest.deleteMany();
-  await prisma.merDay.deleteMany();
-  await prisma.adSpendAllocation.deleteMany();
-  await prisma.adSpendEntry.deleteMany();
-  await prisma.adWallet.deleteMany();
   await prisma.ledgerEntry.deleteMany();
   await prisma.order.deleteMany();
   await prisma.creatorDeal.deleteMany();
   await prisma.sampleRequest.deleteMany();
   await prisma.mediaAsset.deleteMany();
   await prisma.product.deleteMany();
+  await prisma.merchantWalletTxn.deleteMany();
+  await prisma.merchantWallet.deleteMany();
   await prisma.creatorProfile.deleteMany();
   await prisma.merchantProfile.deleteMany();
   await prisma.user.deleteMany();
@@ -56,7 +61,7 @@ async function main() {
   // Merchants (mixed verification status)
   // ---------------------------------------------------------------------
   const attarUser = await prisma.user.create({
-    data: { name: "Muttrah Attars Trading", role: "merchant", locale: "ar" },
+    data: { name: "Muttrah Attars Trading", role: "merchant", locale: "ar", ...seedContact("Muttrah", "Attars", "attar") },
   });
   const attarMerchant = await prisma.merchantProfile.create({
     data: {
@@ -71,7 +76,7 @@ async function main() {
   });
 
   const datesUser = await prisma.user.create({
-    data: { name: "Nizwa Dates Co.", role: "merchant", locale: "ar" },
+    data: { name: "Nizwa Dates Co.", role: "merchant", locale: "ar", ...seedContact("Nizwa", "Dates", "dates") },
   });
   const datesMerchant = await prisma.merchantProfile.create({
     data: {
@@ -86,7 +91,7 @@ async function main() {
   });
 
   const potteryUser = await prisma.user.create({
-    data: { name: "Bahla Pottery House", role: "merchant", locale: "en" },
+    data: { name: "Bahla Pottery House", role: "merchant", locale: "en", ...seedContact("Bahla", "Pottery", "pottery") },
   });
   const potteryMerchant = await prisma.merchantProfile.create({
     data: {
@@ -98,6 +103,12 @@ async function main() {
       verificationStatus: "pending",
     },
   });
+
+  for (const merchant of [attarMerchant, datesMerchant, potteryMerchant]) {
+    await prisma.merchantWallet.create({
+      data: { merchantId: merchant.id, balance: 500, currency: "OMR" },
+    });
+  }
 
   // ---------------------------------------------------------------------
   // Products (8, across 3 categories, tagged)
@@ -247,27 +258,27 @@ async function main() {
   // state; in a live system it would be periodically recomputed via
   // lib/ledger/tiers.ts#resolveTier from real net-sales/return history)
   // ---------------------------------------------------------------------
-  const laylaUser = await prisma.user.create({ data: { name: "ليلى الحارثي", role: "creator", locale: "ar" } });
+  const laylaUser = await prisma.user.create({ data: { name: "ليلى الحارثي", role: "creator", locale: "ar", ...seedContact("ليلى", "الحارثي", "layla") } });
   const layla = await prisma.creatorProfile.create({
     data: { userId: laylaUser.id, username: "layla", tier: "ELITE", bio: "Attar — Muttrah", legalName: "ليلى الحارثي", verificationStatus: "verified", kycSubmittedAt: new Date() },
   });
 
-  const omarUser = await prisma.user.create({ data: { name: "عمر الكندي", role: "creator", locale: "ar" } });
+  const omarUser = await prisma.user.create({ data: { name: "عمر الكندي", role: "creator", locale: "ar", ...seedContact("عمر", "الكندي", "omar") } });
   const omar = await prisma.creatorProfile.create({
     data: { userId: omarUser.id, username: "omar", tier: "RISING", bio: "Dates — Nizwa", legalName: "عمر الكندي", verificationStatus: "verified", kycSubmittedAt: new Date() },
   });
 
-  const noorUser = await prisma.user.create({ data: { name: "نور السالمي", role: "creator", locale: "ar" } });
+  const noorUser = await prisma.user.create({ data: { name: "نور السالمي", role: "creator", locale: "ar", ...seedContact("نور", "السالمي", "noor") } });
   const noor = await prisma.creatorProfile.create({
     data: { userId: noorUser.id, username: "noor", tier: "RISING", bio: "Attar & dates — Muscat", legalName: "نور السالمي", verificationStatus: "verified", kycSubmittedAt: new Date() },
   });
 
-  const sultanUser = await prisma.user.create({ data: { name: "سلطان البلوشي", role: "creator", locale: "ar" } });
+  const sultanUser = await prisma.user.create({ data: { name: "سلطان البلوشي", role: "creator", locale: "ar", ...seedContact("سلطان", "البلوشي", "sultan") } });
   const sultan = await prisma.creatorProfile.create({
     data: { userId: sultanUser.id, username: "sultan", tier: "NEW", bio: "Dates — Salalah", legalName: "سلطان البلوشي", verificationStatus: "verified", kycSubmittedAt: new Date() },
   });
 
-  const mayaUser = await prisma.user.create({ data: { name: "Maya Al Lawati", role: "creator", locale: "en" } });
+  const mayaUser = await prisma.user.create({ data: { name: "Maya Al Lawati", role: "creator", locale: "en", ...seedContact("Maya", "Al Lawati", "maya") } });
   await prisma.creatorProfile.create({
     data: { userId: mayaUser.id, username: "maya", tier: "NEW", bio: "New creator — no deals yet", legalName: "Maya Al Lawati", verificationStatus: "verified", kycSubmittedAt: new Date() },
   });
@@ -366,25 +377,13 @@ async function main() {
   // ---------------------------------------------------------------------
   await prisma.sampleRequest.create({
     data: {
-      creatorId: sultan.id,
-      productId: handThrownVase.id,
-      merchantId: potteryMerchant.id,
-      note: "أبي أصوّر ريلز عن قطع البهلا — ممكن عينة؟",
-      status: "pending",
-      depositAmount: 30,
-      depositCurrency: "OMR",
-      ugcStatus: "pending",
-    },
-  });
-  await prisma.sampleRequest.create({
-    data: {
       creatorId: omar.id,
       productId: muttrahNight.id,
       merchantId: attarMerchant.id,
       note: "For a night-routine video before I add this as a deal.",
       status: "approved",
       respondedAt: daysAgo(2),
-      depositAmount: 28,
+      depositAmount: 7,
       depositCurrency: "OMR",
       ugcStatus: "pending",
     },
@@ -398,7 +397,7 @@ async function main() {
       status: "shipped",
       respondedAt: daysAgo(5),
       shippingRef: "GL-7QX2KP",
-      depositAmount: 45,
+      depositAmount: 11.25,
       depositCurrency: "OMR",
       ugcStatus: "submitted",
       ugcDeadline: daysAgo(-2),
@@ -543,164 +542,8 @@ async function main() {
   }
 
   // ---------------------------------------------------------------------
-  // Ad wallets — one that trips the MER auto-pause flag, one healthy
+  // Ledger entries — the one true split computation, per order
   // ---------------------------------------------------------------------
-  const flaggedWallet = await prisma.adWallet.create({
-    data: {
-      dealId: laylaMuttrah.id,
-      merchantId: attarMerchant.id,
-      status: "unfunded",
-      availableBalance: 150,
-      dailyCap: 25,
-      dealCap: 200,
-      merKillThreshold: 2.5,
-      merKillConsecutiveDays: 3,
-    },
-  });
-  const healthyWallet = await prisma.adWallet.create({
-    data: {
-      dealId: omarKhalas.id,
-      merchantId: datesMerchant.id,
-      status: "live",
-      availableBalance: 100,
-      dailyCap: 20,
-      dealCap: 300,
-      merKillThreshold: 2.5,
-      merKillConsecutiveDays: 3,
-    },
-  });
-
-  const flaggedSpendPlan = [
-    { daysAgo: 10, amount: 10 },
-    { daysAgo: 7, amount: 10 },
-    { daysAgo: 3, amount: 20 },
-    { daysAgo: 2, amount: 20 },
-    { daysAgo: 1, amount: 25 },
-  ];
-  const healthySpendPlan = [
-    { daysAgo: 5, amount: 5 },
-    { daysAgo: 3, amount: 4 },
-    { daysAgo: 2, amount: 6 },
-    { daysAgo: 1, amount: 8 },
-  ];
-
-  async function seedAdWalletSpend(
-    wallet: { id: string },
-    dealId: string,
-    plan: Array<{ daysAgo: number; amount: number }>,
-    fundedAmount: number
-  ) {
-    const orderAllocationByOrderId = new Map<string, number>();
-    const windowDays = 14;
-    const dailyPoints: DailySpendPoint[] = [];
-
-    let lifetimeSpent = 0;
-
-    // Window covers days 1..windowDays ago (not "today") so the most recent
-    // completed day anchors the consecutive-day streak check below.
-    for (let n = windowDays; n >= 1; n -= 1) {
-      const date = daysAgo(n);
-      const spendForDay = plan.find((p) => p.daysAgo === n);
-      const dayOrders = createdOrders.filter(
-        (o) => o.dealId === dealId && dayKey(o.createdAt) === dayKey(date)
-      );
-      const dayNetSales = dayOrders.reduce(
-        (sum, o) => sum + o.quantity * o.unitPriceCharged * (1 - 0.1),
-        0
-      );
-
-      if (spendForDay) {
-        lifetimeSpent += spendForDay.amount;
-        const entry = await prisma.adSpendEntry.create({
-          data: {
-            walletId: wallet.id,
-            amount: spendForDay.amount,
-            currency: "OMR",
-            spentAt: date,
-            source: "manual_ops",
-          },
-        });
-
-        const totalDayGmv = dayOrders.reduce((sum, o) => sum + o.quantity * o.unitPriceCharged, 0);
-        if (dayOrders.length > 0 && totalDayGmv > 0) {
-          for (const o of dayOrders) {
-            const share = (o.quantity * o.unitPriceCharged) / totalDayGmv;
-            const allocated = Math.round(spendForDay.amount * share * 100) / 100;
-            await prisma.adSpendAllocation.create({
-              data: {
-                spendEntryId: entry.id,
-                orderId: o.id,
-                dealId,
-                allocatedAmount: allocated,
-              },
-            });
-            orderAllocationByOrderId.set(o.id, (orderAllocationByOrderId.get(o.id) ?? 0) + allocated);
-          }
-        } else {
-          await prisma.adSpendAllocation.create({
-            data: {
-              spendEntryId: entry.id,
-              orderId: null,
-              dealId,
-              allocatedAmount: spendForDay.amount,
-            },
-          });
-        }
-      }
-
-      dailyPoints.push({
-        date,
-        netAttributedSales: Math.round(dayNetSales * 100) / 100,
-        adSpend: spendForDay?.amount ?? 0,
-      });
-    }
-
-    const merThreshold = 2.5;
-    const merDays = dailyPoints.map((p) => computeMerDay(p, merThreshold));
-    for (const day of merDays) {
-      await prisma.merDay.create({
-        data: {
-          walletId: wallet.id,
-          date: day.date,
-          netAttributedSales: day.netAttributedSales,
-          adSpend: day.adSpend,
-          mer: Math.round(day.mer * 100) / 100,
-          belowThreshold: day.belowThreshold,
-        },
-      });
-    }
-
-    const evaluation = evaluateAutoPause(merDays, 3, merThreshold);
-
-    await prisma.adWallet.update({
-      where: { id: wallet.id },
-      data: {
-        lifetimeSpent: Math.round(lifetimeSpent * 100) / 100,
-        availableBalance: Math.round((fundedAmount - lifetimeSpent) * 100) / 100,
-        autoPauseFlag: evaluation.autoPauseFlag,
-        autoPauseReason: evaluation.autoPauseReason,
-        status: evaluation.autoPauseFlag ? "paused" : "live",
-      },
-    });
-
-    return orderAllocationByOrderId;
-  }
-
-  const flaggedAllocations = await seedAdWalletSpend(flaggedWallet, laylaMuttrah.id, flaggedSpendPlan, 150);
-  const healthyAllocations = await seedAdWalletSpend(healthyWallet, omarKhalas.id, healthySpendPlan, 100);
-
-  const adSpendByOrderId = new Map<string, number>([...flaggedAllocations, ...healthyAllocations]);
-
-  // ---------------------------------------------------------------------
-  // Ledger entries — the one true waterfall computation, per order
-  // ---------------------------------------------------------------------
-  const creatorTierById = new Map<string, string>([
-    [layla.id, "ELITE"],
-    [omar.id, "RISING"],
-    [noor.id, "RISING"],
-    [sultan.id, "NEW"],
-  ]);
-
   const dealSnapshotById = new Map(
     [laylaMuttrah, laylaRose, omarKhalas, omarTruffle, noorMuttrah, noorBasket, sultanKhalas].map((deal) => [
       deal.id,
@@ -710,30 +553,19 @@ async function main() {
 
   for (const order of createdOrders) {
     const deal = dealSnapshotById.get(order.dealId)!;
-    const tier = creatorTierById.get(deal.creatorId) ?? "NEW";
     const result = computeWaterfall({
       quantity: order.quantity,
       unitPriceCharged: order.unitPriceCharged,
       lockedUnitPrice: deal.lockedUnitPrice,
       lockedCommissionPct: deal.lockedCommissionPct,
-      lockedCogsPct: deal.lockedCogsPct,
       discountCapPct: deal.discountCapPct,
-      adSpendAllocated: adSpendByOrderId.get(order.id) ?? 0,
-      tierMultiplier: tierMultiplier(tier as "NEW" | "RISING" | "ELITE"),
     });
 
     await prisma.ledgerEntry.create({
       data: {
         orderId: order.id,
         attributedGmv: result.attributedGmv,
-        returnsReserve: result.returnsReserve,
-        netAttributedSales: result.netAttributedSales,
         paymentFee: result.paymentFee,
-        cogs: result.cogs,
-        adSpendAllocated: result.adSpendAllocated,
-        contributionPool: result.contributionPool,
-        creatorFloorAmount: result.creatorFloorAmount,
-        creatorProfitShare: result.creatorProfitShare,
         creatorShare: result.creatorShare,
         merchantShare: result.merchantShare,
         platformShare: result.platformShare,
@@ -742,6 +574,22 @@ async function main() {
         holdbackDays: result.holdbackDays,
       },
     });
+  }
+
+  const fulfilled = await prisma.order.findMany({
+    where: { status: "fulfilled" },
+    include: { ledgerEntry: true, deal: { include: { product: true } } },
+  });
+  for (const order of fulfilled) {
+    if (!order.ledgerEntry) continue;
+    await prisma.$transaction((tx) =>
+      settleOrderOnFulfill({
+        merchantId: order.deal.product.merchantId,
+        orderId: order.id,
+        line: order.ledgerEntry!,
+        db: tx,
+      })
+    );
   }
 
   // ---------------------------------------------------------------------
@@ -770,29 +618,39 @@ async function main() {
   }
 
   const laylaBalances = await balancesFor(layla.id);
-  const instantAmount = Math.max(1, Math.round(laylaBalances.availableBalance * 0.5 * 100) / 100);
-  await prisma.payoutRequest.create({
-    data: {
-      creatorId: layla.id,
-      type: "instant",
-      amount: instantAmount,
-      feeAmount: computeInstantPayoutFee(instantAmount),
-      status: "paid",
-      processedAt: new Date(),
-    },
-  });
+  const instantAmount =
+    laylaBalances.availableBalance >= MIN_PAYOUT_OMR
+      ? Math.min(laylaBalances.availableBalance, Math.round(Math.max(MIN_PAYOUT_OMR, laylaBalances.availableBalance * 0.5) * 100) / 100)
+      : 0;
+  if (instantAmount >= MIN_PAYOUT_OMR) {
+    await prisma.payoutRequest.create({
+      data: {
+        creatorId: layla.id,
+        type: "instant",
+        amount: instantAmount,
+        feeAmount: computeInstantPayoutFee(instantAmount),
+        status: "paid",
+        processedAt: new Date(),
+      },
+    });
+  }
 
   const omarBalances = await balancesFor(omar.id);
-  const scheduledAmount = Math.max(1, Math.round(omarBalances.availableBalance * 100) / 100);
-  await prisma.payoutRequest.create({
-    data: {
-      creatorId: omar.id,
-      type: "scheduled",
-      amount: scheduledAmount,
-      feeAmount: 0,
-      status: "requested",
-    },
-  });
+  const scheduledAmount =
+    omarBalances.availableBalance >= MIN_PAYOUT_OMR
+      ? Math.round(omarBalances.availableBalance * 100) / 100
+      : 0;
+  if (scheduledAmount >= MIN_PAYOUT_OMR) {
+    await prisma.payoutRequest.create({
+      data: {
+        creatorId: omar.id,
+        type: "scheduled",
+        amount: scheduledAmount,
+        feeAmount: 0,
+        status: "requested",
+      },
+    });
+  }
 
   console.log("Seed complete:");
   console.log(`  Merchants: 3 (2 verified, 1 pending)`);
@@ -800,9 +658,8 @@ async function main() {
   console.log(`  Products: 8 across attar/dates/home`);
   console.log(`  Deals: 7`);
   console.log(`  Orders: ${createdOrders.length}`);
-  console.log(`  Ad wallets: 2 (1 auto-paused by MER kill-switch, 1 healthy)`);
   console.log(`  Payout requests: 2 (1 instant/paid, 1 scheduled/requested)`);
-  console.log(`  Sample requests: 3 (1 pending, 1 approved, 1 shipped)`);
+  console.log(`  Sample requests: 2 (RISING deposits at 25%; NEW uses media kit)`);
 }
 
 main()

@@ -8,6 +8,7 @@ import StorefrontChrome from "@/components/shop/StorefrontChrome";
 
 export interface StorefrontHeroProduct {
   readonly dealId: string;
+  readonly slug: string;
   readonly title: string;
   readonly note: string;
   readonly priceOmr: number;
@@ -17,6 +18,7 @@ export interface StorefrontHeroProduct {
 
 export interface StorefrontOtherDeal {
   readonly dealId: string;
+  readonly slug: string;
   readonly title: string;
   readonly priceOmr: number;
   readonly currency: string;
@@ -60,7 +62,7 @@ export default function CreatorStorefront({
           <div className="gl-stage max-w-xl p-6 sm:p-8">
             <p className="gl-eyebrow">{t("featured")}</p>
             <h2 className="mt-2 text-display-lg font-semibold">
-              <Link href={`/creator/${username}/p/${heroProduct.dealId}`}>{heroProduct.title}</Link>
+              <Link href={`/creator/${username}/${heroProduct.slug}`}>{heroProduct.title}</Link>
             </h2>
             <p className="mt-4 text-[16px] leading-relaxed text-frost-dim">{heroProduct.note}</p>
             <p className="mt-8 font-mono text-[32px] font-medium">{priceLabel}</p>
@@ -73,7 +75,7 @@ export default function CreatorStorefront({
                   {otherDeals.map((deal) => (
                     <li key={deal.dealId}>
                       <Link
-                        href={`/creator/${username}/p/${deal.dealId}`}
+                        href={`/creator/${username}/${deal.slug}`}
                         className="gl-tile gl-tile-hover flex w-full items-baseline justify-between gap-4 px-4 py-3 text-start"
                       >
                         <span className="text-[15px]">{deal.title}</span>

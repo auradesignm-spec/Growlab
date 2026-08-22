@@ -1,29 +1,44 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { formatDate, formatMoney, formatPct } from "@/lib/format";
 import type { CreatorDashboardData } from "@/lib/dashboard/creator";
-import { requestInstantPayout, requestScheduledPayout } from "@/app/(dashboard)/dashboard/actions";
+import { requestInstantPayout, requestScheduledPayout, saveCreatorPayoutAccount } from "@/app/(dashboard)/dashboard/actions";
 import { leaveDeal } from "@/app/(dashboard)/dashboard/deals-actions";
 import { submitUgcVideo } from "@/app/(dashboard)/dashboard/sample-actions";
-import { computeInstantPayoutFee } from "@/lib/ledger/payouts";
+import { computeInstantPayoutFee, MIN_PAYOUT_OMR } from "@/lib/ledger/payouts";
 import WaterfallBreakdown from "@/components/dashboard/WaterfallBreakdown";
+import ShareSheet from "@/components/dashboard/ShareSheet";
 import { EmptyState, StatusPill, TierPill } from "@/components/dashboard/ui";
 
 type Tab = "storefront" | "deals" | "samples" | "earnings" | "payouts";
 
+const TABS: Tab[] = ["storefront", "deals", "samples", "earnings", "payouts"];
+
+function isTab(value: string | undefined): value is Tab {
+  return Boolean(value && TABS.includes(value as Tab));
+}
+
 export default function CreatorDashboard({
   data,
   locale,
+  initialTab,
 }: {
   data: CreatorDashboardData;
   locale: string;
+  initialTab?: string;
 }) {
   const t = useTranslations("dashboardApp.creator");
   const tStatus = useTranslations("dashboardApp.status");
-  const [tab, setTab] = useState<Tab>("storefront");
+  const router = useRouter();
+  const [tab, setTab] = useState<Tab>(isTab(initialTab) ? initialTab : "storefront");
+
+  useEffect(() => {
+    if (isTab(initialTab)) setTab(initialTab);
+  }, [initialTab]);
 
   const tabs: Array<{ id: Tab; label: string }> = [
     { id: "storefront", label: t("tabs.storefront") },
@@ -33,9 +48,14 @@ export default function CreatorDashboard({
     { id: "payouts", label: t("tabs.payouts") },
   ];
 
+  function changeTab(next: Tab) {
+    setTab(next);
+    router.replace(`/dashboard?tab=${next}`, { scroll: false });
+  }
+
   return (
     <div>
-      <TabBar tabs={tabs} active={tab} onChange={setTab} />
+      <TabBar tabs={tabs} active={tab} onChange={(id) => changeTab(id as Tab)} />
       {tab === "storefront" && <StorefrontTab data={data} t={t} tStatus={tStatus} />}
       {tab === "deals" && <DealsTab data={data} t={t} tStatus={tStatus} locale={locale} />}
       {tab === "samples" && <SamplesTab data={data} t={t} tStatus={tStatus} locale={locale} />}
@@ -90,6 +110,9 @@ function StorefrontTab({
         </p>
         <p className="mt-1 font-mono text-xs text-frost-dim">
           {t("storefront.returnRate", { pct: formatPct(data.returnRatePct) })}
+        </p>
+        <p className="mt-1 font-mono text-xs text-frost-dim">
+          {t("storefront.visits", { count: data.visitCount })}
         </p>
       </div>
 
@@ -185,6 +208,9 @@ function DealCard({
         <Row label={t("deals.cogsPct")} value={formatPct(deal.lockedCogsPct)} />
         <Row label={t("deals.discountCap")} value={formatPct(deal.discountCapPct)} />
         <Row label={t("deals.since")} value={formatDate(deal.createdAt, locale)} />
+        <Row label={t("deals.orders")} value={String(deal.orderCount)} />
+        <Row label={t("deals.visits")} value={String(deal.visitCount)} />
+        <Row label={t("deals.commissionEarned")} value={formatMoney(deal.commissionEarned)} />
       </dl>
 
       <div className="mt-3 flex items-center gap-2">
@@ -194,8 +220,17 @@ function DealCard({
         )}
       </div>
 
+      {deal.status === "pending" && (
+        <p className="mt-3 text-[13px] leading-relaxed text-frost-dim">{t("deals.waiting")}</p>
+      )}
+
       {deal.status === "active" && (
-        <button
+        <>
+          <ShareSheet
+            productTitle={deal.productTitle}
+            sharePath={`/creator/${deal.username}/${deal.slug}`}
+          />
+          <button
           type="button"
           disabled={pending}
           onClick={() =>
@@ -208,6 +243,7 @@ function DealCard({
         >
           {t("deals.leaveCta")}
         </button>
+        </>
       )}
     </div>
   );
@@ -446,10 +482,18 @@ function PayoutsTab({
   const [amountInput, setAmountInput] = useState("");
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [bankName, setBankName] = useState(data.creator.bankName);
+  const [accountName, setAccountName] = useState(data.creator.accountName);
+  const [accountNumber, setAccountNumber] = useState(data.creator.accountNumber);
 
   const amount = Number(amountInput) || 0;
   const fee = amount > 0 ? computeInstantPayoutFee(amount) : 0;
-  const canRequest = amount > 0 && amount <= data.balances.availableBalance;
+  const belowMinimum = amount > 0 && amount < MIN_PAYOUT_OMR;
+  const canRequest =
+    amount > 0 &&
+    amount <= data.balances.availableBalance &&
+    !belowMinimum &&
+    data.creator.hasPayoutAccount;
 
   function submit(type: "instant" | "scheduled") {
     setError(null);
@@ -462,7 +506,13 @@ function PayoutsTab({
         }
         setAmountInput("");
       } catch (e) {
-        setError(e instanceof Error ? e.message : "Failed");
+        if (e instanceof Error && e.message === "BELOW_MIN_PAYOUT") {
+          setError(t("payouts.belowMinimum", { min: formatMoney(MIN_PAYOUT_OMR) }));
+        } else if (e instanceof Error && e.message === "PAYOUT_ACCOUNT_REQUIRED") {
+          setError(t("payouts.accountRequired"));
+        } else {
+          setError(e instanceof Error ? e.message : "Failed");
+        }
       }
     });
   }
@@ -483,7 +533,56 @@ function PayoutsTab({
       </div>
 
       <div className="mt-8 border border-white/10 p-5">
-        <p className="gl-eyebrow">{t("payouts.requestTitle")}</p>
+        <p className="gl-eyebrow">{t("payouts.accountTitle")}</p>
+        <p className="mt-2 max-w-lg text-[14px] leading-relaxed text-frost-dim">{t("payouts.accountLede")}</p>
+        <form
+          className="mt-4 grid gap-3 sm:grid-cols-3"
+          onSubmit={(event) => {
+            event.preventDefault();
+            setError(null);
+            startTransition(async () => {
+              try {
+                await saveCreatorPayoutAccount(data.creator.id, { bankName, accountName, accountNumber });
+              } catch {
+                setError(t("payouts.accountInvalid"));
+              }
+            });
+          }}
+        >
+          <label className="block">
+            <span className="font-west text-[10px] uppercase tracking-[0.2em] text-frost-dim">{t("payouts.bankName")}</span>
+            <input
+              value={bankName}
+              onChange={(e) => setBankName(e.target.value)}
+              className="mt-1 w-full border border-white/15 bg-white/[0.03] px-3 py-2 font-mono text-sm"
+            />
+          </label>
+          <label className="block">
+            <span className="font-west text-[10px] uppercase tracking-[0.2em] text-frost-dim">{t("payouts.accountName")}</span>
+            <input
+              value={accountName}
+              onChange={(e) => setAccountName(e.target.value)}
+              className="mt-1 w-full border border-white/15 bg-white/[0.03] px-3 py-2 text-sm"
+            />
+          </label>
+          <label className="block">
+            <span className="font-west text-[10px] uppercase tracking-[0.2em] text-frost-dim">{t("payouts.accountNumber")}</span>
+            <input
+              value={accountNumber}
+              onChange={(e) => setAccountNumber(e.target.value)}
+              className="mt-1 w-full border border-white/15 bg-white/[0.03] px-3 py-2 font-mono text-sm"
+            />
+          </label>
+          <button type="submit" disabled={pending} className="gl-btn-ghost sm:col-span-3 disabled:opacity-40">
+            {t("payouts.saveAccount")}
+          </button>
+        </form>
+      </div>
+
+      <div className="mt-8 border border-white/10 p-5">
+        <p className="gl-eyebrow">{t("payouts.localPathTitle")}</p>
+        <p className="mt-2 max-w-lg text-[14px] leading-relaxed text-frost-dim">{t("payouts.localPathLede")}</p>
+        <p className="gl-eyebrow mt-6">{t("payouts.requestTitle")}</p>
         <div className="mt-4 flex flex-wrap items-end gap-3">
           <div>
             <label className="block font-west text-[10px] uppercase tracking-[0.2em] text-frost-dim">
@@ -491,8 +590,8 @@ function PayoutsTab({
             </label>
             <input
               type="number"
-              min={0}
-              step={0.1}
+              min={MIN_PAYOUT_OMR}
+              step={0.01}
               value={amountInput}
               onChange={(e) => setAmountInput(e.target.value)}
               className="mt-1 w-40 border border-white/15 bg-white/[0.03] px-3 py-2 font-mono text-sm"
@@ -521,7 +620,15 @@ function PayoutsTab({
             {t("payouts.feePreview", { fee: formatMoney(fee) })}
           </p>
         )}
-        {!canRequest && amount > 0 && (
+        {belowMinimum && (
+          <p className="mt-2 font-mono text-xs text-danger">
+            {t("payouts.belowMinimum", { min: formatMoney(MIN_PAYOUT_OMR) })}
+          </p>
+        )}
+        {!data.creator.hasPayoutAccount && (
+          <p className="mt-2 font-mono text-xs text-danger">{t("payouts.accountRequired")}</p>
+        )}
+        {amount > data.balances.availableBalance && (
           <p className="mt-2 font-mono text-xs text-danger">{t("payouts.exceedsAvailable")}</p>
         )}
         {error && <p className="mt-2 font-mono text-xs text-danger">{error}</p>}
@@ -561,7 +668,7 @@ function TabBar({
 }: {
   tabs: Array<{ id: string; label: string }>;
   active: string;
-  onChange: (id: never) => void;
+  onChange: (id: string) => void;
 }) {
   return (
     <div className="gl-tabs">
@@ -569,7 +676,7 @@ function TabBar({
         <button
           key={tabItem.id}
           type="button"
-          onClick={() => onChange(tabItem.id as never)}
+          onClick={() => onChange(tabItem.id)}
           className={`gl-tab ${active === tabItem.id ? "is-on" : ""}`}
         >
           {tabItem.label}

@@ -1,48 +1,71 @@
 "use client";
 
-import { Fragment, useMemo, useState, useTransition } from "react";
+import { Fragment, useEffect, useMemo, useState, useTransition } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { formatDate, formatMoney, formatPct } from "@/lib/format";
 import type { MerchantDashboardData } from "@/lib/dashboard/merchant";
 import { respondToSampleRequest, respondToUgcSubmission } from "@/app/(dashboard)/dashboard/sample-actions";
-import { merchantSetOrderStatus } from "@/app/(dashboard)/dashboard/order-actions";
+import { merchantSetOrderStatus, merchantSetShippingRef } from "@/app/(dashboard)/dashboard/order-actions";
+import { getNewOrderWhatsAppUrl } from "@/lib/shop/notify";
 import { nextOrderStatuses, type OrderActionStatus } from "@/lib/domain/orders";
 import WaterfallBreakdown from "@/components/dashboard/WaterfallBreakdown";
 import MediaKitManager from "@/components/dashboard/MediaKitManager";
 import ProductPricingEditor from "@/components/dashboard/ProductPricingEditor";
-import { EmptyState, Metric, StatusPill, TableShell, TierPill } from "@/components/dashboard/ui";
+import AcceptQueue from "@/components/dashboard/AcceptQueue";
+import { EmptyState, StatusPill, TableShell, TierPill } from "@/components/dashboard/ui";
 
-type Tab = "products" | "creators" | "orders" | "samples" | "ads";
+type Tab = "queue" | "products" | "creators" | "orders" | "samples";
+
+const MERCHANT_TABS: Tab[] = ["queue", "products", "creators", "orders", "samples"];
+
+function isMerchantTab(value: string | undefined): value is Tab {
+  return Boolean(value && MERCHANT_TABS.includes(value as Tab));
+}
 
 export default function MerchantDashboard({
   data,
   locale,
+  initialTab,
 }: {
   data: MerchantDashboardData;
   locale: string;
+  initialTab?: string;
 }) {
   const t = useTranslations("dashboardApp.merchant");
   const tStatus = useTranslations("dashboardApp.status");
-  const [tab, setTab] = useState<Tab>("products");
+  const router = useRouter();
+  const fallback: Tab = data.pendingApplications.length > 0 ? "queue" : "products";
+  const [tab, setTab] = useState<Tab>(isMerchantTab(initialTab) ? initialTab : fallback);
+
+  useEffect(() => {
+    if (isMerchantTab(initialTab)) setTab(initialTab);
+  }, [initialTab]);
 
   const tabs: Array<{ id: Tab; label: string }> = [
+    { id: "queue", label: t("tabs.queue") },
     { id: "products", label: t("tabs.products") },
     { id: "creators", label: t("tabs.creators") },
     { id: "orders", label: t("tabs.orders") },
     { id: "samples", label: t("tabs.samples") },
-    { id: "ads", label: t("tabs.ads") },
   ];
+
+  function changeTab(next: Tab) {
+    setTab(next);
+    router.replace(`/dashboard?tab=${next}`, { scroll: false });
+  }
 
   return (
     <div>
       <VerificationBanner merchant={data.merchant} />
-      <TabBar tabs={tabs} active={tab} onChange={setTab} />
+      <WalletBanner wallet={data.wallet} />
+      <TabBar tabs={tabs} active={tab} onChange={(id) => changeTab(id as Tab)} />
+      {tab === "queue" && <AcceptQueue applications={data.pendingApplications} />}
       {tab === "products" && <ProductsTab data={data} />}
       {tab === "creators" && <CreatorsTab data={data} />}
       {tab === "orders" && <OrdersTab data={data} locale={locale} />}
       {tab === "samples" && <SamplesTab data={data} locale={locale} />}
-      {tab === "ads" && <AdWalletTab data={data} locale={locale} />}
     </div>
   );
 
@@ -62,6 +85,32 @@ export default function MerchantDashboard({
         </p>
         <p className="mt-1 max-w-xl text-[14px] text-frost-dim">
           {t(`verificationBanner.${status}` as "verificationBanner.pending")}
+        </p>
+      </div>
+    );
+  }
+
+  function WalletBanner({ wallet }: { wallet: MerchantDashboardData["wallet"] }) {
+    const tight = wallet.available < 5;
+    return (
+      <div className={`border-b px-5 py-4 sm:px-8 ${tight ? "border-warn/50 bg-warn/10" : "border-white/10 bg-white/[0.03]"}`}>
+        <p className="font-west text-[10px] uppercase tracking-[0.24em] text-frost-dim">{t("wallet.title")}</p>
+        <div className="mt-2 flex flex-wrap gap-6">
+          <div>
+            <p className="font-mono text-[11px] text-frost-dim">{t("wallet.available")}</p>
+            <p className="font-mono text-lg text-frost">{formatMoney(wallet.available, wallet.currency)}</p>
+          </div>
+          <div>
+            <p className="font-mono text-[11px] text-frost-dim">{t("wallet.reserved")}</p>
+            <p className="font-mono text-lg text-frost">{formatMoney(wallet.reserved, wallet.currency)}</p>
+          </div>
+          <div>
+            <p className="font-mono text-[11px] text-frost-dim">{t("wallet.balance")}</p>
+            <p className="font-mono text-lg text-frost">{formatMoney(wallet.balance, wallet.currency)}</p>
+          </div>
+        </div>
+        <p className="mt-2 max-w-xl text-[13px] leading-relaxed text-frost-dim">
+          {tight ? t("wallet.lowHint") : t("wallet.hint")}
         </p>
       </div>
     );
@@ -87,6 +136,7 @@ export default function MerchantDashboard({
               t("products.columns.price"),
               t("products.columns.cogs"),
               t("products.columns.deals"),
+              t("products.columns.visits"),
               t("products.columns.status"),
             ]}
           >
@@ -101,12 +151,13 @@ export default function MerchantDashboard({
                   <td className="px-4 py-3 font-mono text-sm">{formatMoney(p.basePrice, p.currency)}</td>
                   <td className="px-4 py-3 font-mono text-sm">{formatPct(p.cogsPct, 0)}</td>
                   <td className="px-4 py-3 font-mono text-sm">{p.activeDealsCount}</td>
+                  <td className="px-4 py-3 font-mono text-sm">{p.visitCount}</td>
                   <td className="px-4 py-3">
                     <StatusPill ok={p.active}>{p.active ? tStatus("product.active") : tStatus("product.inactive")}</StatusPill>
                   </td>
                 </tr>
                 <tr className="border-b border-white/10 bg-white/[0.02]">
-                  <td colSpan={7} className="p-0">
+                  <td colSpan={8} className="p-0">
                     <MediaKitManager productId={p.id} assets={p.mediaAssets} />
                     <ProductPricingEditor product={p} />
                   </td>
@@ -250,6 +301,11 @@ export default function MerchantDashboard({
                           {t("orders.shipTo")}: {[o.buyerCity, o.buyerAddress].filter(Boolean).join(" · ")}
                         </p>
                       )}
+                      {o.shippingRef ? (
+                        <p className="mt-1 font-mono text-[12px] text-frost-dim">
+                          {t("orders.shippingRef")}: <span className="text-frost">{o.shippingRef}</span>
+                        </p>
+                      ) : null}
                     </div>
                     <div className="flex items-center gap-3">
                       <StatusPill ok={o.status === "fulfilled" || o.status === "confirmed"}>
@@ -265,21 +321,58 @@ export default function MerchantDashboard({
                       </span>
                     </div>
                   </button>
-                  {next.length > 0 && (
-                    <div className="flex flex-wrap gap-2 border-t border-white/10 px-4 py-3">
-                      {next.map((status) => (
-                        <button
-                          key={status}
-                          type="button"
-                          disabled={pending}
-                          onClick={() => setStatus(o.orderId, status)}
-                          className="gl-btn-ghost disabled:opacity-40"
-                        >
-                          {t(`orders.actions.${status}` as "orders.actions.confirmed")}
-                        </button>
-                      ))}
-                    </div>
-                  )}
+                  <div className="flex flex-wrap items-center gap-2 border-t border-white/10 px-4 py-3">
+                    {next.map((status) => (
+                      <button
+                        key={status}
+                        type="button"
+                        disabled={pending}
+                        onClick={() => setStatus(o.orderId, status)}
+                        className="gl-btn-ghost disabled:opacity-40"
+                      >
+                        {t(`orders.actions.${status}` as "orders.actions.confirmed")}
+                      </button>
+                    ))}
+                    <a
+                      href={getNewOrderWhatsAppUrl({
+                        productTitle: o.productTitle,
+                        buyerName: o.buyerName,
+                        buyerCity: o.buyerCity ?? "",
+                        quantity: o.quantity,
+                        creatorUsername: o.creatorUsername,
+                      })}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="gl-btn-ghost"
+                    >
+                      {t("orders.notifyWhatsapp")}
+                    </a>
+                    <form
+                      className="flex flex-wrap items-center gap-2"
+                      onSubmit={(event) => {
+                        event.preventDefault();
+                        const form = event.currentTarget;
+                        const ref = String(new FormData(form).get("shippingRef") ?? "");
+                        startTransition(async () => {
+                          try {
+                            await merchantSetShippingRef(o.orderId, ref);
+                          } catch (e) {
+                            setActionError(e instanceof Error ? e.message : t("orders.actionFailed"));
+                          }
+                        });
+                      }}
+                    >
+                      <input
+                        name="shippingRef"
+                        defaultValue={o.shippingRef ?? ""}
+                        placeholder={t("orders.shippingPlaceholder")}
+                        className="w-40 border border-white/15 bg-white/[0.03] px-3 py-1.5 font-mono text-xs"
+                      />
+                      <button type="submit" disabled={pending} className="gl-btn-ghost disabled:opacity-40">
+                        {t("orders.saveShipping")}
+                      </button>
+                    </form>
+                  </div>
                   {expanded === o.orderId && (
                     <div className="border-t border-white/10 p-4">
                       <WaterfallBreakdown row={o} />
@@ -289,64 +382,6 @@ export default function MerchantDashboard({
               );
             })}
           </ul>
-        )}
-      </section>
-    );
-  }
-
-  function AdWalletTab({ data: d, locale: loc }: { data: MerchantDashboardData; locale: string }) {
-    return (
-      <section className="px-5 py-10 sm:px-8">
-        {d.adWallets.length === 0 ? (
-          <EmptyState text={t("ads.empty")} />
-        ) : (
-          <div className="space-y-8">
-            {d.adWallets.map((w) => (
-              <div key={w.walletId} className="gl-stage overflow-hidden">
-                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 px-4 py-3">
-                  <div>
-                    <p className="font-display text-lg">{w.productTitle}</p>
-                    <p className="font-serif text-xs italic text-frost-dim">@{w.creatorUsername}</p>
-                  </div>
-                  <StatusPill ok={w.status === "live"}>{tStatus(`wallet.${w.status}` as "wallet.live")}</StatusPill>
-                </div>
-
-                {w.autoPauseFlag && (
-                  <div className="border-b border-danger/30 bg-danger/10 px-4 py-3">
-                    <p className="font-west text-[11px] uppercase tracking-[0.2em] text-danger">
-                      {t("ads.autoPaused", { reason: w.autoPauseReason ?? "" })}
-                    </p>
-                  </div>
-                )}
-
-                <div className="grid grid-cols-2 gap-3 p-3 sm:grid-cols-4">
-                  <Metric label={t("ads.balance")} value={formatMoney(w.availableBalance)} />
-                  <Metric label={t("ads.dailyCap")} value={formatMoney(w.dailyCap)} />
-                  <Metric label={t("ads.dealCap")} value={formatMoney(w.dealCap)} />
-                  <Metric
-                    label={t("ads.mer")}
-                    value={w.latestMer !== null ? `${w.latestMer.toFixed(2)}x` : "—"}
-                    warn={w.latestMer !== null && w.latestMer < w.merKillThreshold}
-                  />
-                </div>
-
-                <div className="px-4 py-4">
-                  <p className="font-west text-[10px] uppercase tracking-[0.2em] text-frost-dim">
-                    {t("ads.spendHistory")}
-                  </p>
-                  <ul className="mt-2 space-y-1">
-                    {w.spendHistory.slice(0, 8).map((s) => (
-                      <li key={s.id} className="flex justify-between font-mono text-xs">
-                        <span>{formatDate(s.spentAt, loc)}</span>
-                        <span className="text-frost-dim">{s.source}</span>
-                        <span>{formatMoney(s.amount)}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            ))}
-          </div>
         )}
       </section>
     );
@@ -528,7 +563,7 @@ function TabBar({
 }: {
   tabs: Array<{ id: string; label: string }>;
   active: string;
-  onChange: (id: never) => void;
+  onChange: (id: string) => void;
 }) {
   return (
     <div className="gl-tabs">
@@ -536,7 +571,7 @@ function TabBar({
         <button
           key={tabItem.id}
           type="button"
-          onClick={() => onChange(tabItem.id as never)}
+          onClick={() => onChange(tabItem.id)}
           className={`gl-tab ${active === tabItem.id ? "is-on" : ""}`}
         >
           {tabItem.label}

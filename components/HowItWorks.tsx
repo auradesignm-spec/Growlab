@@ -2,7 +2,7 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import Reveal from "@/components/Reveal";
 import StageGlow from "@/components/StageGlow";
-import { signUpHref } from "@/lib/auth/paths";
+import { enterHref } from "@/lib/auth/paths";
 
 export default async function HowItWorks() {
   const t = await getTranslations("marketing.how");
@@ -36,10 +36,10 @@ export default async function HowItWorks() {
         </StageGlow>
 
         <div className="mt-8 flex flex-wrap gap-3">
-          <Link href={signUpHref("merchant")} className="gl-btn-primary">
+          <Link href={enterHref("merchant")} className="gl-btn-primary">
             {t("startMerchant")}
           </Link>
-          <Link href={signUpHref("creator")} className="gl-btn-ghost">
+          <Link href={enterHref("creator")} className="gl-btn-ghost">
             {t("startCreator")}
           </Link>
         </div>

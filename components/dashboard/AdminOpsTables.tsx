@@ -244,6 +244,7 @@ export function PayoutsTab({ data, locale }: { data: AdminDashboardData; locale:
       <TableShell
         head={[
           t("columns.creator"),
+          t("columns.account"),
           t("columns.type"),
           t("columns.amount"),
           t("columns.status"),
@@ -268,6 +269,17 @@ function PayoutRow({ payout, locale }: { payout: AdminPayoutRow; locale: string 
       <td className="px-4 py-3">
         <p className="font-display text-base">@{payout.creatorUsername}</p>
         <p className="font-mono text-[11px] text-frost-dim">{formatDate(payout.requestedAt, locale)}</p>
+      </td>
+      <td className="px-4 py-3">
+        {payout.bankName || payout.accountName || payout.accountNumber ? (
+          <>
+            <p className="text-[13px] text-frost">{payout.bankName}</p>
+            <p className="text-[13px] text-frost-dim">{payout.accountName}</p>
+            <p className="font-mono text-[12px] text-frost">{payout.accountNumber}</p>
+          </>
+        ) : (
+          <p className="text-[12px] text-danger">{t("noAccount")}</p>
+        )}
       </td>
       <td className="px-4 py-3 font-west text-[11px] uppercase tracking-[0.16em] text-frost-dim">{payout.type}</td>
       <td className="px-4 py-3 font-mono text-sm">

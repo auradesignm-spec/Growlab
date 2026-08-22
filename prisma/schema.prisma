@@ -1,5 +1,5 @@
-// Growlab data layer — dev database is SQLite (file-based, zero external setup).
-// Swapping to Postgres/managed DB is an open decision for later, not decided here.
+// Growlab data layer — local default is SQLite. Production uses Postgres
+// (Neon) via DATABASE_URL; see scripts/vercel-build.mjs.
 //
 // NOTE: SQLite has no native enum support in Prisma, so "enum-like" fields below
 // are plain String columns. The allowed values and TS union types live in
@@ -23,6 +23,11 @@ model User {
   // they sign in and get linked. Real auth is Clerk — this is the join key.
   clerkUserId String? @unique
   name      String
+  firstName String @default("")
+  lastName  String @default("")
+  phone     String @default("")
+  email     String @default("")
+  profileCompletedAt DateTime?
   // "merchant" | "creator" | "unassigned" (signed in via Clerk, no role chosen yet)
   role      String
   locale    String   @default("ar")
@@ -62,8 +67,45 @@ model MerchantProfile {
   createdAt          DateTime @default(now())
 
   products       Product[]
-  adWallets      AdWallet[]
   sampleRequests SampleRequest[]
+  wallet         MerchantWallet?
+}
+
+// Pre-funded float that pays marketer commission + platform fee when COD cash
+// is collected. Top-ups are recorded by admin (bank transfer); settlements
+// debit on fulfill and reverse on a post-collection return.
+model MerchantWallet {
+  id         String          @id @default(cuid())
+  merchantId String          @unique
+  merchant   MerchantProfile @relation(fields: [merchantId], references: [id])
+
+  balance   Float  @default(0)
+  currency  String @default("OMR")
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+
+  txs MerchantWalletTxn[]
+}
+
+model MerchantWalletTxn {
+  id      String         @id @default(cuid())
+  walletId String
+  wallet  MerchantWallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
+
+  // "credit" | "debit"
+  type   String
+  // "topup" | "order_settlement" | "order_reversal" | "admin_adjust"
+  reason String
+  amount       Float
+  balanceAfter Float
+  orderId      String?
+  note         String?
+  createdBy    String?
+  createdAt    DateTime @default(now())
+
+  @@index([walletId])
+  @@index([orderId])
+  @@index([reason])
 }
 
 model CreatorProfile {
@@ -81,6 +123,10 @@ model CreatorProfile {
   kycSubmittedAt     DateTime?
   kycReviewNote      String?
   createdAt DateTime @default(now())
+
+  bankName      String @default("")
+  accountName   String @default("")
+  accountNumber String @default("")
 
   deals          CreatorDeal[]
   payoutRequests PayoutRequest[]
@@ -179,15 +225,16 @@ model CreatorDeal {
   lockedCommissionPct Float
   lockedCogsPct       Float
   discountCapPct      Float
-  // "active" | "paused" | "ended"
-  status              String   @default("active")
+  // "pending" | "active" | "paused" | "ended" — pending waits on merchant accept
+  status              String   @default("pending")
   // Marks the creator's single hero product for their storefront ("keep ONE
   // hero product, list others below the fold" — see CreatorStorefront).
   featured            Boolean  @default(false)
   createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt @default(now())
 
   orders   Order[]
-  adWallet AdWallet?
+  visits   StorefrontVisit[]
 
   @@index([creatorId])
   @@index([productId])
@@ -211,6 +258,8 @@ model Order {
   // "creator_link" | "platform_agent" | "direct" — first-touch creator attribution
   // wins; the AI closing agent is a cost center, never an attribution party.
   attributionSource String   @default("creator_link")
+  // "cod" | "card" — COD has no gateway fee; card uses CARD_PAYMENT_FEE_PCT.
+  settlementChannel String   @default("cod")
   // Shared across line items from one checkout. Buyer tracking URL is /order/[token].
   trackingToken     String   @default("")
   // "held" | "released" | "refunded" — ledger escrow, not a card capture.
@@ -218,10 +267,10 @@ model Order {
   escrowReleasedAt  DateTime?
   // "pending" | "confirmed" | "fulfilled" | "returned" | "cancelled"
   status            String   @default("pending")
+  shippingRef       String?
   createdAt         DateTime @default(now())
 
-  ledgerEntry        LedgerEntry?
-  adSpendAllocations AdSpendAllocation[]
+  ledgerEntry LedgerEntry?
 
   @@index([dealId])
   @@index([status])
@@ -229,106 +278,21 @@ model Order {
   @@index([escrowStatus])
 }
 
-// One waterfall computation per order — always produced by lib/ledger/waterfall.ts,
-// never hand-computed inline, so the seed script and any live order path agree.
+// One split computation per order — always produced by lib/ledger/waterfall.ts.
 model LedgerEntry {
   id      String @id @default(cuid())
   orderId String @unique
   order   Order  @relation(fields: [orderId], references: [id])
 
-  attributedGmv      Float
-  returnsReserve     Float
-  netAttributedSales Float
-  paymentFee         Float
-  cogs               Float
-  adSpendAllocated   Float
-  contributionPool   Float
-  creatorFloorAmount Float
-  creatorProfitShare Float
-  creatorShare       Float
-  merchantShare      Float
-  platformShare      Float
-  holdbackAmount     Float
-  availableAmount    Float
-  holdbackDays       Int
-  computedAt         DateTime @default(now())
-}
-
-// AdWallet is deal-scoped in the MVP (walletScope = deal) per docs/prd-ad-budget.md §4.1.
-model AdWallet {
-  id         String          @id @default(cuid())
-  dealId     String          @unique
-  deal       CreatorDeal     @relation(fields: [dealId], references: [id])
-  merchantId String
-  merchant   MerchantProfile @relation(fields: [merchantId], references: [id])
-
-  // "unfunded" | "funded" | "live" | "paused" | "depleted" | "closed"
-  status                 String   @default("unfunded")
-  availableBalance       Float    @default(0)
-  dailyCap               Float
-  dealCap                Float
-  lifetimeSpent          Float    @default(0)
-  // MER = net attributed sales ÷ ad spend. Below merKillThreshold for
-  // merKillConsecutiveDays in a row flips autoPauseFlag (stub, no real Meta API).
-  merKillThreshold       Float    @default(2.5)
-  merKillConsecutiveDays Int      @default(3)
-  autoPauseFlag          Boolean  @default(false)
-  autoPauseReason        String?
-  createdAt              DateTime @default(now())
-
-  spendEntries AdSpendEntry[]
-  merDays      MerDay[]
-
-  @@index([merchantId])
-}
-
-model AdSpendEntry {
-  id       String   @id @default(cuid())
-  walletId String
-  wallet   AdWallet @relation(fields: [walletId], references: [id])
-
-  amount    Float
-  currency  String   @default("OMR")
-  spentAt   DateTime
-  // "meta_api" | "manual_ops" | "adjustment" — meta_api is out of scope (stubbed);
-  // MVP entries are manual_ops per the PRD.
-  source    String   @default("manual_ops")
-  createdAt DateTime @default(now())
-
-  allocations AdSpendAllocation[]
-
-  @@index([walletId])
-}
-
-// Daily spend is allocated across that day's attributed orders, pro-rata to GMV
-// (docs/prd-ad-budget.md §7.2). Unallocated spend (no orders that day) has orderId = null.
-model AdSpendAllocation {
-  id           String       @id @default(cuid())
-  spendEntryId String
-  spendEntry   AdSpendEntry @relation(fields: [spendEntryId], references: [id])
-  orderId      String?
-  order        Order?       @relation(fields: [orderId], references: [id])
-  dealId       String
-
-  allocatedAmount Float
-
-  @@index([spendEntryId])
-  @@index([dealId])
-}
-
-// One row per wallet per calendar day — feeds the 3-day consecutive kill-switch check.
-model MerDay {
-  id       String   @id @default(cuid())
-  walletId String
-  wallet   AdWallet @relation(fields: [walletId], references: [id])
-
-  date               DateTime
-  netAttributedSales Float
-  adSpend            Float
-  mer                Float
-  belowThreshold     Boolean  @default(false)
-
-  @@unique([walletId, date])
+  attributedGmv  Float
+  paymentFee     Float
+  creatorShare   Float
+  merchantShare  Float
+  platformShare  Float
+  holdbackAmount Float
+  availableAmount Float
+  holdbackDays   Int
+  computedAt     DateTime @default(now())
 }
 
 model PayoutRequest {
@@ -385,4 +349,27 @@ model SampleRequest {
   @@index([creatorId])
   @@index([merchantId])
   @@index([productId])
+}
+
+model ContactLead {
+  id        String   @id @default(cuid())
+  name      String
+  biz       String
+  phone     String
+  msg       String
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+model StorefrontVisit {
+  id        String       @id @default(cuid())
+  username  String
+  dealId    String?
+  deal      CreatorDeal? @relation(fields: [dealId], references: [id], onDelete: SetNull)
+  createdAt DateTime     @default(now())
+
+  @@index([username])
+  @@index([dealId])
+  @@index([createdAt])
 }

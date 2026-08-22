@@ -4,16 +4,20 @@ import { useMemo, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { formatMoney } from "@/lib/format";
 import type { BrowseProductRow } from "@/lib/dashboard/browse";
+import type { SamplePolicy } from "@/lib/domain/ugc";
 import { applyToCampaign } from "@/app/(dashboard)/dashboard/campaign-actions";
 import { scanForContactLeak } from "@/lib/security/antiLeak";
 import type { CampaignApplyPath } from "@/lib/domain/enums";
+import ShareSheet from "@/components/dashboard/ShareSheet";
 
 export default function ApplyCampaignModal({
   row,
+  samplePolicy,
   onClose,
   onApplied,
 }: {
   row: BrowseProductRow;
+  samplePolicy: SamplePolicy;
   onClose: () => void;
   onApplied: (path: CampaignApplyPath) => void;
 }) {
@@ -23,15 +27,10 @@ export default function ApplyCampaignModal({
   const [ack, setAck] = useState(false);
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<{ path: CampaignApplyPath; referralLink: string } | null>(null);
-  const [copied, setCopied] = useState(false);
+  const [result, setResult] = useState<{ path: CampaignApplyPath; referralLink: string; status: string } | null>(null);
 
   const leak = useMemo(() => scanForContactLeak(note), [note]);
   const hasMediaKit = row.mediaAssets.length > 0;
-  const fullLink = useMemo(
-    () => (result ? `${typeof window !== "undefined" ? window.location.origin : ""}${result.referralLink}` : ""),
-    [result]
-  );
 
   function apply(path: CampaignApplyPath) {
     if (path === "sample_ugc" && leak.flagged) return;
@@ -39,22 +38,12 @@ export default function ApplyCampaignModal({
     startTransition(async () => {
       try {
         const res = await applyToCampaign(row.productId, path, path === "sample_ugc" ? note : "");
-        setResult({ path: res.path, referralLink: res.referralLink });
+        setResult({ path: res.path, referralLink: res.referralLink, status: res.status });
         onApplied(res.path);
       } catch (e) {
         setError(e instanceof Error ? e.message : "Failed");
       }
     });
-  }
-
-  async function copyLink() {
-    try {
-      await navigator.clipboard.writeText(fullLink);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      // Clipboard API may be unavailable (insecure context, permissions) — silently ignore.
-    }
   }
 
   return (
@@ -74,13 +63,13 @@ export default function ApplyCampaignModal({
             <p className="mt-3 text-[14px] leading-relaxed text-frost-dim">
               {result.path === "media_kit" ? t("successMediaKit") : t("successSample")}
             </p>
-            <div className="mt-6 rounded-2xl border border-line bg-night p-4">
-              <p className="text-[12px] text-frost-faint">{t("linkLabel")}</p>
-              <p className="mt-1.5 break-all font-mono text-[14px] text-frost">{fullLink}</p>
-              <button type="button" onClick={copyLink} className="gl-btn-primary mt-3">
-                {copied ? t("copied") : t("copyCta")}
-              </button>
-            </div>
+            {result.status === "active" ? (
+              <ShareSheet productTitle={row.title} sharePath={result.referralLink} />
+            ) : (
+              <p className="mt-6 rounded-2xl border border-line bg-night px-4 py-3 text-[14px] leading-relaxed text-frost-dim">
+                {t("pendingNote")}
+              </p>
+            )}
             <button type="button" onClick={onClose} className="gl-btn-ghost mt-6 w-full">
               {t("close")}
             </button>
@@ -150,7 +139,13 @@ export default function ApplyCampaignModal({
                   <p className="text-[16px] font-semibold text-frost">{t("sampleTitle")}</p>
                   <p className="mt-2 text-[13px] leading-relaxed text-frost-dim">{t("sampleDesc")}</p>
                   <p className="mt-3 font-mono text-[12px] text-danger">
-                    {t("depositNotice", { amount: formatMoney(row.basePrice, row.currency) })}
+                    {!samplePolicy.allowed
+                      ? t("sampleLockedNew")
+                      : samplePolicy.depositPct === 0
+                        ? t("depositElite")
+                        : t("depositNotice", {
+                            amount: formatMoney(row.sampleDeposit ?? 0, row.currency),
+                          })}
                   </p>
                   <p className="mt-1.5 text-[13px] leading-relaxed text-frost-dim">{t("deadlineNotice")}</p>
 
@@ -184,7 +179,7 @@ export default function ApplyCampaignModal({
                 </div>
                 <button
                   type="button"
-                  disabled={!ack || leak.flagged || pending}
+                  disabled={!samplePolicy.allowed || !ack || leak.flagged || pending}
                   onClick={() => apply("sample_ugc")}
                   className="gl-btn-primary mt-4 w-full disabled:opacity-40"
                 >

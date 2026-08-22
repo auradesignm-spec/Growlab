@@ -10,6 +10,7 @@ export interface TrackedOrderLine {
   currency: string;
   status: string;
   escrowStatus: string;
+  shippingRef: string | null;
   createdAt: string;
 }
 
@@ -49,6 +50,7 @@ export async function getCheckoutByToken(tokenRaw: string): Promise<TrackedCheck
       currency: order.currency,
       status: order.status,
       escrowStatus: order.escrowStatus,
+      shippingRef: order.shippingRef,
       createdAt: order.createdAt.toISOString(),
     })),
   };

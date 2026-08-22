@@ -4,9 +4,13 @@ import { computeCreatorBalances, type CreatorBalances } from "@/lib/ledger/payou
 import type { CreatorTierId } from "@/lib/domain/enums";
 import type { OrderLedgerRow } from "@/lib/dashboard/types";
 import { effectiveUgcStatus } from "@/lib/domain/ugc";
+import { uniqueDealSlugs } from "@/lib/storefront";
+import { countVisitsByDealIds, countVisitsForUsername } from "@/lib/shop/visits";
+import { creatorHasPayoutAccount } from "@/lib/ledger/account";
 
 export interface CreatorDealRow {
   dealId: string;
+  slug: string;
   productTitle: string;
   merchantBusinessName: string;
   merchantVerificationStatus: string;
@@ -18,6 +22,11 @@ export interface CreatorDealRow {
   status: string;
   featured: boolean;
   createdAt: string;
+  orderCount: number;
+  commissionEarned: number;
+  coverUrl: string | null;
+  username: string;
+  visitCount: number;
 }
 
 export interface CreatorPayoutRow {
@@ -46,7 +55,17 @@ export interface CreatorSampleRequestRow {
 }
 
 export interface CreatorDashboardData {
-  creator: { id: string; username: string; tier: CreatorTierId; bio: string | null };
+  creator: {
+    id: string;
+    username: string;
+    tier: CreatorTierId;
+    bio: string | null;
+    bankName: string;
+    accountName: string;
+    accountNumber: string;
+    hasPayoutAccount: boolean;
+  };
+  visitCount: number;
   tierProgress: TierProgress;
   totalNetSales: number;
   returnRatePct: number;
@@ -63,7 +82,7 @@ export async function loadCreatorDashboardData(creatorId: string): Promise<Creat
     include: {
       deals: {
         include: {
-          product: { include: { merchant: true } },
+          product: { include: { merchant: true, mediaAssets: { orderBy: { createdAt: "asc" }, take: 1 } } },
           orders: { include: { ledgerEntry: true } },
         },
       },
@@ -76,12 +95,24 @@ export async function loadCreatorDashboardData(creatorId: string): Promise<Creat
   });
 
   const allOrders = creator.deals.flatMap((deal) => deal.orders);
-  const totalNetSales = allOrders.reduce((sum, o) => sum + (o.ledgerEntry?.netAttributedSales ?? 0), 0);
+  const totalNetSales = allOrders.reduce((sum, o) => sum + (o.ledgerEntry?.attributedGmv ?? 0), 0);
   const returnedCount = allOrders.filter((o) => o.status === "returned").length;
   const returnRatePct = allOrders.length > 0 ? returnedCount / allOrders.length : 0;
 
+  const [visitCount, visitsByDeal] = await Promise.all([
+    countVisitsForUsername(creator.username),
+    countVisitsByDealIds(creator.deals.map((deal) => deal.id)),
+  ]);
+
+  const slugByDealId = uniqueDealSlugs(
+    [...creator.deals]
+      .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
+      .map((deal) => ({ dealId: deal.id, productTitle: deal.product.title }))
+  );
+
   const deals: CreatorDealRow[] = creator.deals.map((deal) => ({
     dealId: deal.id,
+    slug: slugByDealId.get(deal.id) ?? deal.product.title,
     productTitle: deal.product.title,
     merchantBusinessName: deal.product.merchant.businessName,
     merchantVerificationStatus: deal.product.merchant.verificationStatus,
@@ -93,6 +124,11 @@ export async function loadCreatorDashboardData(creatorId: string): Promise<Creat
     status: deal.status,
     featured: deal.featured,
     createdAt: deal.createdAt.toISOString(),
+    orderCount: deal.orders.length,
+    commissionEarned: deal.orders.reduce((sum, order) => sum + (order.ledgerEntry?.creatorShare ?? 0), 0),
+    coverUrl: deal.product.mediaAssets[0]?.url ?? null,
+    username: creator.username,
+    visitCount: visitsByDeal.get(deal.id) ?? 0,
   }));
 
   const ordersLedger: OrderLedgerRow[] = creator.deals
@@ -110,18 +146,12 @@ export async function loadCreatorDashboardData(creatorId: string): Promise<Creat
         attributionSource: order.attributionSource,
         status: order.status,
         escrowStatus: order.escrowStatus,
+        shippingRef: order.shippingRef,
         createdAt: order.createdAt.toISOString(),
-        ledger: order.ledgerEntry
+            ledger: order.ledgerEntry
           ? {
               attributedGmv: order.ledgerEntry.attributedGmv,
-              returnsReserve: order.ledgerEntry.returnsReserve,
-              netAttributedSales: order.ledgerEntry.netAttributedSales,
               paymentFee: order.ledgerEntry.paymentFee,
-              cogs: order.ledgerEntry.cogs,
-              adSpendAllocated: order.ledgerEntry.adSpendAllocated,
-              contributionPool: order.ledgerEntry.contributionPool,
-              creatorFloorAmount: order.ledgerEntry.creatorFloorAmount,
-              creatorProfitShare: order.ledgerEntry.creatorProfitShare,
               creatorShare: order.ledgerEntry.creatorShare,
               merchantShare: order.ledgerEntry.merchantShare,
               platformShare: order.ledgerEntry.platformShare,
@@ -156,7 +186,12 @@ export async function loadCreatorDashboardData(creatorId: string): Promise<Creat
       username: creator.username,
       tier: creator.tier as CreatorTierId,
       bio: creator.bio,
+      bankName: creator.bankName,
+      accountName: creator.accountName,
+      accountNumber: creator.accountNumber,
+      hasPayoutAccount: creatorHasPayoutAccount(creator),
     },
+    visitCount,
     tierProgress: tierProgress(creator.tier as CreatorTierId, totalNetSales),
     totalNetSales,
     returnRatePct,

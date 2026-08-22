@@ -1,49 +1,30 @@
-# Growlab — موقع الشراكة (Next.js)
+# Growlab
 
-موقع تعريفي احترافي لـ Growlab، مبني بـ Next.js 14 (App Router) + TypeScript + Tailwind CSS.
+سوق عمولة عماني: تاجر ينشر منتجاً، مسوّق يبيع عبر رابط، المشتري يطلب كضيف ويدفع نقداً عند الاستلام. العمولة و6٪ تُخصم من محفظة التاجر بعد التحصيل فقط.
 
-## التشغيل محليًا
+## التشغيل محلياً
 
 ```bash
 npm install
+npx prisma generate
+npx prisma db push
+npm run db:seed
 npm run dev
 ```
 
 افتح http://localhost:3000
 
-## البناء للنشر
+القاعدة المحلية الافتراضية SQLite (`DATABASE_URL=file:./prisma/dev.db`).
 
-```bash
-npm run build
-npm start
-```
+## الإنتاج (Vercel + Neon)
 
-يشتغل مباشرة على Vercel: ادفعوا الكود لمستودع GitHub وربطوه بـ Vercel، أو نفذوا `vercel` من الطرفية.
+1. أنشئ قاعدة Postgres على [Neon](https://neon.tech) وانسخ سلسلة الاتصال.
+2. في Vercel اضبط `DATABASE_URL` على تلك السلسلة (تبدأ بـ `postgresql://`).
+3. اضبط مفاتيح Clerk و`ADMIN_CLERK_USER_IDS`.
+4. انشر. البناء يشغّل `prisma generate` ثم `migrate deploy` **بدون زرع ديمو**. البيانات تبقى.
 
-## قبل النشر الفعلي
+لا تضع `ALLOW_DEV_IMPERSONATION` على Vercel.
 
-- بدّلوا روابط الواتساب (`href="#"` في `components/Contact.tsx`) برابط حقيقي بصيغة
-  `https://wa.me/968XXXXXXXX`
-- اربطوا نموذج التواصل بخدمة إرسال فعلية (مثال: Resend، Formspree، أو API خاص بكم) —
-  حاليًا النموذج يتحقق من الحقول ويعرض رسالة تأكيد فقط، بدون إرسال فعلي
-- عدّلوا رابط "احجز مكالمة تعارف مجانية" بربطه بأداة حجز مواعيد (Calendly أو مشابه)
+## واتساب
 
-## هيكل المشروع
-
-```
-app/
-  layout.tsx      الخطوط + إعدادات RTL العامة
-  page.tsx         يجمع كل الأقسام
-  globals.css       أنماط عامة (الخط المنقّط، الـ eyebrow)
-components/
-  Header.tsx        شريط تنقل ثابت
-  Hero.tsx           القسم الرئيسي + خط النمو المتحرك
-  GrowthLine.tsx      رسم SVG متحرك (Client Component)
-  Problem.tsx         بطاقات المشكلة
-  HowItWorks.tsx        خطوات الحل الثلاث
-  Pricing.tsx        الباقتين
-  Compare.tsx         جدول المقارنة
-  Founders.tsx        قصة المؤسسين
-  Contact.tsx        نموذج التواصل + واتساب
-  Footer.tsx          تذييل الصفحة
-```
+رقم العمل في `lib/constants.ts`. نموذج التواصل يحفظ الطلب في القاعدة ويفتح واتساب.

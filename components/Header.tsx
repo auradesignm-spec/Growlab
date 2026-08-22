@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 import GlassBubbleTrack from "@/components/GlassBubbleTrack";
-import { SIGN_IN_HREF, signUpHref } from "@/lib/auth/paths";
+import { ENTER_HREF } from "@/lib/auth/paths";
 import { track } from "@/lib/analytics";
 
 const CLERK_ENABLED = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
@@ -55,9 +55,6 @@ export default function Header() {
               {t(link.key)}
             </a>
           ))}
-          <Link href="/dashboard" data-bubble-item className="gl-nav-link relative z-[1] px-3 py-1.5">
-            {t("dashboard")}
-          </Link>
         </GlassBubbleTrack>
 
         <div className="hidden items-center gap-1 md:flex">
@@ -66,26 +63,22 @@ export default function Header() {
         </div>
 
         <GlassBubbleTrack className="flex items-center md:hidden">
-          <a
-            href={SIGN_IN_HREF}
-            data-bubble-item
-            className="relative z-[1] inline-flex h-9 items-center rounded-full px-3 text-[14px] font-medium"
-            style={{ color: "#111318" }}
-            onClick={() => track("Sign In Started", { source: "header-mobile" })}
-          >
-            {t("signIn")}
-          </a>
+          <HeaderAuth t={t} compact />
           <button
             type="button"
             data-bubble-item
-            className="relative z-[1] inline-flex h-9 items-center rounded-full px-3 text-[14px]"
+            className="relative z-[1] inline-flex min-h-11 min-w-11 items-center justify-center rounded-full"
             style={{ color: "#111318" }}
             aria-label={open ? t("closeMenu") : t("openMenu")}
             aria-expanded={open}
             aria-controls={menuId}
             onClick={() => setOpen((prev) => !prev)}
           >
-            {open ? t("close") : t("index")}
+            <span className={`gl-burger ${open ? "is-open" : ""}`} aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </span>
           </button>
         </GlassBubbleTrack>
       </div>
@@ -104,14 +97,6 @@ export default function Header() {
                 {t(link.key)}
               </a>
             ))}
-            <Link
-              href="/dashboard"
-              data-bubble-item
-              className="relative z-[1] rounded-full px-3 py-2 text-xl text-frost"
-              onClick={closeMenu}
-            >
-              {t("partnerPortal")}
-            </Link>
           </GlassBubbleTrack>
           <HeaderAuth t={t} onNavigate={closeMenu} stacked />
           <div className="mt-4">
@@ -127,42 +112,47 @@ function HeaderAuth({
   t,
   onNavigate,
   stacked = false,
+  compact = false,
 }: {
   t: ReturnType<typeof useTranslations>;
   onNavigate?: () => void;
   stacked?: boolean;
+  compact?: boolean;
 }) {
-  const guest = (
+  const enterLink = (
+    <Link
+      href={ENTER_HREF}
+      data-bubble-item={compact ? true : undefined}
+      className={
+        compact
+          ? "relative z-[1] inline-flex h-9 shrink-0 items-center whitespace-nowrap rounded-full px-3 text-[14px] font-medium"
+          : stacked
+            ? "gl-btn-ghost"
+            : "gl-nav-link px-3 py-1.5"
+      }
+      style={compact ? { color: "#111318" } : undefined}
+      onClick={() => {
+        track("Sign In Started", { source: compact ? "header-mobile" : "header" });
+        onNavigate?.();
+      }}
+    >
+      {t("startEarning")}
+    </Link>
+  );
+
+  const guest = compact ? (
+    enterLink
+  ) : (
     <div className={stacked ? "mt-4 flex flex-col items-start gap-3" : "contents"}>
       <Link
-        href={SIGN_IN_HREF}
-        className={stacked ? "gl-btn-ghost" : "gl-nav-link px-3 py-1.5"}
-        onClick={() => {
-          track("Sign In Started", { source: "header" });
-          onNavigate?.();
-        }}
-      >
-        {t("signIn")}
-      </Link>
-      <Link
-        href={signUpHref("creator")}
-        className="gl-btn-ghost gl-bubble-btn"
-        onClick={() => {
-          track("Sign Up Started", { role: "creator", source: "header" });
-          onNavigate?.();
-        }}
-      >
-        {t("ctaCreator")}
-      </Link>
-      <Link
-        href={signUpHref("merchant")}
+        href={ENTER_HREF}
         className="gl-btn-primary"
         onClick={() => {
-          track("Sign Up Started", { role: "merchant", source: "header" });
+          track("Sign Up Started", { source: "header-earn" });
           onNavigate?.();
         }}
       >
-        {t("ctaMerchant")}
+        {t("startEarning")}
       </Link>
     </div>
   );
@@ -173,12 +163,23 @@ function HeaderAuth({
     <>
       <SignedOut>{guest}</SignedOut>
       <SignedIn>
-        <div className={stacked ? "mt-4 flex items-center gap-4" : "contents"}>
-          <Link href="/dashboard" className="gl-btn-primary" onClick={onNavigate}>
+        {compact ? (
+          <Link
+            href="/dashboard"
+            data-bubble-item
+            className="relative z-[1] inline-flex h-9 items-center rounded-full px-3 text-[14px] font-medium"
+            style={{ color: "#111318" }}
+          >
             {t("openDashboard")}
           </Link>
-          <UserButton />
-        </div>
+        ) : (
+          <div className={stacked ? "mt-4 flex items-center gap-4" : "contents"}>
+            <Link href="/dashboard" className="gl-btn-primary" onClick={onNavigate}>
+              {t("openDashboard")}
+            </Link>
+            <UserButton />
+          </div>
+        )}
       </SignedIn>
     </>
   );

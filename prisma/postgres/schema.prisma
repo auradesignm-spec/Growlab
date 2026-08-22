@@ -1,0 +1,375 @@
+// Growlab data layer — local default is SQLite. Production uses Postgres
+// (Neon) via DATABASE_URL; see scripts/vercel-build.mjs.
+//
+// NOTE: SQLite has no native enum support in Prisma, so "enum-like" fields below
+// are plain String columns. The allowed values and TS union types live in
+// lib/domain/enums.ts — read from there, not from magic strings in feature code.
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  // Literal URL so `prisma generate` works on Vercel without env. Runtime can
+  // still override via PrismaClient({ datasourceUrl }) in lib/db.ts.
+  url = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  // Clerk's user id (e.g. "user_xxx"). Null for pre-Clerk seed/demo users until
+  // they sign in and get linked. Real auth is Clerk — this is the join key.
+  clerkUserId String? @unique
+  name      String
+  firstName String @default("")
+  lastName  String @default("")
+  phone     String @default("")
+  email     String @default("")
+  profileCompletedAt DateTime?
+  // "merchant" | "creator" | "unassigned" (signed in via Clerk, no role chosen yet)
+  role      String
+  locale    String   @default("ar")
+  // "active" | "banned" — banned accounts cannot use dashboards or appear publicly.
+  accountStatus String    @default("active")
+  bannedAt      DateTime?
+  banReason     String?
+  // Admin-created merchants are invited by email; first Clerk sign-in with this
+  // address claims the pre-provisioned User row (see lib/auth/session.ts).
+  inviteEmail String? @unique
+  createdAt DateTime @default(now())
+
+  merchantProfile MerchantProfile?
+  creatorProfile  CreatorProfile?
+  kycDocuments    KycDocument[]
+}
+
+// Platform admin is NOT stored here — it is an env-config allowlist of Clerk
+// user IDs (see lib/auth/admin.ts), so the self-serve onboarding flow can
+// never grant itself admin access.
+
+model MerchantProfile {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+
+  businessName       String
+  // Official identity — collected at KYC, never shown to creators.
+  commercialRegNo    String   @default("")
+  taxNumber          String   @default("")
+  ownerFullName      String   @default("")
+  city               String   @default("")
+  // "unsubmitted" | "pending" | "verified" | "rejected"
+  verificationStatus String   @default("unsubmitted")
+  kycSubmittedAt     DateTime?
+  kycReviewNote      String?
+  createdAt          DateTime @default(now())
+
+  products       Product[]
+  sampleRequests SampleRequest[]
+  wallet         MerchantWallet?
+}
+
+// Pre-funded float that pays marketer commission + platform fee when COD cash
+// is collected. Top-ups are recorded by admin (bank transfer); settlements
+// debit on fulfill and reverse on a post-collection return.
+model MerchantWallet {
+  id         String          @id @default(cuid())
+  merchantId String          @unique
+  merchant   MerchantProfile @relation(fields: [merchantId], references: [id])
+
+  balance   Float  @default(0)
+  currency  String @default("OMR")
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+
+  txs MerchantWalletTxn[]
+}
+
+model MerchantWalletTxn {
+  id      String         @id @default(cuid())
+  walletId String
+  wallet  MerchantWallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
+
+  // "credit" | "debit"
+  type   String
+  // "topup" | "order_settlement" | "order_reversal" | "admin_adjust"
+  reason String
+  amount       Float
+  balanceAfter Float
+  orderId      String?
+  note         String?
+  createdBy    String?
+  createdAt    DateTime @default(now())
+
+  @@index([walletId])
+  @@index([orderId])
+  @@index([reason])
+}
+
+model CreatorProfile {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+
+  username  String   @unique
+  // "NEW" | "RISING" | "ELITE"
+  tier      String   @default("NEW")
+  bio       String?
+  legalName String   @default("")
+  // "unsubmitted" | "pending" | "verified" | "rejected"
+  verificationStatus String    @default("unsubmitted")
+  kycSubmittedAt     DateTime?
+  kycReviewNote      String?
+  createdAt DateTime @default(now())
+
+  bankName      String @default("")
+  accountName   String @default("")
+  accountNumber String @default("")
+
+  deals          CreatorDeal[]
+  payoutRequests PayoutRequest[]
+  sampleRequests SampleRequest[]
+}
+
+model Product {
+  id         String          @id @default(cuid())
+  merchantId String
+  merchant   MerchantProfile @relation(fields: [merchantId], references: [id])
+
+  title     String
+  category  String
+  // Comma-separated tags — SQLite has no native array/scalar-list support in Prisma.
+  // Use lib/catalog-db.ts helpers (parseTags/serializeTags) to read/write this field.
+  tags      String
+  // Comma-separated size/variant labels (e.g. "S,M,L,XL"). Empty string = no variants.
+  variants  String   @default("")
+  basePrice Float
+  currency  String   @default("OMR")
+  // Derived from costPrice / basePrice at create/update time — this is what the
+  // waterfall engine (lib/ledger/waterfall.ts) actually consumes as "cogs %".
+  cogsPct   Float
+  // Secret, merchant-only absolute cost — never exposed to creator-facing
+  // loaders/components (lib/dashboard/browse.ts, ApplyCampaignModal, storefront).
+  // The merchant-facing form collects this directly; cogsPct above is derived
+  // from it so the existing ledger math needs no changes.
+  costPrice Float   @default(0)
+  // "pct" | "fixed" — see lib/domain/enums.ts#COMMISSION_TYPES. How the
+  // merchant expressed the marketer commission for this product.
+  commissionType  String @default("pct")
+  // Fraction (0.15/0.20/0.25/custom) if commissionType is "pct", or an
+  // absolute currency amount per sale if "fixed". See
+  // lib/domain/commission.ts#commissionToPoolSharePct for how this becomes
+  // CreatorDeal.lockedCommissionPct at deal-creation time.
+  commissionValue Float  @default(0.25)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  deals          CreatorDeal[]
+  sampleRequests SampleRequest[]
+  mediaAssets    MediaAsset[]
+
+  @@index([merchantId])
+  @@index([category])
+}
+
+// Merchant-uploaded ready-to-use promo images/videos for a product. Lets a
+// creator promote a campaign instantly (the "media kit" apply path) without
+// waiting on a physical sample.
+model MediaAsset {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+
+  // "image" | "video"
+  type    String
+  url     String
+  caption String?
+
+  createdAt DateTime @default(now())
+
+  @@index([productId])
+}
+
+// Private identity documents (commercial register, national ID, liveness stills).
+// Files live on disk under storage/kyc/ and are served only via /api/kyc/[id]
+// to the owner or a platform admin — never put these in /public.
+model KycDocument {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // See lib/domain/enums.ts#KYC_DOCUMENT_KINDS
+  kind         String
+  originalName String
+  mimeType     String
+  sizeBytes    Int
+  storagePath  String
+  createdAt    DateTime @default(now())
+
+  @@index([userId])
+  @@index([kind])
+}
+
+// Immutable deal-terms snapshot — price/commission/COGS/discount-cap are locked
+// at creation time and never recomputed from a live/mutable Product price.
+model CreatorDeal {
+  id        String         @id @default(cuid())
+  creatorId String
+  creator   CreatorProfile @relation(fields: [creatorId], references: [id])
+  productId String
+  product   Product        @relation(fields: [productId], references: [id])
+
+  lockedUnitPrice     Float
+  lockedCommissionPct Float
+  lockedCogsPct       Float
+  discountCapPct      Float
+  // "pending" | "active" | "paused" | "ended" — pending waits on merchant accept
+  status              String   @default("pending")
+  // Marks the creator's single hero product for their storefront ("keep ONE
+  // hero product, list others below the fold" — see CreatorStorefront).
+  featured            Boolean  @default(false)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt @default(now())
+
+  orders   Order[]
+  visits   StorefrontVisit[]
+
+  @@index([creatorId])
+  @@index([productId])
+}
+
+model Order {
+  id     String      @id @default(cuid())
+  dealId String
+  deal   CreatorDeal @relation(fields: [dealId], references: [id])
+
+  buyerName         String
+  buyerPhone        String
+  buyerAddress      String   @default("")
+  buyerCity         String   @default("")
+  // Size/variant chosen at checkout. Kept off buyerName so the ledger stays clean.
+  variantLabel      String   @default("")
+  quantity          Int      @default(1)
+  // Actual unit price charged to the buyer (may be discounted vs. the locked price).
+  unitPriceCharged  Float
+  currency          String   @default("OMR")
+  // "creator_link" | "platform_agent" | "direct" — first-touch creator attribution
+  // wins; the AI closing agent is a cost center, never an attribution party.
+  attributionSource String   @default("creator_link")
+  // "cod" | "card" — COD has no gateway fee; card uses CARD_PAYMENT_FEE_PCT.
+  settlementChannel String   @default("cod")
+  // Shared across line items from one checkout. Buyer tracking URL is /order/[token].
+  trackingToken     String   @default("")
+  // "held" | "released" | "refunded" — ledger escrow, not a card capture.
+  escrowStatus      String   @default("held")
+  escrowReleasedAt  DateTime?
+  // "pending" | "confirmed" | "fulfilled" | "returned" | "cancelled"
+  status            String   @default("pending")
+  shippingRef       String?
+  createdAt         DateTime @default(now())
+
+  ledgerEntry LedgerEntry?
+
+  @@index([dealId])
+  @@index([status])
+  @@index([trackingToken])
+  @@index([escrowStatus])
+}
+
+// One split computation per order — always produced by lib/ledger/waterfall.ts.
+model LedgerEntry {
+  id      String @id @default(cuid())
+  orderId String @unique
+  order   Order  @relation(fields: [orderId], references: [id])
+
+  attributedGmv  Float
+  paymentFee     Float
+  creatorShare   Float
+  merchantShare  Float
+  platformShare  Float
+  holdbackAmount Float
+  availableAmount Float
+  holdbackDays   Int
+  computedAt     DateTime @default(now())
+}
+
+model PayoutRequest {
+  id        String         @id @default(cuid())
+  creatorId String
+  creator   CreatorProfile @relation(fields: [creatorId], references: [id])
+
+  // "instant" | "scheduled"
+  type        String
+  amount      Float
+  feeAmount   Float     @default(0)
+  // "requested" | "approved" | "paid" | "rejected"
+  status      String    @default("requested")
+  requestedAt DateTime  @default(now())
+  processedAt DateTime?
+
+  @@index([creatorId])
+}
+
+// A creator asking a merchant to physically ship a product sample (for
+// filming/content). Independent of CreatorDeal — a creator can request a
+// sample before (or without ever) locking a deal on that product.
+model SampleRequest {
+  id         String          @id @default(cuid())
+  creatorId  String
+  creator    CreatorProfile  @relation(fields: [creatorId], references: [id])
+  productId  String
+  product    Product         @relation(fields: [productId], references: [id])
+  merchantId String
+  merchant   MerchantProfile @relation(fields: [merchantId], references: [id])
+
+  note        String?
+  // "pending" | "approved" | "rejected" | "shipped"
+  status      String    @default("pending")
+  createdAt   DateTime  @default(now())
+  respondedAt DateTime?
+  // Platform-generated reference shown to both sides once shipped — stands in
+  // for a tracking number so creator/merchant never need to exchange phone
+  // numbers or addresses directly to coordinate the sample handoff.
+  shippingRef String?
+
+  // UGC financial-hold policy: the full product price is held as a deposit
+  // once a sample is requested. The creator has UGC_DEADLINE_DAYS (7) from
+  // shipping to submit an approved video, or the deposit is forfeited — see
+  // lib/domain/ugc.ts for the (derived, not cron-ticked) status logic.
+  depositAmount   Float?
+  depositCurrency String?
+  ugcDeadline     DateTime?
+  ugcVideoUrl     String?
+  ugcSubmittedAt  DateTime?
+  // "not_applicable" | "pending" | "submitted" | "approved" | "forfeited"
+  ugcStatus       String    @default("not_applicable")
+
+  @@index([creatorId])
+  @@index([merchantId])
+  @@index([productId])
+}
+
+model ContactLead {
+  id        String   @id @default(cuid())
+  name      String
+  biz       String
+  phone     String
+  msg       String
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+model StorefrontVisit {
+  id        String       @id @default(cuid())
+  username  String
+  dealId    String?
+  deal      CreatorDeal? @relation(fields: [dealId], references: [id], onDelete: SetNull)
+  createdAt DateTime     @default(now())
+
+  @@index([username])
+  @@index([dealId])
+  @@index([createdAt])
+}

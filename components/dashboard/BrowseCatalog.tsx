@@ -22,7 +22,7 @@ export default function BrowseCatalog({ data }: { data: CreatorBrowseData }) {
 
   if (data.suggested.length === 0 && data.others.length === 0) {
     return (
-      <section className="px-5 py-16 sm:px-8">
+      <section className="px-4 py-16 sm:px-8">
         <p className="max-w-md rounded-2xl border border-dashed border-line bg-white px-5 py-8 text-[14px] text-frost-dim">
           {t("empty")}
         </p>
@@ -32,19 +32,19 @@ export default function BrowseCatalog({ data }: { data: CreatorBrowseData }) {
 
   return (
     <div>
-      <section className="border-b border-line px-5 py-5 sm:px-8">
+      <section className="border-b border-line px-4 py-4 sm:px-8">
         <p className="text-[14px] text-frost-dim">{t("trustNote")}</p>
       </section>
 
       {data.categories.length > 0 && (
-        <section className="flex flex-wrap gap-2 border-b border-line px-5 py-5 sm:px-8">
+        <section className="sticky top-0 z-20 flex gap-2 overflow-x-auto border-b border-line bg-white px-4 py-3 overscroll-x-contain sm:px-8">
           <button
             type="button"
             onClick={() => setActiveCategory(null)}
-            className={`min-h-11 rounded-full border px-4 text-[13px] font-medium transition-colors duration-150 ease-out ${
+            className={`min-h-11 shrink-0 rounded-full border px-4 text-[13px] font-medium transition-colors duration-150 ease-out ${
               activeCategory === null
                 ? "border-frost bg-frost text-white"
-                : "border-line bg-white text-frost-dim hover:border-[rgba(17,19,24,0.2)]"
+                : "border-line bg-white text-frost-dim"
             }`}
           >
             {t("allCategories")}
@@ -54,10 +54,10 @@ export default function BrowseCatalog({ data }: { data: CreatorBrowseData }) {
               key={category}
               type="button"
               onClick={() => setActiveCategory(category)}
-              className={`min-h-11 rounded-full border px-4 text-[13px] font-medium transition-colors duration-150 ease-out ${
+              className={`min-h-11 shrink-0 rounded-full border px-4 text-[13px] font-medium transition-colors duration-150 ease-out ${
                 activeCategory === category
                   ? "border-frost bg-frost text-white"
-                  : "border-line bg-white text-frost-dim hover:border-[rgba(17,19,24,0.2)]"
+                  : "border-line bg-white text-frost-dim"
               }`}
             >
               {category}
@@ -66,10 +66,35 @@ export default function BrowseCatalog({ data }: { data: CreatorBrowseData }) {
         </section>
       )}
 
+      {data.weekly.length > 0 && (
+        <section className="border-b border-line px-4 py-5 sm:px-8">
+          <p className="gl-eyebrow">{t("weeklyTitle")}</p>
+          <p className="mt-2 max-w-lg text-[14px] leading-relaxed text-frost-dim">{t("weeklyHint")}</p>
+          <ul className="mt-4 space-y-2">
+            {data.weekly.map((row) => (
+              <li key={`weekly-${row.productId}`}>
+                <button
+                  type="button"
+                  onClick={() => setModalProduct(row)}
+                  className="flex w-full items-baseline justify-between gap-3 rounded-2xl border border-line bg-white px-4 py-3 text-start"
+                >
+                  <span className="text-[15px] font-medium text-frost">{row.title}</span>
+                  <span className="shrink-0 font-mono text-[12px] text-frost-dim">
+                    {t("weeklyOrders", { count: row.weeklyOrders })}
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       {suggested.length > 0 && (
-        <section className="px-5 py-10 sm:px-8">
-          <p className="gl-eyebrow">{t("suggestedTitle")}</p>
-          <p className="mt-2 max-w-lg text-[14px] leading-relaxed text-frost-dim">{t("suggestedHint")}</p>
+        <section className="py-6 sm:px-8 sm:py-10">
+          <div className="px-4 sm:px-0">
+            <p className="gl-eyebrow">{t("suggestedTitle")}</p>
+            <p className="mt-2 max-w-lg text-[14px] leading-relaxed text-frost-dim">{t("suggestedHint")}</p>
+          </div>
           <ProductGrid
             rows={suggested}
             t={t}
@@ -82,8 +107,10 @@ export default function BrowseCatalog({ data }: { data: CreatorBrowseData }) {
       )}
 
       {others.length > 0 && (
-        <section className="border-t border-line px-5 py-10 sm:px-8">
-          <p className="gl-eyebrow">{t("othersTitle")}</p>
+        <section className="border-t border-line py-6 sm:px-8 sm:py-10">
+          <div className="px-4 sm:px-0">
+            <p className="gl-eyebrow">{t("othersTitle")}</p>
+          </div>
           <ProductGrid
             rows={others}
             t={t}
@@ -98,6 +125,7 @@ export default function BrowseCatalog({ data }: { data: CreatorBrowseData }) {
       {modalProduct && (
         <ApplyCampaignModal
           row={modalProduct}
+          samplePolicy={data.samplePolicy}
           onClose={() => setModalProduct(null)}
           onApplied={(path) => {
             setAppliedIds((prev) => ({ ...prev, [modalProduct.productId]: path }));
@@ -124,7 +152,7 @@ function ProductGrid({
   onOpenApply: (row: BrowseProductRow) => void;
 }) {
   return (
-    <div className="mx-auto mt-6 grid max-w-3xl gap-6 sm:grid-cols-2 lg:max-w-none lg:grid-cols-3">
+    <div className="mx-auto mt-4 flex max-w-md flex-col sm:mt-6 sm:grid sm:max-w-3xl sm:grid-cols-2 sm:gap-6 lg:max-w-none lg:grid-cols-3">
       {rows.map((row) => (
         <ProductPost
           key={row.productId}
@@ -158,13 +186,9 @@ function ProductPost({
   const sampleStatus = applied === "sample_ugc" ? "pending" : row.sampleStatus;
 
   return (
-    <article className="flex flex-col overflow-hidden rounded-2xl border border-line bg-white">
-      <PostMedia
-        assets={row.mediaAssets}
-        title={row.title}
-        videoLabel={t("videoBadge")}
-      />
-      <div className="flex flex-1 flex-col px-4 pb-4 pt-3">
+    <article className="flex flex-col overflow-hidden border-b border-line bg-white sm:rounded-2xl sm:border">
+      <PostMedia assets={row.mediaAssets} title={row.title} videoLabel={t("videoBadge")} />
+      <div className="flex flex-1 flex-col px-4 pb-5 pt-3">
         <div className="flex items-start justify-between gap-2">
           <p className="text-[16px] font-semibold leading-snug text-frost">{row.title}</p>
           {showScore && row.suggestionScore !== null && (
@@ -173,13 +197,21 @@ function ProductPost({
             </span>
           )}
         </div>
-        <p className="mt-1 text-[13px] text-frost-dim">{row.merchantBusinessName}</p>
+        <p className="mt-1 text-[13px] text-frost-dim">
+          {row.merchantBusinessName}
+          {row.merchantVerified ? ` · ${t("verifiedMerchant")}` : ""}
+          {row.merchantCity ? ` · ${t("cityLabel", { city: row.merchantCity })}` : ""}
+        </p>
         <div className="mt-3 flex flex-wrap items-baseline justify-between gap-2">
           <p className="font-mono text-[14px] text-frost">{formatMoney(row.basePrice, row.currency)}</p>
           <span className="font-mono text-[12px] text-frost-dim">
             {t("commissionLabel", { amount: formatMoney(row.estimatedNetProfit, row.currency) })}
           </span>
         </div>
+        <p className="mt-2 font-mono text-[12px] text-frost-faint">
+          {t("seatsLeft", { count: row.seatsRemaining })}
+          {row.weeklyOrders > 0 ? ` · ${t("weeklyOrders", { count: row.weeklyOrders })}` : ""}
+        </p>
 
         <div className="mt-4">
           {applied === "media_kit" ? (
@@ -189,7 +221,7 @@ function ProductPost({
               {tStatus(`sample.${sampleStatus}` as "sample.pending")}
             </p>
           ) : (
-            <button type="button" onClick={() => onOpenApply(row)} className="gl-btn-primary w-full">
+            <button type="button" onClick={() => onOpenApply(row)} className="gl-btn-primary min-h-11 w-full">
               {t("applyCta")}
             </button>
           )}
@@ -236,7 +268,7 @@ function PostMedia({
         <video src={video.url} className="h-full w-full object-cover" muted playsInline preload="metadata" />
       ) : (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={cover.url} alt="" className="h-full w-full object-cover" />
+        <img src={cover.url} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover" />
       )}
       {video ? (
         <span className="absolute start-3 top-3 rounded-md bg-white px-2 py-0.5 font-mono text-[10px] text-frost">

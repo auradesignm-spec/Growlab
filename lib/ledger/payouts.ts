@@ -1,8 +1,9 @@
 /**
  * Instant payout (earned wage access) math. A creator's balance is always
  * split into `availableBalance` (unheld, confirmed, spendable now) and
- * `heldBalance` (in the return/fraud holdback window). Payout requests may
- * only ever draw from `availableBalance`, never from `heldBalance`.
+ * `heldBalance` (returns reserve — 10% for 14 days after collection).
+ * Payout requests may only ever draw from `availableBalance`.
+ * Returned / refunded lines drop out of payable balances.
  */
 
 export interface LedgerBalanceLine {
@@ -73,9 +74,12 @@ export function computeCreatorBalances(
   };
 }
 
-/** Small flat + percentage fee for instant (earned-wage-access) payouts. */
-export const INSTANT_PAYOUT_FEE_PCT = 0.03;
-export const INSTANT_PAYOUT_FEE_MIN = 1;
+/** Instant payout fee on the withdrawn amount. */
+export const INSTANT_PAYOUT_FEE_PCT = 0.02;
+export const INSTANT_PAYOUT_FEE_MIN = 0.2;
+
+/** Minimum payout, instant or scheduled. 25 USD at 1 OMR ≈ 2.6008 USD. */
+export const MIN_PAYOUT_OMR = 9.61;
 
 export function computeInstantPayoutFee(amount: number): number {
   return round2(Math.max(INSTANT_PAYOUT_FEE_MIN, amount * INSTANT_PAYOUT_FEE_PCT));

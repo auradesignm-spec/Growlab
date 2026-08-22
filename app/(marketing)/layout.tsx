@@ -8,9 +8,9 @@ export default function MarketingLayout({
 }) {
   return (
     <AppShell>
-      <div className="relative">
+      <div className="relative isolate">
         <CloudMesh />
-        {children}
+        <div className="relative z-10">{children}</div>
       </div>
     </AppShell>
   );

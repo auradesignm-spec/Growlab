@@ -3,7 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth/session";
-import { computeCreatorBalances, computeInstantPayoutFee } from "@/lib/ledger/payouts";
+import { computeCreatorBalances, computeInstantPayoutFee, MIN_PAYOUT_OMR } from "@/lib/ledger/payouts";
+import { creatorHasPayoutAccount } from "@/lib/ledger/account";
 
 /**
  * Self-serve verification is closed. Merchants submit KYC; only ADMIN_CLERK_USER_IDS
@@ -45,12 +46,19 @@ async function currentAvailableBalance(creatorProfileId: string) {
 }
 
 /**
- * Instant payout (earned wage access) — can only draw from availableBalance,
- * never heldBalance. Paid immediately, minus the flat/percentage fee.
+ * Instant payout — fee applies. Status stays requested until admin marks paid
+ * after the bank transfer.
  */
 export async function requestInstantPayout(creatorProfileId: string, amount: number) {
   await assertOwningCreator(creatorProfileId);
   if (!Number.isFinite(amount) || amount <= 0) throw new Error("Invalid payout amount.");
+  if (amount < MIN_PAYOUT_OMR) throw new Error("BELOW_MIN_PAYOUT");
+
+  const account = await prisma.creatorProfile.findUniqueOrThrow({
+    where: { id: creatorProfileId },
+    select: { bankName: true, accountName: true, accountNumber: true },
+  });
+  if (!creatorHasPayoutAccount(account)) throw new Error("PAYOUT_ACCOUNT_REQUIRED");
 
   const balances = await currentAvailableBalance(creatorProfileId);
   if (amount > balances.availableBalance) {
@@ -65,8 +73,7 @@ export async function requestInstantPayout(creatorProfileId: string, amount: num
       type: "instant",
       amount,
       feeAmount,
-      status: "paid",
-      processedAt: new Date(),
+      status: "requested",
     },
   });
 
@@ -77,6 +84,13 @@ export async function requestInstantPayout(creatorProfileId: string, amount: num
 export async function requestScheduledPayout(creatorProfileId: string, amount: number) {
   await assertOwningCreator(creatorProfileId);
   if (!Number.isFinite(amount) || amount <= 0) throw new Error("Invalid payout amount.");
+  if (amount < MIN_PAYOUT_OMR) throw new Error("BELOW_MIN_PAYOUT");
+
+  const account = await prisma.creatorProfile.findUniqueOrThrow({
+    where: { id: creatorProfileId },
+    select: { bankName: true, accountName: true, accountNumber: true },
+  });
+  if (!creatorHasPayoutAccount(account)) throw new Error("PAYOUT_ACCOUNT_REQUIRED");
 
   const balances = await currentAvailableBalance(creatorProfileId);
   if (amount > balances.availableBalance) {
@@ -93,5 +107,23 @@ export async function requestScheduledPayout(creatorProfileId: string, amount: n
     },
   });
 
+  revalidatePath("/dashboard");
+}
+
+export async function saveCreatorPayoutAccount(
+  creatorProfileId: string,
+  input: { bankName: string; accountName: string; accountNumber: string }
+) {
+  await assertOwningCreator(creatorProfileId);
+  const bankName = input.bankName.trim().slice(0, 80);
+  const accountName = input.accountName.trim().slice(0, 80);
+  const accountNumber = input.accountNumber.replace(/\s+/g, "").slice(0, 34);
+  if (!creatorHasPayoutAccount({ bankName, accountName, accountNumber })) {
+    throw new Error("PAYOUT_ACCOUNT_INVALID");
+  }
+  await prisma.creatorProfile.update({
+    where: { id: creatorProfileId },
+    data: { bankName, accountName, accountNumber },
+  });
   revalidatePath("/dashboard");
 }

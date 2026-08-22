@@ -4,8 +4,9 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { isCurrentUserAdmin } from "@/lib/auth/admin";
 import { ACCOUNT_STATUSES, ESCROW_STATUSES, PAYOUT_STATUSES, VERIFICATION_STATUSES, type AccountStatus, type EscrowStatus, type PayoutStatusId, type VerificationStatus } from "@/lib/domain/enums";
-import { nextOrderStatuses, type OrderActionStatus } from "@/lib/domain/orders";
-import { escrowPatchForStatus } from "@/lib/shop/escrow";
+import type { OrderActionStatus } from "@/lib/domain/orders";
+import { applyOrderStatusTransition } from "@/lib/shop/orderTransition";
+import { creditMerchantWallet, ensureMerchantWallet } from "@/lib/ledger/wallet";
 import { CONTACT_LEAK_WARNING_AR, generateShippingRef, scanForContactLeak } from "@/lib/security/antiLeak";
 import { computeUgcDeadline } from "@/lib/domain/ugc";
 
@@ -122,6 +123,7 @@ export async function adminCreateMerchant(input: AdminCreateMerchantInput) {
       name: ownerFullName,
       role: "merchant",
       inviteEmail,
+      email: inviteEmail,
       merchantProfile: {
         create: {
           businessName,
@@ -130,6 +132,7 @@ export async function adminCreateMerchant(input: AdminCreateMerchantInput) {
           city,
           verificationStatus: input.verifyNow ? "verified" : "pending",
           kycSubmittedAt: new Date(),
+          wallet: { create: { balance: 0, currency: "OMR" } },
         },
       },
     },
@@ -140,20 +143,21 @@ export async function adminCreateMerchant(input: AdminCreateMerchantInput) {
 
 export async function adminSetOrderStatus(orderId: string, status: OrderActionStatus) {
   await requireAdmin();
+  const updated = await applyOrderStatusTransition(orderId, status);
+  revalidateAdmin();
+  if (updated.trackingToken) revalidatePath(`/order/${updated.trackingToken}`);
+}
 
-  const order = await prisma.order.findUnique({ where: { id: orderId } });
-  if (!order) throw new Error("Order not found.");
-  const allowed = nextOrderStatuses(order.status);
-  if (!allowed.includes(status)) {
-    throw new Error(`Cannot move an order from ${order.status} to ${status}.`);
-  }
-
-  await prisma.order.update({
-    where: { id: orderId },
-    data: { status, ...escrowPatchForStatus(status) },
+export async function adminCreditMerchantWallet(merchantProfileId: string, amount: number, note = "") {
+  await requireAdmin();
+  await ensureMerchantWallet(merchantProfileId);
+  await creditMerchantWallet({
+    merchantId: merchantProfileId,
+    amount,
+    reason: "topup",
+    note: note.trim().slice(0, 200) || "شحن يدوي من الإدارة",
   });
   revalidateAdmin();
-  if (order.trackingToken) revalidatePath(`/order/${order.trackingToken}`);
 }
 
 export async function adminSetEscrowStatus(orderId: string, escrowStatus: EscrowStatus) {

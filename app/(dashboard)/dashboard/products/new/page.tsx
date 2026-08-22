@@ -39,14 +39,14 @@ export default async function NewProductPage() {
   return (
     <main>
       <section className="border-b border-white/10">
-        <div className="px-5 py-12 sm:px-8">
+        <div className="px-4 py-8 sm:px-8 sm:py-12">
           <p className="gl-eyebrow">{t("kicker")}</p>
-          <h1 className="mt-4 font-display text-display-lg">{t("newTitle")}</h1>
-          <p className="mt-4 max-w-md text-[15px] leading-relaxed text-frost-dim">{t("newLede")}</p>
+          <h1 className="mt-3 text-[28px] font-semibold leading-tight text-frost sm:mt-4 sm:text-display-lg">{t("newTitle")}</h1>
+          <p className="mt-3 max-w-md text-[15px] leading-relaxed text-frost-dim sm:mt-4">{t("newLede")}</p>
         </div>
       </section>
 
-      <div className="px-5 py-12 sm:px-8">
+      <div className="px-4 py-8 sm:px-8 sm:py-12">
         <ProductForm />
       </div>
     </main>

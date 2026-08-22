@@ -11,8 +11,8 @@ import { parseList } from "@/lib/catalog-db";
  *   - "proven converter" bonus: the candidate product already converted well
  *     (net attributed sales) for other creators who share this creator's tier
  *     or share a tag with this creator's existing products (+ scaled bonus)
- *   - published media kit (+1) and video in the kit (+1) — a light trending
- *     boost so products with assets surface above empty listings
+ *   - published media kit (+1) and video in the kit (+1)
+ *   - COD orders this week (+2) — a local conversion signal, not ML
  *
  * This is a plain scored query over local data — no model, no training, no
  * external service. Label it as heuristic everywhere it surfaces in the UI.
@@ -35,6 +35,8 @@ const TAG_MATCH_SCORE = 1;
 const PROVEN_CONVERTER_MAX_BONUS = 4;
 const KIT_BONUS = 1;
 const VIDEO_BONUS = 1;
+const WEEKLY_COD_BONUS = 2;
+const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 const MAX_SUGGESTIONS = 6;
 
 export async function suggestProductsForCreator(creatorId: string): Promise<MatchSuggestion[]> {
@@ -46,7 +48,9 @@ export async function suggestProductsForCreator(creatorId: string): Promise<Matc
   });
   if (!creator) return [];
 
-  const dealtProductIds = new Set(creator.deals.map((d) => d.productId));
+  const dealtProductIds = new Set(
+    creator.deals.filter((d) => d.status === "active" || d.status === "pending").map((d) => d.productId)
+  );
   const interestCategories = new Set(creator.deals.map((d) => d.product.category));
   const interestTags = new Set(creator.deals.flatMap((d) => parseList(d.product.tags)));
 
@@ -84,7 +88,7 @@ export async function suggestProductsForCreator(creatorId: string): Promise<Matc
     if (!sharesTier && !sharesTag) continue;
 
     const netSales = deal.orders.reduce(
-      (sum, order) => sum + (order.ledgerEntry?.netAttributedSales ?? 0),
+      (sum, order) => sum + (order.ledgerEntry?.attributedGmv ?? 0),
       0
     );
     convertedNetSalesByProductId.set(
@@ -94,6 +98,19 @@ export async function suggestProductsForCreator(creatorId: string): Promise<Matc
   }
 
   const maxConvertedNetSales = Math.max(1, ...convertedNetSalesByProductId.values());
+
+  const weekAgo = Date.now() - WEEK_MS;
+  const weeklyCodByProductId = new Map<string, number>();
+  for (const deal of allDeals) {
+    const weekly = deal.orders.filter(
+      (order) =>
+        order.createdAt.getTime() >= weekAgo &&
+        order.status !== "cancelled" &&
+        order.status !== "returned"
+    ).length;
+    if (weekly === 0) continue;
+    weeklyCodByProductId.set(deal.productId, (weeklyCodByProductId.get(deal.productId) ?? 0) + weekly);
+  }
 
   const suggestions: MatchSuggestion[] = candidates.map((product) => {
     const productTags = parseList(product.tags);
@@ -122,11 +139,17 @@ export async function suggestProductsForCreator(creatorId: string): Promise<Matc
     const hasVideo = product.mediaAssets.some((asset) => asset.type === "video");
     if (hasKit) {
       score += KIT_BONUS;
-      reasons.push("Published media kit");
+      reasons.push("Published product media");
     }
     if (hasVideo) {
       score += VIDEO_BONUS;
-      reasons.push("Has video in the kit");
+      reasons.push("Has video");
+    }
+
+    const weeklyCod = weeklyCodByProductId.get(product.id) ?? 0;
+    if (weeklyCod > 0) {
+      score += WEEKLY_COD_BONUS;
+      reasons.push("COD orders this week");
     }
 
     return {
@@ -174,7 +197,9 @@ export async function suggestCreatorsForProduct(productId: string): Promise<Crea
   });
 
   const suggestions: CreatorMatchSuggestion[] = creators
-    .filter((creator) => !creator.deals.some((d) => d.productId === productId))
+    .filter((creator) =>
+      !creator.deals.some((d) => d.productId === productId && (d.status === "active" || d.status === "pending"))
+    )
     .map((creator) => {
       const creatorCategories = new Set(creator.deals.map((d) => d.product.category));
       const creatorTags = new Set(creator.deals.flatMap((d) => parseList(d.product.tags)));
@@ -194,7 +219,7 @@ export async function suggestCreatorsForProduct(productId: string): Promise<Crea
 
       const netSales = creator.deals.reduce(
         (sum, deal) =>
-          sum + deal.orders.reduce((s, o) => s + (o.ledgerEntry?.netAttributedSales ?? 0), 0),
+          sum + deal.orders.reduce((s, o) => s + (o.ledgerEntry?.attributedGmv ?? 0), 0),
         0
       );
       if (netSales > 0) {

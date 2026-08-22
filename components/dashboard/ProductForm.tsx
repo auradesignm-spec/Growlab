@@ -4,7 +4,12 @@ import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { formatMoney, formatPct } from "@/lib/format";
-import { COMMISSION_QUICK_PICKS, computeSimpleSplit } from "@/lib/domain/commission";
+import {
+  COMMISSION_QUICK_PICKS,
+  HIGH_MARGIN_COMMISSION_PCT,
+  computeSimpleSplit,
+  isHighMarginProduct,
+} from "@/lib/domain/commission";
 import { createProduct, updateProduct, type ProductFormInput } from "@/app/(dashboard)/dashboard/product-actions";
 
 export interface ProductFormInitial {
@@ -32,6 +37,7 @@ export default function ProductForm({
   const router = useRouter();
 
   const [title, setTitle] = useState(initial?.title ?? "");
+  const [coverImageUrl, setCoverImageUrl] = useState("");
   const [category, setCategory] = useState(initial?.category ?? "");
   const [tags, setTags] = useState(initial?.tags ?? "");
   const [variants, setVariants] = useState(initial?.variants ?? "");
@@ -39,7 +45,7 @@ export default function ProductForm({
   const [costPrice, setCostPrice] = useState(String(initial?.costPrice ?? ""));
   const [commissionType, setCommissionType] = useState(initial?.commissionType ?? "pct");
   const [commissionPct, setCommissionPct] = useState(
-    initial?.commissionType === "fixed" ? "" : String((initial?.commissionValue ?? 0.2) * 100)
+    initial?.commissionType === "fixed" ? "" : String((initial?.commissionValue ?? 0.15) * 100)
   );
   const [commissionFixed, setCommissionFixed] = useState(
     initial?.commissionType === "fixed" ? String(initial?.commissionValue ?? "") : ""
@@ -57,11 +63,18 @@ export default function ProductForm({
     () =>
       computeSimpleSplit({
         retailPrice: basePriceNum,
+        costPrice: costPriceNum,
         commissionType,
         commissionValue: commissionValueNum,
+        settlementChannel: "cod",
       }),
-    [basePriceNum, commissionType, commissionValueNum]
+    [basePriceNum, costPriceNum, commissionType, commissionValueNum]
   );
+  const highMargin = isHighMarginProduct(basePriceNum, costPriceNum);
+  const marginBlocked = basePriceNum > 0 && (preview.merchantNet <= 0 || (costPriceNum > 0 && preview.merchantNetAfterCogs < 0));
+  const commissionPicks = highMargin
+    ? [...COMMISSION_QUICK_PICKS, HIGH_MARGIN_COMMISSION_PCT]
+    : COMMISSION_QUICK_PICKS;
 
   function handleSubmit() {
     setError(null);
@@ -74,6 +87,7 @@ export default function ProductForm({
       costPrice: costPriceNum,
       commissionType,
       commissionValue: commissionValueNum,
+      coverImageUrl: coverImageUrl.trim() || undefined,
     };
 
     startTransition(async () => {
@@ -100,6 +114,17 @@ export default function ProductForm({
         <Field label={t("titleLabel")}>
           <input value={title} onChange={(e) => setTitle(e.target.value)} className="w-full border border-white/15 bg-white/[0.03] px-3 py-2 font-mono text-sm" />
         </Field>
+
+        {!initial?.productId ? (
+          <Field label={t("coverLabel")} hint={t("coverHint")}>
+            <input
+              value={coverImageUrl}
+              onChange={(e) => setCoverImageUrl(e.target.value)}
+              placeholder={t("coverPlaceholder")}
+              className="w-full border border-white/15 bg-white/[0.03] px-3 py-2 font-mono text-sm"
+            />
+          </Field>
+        ) : null}
 
         <Field label={t("categoryLabel")}>
           <input
@@ -176,7 +201,7 @@ export default function ProductForm({
           {commissionType === "pct" ? (
             <div className="mt-3 space-y-2">
               <div className="flex flex-wrap gap-2">
-                {COMMISSION_QUICK_PICKS.map((pct) => (
+                {commissionPicks.map((pct) => (
                   <button
                     key={pct}
                     type="button"
@@ -215,9 +240,12 @@ export default function ProductForm({
           )}
         </fieldset>
 
+        {marginBlocked && (
+          <p className="font-mono text-xs text-danger">{t("marginBlocked")}</p>
+        )}
         {error && <p className="font-mono text-xs text-danger">{error}</p>}
 
-        <button type="button" disabled={pending} onClick={handleSubmit} className="gl-btn-primary disabled:opacity-40">
+        <button type="button" disabled={pending || marginBlocked} onClick={handleSubmit} className="gl-btn-primary disabled:opacity-40">
           {initial?.productId ? t("saveCta") : t("createCta")}
         </button>
       </div>
@@ -230,12 +258,26 @@ export default function ProductForm({
           <PreviewLine label={t("previewRetail")} value={formatMoney(basePriceNum)} />
           <PreviewLine label={t("previewCommission")} value={`− ${formatMoney(preview.marketerCommission)}`} negative />
           <PreviewLine label={t("previewPlatformFee")} value={`− ${formatMoney(preview.platformFee)}`} negative />
+          {preview.paymentFee > 0 ? (
+            <PreviewLine label={t("previewPaymentFee")} value={`− ${formatMoney(preview.paymentFee)}`} negative />
+          ) : (
+            <PreviewLine label={t("previewCodNoGateway")} value={t("previewCodZero")} />
+          )}
           <PreviewLine label={t("previewMerchantNet")} value={formatMoney(preview.merchantNet)} emphasis />
+          <PreviewLine
+            label={t("previewAfterCogs")}
+            value={formatMoney(preview.merchantNetAfterCogs)}
+            negative={preview.merchantNetAfterCogs < 0}
+            emphasis
+          />
         </ul>
 
         <p className="mt-4 font-mono text-[11px] text-frost-dim">
           {t("previewMargin", { amount: formatMoney(Math.max(0, basePriceNum - costPriceNum)) })}
         </p>
+        {!highMargin && costPriceNum > 0 && (
+          <p className="mt-2 font-mono text-[11px] text-frost-dim">{t("highMarginHint")}</p>
+        )}
       </div>
     </div>
   );

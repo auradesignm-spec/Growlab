@@ -18,6 +18,8 @@
     "partnerPortal": "Partner portal",
     "ctaMerchant": "Register as merchant",
     "ctaCreator": "Register as creator",
+    "enterPlatform": "Enter the platform",
+    "startEarning": "Start earning profits",
     "backHome": "Home",
     "openDashboard": "My dashboard",
     "openMenu": "Open menu",
@@ -30,24 +32,77 @@
     "localeEn": "EN",
     "home": "Growlab"
   },
+  "enter": {
+    "eyebrow": "Enter the platform",
+    "title": "What do you want to do?",
+    "lede": "Pick the sentence that fits. We'll send you to the right account.",
+    "merchantTitle": "I have products and need people to sell them",
+    "merchantLede": "List products, accept marketers, and collect cash on delivery.",
+    "merchantNext": "After signup we review your commercial registration and owner ID.",
+    "creatorTitle": "I want to share links and earn",
+    "creatorLede": "Pick from the feed, share your link, and earn after collection.",
+    "creatorNext": "After signup you verify your ID and face, then you get your link.",
+    "confirmMerchant": "Good. We'll open a merchant account.",
+    "confirmCreator": "Good. We'll open a marketer account.",
+    "continue": "Create account",
+    "change": "Change choice",
+    "signInPrompt": "Already have an account?",
+    "signIn": "Sign in"
+  },
+  "appShell": {
+    "nav": {
+      "aria": "Marketer navigation",
+      "feed": "Feed",
+      "store": "My store",
+      "earnings": "Earnings",
+      "account": "Account"
+    },
+    "install": {
+      "lede": "Install Growlab on your home screen and open it like an app.",
+      "cta": "Install",
+      "dismiss": "Later",
+      "iosHint": "On iPhone: Share, then Add to Home Screen."
+    },
+    "share": {
+      "whatsapp": "WhatsApp",
+      "copy": "Copy link",
+      "copied": "Copied",
+      "waText": "{title} — order from this link: {link}"
+    },
+    "alerts": {
+      "title": "Alerts",
+      "unseen": "{count} new alerts",
+      "open": "Open",
+      "notifyWhatsapp": "WhatsApp draft",
+      "kinds": {
+        "waiting_accept": "Waiting for the merchant",
+        "deal_accepted": "The merchant accepted",
+        "new_order": "New order",
+        "commission": "Commission hit the ledger",
+        "new_application": "A marketer applied"
+      }
+    }
+  },
   "marketing": {
     "hero": {
-      "title": "Sell your product. Or earn from home.",
-      "lede": "The merchant lists the product. The marketer sells it from home, from their link. Profit is split in an open ledger both sides can see.",
+      "title": "Share more. Earn more.",
+      "lede": "A pay-on-collection sales channel. The merchant lists, the marketer sells from their link, and you pay only after the cash arrives.",
       "ctaMerchant": "Register as a merchant",
       "ctaCreator": "Register to sell from home",
+      "enterPlatform": "Enter the platform",
+      "startEarning": "Start earning profits",
       "hasAccount": "Already have an account?",
       "signIn": "Sign in"
     },
     "problem": {
       "eyebrow": "The problem",
-      "title": "Why most businesses lose money with marketing agencies",
-      "lede": "The same pattern shows up no matter the agency size. The fix starts with seeing it clearly.",
+      "title": "Why WhatsApp selling eats your margin before you scale",
+      "lede": "The problem is not an agency. It is commission, cash, and returns with no ledger.",
       "items": [
-        { "num": "01", "title": "Slow bureaucracy", "text": "You talk to an account manager. They talk to a delivery team. A small change takes days." },
-        { "num": "02", "title": "A new person on your account", "text": "The person who sold the contract is not the person running the campaign." },
-        { "num": "03", "title": "Reports that do not mean much", "text": "Reach and impressions, with no clear link to actual sales." },
-        { "num": "04", "title": "No stake in the result", "text": "You pay the same fee whether the campaign works or fails." }
+        { "num": "01", "title": "Deals lost in chat", "text": "Every marketer is a verbal deal. Terms drift, and the order disappears between threads." },
+        { "num": "02", "title": "Who closed this order?", "text": "Without a locked link, credit becomes a fight. The merchant pays twice or the marketer never gets paid." },
+        { "num": "03", "title": "Orders without cash", "text": "COD fails at the door. If you pay commission on the order, not collection, you lose twice." },
+        { "num": "04", "title": "Commission before cash arrives", "text": "You pay on a maybe. The right platform deducts after collection and holds a returns reserve." }
       ],
       "vizYou": "You",
       "vizManager": "Manager",
@@ -76,7 +131,7 @@
       "steps": [
         { "n": "01", "title": "Register and pick your role", "text": "Merchant or creator? Choose in two minutes. No signup fee and no long manual approval." },
         { "n": "02", "title": "The merchant lists. The creator builds a store.", "text": "The merchant uploads products and sets commission. The creator opens a personal store and picks what to promote." },
-        { "n": "03", "title": "Every sale splits automatically", "text": "The customer buys from the creator link. The platform writes each share into an open ledger." }
+        { "n": "03", "title": "Cash arrives, then it splits", "text": "The buyer orders COD. After collection is confirmed, commission and 6% leave the merchant wallet. One ledger for both sides." }
       ]
     },
     "compare": {
@@ -113,27 +168,50 @@
         { "n": "02", "title": "Add the product and commission", "text": "Photo, price, sizes if needed, and the marketer share. It appears in the catalog at once." },
         { "n": "03", "title": "A marketer adds it to their store", "text": "Creators pick from your catalog. No one-off WhatsApp threads." },
         { "n": "04", "title": "You confirm the order", "text": "Every COD order lands on your dashboard. Approve or reject. Same status the admin sees." },
-        { "n": "05", "title": "Profit in an open ledger", "text": "Merchant share, commission, and platform fee. The number shows at the order, not in a month-end report." }
+        { "n": "05", "title": "Profit after collection", "text": "Merchant share, commission, and 6% show after cash is confirmed. A 14-day returns reserve, then payout." }
       ],
       "creatorSteps": [
         { "n": "01", "title": "Register and open your store", "text": "Pick the marketer role. The storefront is ready at signup. One link with your name." },
         { "n": "02", "title": "Pick merchant products", "text": "The feed shows trending products as posts. Pick one, apply, and see commission before you share." },
         { "n": "03", "title": "Share the link", "text": "Story, reel, or bio. Every tap on your link is yours. No guessing who closed the sale." },
         { "n": "04", "title": "The order is counted for you", "text": "The customer pays cash on delivery from your store. The order shows for the merchant and for you." },
-        { "n": "05", "title": "Your commission in the ledger", "text": "Your share is calculated automatically. You see it on the dashboard, with the same numbers the merchant sees." }
+        { "n": "05", "title": "Your commission after collection", "text": "Your share is calculated after cash is confirmed. You see it on the dashboard, same numbers as the merchant, with a 14-day returns reserve." }
       ]
     },
     "gallery": {
       "storeTitle": "Trending in the feed",
       "storeCaption": "Photo or video posts from what the merchant published. Marketers pick a product and apply.",
+      "feedKicker": "Merchant post",
+      "feedNote": "Photo or video. Commission shows before you apply.",
       "videoBadge": "Video",
       "priceLabel": "Sale price",
       "yourCommission": "Your commission",
       "linkTitle": "A link that tracks every sale",
-      "linkCaption": "Every order from your link is attributed to you. No guessing who closed it.",
-      "ledgerTitle": "A live profit ledger",
-      "ledgerCaption": "The sale, the commission, and the merchant share. The number shows at the order.",
+      "linkCaption": "You share your store link. The buyer enters without an account, orders from the store, and pays cash on delivery. The order is attributed to your link.",
+      "ledgerTitle": "A product tracking dashboard",
+      "ledgerCaption": "Link visits, orders, and your commission in one board. The same ledger numbers at the order.",
       "todayOrder": "Today's order",
+      "dashLabel": "Product dashboard",
+      "dashWeek": "This week's movement",
+      "dashNote": "Profit, sales, and visits update with each order. No external report.",
+      "dashKpi": {
+        "visits": "Visits",
+        "sales": "Sales",
+        "profit": "Profit"
+      },
+      "dashDays": {
+        "sat": "Sa",
+        "sun": "Su",
+        "mon": "Mo",
+        "tue": "Tu",
+        "wed": "We",
+        "thu": "Th",
+        "fri": "Fr"
+      },
+      "dashSplit": {
+        "merchant": "Merchant share",
+        "yours": "Your commission"
+      },
       "omr": "OMR",
       "productA": "Royal perfume",
       "productB": "High-power flashlight",
@@ -146,58 +224,63 @@
       "copyLink": "Copy marketer link",
       "copiedLink": "Link copied",
       "ordersFromLink": "3 orders from this link",
-      "newOrder": "New order from Muscat"
+      "newOrder": "New order from Muscat",
+      "linkProduct": "Product in your campaign",
+      "linkStepShare": "1. Share your store link",
+      "linkStepTap": "2. The buyer enters",
+      "linkStepOrder": "3. Orders from the store",
+      "linkGuest": "No account needed",
+      "linkCod": "Pays cash on delivery",
+      "linkFunnelTitle": "From this link",
+      "linkFunnel": {
+        "opens": "Opens",
+        "orders": "Orders",
+        "commission": "Your commission"
+      },
+      "linkAttributed": "Orders are tied to your link. Tracking is the store, not the payment method."
     },
     "ledger": {
       "eyebrow": "Open ledger",
-      "title": "The profit waterfall, line by line. No net figure hiding the detail.",
-      "lede": "The same deduction order you see on your dashboard: from the sale to each party's share. Tap a line to see why it is deducted, and what remains after it.",
-      "disclaimer": "An illustrative preview with sample numbers, not real sales or customer data.",
-      "pickDeal": "Pick a sample deal",
-      "remaining": "Left after this line",
-      "fromSales": "of attributed sales",
-      "hint": "Tap a line. The large number follows you.",
-      "nextStep": "Next line",
-      "prevStep": "Previous line",
-      "deduct": "Deducted",
-      "keep": "Carried",
-      "splitCaption": "How the profit pool splits across the three parties",
-      "ofPool": "of the pool",
-      "whyGmv": "Every rial is attributed to a specific creator link. This is the starting figure, not the profit.",
-      "whyReturns": "8% is held for returns before any split. The cost shows here, not after it vanishes into a report.",
-      "whyNet": "After the reserve. The creator's guaranteed floor is calculated from this line.",
-      "whyFees": "Payment-gateway fees. A real deal cost, not an agency commission.",
-      "whyCogs": "Product cost comes out before any share. No paper profit on top of the goods.",
-      "whyAds": "Ad spend recorded on the deal. Every rial to Meta appears in the same ledger.",
-      "whyPool": "What remains after real costs. This is what splits between creator, merchant, and platform.",
-      "currency": "OMR",
-      "small": "Small deal",
-      "medium": "Mid deal",
-      "large": "Large deal",
-      "gmv": "Attributed sales",
-      "returns": "Returns reserve",
-      "net": "Net attributed sales",
-      "fees": "Payment fees",
-      "cogs": "Product cost",
-      "ads": "Ad spend",
-      "pool": "Profit pool",
-      "creatorShare": "Creator share",
-      "merchantShare": "Merchant share",
-      "platformShare": "Platform share",
-      "creatorFloorDetail": "The creator floor was paid: a guaranteed minimum of net attributed sales, regardless of ads.",
-      "creatorPoolDetail": "The creator share was paid from the profit pool (28%), above the guaranteed floor.",
-      "merchantDetail": "What remains of the pool after the creator share. The merchant's cut of actual profit.",
-      "platformDetail": "Growlab's share. Paid only when there is a real profit pool."
+      "title": "The merchant sets the commission. The platform takes its cut.",
+      "lede": "Move the sale price, enter product and shipping cost, then pick commission. The ledger splits the sale: marketer, merchant, and platform including any gateway fee.",
+      "sale": "Sale price",
+      "productA": "Example: royal perfume",
+      "commissionLabel": "Marketer commission",
+      "commissionLocked": "25% unlocks when sale minus product and shipping cost is at least half the sale price.",
+      "productCostLabel": "Product cost",
+      "shippingCostLabel": "Shipping cost",
+      "costTotal": "Total cost {amount}",
+      "marginAutoLabel": "Profit margin",
+      "marginAutoHint": "Calculated for you: sale price minus product and shipping cost ({amount}).",
+      "settleLabel": "Collection",
+      "settleCod": "Cash on delivery",
+      "settleCard": "Card",
+      "marketerShare": "Marketer",
+      "marketerHint": "{pct}% commission, set by the merchant",
+      "merchantShare": "Merchant",
+      "merchantHint": "What remains after commission and platform fees",
+      "merchantProfit": "Profit after cost: {amount}",
+      "platformShare": "Platform",
+      "platformHint": "A flat {pct}%",
+      "platformAllInHint": "{total}% all-in: {platform}% platform + {gateway}% payment gateway.",
+      "platformCodHint": "{pct}% to the platform. No gateway fee on cash.",
+      "platformCardHint": "{platform}% platform + {gateway}% payment gateway.",
+      "gatewayShare": "Payment gateway",
+      "gatewayHint": "{pct}% on each settlement",
+      "sameBooks": "The same numbers for merchant and marketer.",
+      "disclaimer": "The numbers come from the same ledger engine. Change price, cost, or commission to see the split.",
+      "resultStatus": "At {price}: marketer {marketer}, merchant {merchant}, platform {platform}.",
+      "currency": "OMR"
     },
     "valueChain": {
       "eyebrow": "Value chain",
-      "title": "Publish the product. Marketers join. The kit and the link move with them.",
-      "lede": "The merchant lists the product in every marketer's feed. After the merchant accepts an application, the full product kit lands in the marketer's store, with a trackable referral link. Selling and profit start there.",
+      "title": "Publish the product. Marketers join. Product details and the link move with them.",
+      "lede": "The merchant lists the product in every marketer's feed. After the merchant accepts an application, the full product details land in the marketer's store, with a trackable referral link. Selling and profit start there.",
       "nodes": [
         { "id": "feed", "title": "The feed", "desc": "Trending products show as posts: media, name, sale price, and marketer commission. Pick a product and apply from one place." },
         { "id": "apply", "title": "Apply", "desc": "The marketer joins the campaign in one tap. No hunting merchants on WhatsApp, and no one-off terms." },
         { "id": "accept", "title": "Merchant accept", "desc": "The merchant accepts the right marketer. The product enters no store until that accept. Control stays with the merchant." },
-        { "id": "transfer", "title": "Kit transfer", "desc": "This is the move: on accept, every product detail copies into the marketer's store, and a trackable referral link appears. Ready to share on day one, without re-uploading photos or pasting a brief." },
+        { "id": "transfer", "title": "Product details transfer", "desc": "This is the move: on accept, every product detail copies into the marketer's store, and a trackable referral link appears. Ready to share on day one, without re-uploading photos or pasting a brief." },
         { "id": "earn", "title": "Sell and earn", "desc": "The marketer shares the link with friends and on social. Every sale from that link is attributed in the ledger. Profit comes from sales." }
       ],
       "vizPhoto": "Photos",
@@ -220,8 +303,8 @@
       "lede": "We are not selling you a vague promise. This is the mechanism every deal on the platform actually runs on.",
       "items": [
         { "title": "Precise sales attribution", "text": "Every order is tied to a specific creator link or code, inside a fixed attribution window. No guessing who closed the sale." },
-        { "title": "Real ad accounting", "text": "Every rial that goes to Meta is recorded as a cost line in your deal, measured against actual sales. No hidden line inside an agency report." },
-        { "title": "A clear payout clock", "text": "A short hold window protects both sides from returns and fraud. After that, your share is available to withdraw. No stalling and no opaque calendar." }
+        { "title": "A clear split on every collected sale", "text": "After cash is confirmed: sale minus marketer commission minus 6% platform. COD has no gateway fee. The rest is the merchant's." },
+        { "title": "Returns reserve, then payout", "text": "10% of the marketer commission is held 14 days after collection. A return pulls the line back. Then the share can be withdrawn." }
       ]
     },
     "governance": {
@@ -229,10 +312,10 @@
       "title": "Protection is built into the system, not into a promise",
       "lede": "Six fixed rules govern every deal on the platform. They are not an exception we grant if you ask.",
       "items": [
-        { "icon": "floor", "title": "Creator floor", "text": "A guaranteed minimum: a share of your net attributed sales after the reserve and before any ad decision. Weak ad spend cannot zero it out." },
+        { "icon": "floor", "title": "Marketer commission", "text": "The merchant picks 10, 15, or 20%. 25% unlocks only when gross margin is above 50%. It locks on the deal." },
         { "icon": "lock", "title": "A locked deal snapshot", "text": "Price and commission lock at the moment of agreement. A discount added later cannot cut your share retroactively." },
-        { "icon": "clock", "title": "A hold window for protection", "text": "Part of the share is held for a short period after the order. Protection from returns and fraud, not delay in payout." },
-        { "icon": "ledger", "title": "A transparent ledger per order", "text": "Each order is its own line: sale, reserve, fees, product cost, ads, and each party's share. No blended net figure where the detail disappears." },
+        { "icon": "clock", "title": "Returns reserve", "text": "10% of the marketer commission is held 14 days after collection. Protection from returns, not delay in payout." },
+        { "icon": "ledger", "title": "A transparent ledger per order", "text": "Each order is its own line: the sale, marketer commission, 6% platform, and the merchant share. Gateway fee is zero on cash." },
         { "icon": "shield", "title": "No direct contact between parties", "text": "Merchant and creator never exchange phone numbers or off-platform accounts. Filters block leaks in any form. Sample and shipping requests are coordinated entirely inside Growlab." },
         { "icon": "link", "title": "Exclusive tracking protects your commission", "text": "Your commission is guaranteed only through your referral link and personal store inside Growlab. Leaving the platform is a financial risk for the creator, and a loss of sale integrity for the merchant." }
       ]
@@ -240,25 +323,26 @@
     "pricing": {
       "eyebrow": "Revenue split",
       "title": "How we split profit. No subscription. No fees.",
-      "lede": "Every sale is calculated automatically: returns reserve, payment fees, product cost and ads. Then the remaining pool is split between creator, merchant, and platform. No number is up for private negotiation.",
+      "lede": "Every collected sale splits: marketer commission (10, 15, or 20%), then 6% platform. Cash has no gateway fee. 10% of commission is a 14-day returns reserve.",
       "merchantTitle": "For merchants",
       "merchantSubtitle": "You keep full control of your product and your commission rate",
-      "merchantStatNote": "of the remaining pool after costs goes to the merchant",
+      "merchantStat": "The rest",
+      "merchantStatNote": "after commission and 6% platform — on collected cash",
       "merchantFeatures": [
-        "You set the creator commission yourself before any campaign",
-        "You approve the ad spend cap before anything runs",
-        "An open ledger on every order, with no hidden fees",
+        "You pick marketer commission at 10, 15, or 20% before any campaign",
+        "A product will not publish if your margin after cost is negative",
+        "Commission is taken from your wallet when you confirm collection",
         "No monthly subscription or signup fee"
       ],
-      "creatorTitle": "For creators",
-      "creatorSubtitle": "A guaranteed floor, even if ad spend is weak",
-      "creatorStat": "5%+",
-      "creatorStatNote": "A floor of your net sales, or a higher share of profit, whichever is larger",
+      "creatorTitle": "For marketers",
+      "creatorSubtitle": "Your commission is what the merchant set: 10, 15, or 20%",
+      "creatorStat": "10–20%",
+      "creatorStatNote": "of the collected sale price, locked on the deal",
       "creatorFeatures": [
         "Your personal store is ready at signup",
         "A referral link that tracks every sale automatically",
-        "You can request a product sample for filming",
-        "Withdraw your earnings after a short protection window"
+        "Samples unlock after first sales, with a 25% deposit — not the full price",
+        "Withdraw after the returns reserve, minimum 9.61 OMR"
       ]
     },
     "founders": {
@@ -286,7 +370,9 @@
       "msg": "What do you need, exactly?",
       "msgPlaceholder": "Tell us a little about your business and your goal",
       "submit": "Send the request",
+      "sending": "Sending…",
       "sent": "We received your request. We will get back on WhatsApp within 24 hours.",
+      "sendFailed": "Could not save the request. Try again.",
       "whatsappTitle": "Direct WhatsApp",
       "whatsappSubtitle": "A fast reply during working hours",
       "callTitle": "Book a free intro call",
@@ -298,7 +384,9 @@
     },
     "dock": {
       "signIn": "Sign in",
-      "signUp": "Join"
+      "signUp": "Join",
+      "enterPlatform": "Enter the platform",
+      "startEarning": "Start earning profits"
     },
     "footer": {
       "rights": "All rights reserved."
@@ -364,22 +452,54 @@
       { "id": "03", "title": "Cutting notebook", "meta": "Unpublished", "status": "—" }
     ]
   },
+  "profile": {
+    "eyebrow": "Account details",
+    "title": "Complete your details.",
+    "lede": "Your name, phone, and email are stored on the platform. Sign-in stays with email.",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "phone": "Phone number",
+    "phonePlaceholder": "+968 or any international number",
+    "email": "Email",
+    "emailLocked": "This email comes from your sign-in account. It cannot be changed here.",
+    "submit": "Save and continue",
+    "saving": "Saving…",
+    "failed": "Could not save. Try again."
+  },
   "dashboardApp": {
     "noSeedData": "No seeded users yet — run \"npm run db:seed\" and reload.",
     "noProfile": "This dev user has no merchant or creator profile.",
     "merchant": {
       "tabs": {
+        "queue": "Accept queue",
         "products": "Products",
         "creators": "Creators",
         "orders": "Orders & Ledger",
-        "samples": "Sample requests",
-        "ads": "Ad Wallet"
+        "samples": "Sample requests"
       },
       "verificationBanner": {
         "pending": "Verification pending — your products are hidden from the public shop and can't be assigned to creators yet.",
         "verified": "Verified — your products are live and open to creator deals.",
         "rejected": "Verification rejected — resubmit your commercial registration for another audit.",
         "unsubmitted": "Upload your commercial registration to start the audit."
+      },
+      "wallet": {
+        "title": "Commission wallet",
+        "available": "Available to confirm",
+        "reserved": "Held for confirmed orders",
+        "balance": "Balance",
+        "hint": "Commission and 6% are taken when you confirm collection. Top up via admin before you confirm orders.",
+        "lowHint": "Balance is low. Confirm only after you top up, or confirmation will stop."
+      },
+      "queue": {
+        "title": "Accept marketers",
+        "lede": "Thumb accept or reject. After accept, the product details and link land in their store.",
+        "empty": "No applications waiting.",
+        "orders": "Proven sales",
+        "sales": "Attributed net",
+        "accept": "Accept",
+        "reject": "Reject",
+        "failed": "Could not update this application."
       },
       "products": {
         "empty": "No products yet.",
@@ -391,12 +511,13 @@
           "price": "Price",
           "cogs": "COGS %",
           "deals": "Active deals",
+          "visits": "Visits",
           "status": "Status"
         },
         "mediaKit": {
-          "manageCta": "Media kit",
-          "title": "Media kit for this product",
-          "hint": "This kit appears in the marketer feed as a post: photo or video, then name, price, and commission.",
+          "manageCta": "Product media",
+          "title": "Product media for this listing",
+          "hint": "This media appears in the marketer feed as a post: photo or video, then name, price, and commission.",
           "empty": "No media uploaded yet.",
           "typeLabel": "Type",
           "typeImage": "Image",
@@ -429,21 +550,16 @@
         "empty": "No orders yet.",
         "actionFailed": "Could not update this order.",
         "shipTo": "Ship to",
+        "notifyWhatsapp": "WhatsApp this order",
+        "shippingRef": "Shipping reference",
+        "shippingPlaceholder": "Shipping reference",
+        "saveShipping": "Save reference",
         "actions": {
           "confirmed": "Confirm to ship",
           "fulfilled": "Confirm collection",
           "returned": "Returned",
           "cancelled": "Cancel"
         }
-      },
-      "ads": {
-        "empty": "No ad wallet linked to any deal yet.",
-        "autoPaused": "Auto-paused — {reason}",
-        "balance": "Available balance",
-        "dailyCap": "Daily cap",
-        "dealCap": "Deal cap",
-        "mer": "Latest MER",
-        "spendHistory": "Spend history"
       },
       "samples": {
         "empty": "No incoming sample requests yet.",
@@ -463,7 +579,10 @@
       "productForm": {
         "kicker": "New product",
         "newTitle": "Add a product and set the commission",
-        "newLede": "Cost price stays secret — no creator ever sees it. The commission you set here automatically drives the creator's payout and your own net.",
+        "newLede": "Photo, price, and commission — it lands on the marketer feed in under a minute. Cost stays secret.",
+        "coverLabel": "Post image",
+        "coverHint": "An image URL that appears on the feed immediately. Add video later from product media.",
+        "coverPlaceholder": "https://… or /feed/attar-night.png",
         "merchantOnly": "Switch to a merchant profile to add products.",
         "backToPortal": "Back to portal",
         "titleLabel": "Product title",
@@ -483,9 +602,15 @@
         "previewRetail": "Retail price",
         "previewCommission": "Marketer commission",
         "previewPlatformFee": "Platform fee",
-        "previewMerchantNet": "Estimated net profit",
+        "previewPaymentFee": "Payment gateway fee",
+        "previewCodNoGateway": "Cash on delivery",
+        "previewCodZero": "No gateway fee",
+        "previewMerchantNet": "Your net before cost",
+        "previewAfterCogs": "Your net after cost",
         "previewMargin": "Gross margin (before fees): {amount}",
-        "createCta": "Add product",
+        "marginBlocked": "Your margin after cost, commission, and 6% is negative. Lower commission or raise the price.",
+        "highMarginHint": "25% unlocks when gross margin (price − cost) is above 50%.",
+        "createCta": "Publish to the feed",
         "saveCta": "Save changes",
         "editCta": "Edit price & commission",
         "activateCta": "Activate",
@@ -509,6 +634,7 @@
         "nextTier": "{amount} more in net sales to reach {tier}.",
         "maxTier": "You're at the top tier.",
         "returnRate": "Return rate: {pct}",
+        "visits": "Storefront visits: {count}",
         "hint": "Share your storefront link anywhere — the price and terms shown there are locked to your deal snapshot."
       },
       "deals": {
@@ -520,7 +646,11 @@
         "discountCap": "Discount cap",
         "since": "Since",
         "merchantNotVerified": "Merchant not verified — hidden from your public storefront",
-        "leaveCta": "Remove from my store"
+        "leaveCta": "Remove from my store",
+        "waiting": "Waiting for the merchant. Your link appears after they accept.",
+        "orders": "Orders",
+        "visits": "Visits",
+        "commissionEarned": "Commission on the ledger"
       },
       "samples": {
         "empty": "You haven't requested any samples yet.",
@@ -545,13 +675,24 @@
         "available": "Available balance",
         "availableHint": "Unheld — yours to withdraw now.",
         "held": "Held balance",
-        "heldHint": "In the return/fraud holdback window.",
+        "heldHint": "Returns reserve: 10% of commission for 14 days after collection.",
         "requestTitle": "Request a payout",
         "amountLabel": "Amount (OMR)",
         "requestInstant": "Instant payout (fee applies)",
-        "requestScheduled": "Scheduled payout (free)",
-        "feePreview": "Instant fee: {fee} — paid immediately, minus the fee.",
+        "requestScheduled": "Local transfer (Bank Muscat / wire)",
+        "localPathTitle": "Local payout path",
+        "localPathLede": "Scheduled transfer lands in your Omani account with no platform fee. Instant is faster and billed. A ledger without cash-out cannot beat cash commission on WhatsApp.",
+        "accountTitle": "Payout account",
+        "accountLede": "Enter your Omani bank details. An admin transfers manually, then marks the request paid.",
+        "bankName": "Bank",
+        "accountName": "Account name",
+        "accountNumber": "Account number / IBAN",
+        "saveAccount": "Save account",
+        "accountRequired": "Save bank details before requesting a payout.",
+        "accountInvalid": "Enter a valid bank, account name, and account number (at least 6 digits).",
+        "feePreview": "Instant fee: {fee} — the request stays open until the transfer is marked paid.",
         "exceedsAvailable": "Amount exceeds your available (unheld) balance.",
+        "belowMinimum": "Minimum payout is {min}.",
         "historyTitle": "Payout history",
         "historyEmpty": "No payout requests yet.",
         "type": {
@@ -562,22 +703,13 @@
     },
     "waterfall": {
       "pending": "Ledger not computed for this order yet.",
-      "attributedGmv": "Attributed GMV",
-      "returnsReserve": "Returns reserve",
-      "netAttributedSales": "Net attributed sales",
-      "paymentFee": "Payment fee",
-      "cogs": "COGS (locked)",
-      "adSpend": "Ad spend allocated",
-      "contributionPool": "Contribution pool",
-      "creatorShare": "Creator share",
+      "attributedGmv": "Sale",
+      "paymentFee": "Payment gateway",
+      "creatorShare": "Marketer commission",
       "merchantShare": "Merchant share",
       "platformShare": "Platform share",
-      "floorNote": {
-        "pool": "Paid the pool share ({pct}) — higher than the floor.",
-        "floor": "Paid the {amount} floor — the pool share was lower."
-      },
-      "holdback": "Held back ({days}-day window)",
-      "available": "Available now"
+      "holdback": "Returns reserve ({days} days)",
+      "available": "Available after collection"
     },
     "status": {
       "tierNote": "Tiers are a heuristic threshold on net sales and return rate — not a promise or guarantee.",
@@ -598,7 +730,7 @@
         "depleted": "Depleted",
         "closed": "Closed"
       },
-      "deal": { "active": "Active", "paused": "Paused", "ended": "Ended" },
+      "deal": { "pending": "Awaiting accept", "active": "Active", "paused": "Paused", "ended": "Ended" },
       "payout": {
         "requested": "Requested",
         "approved": "Approved",
@@ -632,7 +764,7 @@
       "backToPortal": "Back to portal",
       "empty": "No products available right now.",
       "suggestedTitle": "Trending now",
-      "suggestedHint": "Ranked by your categories, proven sales, and media kit — not AI.",
+      "suggestedHint": "Ranked by your categories, proven sales, and product media — not AI.",
       "othersTitle": "More products",
       "score": "Rank {score}",
       "videoBadge": "Video",
@@ -645,26 +777,35 @@
       "trustNote": "🔒 Merchants and creators never exchange personal contact details — everything routes through Growlab.",
       "leakWarning": "Sharing phone numbers, emails, or external contact handles (WhatsApp, Instagram, etc.) here isn't allowed. Merchant/creator contact stays entirely inside Growlab.",
       "allCategories": "All",
+      "weeklyTitle": "This week's movers",
+      "weeklyHint": "Products that converted to COD orders this week — not a general Explore tab.",
+      "weeklyOrders": "{count} orders this week",
+      "seatsLeft": "{count} seats left",
+      "verifiedMerchant": "Verified merchant",
+      "cityLabel": "{city}",
       "commissionLabel": "Estimated profit {amount}",
       "applyCta": "Apply to this campaign",
       "alreadyInStore": "In your store",
       "applyModal": {
         "title": "How do you want to promote this product?",
         "subtitle": "{merchant} · you earn an estimated {amount} per sale",
-        "mediaKitTitle": "Path 1: Use the ready-made media kit",
+        "mediaKitTitle": "Path 1: Use the ready-made product media",
         "mediaKitDesc": "Images/videos the merchant already uploaded — promote instantly, no shipping wait.",
-        "mediaKitEmpty": "The merchant hasn't uploaded a media kit for this product yet — try path 2.",
+        "mediaKitEmpty": "The merchant hasn't uploaded product media for this product yet — try path 2.",
         "mediaKitCount": "{count} ready assets",
         "mediaKitCta": "Use this path",
         "sampleTitle": "Path 2: Request the product and try it (UGC)",
         "sampleDesc": "Request a real sample shipped to you to film original content.",
-        "depositNotice": "{amount} will be held as a full-price financial deposit.",
-        "deadlineNotice": "From the moment it ships, you have 7 days to upload an approved UGC video — or the deposit is forfeited for good.",
+        "depositNotice": "{amount} will be held as a 25% deposit — not the full product price.",
+        "depositElite": "Your sample is merchant-funded — no deposit. Upload a video within 7 days of shipping.",
+        "sampleLockedNew": "New marketers promote from the media kit. Samples unlock after first sales.",
+        "deadlineNotice": "From the moment it ships, you have 7 days to upload an approved video — or the deposit is forfeited.",
         "ackLabel": "I agree to the deposit policy and deadline above.",
         "sampleCta": "Request the sample",
-        "successTitle": "Added to your store ✅",
-        "successMediaKit": "The product is live in your store — start promoting with the media kit now.",
-        "successSample": "The product is in your store, and your sample request is awaiting merchant approval.",
+        "successTitle": "Sent to the merchant",
+        "successMediaKit": "Your application is waiting. After they accept, the product details land in your store and the share link appears.",
+        "successSample": "The sample request and campaign are waiting on the merchant. The link appears after they accept.",
+        "pendingNote": "We will alert you here when they accept. Do not share a link before that.",
         "linkLabel": "Your referral link",
         "copyCta": "Copy link",
         "copied": "Copied",
@@ -703,7 +844,6 @@
         "platformShare": "Platform share",
         "attentionTitle": "Needs attention",
         "pendingMerchants": "Merchants pending verification",
-        "autoPausedWallets": "Auto-paused ad wallets",
         "pendingSampleRequests": "Sample requests awaiting a reply",
         "pendingPayouts": "Payouts awaiting review",
         "escrowTitle": "Ledger escrow",
@@ -720,9 +860,14 @@
         "columns": {
           "name": "Merchant",
           "products": "Products",
+          "wallet": "Wallet",
           "status": "Status",
           "actions": "Actions"
         },
+        "walletReserved": "Reserved {amount}",
+        "walletTopup": "Top up",
+        "walletCredit": "Add",
+        "walletTopupNote": "Manual admin top-up",
         "approve": "Verify",
         "reject": "Reject",
         "ban": "Ban",
@@ -770,7 +915,7 @@
       },
       "products": {
         "empty": "No products yet.",
-        "hint": "Per-product estimates based on the commission each merchant set — the real, final ledger per order runs through the profit waterfall.",
+        "hint": "Per-product estimates based on the commission each merchant set — the real ledger after collection is sale − commission − 6%.",
         "active": "Active",
         "inactive": "Inactive",
         "activate": "Activate",
@@ -821,13 +966,15 @@
       },
       "payouts": {
         "empty": "No payout requests yet.",
-        "hint": "Scheduled withdrawals wait here. Instant payouts that already paid appear as history only.",
+        "hint": "Transfer to the shown account, then mark paid. Instant and scheduled both wait for a manual transfer.",
+        "noAccount": "No bank details",
         "approve": "Approve",
         "reject": "Reject",
         "markPaid": "Mark paid",
         "fee": "Fee {fee}",
         "columns": {
           "creator": "Creator",
+          "account": "Transfer account",
           "type": "Type",
           "amount": "Amount",
           "status": "Status",
@@ -977,6 +1124,7 @@
     "trackTitle": "Your order",
     "trackLede": "Hello {name}. The merchant ships through the platform — no phone numbers exchanged.",
     "trackRef": "Ref {token}",
+    "shippingRef": "Shipping reference",
     "returnsPolicy": "For a return or support, use this page and your order reference. Do not contact the merchant or marketer off-platform.",
     "status": {
       "pending": "Awaiting confirmation",

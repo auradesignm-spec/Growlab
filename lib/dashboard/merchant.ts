@@ -4,6 +4,8 @@ import { suggestCreatorsForProduct, type CreatorMatchSuggestion } from "@/lib/ma
 import type { OrderLedgerRow } from "@/lib/dashboard/types";
 import { effectiveUgcStatus } from "@/lib/domain/ugc";
 import { computeSimpleSplit, type SimpleSplitResult } from "@/lib/domain/commission";
+import { getWalletSnapshot, type WalletSnapshot } from "@/lib/ledger/wallet";
+import { countVisitsByDealIds } from "@/lib/shop/visits";
 
 export interface MerchantMediaAssetRow {
   id: string;
@@ -30,6 +32,7 @@ export interface MerchantProductRow {
   mediaAssets: MerchantMediaAssetRow[];
   /** Pre-sale estimate only — see lib/domain/commission.ts#computeSimpleSplit. */
   simpleSplit: SimpleSplitResult;
+  visitCount: number;
 }
 
 export interface AssignedCreatorRow {
@@ -47,23 +50,6 @@ export interface UnassignedProductSuggestion {
   suggestions: CreatorMatchSuggestion[];
 }
 
-export interface MerchantAdWalletRow {
-  walletId: string;
-  dealId: string;
-  productTitle: string;
-  creatorUsername: string;
-  status: string;
-  availableBalance: number;
-  dailyCap: number;
-  dealCap: number;
-  lifetimeSpent: number;
-  merKillThreshold: number;
-  autoPauseFlag: boolean;
-  autoPauseReason: string | null;
-  latestMer: number | null;
-  spendHistory: Array<{ id: string; amount: number; spentAt: string; source: string }>;
-}
-
 export interface MerchantSampleRequestRow {
   id: string;
   productTitle: string;
@@ -79,14 +65,27 @@ export interface MerchantSampleRequestRow {
   ugcVideoUrl: string | null;
 }
 
+export interface MerchantPendingApplication {
+  dealId: string;
+  productId: string;
+  productTitle: string;
+  creatorId: string;
+  creatorUsername: string;
+  creatorTier: string;
+  creatorOrders: number;
+  creatorNetSales: number;
+  createdAt: string;
+}
+
 export interface MerchantDashboardData {
   merchant: { id: string; businessName: string; verificationStatus: string };
+  wallet: WalletSnapshot;
   products: MerchantProductRow[];
   assignedCreators: AssignedCreatorRow[];
   unassignedProductSuggestions: UnassignedProductSuggestion[];
   ordersLedger: OrderLedgerRow[];
-  adWallets: MerchantAdWalletRow[];
   sampleRequests: MerchantSampleRequestRow[];
+  pendingApplications: MerchantPendingApplication[];
 }
 
 export async function loadMerchantDashboardData(merchantId: string): Promise<MerchantDashboardData> {
@@ -100,6 +99,9 @@ export async function loadMerchantDashboardData(merchantId: string): Promise<Mer
       },
     },
   });
+
+  const productDealIds = merchant.products.flatMap((p) => p.deals.map((d) => d.id));
+  const visitsByDeal = await countVisitsByDealIds(productDealIds);
 
   const products: MerchantProductRow[] = merchant.products.map((p) => ({
     id: p.id,
@@ -118,9 +120,12 @@ export async function loadMerchantDashboardData(merchantId: string): Promise<Mer
     mediaAssets: p.mediaAssets.map((a) => ({ id: a.id, type: a.type, url: a.url, caption: a.caption })),
     simpleSplit: computeSimpleSplit({
       retailPrice: p.basePrice,
+      costPrice: p.costPrice,
       commissionType: p.commissionType,
       commissionValue: p.commissionValue,
+      settlementChannel: "cod",
     }),
+    visitCount: p.deals.reduce((sum, deal) => sum + (visitsByDeal.get(deal.id) ?? 0), 0),
   }));
 
   const productIds = merchant.products.map((p) => p.id);
@@ -131,14 +136,14 @@ export async function loadMerchantDashboardData(merchantId: string): Promise<Mer
       creator: true,
       product: true,
       orders: { include: { ledgerEntry: true } },
-      adWallet: { include: { spendEntries: { orderBy: { spentAt: "desc" } }, merDays: { orderBy: { date: "desc" }, take: 1 } } },
     },
   });
 
   const creatorMap = new Map<string, AssignedCreatorRow>();
   for (const deal of deals) {
+    if (deal.status !== "active") continue;
     const existing = creatorMap.get(deal.creatorId);
-    const netSales = deal.orders.reduce((sum, o) => sum + (o.ledgerEntry?.netAttributedSales ?? 0), 0);
+    const netSales = deal.orders.reduce((sum, o) => sum + (o.ledgerEntry?.attributedGmv ?? 0), 0);
     if (existing) {
       existing.dealsCount += 1;
       existing.ordersCount += deal.orders.length;
@@ -155,6 +160,41 @@ export async function loadMerchantDashboardData(merchantId: string): Promise<Mer
     }
   }
   const assignedCreators = [...creatorMap.values()].sort((a, b) => b.netSales - a.netSales);
+
+  const pendingDeals = deals.filter((deal) => deal.status === "pending");
+  const pendingCreatorIds = [...new Set(pendingDeals.map((deal) => deal.creatorId))];
+  const pendingHistory =
+    pendingCreatorIds.length === 0
+      ? []
+      : await prisma.creatorDeal.findMany({
+          where: { creatorId: { in: pendingCreatorIds } },
+          include: { orders: { include: { ledgerEntry: true } } },
+        });
+  const pulseByCreator = new Map<string, { orders: number; netSales: number }>();
+  for (const deal of pendingHistory) {
+    const netSales = deal.orders.reduce((sum, o) => sum + (o.ledgerEntry?.attributedGmv ?? 0), 0);
+    const existing = pulseByCreator.get(deal.creatorId) ?? { orders: 0, netSales: 0 };
+    existing.orders += deal.orders.length;
+    existing.netSales += netSales;
+    pulseByCreator.set(deal.creatorId, existing);
+  }
+
+  const pendingApplications: MerchantPendingApplication[] = pendingDeals
+    .map((deal) => {
+      const pulse = pulseByCreator.get(deal.creatorId);
+      return {
+        dealId: deal.id,
+        productId: deal.productId,
+        productTitle: deal.product.title,
+        creatorId: deal.creatorId,
+        creatorUsername: deal.creator.username,
+        creatorTier: deal.creator.tier,
+        creatorOrders: pulse?.orders ?? 0,
+        creatorNetSales: pulse?.netSales ?? 0,
+        createdAt: deal.createdAt.toISOString(),
+      };
+    })
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
   const unassignedProducts = merchant.products.filter(
     (p) => !p.deals.some((d) => d.status === "active")
@@ -185,18 +225,12 @@ export async function loadMerchantDashboardData(merchantId: string): Promise<Mer
         currency: order.currency,
         attributionSource: order.attributionSource,
         status: order.status,
+        shippingRef: order.shippingRef,
         createdAt: order.createdAt.toISOString(),
-        ledger: order.ledgerEntry
+            ledger: order.ledgerEntry
           ? {
               attributedGmv: order.ledgerEntry.attributedGmv,
-              returnsReserve: order.ledgerEntry.returnsReserve,
-              netAttributedSales: order.ledgerEntry.netAttributedSales,
               paymentFee: order.ledgerEntry.paymentFee,
-              cogs: order.ledgerEntry.cogs,
-              adSpendAllocated: order.ledgerEntry.adSpendAllocated,
-              contributionPool: order.ledgerEntry.contributionPool,
-              creatorFloorAmount: order.ledgerEntry.creatorFloorAmount,
-              creatorProfitShare: order.ledgerEntry.creatorProfitShare,
               creatorShare: order.ledgerEntry.creatorShare,
               merchantShare: order.ledgerEntry.merchantShare,
               platformShare: order.ledgerEntry.platformShare,
@@ -209,32 +243,7 @@ export async function loadMerchantDashboardData(merchantId: string): Promise<Mer
     )
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
-  const adWallets: MerchantAdWalletRow[] = deals
-    .filter((deal) => deal.adWallet)
-    .map((deal) => {
-      const wallet = deal.adWallet!;
-      return {
-        walletId: wallet.id,
-        dealId: deal.id,
-        productTitle: deal.product.title,
-        creatorUsername: deal.creator.username,
-        status: wallet.status,
-        availableBalance: wallet.availableBalance,
-        dailyCap: wallet.dailyCap,
-        dealCap: wallet.dealCap,
-        lifetimeSpent: wallet.lifetimeSpent,
-        merKillThreshold: wallet.merKillThreshold,
-        autoPauseFlag: wallet.autoPauseFlag,
-        autoPauseReason: wallet.autoPauseReason,
-        latestMer: wallet.merDays[0]?.mer ?? null,
-        spendHistory: wallet.spendEntries.map((s) => ({
-          id: s.id,
-          amount: s.amount,
-          spentAt: s.spentAt.toISOString(),
-          source: s.source,
-        })),
-      };
-    });
+  const wallet = await getWalletSnapshot(merchant.id);
 
   return {
     merchant: {
@@ -242,11 +251,11 @@ export async function loadMerchantDashboardData(merchantId: string): Promise<Mer
       businessName: merchant.businessName,
       verificationStatus: merchant.verificationStatus,
     },
+    wallet,
     products,
     assignedCreators,
     unassignedProductSuggestions,
     ordersLedger,
-    adWallets,
     sampleRequests: merchant.sampleRequests.map((s) => ({
       id: s.id,
       productTitle: s.product.title,
@@ -261,5 +270,6 @@ export async function loadMerchantDashboardData(merchantId: string): Promise<Mer
       ugcDeadline: s.ugcDeadline ? s.ugcDeadline.toISOString() : null,
       ugcVideoUrl: s.ugcVideoUrl,
     })),
+    pendingApplications,
   };
 }

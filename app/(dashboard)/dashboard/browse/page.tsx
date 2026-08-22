@@ -30,12 +30,12 @@ export default async function BrowsePage() {
     return (
       <main>
         <section className="border-b border-line">
-          <div className="px-5 py-12 sm:px-8">
+          <div className="px-4 py-8 sm:px-8 sm:py-12">
             <p className="gl-eyebrow">{t("kicker")}</p>
-            <h1 className="mt-4 font-display text-display-lg">{t("title")}</h1>
+            <h1 className="mt-3 text-[28px] font-semibold leading-tight text-frost sm:mt-4 sm:text-display-lg">{t("title")}</h1>
           </div>
         </section>
-        <div className="px-5 py-16 sm:px-8">
+        <div className="px-4 py-12 sm:px-8 sm:py-16">
           <p className="max-w-md rounded-2xl border border-dashed border-line bg-white px-5 py-8 text-[14px] text-frost-dim">
             {t("creatorOnly")}
           </p>
@@ -51,11 +51,11 @@ export default async function BrowsePage() {
 
   return (
     <main>
-      <section className="border-b border-line">
-        <div className="px-5 py-12 sm:px-8">
+      <section className="hidden border-b border-line sm:block">
+        <div className="px-4 py-8 sm:px-8 sm:py-12">
           <p className="gl-eyebrow">{t("kicker")}</p>
-          <h1 className="mt-4 font-display text-display-lg">{t("title")}</h1>
-          <p className="mt-4 max-w-md text-[15px] leading-relaxed text-frost-dim">{t("lede")}</p>
+          <h1 className="mt-3 text-[28px] font-semibold leading-tight text-frost sm:mt-4 sm:text-display-lg">{t("title")}</h1>
+          <p className="mt-3 max-w-md text-[15px] leading-relaxed text-frost-dim sm:mt-4">{t("lede")}</p>
         </div>
       </section>
       <BrowseCatalog data={data} />

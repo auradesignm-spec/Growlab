@@ -37,6 +37,11 @@ export default async function OrderTrackingPage({ params }: { params: { token: s
                   {line.size ? `${line.size} · ` : ""}×{line.quantity} · {t(`status.${line.status}` as "status.pending")}
                 </p>
                 <p className="mt-1 text-[13px] text-frost-faint">{t(`escrow.${line.escrowStatus}` as "escrow.held")}</p>
+                {line.shippingRef ? (
+                  <p className="mt-1 font-mono text-[12px] text-frost-dim">
+                    {t("shippingRef")}: <span className="text-frost">{line.shippingRef}</span>
+                  </p>
+                ) : null}
               </div>
               <p className="font-mono text-[14px]">
                 {(line.unitPriceCharged * line.quantity).toFixed(2)} {line.currency}

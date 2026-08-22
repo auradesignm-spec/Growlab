@@ -1,9 +1,10 @@
 import { ClerkProvider } from "@clerk/nextjs";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Sans_Arabic, IBM_Plex_Mono } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { dirForLocale, isLocale, type Locale } from "@/i18n/config";
+import PwaRegister from "@/components/PwaRegister";
 import "./globals.css";
 
 const plexArabic = IBM_Plex_Sans_Arabic({
@@ -20,11 +21,28 @@ const plexMono = IBM_Plex_Mono({
   display: "swap",
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#F7F8FA",
+};
+
 export const metadata: Metadata = {
   title: "Growlab",
-  description: "سوق يربط التجار بصنّاع المحتوى. كل بيعة تُقسم في دفتر مفتوح.",
+  description: "سوق يربط التجار بالمسوّقين. كل بيعة تُقسم في دفتر مفتوح.",
   metadataBase: new URL("https://growlab.om"),
   robots: { index: true, follow: true },
+  manifest: "/manifest.webmanifest",
+  icons: {
+    icon: "/icon.svg",
+    apple: "/icon.svg",
+  },
+  appleWebApp: {
+    capable: true,
+    title: "Growlab",
+    statusBarStyle: "default",
+  },
 };
 
 export default async function RootLayout({
@@ -47,6 +65,7 @@ export default async function RootLayout({
   return (
     <html lang={locale} dir={dir} className={`${plexArabic.variable} ${plexMono.variable}`}>
       <body className="font-body antialiased">
+        <PwaRegister />
         {clerkPublishableKey ? (
           <ClerkProvider
             publishableKey={clerkPublishableKey}

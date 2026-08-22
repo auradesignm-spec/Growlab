@@ -5,12 +5,14 @@ import { useTranslations } from "next-intl";
 import type { AdminCreatorRow, AdminDashboardData, AdminMerchantRow } from "@/lib/dashboard/admin";
 import {
   adminCreateMerchant,
+  adminCreditMerchantWallet,
   adminEditCreator,
   adminEditMerchant,
   adminSetAccountStatus,
   adminSetCreatorVerification,
   adminSetMerchantVerification,
 } from "@/app/(dashboard)/dashboard/admin-actions";
+import { formatMoney } from "@/lib/format";
 import { EmptyState } from "@/components/dashboard/ui";
 import type { VerificationStatus } from "@/lib/domain/enums";
 
@@ -198,6 +200,7 @@ export function MerchantAccountRow({
 }) {
   const [open, setOpen] = useState(false);
   const [banReason, setBanReason] = useState(merchant.banReason ?? "");
+  const [topup, setTopup] = useState("");
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
@@ -219,9 +222,42 @@ export function MerchantAccountRow({
         <p className="font-mono text-[11px] text-frost-dim">
           {merchant.commercialRegNo || "—"} · {merchant.city || "—"}
         </p>
-        {merchant.inviteEmail && <p className="font-mono text-[11px] text-pulse">{merchant.inviteEmail}</p>}
+        <p className="mt-1 text-[12px] text-frost-dim">
+          {[merchant.firstName, merchant.lastName].filter(Boolean).join(" ") || merchant.ownerFullName}
+        </p>
+        {merchant.phone ? <p className="font-mono text-[11px] text-frost-dim">{merchant.phone}</p> : null}
+        {(merchant.email || merchant.inviteEmail) && (
+          <p className="font-mono text-[11px] text-pulse">{merchant.email || merchant.inviteEmail}</p>
+        )}
       </td>
       <td className="px-4 py-3 font-mono text-sm">{merchant.productsCount}</td>
+      <td className="px-4 py-3">
+        <p className="font-mono text-sm text-frost">{formatMoney(merchant.walletAvailable)}</p>
+        <p className="font-mono text-[11px] text-frost-dim">
+          {t("merchants.walletReserved", { amount: formatMoney(merchant.walletReserved) })}
+        </p>
+        <form
+          className="mt-2 flex max-w-[11rem] gap-1"
+          onSubmit={(e) => {
+            e.preventDefault();
+            const amount = Number(topup);
+            run(async () => {
+              await adminCreditMerchantWallet(merchant.id, amount, t("merchants.walletTopupNote"));
+              setTopup("");
+            });
+          }}
+        >
+          <input
+            value={topup}
+            onChange={(e) => setTopup(e.target.value)}
+            placeholder={t("merchants.walletTopup")}
+            className="gl-input w-20"
+          />
+          <button type="submit" disabled={pending} className="gl-btn-ghost disabled:opacity-40">
+            {t("merchants.walletCredit")}
+          </button>
+        </form>
+      </td>
       <td className="px-4 py-3">
         <p className="font-west text-[11px] uppercase tracking-[0.16em] text-frost-dim">
           {tStatus(`verification.${merchant.verificationStatus}` as "verification.pending")}
@@ -339,7 +375,11 @@ export function CreatorAccountRow({
     <tr className="border-b border-white/10 align-top">
       <td className="px-4 py-3">
         <p className="font-display text-base">@{creator.username}</p>
-        <p className="font-serif text-xs italic text-frost-dim">{creator.legalName || "—"}</p>
+        <p className="text-[12px] text-frost-dim">
+          {[creator.firstName, creator.lastName].filter(Boolean).join(" ") || creator.legalName || "—"}
+        </p>
+        {creator.phone ? <p className="font-mono text-[11px] text-frost-dim">{creator.phone}</p> : null}
+        {creator.email ? <p className="font-mono text-[11px] text-pulse">{creator.email}</p> : null}
       </td>
       <td className="px-4 py-3 font-mono text-sm">{creator.tier}</td>
       <td className="px-4 py-3 font-mono text-sm">{creator.dealsCount}</td>

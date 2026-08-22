@@ -129,12 +129,6 @@ function OverviewTab({
           hot={totals.flaggedStores > 0}
           tone="danger"
         />
-        <AttentionRow
-          label={t("overview.autoPausedWallets")}
-          value={totals.autoPausedWallets}
-          hot={totals.autoPausedWallets > 0}
-          tone="danger"
-        />
       </ul>
 
       {data.storeQuality.some((row) => row.flag) && (
@@ -230,6 +224,7 @@ function MerchantsTab({
           head={[
             t("merchants.columns.name"),
             t("merchants.columns.products"),
+            t("merchants.columns.wallet"),
             t("merchants.columns.status"),
             t("merchants.columns.actions"),
           ]}
