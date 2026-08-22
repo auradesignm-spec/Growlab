@@ -1,15 +1,18 @@
 import { cookies } from "next/headers";
+import {
+  CART_MAX_AGE_SEC,
+  GL_CART_COOKIE,
+  GL_REF_COOKIE,
+  normalizeCreatorHandle,
+} from "@/lib/shop/cookieNames";
 
-export const GL_REF_COOKIE = "gl_ref";
-export const GL_CART_COOKIE = "gl_cart";
-
-/** First-touch window. Matches a typical affiliate cookie life. */
-export const REF_MAX_AGE_SEC = 60 * 60 * 24 * 21;
-export const CART_MAX_AGE_SEC = 60 * 60 * 24 * 14;
-
-export function normalizeCreatorHandle(raw: string): string {
-  return decodeURIComponent(raw).trim().toLowerCase();
-}
+export {
+  CART_MAX_AGE_SEC,
+  GL_CART_COOKIE,
+  GL_REF_COOKIE,
+  REF_MAX_AGE_SEC,
+  normalizeCreatorHandle,
+} from "@/lib/shop/cookieNames";
 
 export interface CartItem {
   dealId: string;

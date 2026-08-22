@@ -1,9 +1,13 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { DEFAULT_LOCALE, isLocale, LOCALE_COOKIE, type Locale } from "@/i18n/config";
-import { GL_REF_COOKIE, REF_MAX_AGE_SEC, normalizeCreatorHandle } from "@/lib/shop/cookies";
+import { GL_REF_COOKIE, REF_MAX_AGE_SEC, normalizeCreatorHandle } from "@/lib/shop/cookieNames";
 
 const isProtectedRoute = createRouteMatcher(["/dashboard(.*)", "/api/kyc(.*)"]);
+
+function clerkIsConfigured() {
+  return Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY && process.env.CLERK_SECRET_KEY);
+}
 
 function detectLocale(request: NextRequest): Locale {
   const cookie = request.cookies.get(LOCALE_COOKIE)?.value;
@@ -46,24 +50,29 @@ function stampFirstTouchRef(request: NextRequest, response: NextResponse) {
   });
 }
 
-export default clerkMiddleware(async (auth, request) => {
+function publicMiddleware(request: NextRequest) {
   const locale = detectLocale(request);
-
-  // Explicit redirect: auth.protect() rewrites to a missing route and surfaces
-  // as a 404 ("protect-rewrite") on this Next 14 + catch-all sign-in setup.
-  if (isProtectedRoute(request)) {
-    const { userId } = await auth();
-    if (!userId) {
-      const signIn = new URL("/sign-in", request.url);
-      signIn.searchParams.set("redirect_url", `${request.nextUrl.pathname}${request.nextUrl.search}`);
-      return withLocaleCookie(NextResponse.redirect(signIn), locale);
-    }
-  }
-
   const response = withLocaleCookie(NextResponse.next(), locale);
   stampFirstTouchRef(request, response);
   return response;
-});
+}
+
+export default clerkIsConfigured()
+  ? clerkMiddleware(async (auth, request) => {
+      const locale = detectLocale(request);
+
+      if (isProtectedRoute(request)) {
+        const { userId } = await auth();
+        if (!userId) {
+          const signIn = new URL("/sign-in", request.url);
+          signIn.searchParams.set("redirect_url", `${request.nextUrl.pathname}${request.nextUrl.search}`);
+          return withLocaleCookie(NextResponse.redirect(signIn), locale);
+        }
+      }
+
+      return publicMiddleware(request);
+    })
+  : publicMiddleware;
 
 export const config = {
   matcher: [
