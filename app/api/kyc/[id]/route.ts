@@ -5,6 +5,7 @@ import { isCurrentUserAdmin } from "@/lib/auth/admin";
 import { readKycFile } from "@/lib/kyc/storage";
 
 export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 
 export async function GET(_request: Request, { params }: { params: { id: string } }) {
   const viewer = await getCurrentUser();

@@ -4,16 +4,27 @@ const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
 const isDev = process.env.NODE_ENV === "development";
 
+const clerkCsp = [
+  "https://*.clerk.accounts.dev",
+  "https://*.clerk.com",
+  "https://clerk.com",
+  "https://api.clerk.com",
+  "https://clerk-telemetry.com",
+  "https://challenges.cloudflare.com",
+].join(" ");
+
 const ContentSecurityPolicy = [
   "default-src 'self'",
   isDev
-    ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'"
-    : "script-src 'self' 'unsafe-inline'",
+    ? `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${clerkCsp}`
+    : `script-src 'self' 'unsafe-inline' ${clerkCsp}`,
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com data:",
-  "img-src 'self' data: blob:",
+  "img-src 'self' data: blob: https://img.clerk.com https://*.clerk.com",
   "media-src 'self' blob:",
-  "connect-src 'self'",
+  `connect-src 'self' ${clerkCsp} wss://*.clerk.accounts.dev`,
+  `frame-src 'self' ${clerkCsp}`,
+  "worker-src 'self' blob:",
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self'",
@@ -41,6 +52,9 @@ const nextConfig = {
   experimental: {
     serverActions: {
       bodySizeLimit: "20mb",
+    },
+    outputFileTracingIncludes: {
+      "/*": ["./prisma/dev.db", "./prisma/schema.prisma"],
     },
   },
   async headers() {
