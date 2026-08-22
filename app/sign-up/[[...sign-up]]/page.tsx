@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { SignUp } from "@clerk/nextjs";
+import ClerkAuthScreen from "@/components/ClerkAuthScreen";
 
 export default function SignUpPage() {
   return (
@@ -14,7 +14,7 @@ export default function SignUpPage() {
       </header>
       <div className="flex flex-1 flex-col items-center justify-center px-5 pb-16">
         <h1 className="mb-6 text-[20px] font-semibold">إنشاء حساب شريك</h1>
-        <SignUp path="/sign-up" routing="path" signInUrl="/sign-in" fallbackRedirectUrl="/dashboard" />
+        <ClerkAuthScreen mode="sign-up" enabled={Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY)} />
       </div>
     </div>
   );

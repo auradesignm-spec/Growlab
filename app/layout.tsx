@@ -49,6 +49,7 @@ export default async function RootLayout({
       <body className="font-body antialiased">
         {clerkPublishableKey ? (
           <ClerkProvider
+            publishableKey={clerkPublishableKey}
             signInUrl="/sign-in"
             signUpUrl="/sign-up"
             signInFallbackRedirectUrl="/dashboard"

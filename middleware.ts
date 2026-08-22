@@ -6,7 +6,7 @@ import { GL_REF_COOKIE, REF_MAX_AGE_SEC, normalizeCreatorHandle } from "@/lib/sh
 const isProtectedRoute = createRouteMatcher(["/dashboard(.*)", "/api/kyc(.*)"]);
 
 function clerkIsConfigured() {
-  return Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY && process.env.CLERK_SECRET_KEY);
+  return Boolean(process.env.CLERK_SECRET_KEY);
 }
 
 function detectLocale(request: NextRequest): Locale {
