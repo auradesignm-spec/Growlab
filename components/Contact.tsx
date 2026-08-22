@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { useTranslations } from "next-intl";
+import Reveal from "@/components/Reveal";
 import type {
   ContactFieldErrors,
   ContactFieldName,
@@ -18,6 +20,7 @@ const EMPTY_FORM: ContactFormData = {
 };
 
 export default function Contact() {
+  const t = useTranslations("marketing.contact");
   const [sent, setSent] = useState(false);
   const [errors, setErrors] = useState<ContactFieldErrors>({});
   const [values, setValues] = useState<ContactFormData>(EMPTY_FORM);
@@ -44,7 +47,12 @@ export default function Contact() {
     const { sanitized, errors: validationErrors, isValid } = validateContactForm(values);
 
     if (!isValid) {
-      setErrors(validationErrors);
+      setErrors({
+        name: validationErrors.name ? t("errName") : undefined,
+        biz: validationErrors.biz ? t("errBiz") : undefined,
+        phone: validationErrors.phone ? t("errPhone") : undefined,
+        msg: validationErrors.msg ? t("errMsg") : undefined,
+      });
       return;
     }
 
@@ -56,20 +64,21 @@ export default function Contact() {
   }
 
   return (
-    <section id="contact" className="section-padding bg-ink text-onDark">
-      <div className="container-wrap">
-        <div className="eyebrow eyebrow-light">لنبدأ</div>
-        <h2 className="section-heading">جاهز تشوف الفرق؟</h2>
-        <p className="mt-3.5 max-w-xl text-lg text-onDarkSoft">
-          احجز استشارة مجانية 15 دقيقة، أو تواصل معنا مباشرة على واتساب.
-        </p>
+    <section id="contact" className="relative scroll-mt-24 py-section">
+      <div className="mx-auto max-w-wrap px-5 sm:px-8">
+        <Reveal>
+          <p className="gl-eyebrow">{t("eyebrow")}</p>
+          <h2 className="gl-heading mt-2 text-display-lg">{t("title")}</h2>
+          <p className="gl-lede mt-4">{t("lede")}</p>
+        </Reveal>
 
-        <div className="mt-11 grid grid-cols-1 items-start gap-14 md:grid-cols-2">
-          <form onSubmit={handleSubmit} noValidate aria-label="نموذج التواصل">
+        <div className="mt-11 grid grid-cols-1 items-start gap-8 md:grid-cols-2">
+          <Reveal>
+          <form onSubmit={handleSubmit} noValidate aria-label={t("formAria")} className="gl-glass p-8">
             <Field
               id="name"
-              label="الاسم"
-              placeholder="اسمك الكامل"
+              label={t("name")}
+              placeholder={t("namePlaceholder")}
               type="text"
               maxLength={FIELD_LIMITS.name}
               required
@@ -79,8 +88,8 @@ export default function Contact() {
             />
             <Field
               id="biz"
-              label="اسم النشاط التجاري"
-              placeholder="مثال: متجر أثاث المنزل"
+              label={t("biz")}
+              placeholder={t("bizPlaceholder")}
               type="text"
               maxLength={FIELD_LIMITS.biz}
               required
@@ -90,7 +99,7 @@ export default function Contact() {
             />
             <Field
               id="phone"
-              label="رقم واتساب"
+              label={t("phone")}
               placeholder="+968 XXXXXXXX"
               type="tel"
               maxLength={FIELD_LIMITS.phone}
@@ -101,58 +110,49 @@ export default function Contact() {
             />
 
             <div className="mb-4">
-              <label htmlFor="msg" className="mb-1.5 block font-mono text-[13.5px] text-onDarkSoft">
-                وش تحتاج بالضبط؟
+              <label htmlFor="msg" className="mb-1.5 block font-mono text-[13.5px] text-frost-faint">
+                {t("msg")}
               </label>
               <textarea
                 id="msg"
                 name="msg"
                 value={values.msg}
                 maxLength={FIELD_LIMITS.msg}
-                placeholder="حدثنا شوي عن نشاطك وهدفك"
-                className={`input-field min-h-[100px] resize-y ${errors.msg ? "input-field-error" : ""}`}
+                placeholder={t("msgPlaceholder")}
+                className={`gl-input min-h-[100px] resize-y ${errors.msg ? "gl-input-error" : ""}`}
                 onChange={(event) => handleChange("msg", event.target.value)}
                 aria-invalid={Boolean(errors.msg)}
                 aria-describedby={errors.msg ? "msg-error" : undefined}
               />
               {errors.msg && (
-                <p id="msg-error" className="mt-1.5 text-sm text-[#E39284]" role="alert">
+                <p id="msg-error" className="mt-1.5 text-sm text-danger" role="alert">
                   {errors.msg}
                 </p>
               )}
             </div>
 
             {errors.form && (
-              <p className="mb-3 text-sm text-[#E39284]" role="alert">
+              <p className="mb-3 text-sm text-danger" role="alert">
                 {errors.form}
               </p>
             )}
 
-            <button type="submit" className="btn-primary w-full">
-              أرسل الطلب
+            <button type="submit" className="gl-btn-primary">
+              {t("submit")}
             </button>
 
             {sent && (
-              <p className="mt-3 text-[13px] text-onDarkSoft" role="status">
-                وصلنا طلبك. بنرجع لك خلال ٢٤ ساعة على واتساب.
+              <p className="mt-3 text-[13px] text-ok" role="status">
+                {t("sent")}
               </p>
             )}
           </form>
+          </Reveal>
 
-          <div className="flex flex-col gap-4 pt-2">
-            <ContactCard
-              href="#contact"
-              title="تواصل مباشر على واتساب"
-              subtitle="رد سريع خلال ساعات العمل"
-              dotClass="bg-teal"
-            />
-            <ContactCard
-              href="#contact"
-              title="احجز مكالمة تعارف مجانية"
-              subtitle="١٥ دقيقة، بدون أي التزام"
-              dotClass="bg-gold"
-            />
-          </div>
+          <Reveal delay={100} className="flex flex-col gap-4 pt-2">
+            <ContactCard href="#contact" title={t("whatsappTitle")} subtitle={t("whatsappSubtitle")} />
+            <ContactCard href="#contact" title={t("callTitle")} subtitle={t("callSubtitle")} />
+          </Reveal>
         </div>
       </div>
     </section>
@@ -163,19 +163,14 @@ interface ContactCardProps {
   readonly href: string;
   readonly title: string;
   readonly subtitle: string;
-  readonly dotClass: string;
 }
 
-function ContactCard({ href, title, subtitle, dotClass }: ContactCardProps) {
+function ContactCard({ href, title, subtitle }: ContactCardProps) {
   return (
-    <a
-      href={href}
-      className="card-interactive flex items-center gap-3.5 border-onDark/20 bg-onDark/[0.06] px-5 py-4.5 text-onDark shadow-none hover:bg-onDark/10"
-    >
-      <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${dotClass}`} aria-hidden="true" />
+    <a href={href} className="gl-glass gl-glass-hover flex items-center px-5 py-4 text-frost">
       <span>
-        <strong className="block text-[15px]">{title}</strong>
-        <span className="text-[13px] text-onDarkSoft">{subtitle}</span>
+        <strong className="block text-[15px] font-medium">{title}</strong>
+        <span className="text-[13px] text-frost-faint">{subtitle}</span>
       </span>
     </a>
   );
@@ -201,9 +196,9 @@ function Field({
 
   return (
     <div className="mb-4">
-      <label htmlFor={id} className="mb-1.5 block font-mono text-[13.5px] text-onDarkSoft">
+      <label htmlFor={id} className="mb-1.5 block font-mono text-[13.5px] text-frost-faint">
         {label}
-        {required && <span className="text-gold-soft"> *</span>}
+        {required && <span className="text-frost-dim"> *</span>}
       </label>
       <input
         id={id}
@@ -214,13 +209,13 @@ function Field({
         maxLength={maxLength}
         required={required}
         autoComplete={id === "phone" ? "tel" : id === "name" ? "name" : "organization"}
-        className={`input-field ${error ? "input-field-error" : ""}`}
+        className={`gl-input ${error ? "gl-input-error" : ""}`}
         onChange={(event) => onChange(id, event.target.value)}
         aria-invalid={Boolean(error)}
         aria-describedby={errorId}
       />
       {error && (
-        <p id={errorId} className="mt-1.5 text-sm text-[#E39284]" role="alert">
+        <p id={errorId} className="mt-1.5 text-sm text-danger" role="alert">
           {error}
         </p>
       )}

@@ -8,16 +8,6 @@ export interface BadgeItem {
   readonly desc: string;
 }
 
-export interface CompareRow {
-  readonly label: string;
-  readonly us: string;
-  readonly them: string;
-}
-
-export interface PricingFeature {
-  readonly text: string;
-}
-
 export interface ProblemItem {
   readonly num: string;
   readonly title: string;

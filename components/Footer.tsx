@@ -1,15 +1,34 @@
+"use client";
+
+import { useTranslations } from "next-intl";
+
 export default function Footer() {
   const year = new Date().getFullYear();
+  const t = useTranslations("nav");
+  const footer = useTranslations("marketing.footer");
 
   return (
-    <footer className="bg-ink py-9 text-onDarkSoft">
-      <div className="container-wrap">
-        <div className="tear tear-dark" />
-        <div className="flex flex-wrap items-center justify-between gap-4 pt-6 text-[13.5px]">
-          <div className="font-display text-[17px] text-onDark">
-            Growlab<span className="text-gold-soft">.</span> — شريك نمو رقمي
-          </div>
-          <div>© {year} Growlab. جميع الحقوق محفوظة.</div>
+    <footer className="relative border-t border-line py-10">
+      <div className="mx-auto max-w-wrap px-5 sm:px-8">
+        <div className="flex flex-wrap items-center justify-between gap-4 text-[14px] text-frost-faint">
+          <p className="text-[15px] font-medium text-frost">Growlab</p>
+          <nav className="flex flex-wrap items-center gap-4 text-[14px]">
+            <a href="/#compare" className="hover:text-frost">
+              {t("compare")}
+            </a>
+            <a href="/#roadmap" className="hover:text-frost">
+              {t("roadmap")}
+            </a>
+            <a href="/sign-in?redirect_url=/dashboard" className="hover:text-frost">
+              {t("signIn")}
+            </a>
+            <a href="/dashboard" className="hover:text-frost">
+              {t("dashboard")}
+            </a>
+          </nav>
+          <p>
+            © {year} Growlab. {footer("rights")}
+          </p>
         </div>
       </div>
     </footer>

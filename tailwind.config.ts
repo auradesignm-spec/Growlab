@@ -19,28 +19,61 @@ const config: Config = {
           deep: "#5C100E",
           wash: "#C45A4A",
         },
+        gold: {
+          DEFAULT: "#A6822E",
+          soft: "#C9A85C",
+          wash: "#EBE0C4",
+        },
         ink_text: "#0A0908",
         muted: "#6B6458",
-        line: "#C9BDA8",
-        onDark: "#E8DFD0",
+        onDark: "#E8E6E1",
         onDarkSoft: "#A89B86",
-        danger: "#8C1D18",
+        danger: "#D4675C",
+        ok: {
+          DEFAULT: "#6F9B7C",
+          soft: "#8FB59A",
+        },
+        warn: "#C4A35A",
+
+        night: {
+          DEFAULT: "#F4F5F7",
+          soft: "#FFFFFF",
+          deep: "#ECEEF2",
+          raised: "#FFFFFF",
+        },
+        frost: {
+          DEFAULT: "#111318",
+          dim: "#5C6573",
+          faint: "#8B93A1",
+        },
+        line: "rgba(17,19,24,0.08)",
+        // Azure is charts and focus only. Primary buttons use frost (ink).
+        signal: {
+          DEFAULT: "#1F6FEB",
+          soft: "#2563C4",
+          bright: "#1A5BD4",
+          dim: "#D6E4FA",
+        },
+        // Meaning-only success. Do not use for decoration.
+        pulse: {
+          DEFAULT: "#6F9B7C",
+          soft: "#8FB59A",
+        },
       },
       fontFamily: {
-        display: ["var(--font-amiri)", "serif"],
+        display: ["var(--font-plex-arabic)", "sans-serif"],
         body: ["var(--font-plex-arabic)", "sans-serif"],
-        west: ["var(--font-archivo)", "sans-serif"],
-        serif: ["var(--font-newsreader)", "serif"],
+        west: ["var(--font-plex-arabic)", "sans-serif"],
+        serif: ["var(--font-plex-arabic)", "sans-serif"],
         mono: ["var(--font-plex-mono)", "monospace"],
       },
       fontSize: {
-        mast: ["clamp(4.5rem,18vw,14rem)", { lineHeight: "0.82", letterSpacing: "-0.04em" }],
-        "display-xl": ["clamp(2.75rem,7vw,6.5rem)", { lineHeight: "0.95", letterSpacing: "-0.02em" }],
-        "display-lg": ["clamp(2.1rem,4.8vw,4rem)", { lineHeight: "1.05" }],
-        "display-md": ["clamp(1.6rem,3vw,2.4rem)", { lineHeight: "1.15" }],
+        "display-xl": ["clamp(1.75rem,4.2vw,3.5rem)", { lineHeight: "1.1", letterSpacing: "-0.02em" }],
+        "display-lg": ["clamp(1.5rem,2.4vw,2rem)", { lineHeight: "1.2" }],
+        "display-md": ["clamp(1.25rem,2vw,1.5rem)", { lineHeight: "1.25" }],
       },
       maxWidth: {
-        wrap: "1440px",
+        wrap: "1200px",
       },
       borderRadius: {
         none: "0",
@@ -52,27 +85,12 @@ const config: Config = {
         800: "800ms",
         1200: "1200ms",
       },
-      keyframes: {
-        "rise-slow": {
-          from: { opacity: "0", transform: "translateY(28px)" },
-          to: { opacity: "1", transform: "translateY(0)" },
-        },
-        "fade-in": {
-          from: { opacity: "0" },
-          to: { opacity: "1" },
-        },
-        ken: {
-          from: { transform: "scale(1)" },
-          to: { transform: "scale(1.08)" },
-        },
-      },
-      animation: {
-        "rise-slow": "rise-slow 1.4s heavy both",
-        "fade-in": "fade-in 1.2s heavy both",
-        ken: "ken 18s linear alternate infinite",
-      },
       spacing: {
-        section: "clamp(6rem, 14vw, 11rem)",
+        section: "clamp(2.5rem, 6vw, 6rem)",
+      },
+      boxShadow: {
+        overlay: "0 1px 2px rgba(17,19,24,0.08)",
+        card: "0 1px 2px rgba(17,19,24,0.06), 0 8px 24px rgba(17,19,24,0.04)",
       },
     },
   },
