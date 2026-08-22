@@ -9,6 +9,7 @@ interface Box {
   readonly h: number;
 }
 
+/** Liquid hover bubble — desktop fine pointers only. Touch skips tracking to keep scroll smooth. */
 export default function GlassBubbleTrack({
   children,
   className = "",
@@ -26,6 +27,7 @@ export default function GlassBubbleTrack({
   const activeRef = useRef<HTMLElement | null>(null);
   const [box, setBox] = useState<Box | null>(null);
   const [reduceMotion, setReduceMotion] = useState(false);
+  const [enableBubble, setEnableBubble] = useState(false);
 
   const clearHot = useCallback(() => {
     const track = trackRef.current;
@@ -61,29 +63,38 @@ export default function GlassBubbleTrack({
   }, [clearHot]);
 
   useEffect(() => {
-    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const sync = () => setReduceMotion(media.matches);
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const fine = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const sync = () => {
+      setReduceMotion(motion.matches);
+      setEnableBubble(fine.matches && !motion.matches);
+    };
     sync();
-    media.addEventListener("change", sync);
-    return () => media.removeEventListener("change", sync);
+    motion.addEventListener("change", sync);
+    fine.addEventListener("change", sync);
+    return () => {
+      motion.removeEventListener("change", sync);
+      fine.removeEventListener("change", sync);
+    };
   }, []);
 
   const parkPressed = useCallback(() => {
     const track = trackRef.current;
-    if (!track || !persistPressed) {
+    if (!track || !persistPressed || !enableBubble) {
       hide();
       return;
     }
     const pressed = track.querySelector<HTMLElement>('[data-bubble-item][aria-pressed="true"]');
     if (pressed) moveTo(pressed);
     else hide();
-  }, [hide, moveTo, persistPressed]);
+  }, [enableBubble, hide, moveTo, persistPressed]);
 
   useEffect(() => {
     parkPressed();
   }, [parkPressed, resetKey]);
 
   const onPointer = (event: PointerEvent<HTMLDivElement> | FocusEvent<HTMLDivElement>) => {
+    if (!enableBubble) return;
     const item = (event.target as HTMLElement).closest("[data-bubble-item]");
     if (!(item instanceof HTMLElement)) return;
     if (item === activeRef.current) return;
@@ -95,18 +106,22 @@ export default function GlassBubbleTrack({
       ref={trackRef}
       className={`relative ${className}`}
       aria-label={ariaLabel}
-      onPointerEnter={onPointer}
-      onPointerMove={onPointer}
-      onPointerLeave={persistPressed ? parkPressed : hide}
-      onFocusCapture={onPointer}
-      onBlurCapture={(event) => {
-        if (!trackRef.current?.contains(event.relatedTarget as Node)) {
-          if (persistPressed) parkPressed();
-          else hide();
-        }
-      }}
+      onPointerEnter={enableBubble ? onPointer : undefined}
+      onPointerMove={enableBubble ? onPointer : undefined}
+      onPointerLeave={enableBubble ? (persistPressed ? parkPressed : hide) : undefined}
+      onFocusCapture={enableBubble ? onPointer : undefined}
+      onBlurCapture={
+        enableBubble
+          ? (event) => {
+              if (!trackRef.current?.contains(event.relatedTarget as Node)) {
+                if (persistPressed) parkPressed();
+                else hide();
+              }
+            }
+          : undefined
+      }
     >
-      {box ? (
+      {enableBubble && box ? (
         <span
           className="gl-liquid-bubble"
           aria-hidden="true"

@@ -1,4 +1,4 @@
-/** Pastel mesh behind marketing. Decorative only. */
+/** Pastel mesh behind marketing. Mid/late orbs hide on mobile via CSS. */
 export default function CloudMesh() {
   return (
     <div className="gl-mesh" aria-hidden="true">

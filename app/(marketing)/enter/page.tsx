@@ -24,10 +24,10 @@ export default async function EnterPage({
     searchParams.role === "merchant" || searchParams.role === "creator" ? searchParams.role : undefined;
 
   return (
-    <main>
+    <main className="flex min-h-dvh flex-col">
       <Header />
-      <section className="px-5 pb-24 pt-32 sm:px-8 sm:pt-40">
-        <div className="mx-auto max-w-wrap">
+      <section className="flex flex-1 flex-col justify-center px-5 pb-12 pt-24 sm:px-8 sm:pb-16 sm:pt-28">
+        <div className="mx-auto w-full max-w-wrap">
           <EnterGate initialRole={initialRole} />
         </div>
       </section>

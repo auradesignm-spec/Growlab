@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 import GlassBubbleTrack from "@/components/GlassBubbleTrack";
-import { ENTER_HREF } from "@/lib/auth/paths";
+import { SIGN_IN_HREF } from "@/lib/auth/paths";
 import { track } from "@/lib/analytics";
 
 const CLERK_ENABLED = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
@@ -120,40 +120,30 @@ function HeaderAuth({
   stacked?: boolean;
   compact?: boolean;
 }) {
-  const enterLink = (
+  const guest = compact ? (
     <Link
-      href={ENTER_HREF}
-      data-bubble-item={compact ? true : undefined}
-      className={
-        compact
-          ? "relative z-[1] inline-flex h-9 shrink-0 items-center whitespace-nowrap rounded-full px-3 text-[14px] font-medium"
-          : stacked
-            ? "gl-btn-ghost"
-            : "gl-nav-link px-3 py-1.5"
-      }
-      style={compact ? { color: "#111318" } : undefined}
+      href={SIGN_IN_HREF}
+      data-bubble-item
+      className="relative z-[1] inline-flex h-9 shrink-0 items-center whitespace-nowrap rounded-full px-3 text-[14px] font-medium"
+      style={{ color: "#111318" }}
       onClick={() => {
-        track("Sign In Started", { source: compact ? "header-mobile" : "header" });
+        track("Sign In Started", { source: "header-mobile" });
         onNavigate?.();
       }}
     >
-      {t("startEarning")}
+      {t("signIn")}
     </Link>
-  );
-
-  const guest = compact ? (
-    enterLink
   ) : (
     <div className={stacked ? "mt-4 flex flex-col items-start gap-3" : "contents"}>
       <Link
-        href={ENTER_HREF}
+        href={SIGN_IN_HREF}
         className="gl-btn-primary"
         onClick={() => {
-          track("Sign Up Started", { source: "header-earn" });
+          track("Sign In Started", { source: stacked ? "header-mobile-menu" : "header" });
           onNavigate?.();
         }}
       >
-        {t("startEarning")}
+        {t("signIn")}
       </Link>
     </div>
   );

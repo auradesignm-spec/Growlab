@@ -593,9 +593,13 @@
 
 @media (max-width: 767px) {
   .gl-mesh-orb {
-    --orb-lo: 0.16;
-    --orb-hi: 0.7;
-    filter: blur(40px);
+    --orb-lo: 0.28;
+    --orb-hi: 0.28;
+    filter: blur(28px);
+    animation: none;
+    will-change: auto;
+    opacity: 0.4;
+    transform: none;
   }
 
   .gl-mesh-mid-cyan,
@@ -603,6 +607,24 @@
   .gl-mesh-late-lime,
   .gl-mesh-late-coral {
     display: none;
+  }
+
+  .gl-nav-glass {
+    background: rgb(255 255 255 / 0.88);
+    backdrop-filter: blur(12px) saturate(140%);
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
+  }
+
+  .gl-liquid-bubble {
+    display: none;
+  }
+
+  .gl-hero-cash {
+    display: none;
+  }
+
+  html {
+    scroll-behavior: auto;
   }
 }
 
