@@ -9,6 +9,8 @@ import GlassBubbleTrack from "@/components/GlassBubbleTrack";
 import { SIGN_IN_HREF, signUpHref } from "@/lib/auth/paths";
 import { track } from "@/lib/analytics";
 
+const CLERK_ENABLED = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
+
 const STORY_HREFS = [
   { href: "/#manifesto", key: "idea" },
   { href: "/#compare", key: "compare" },
@@ -60,35 +62,7 @@ export default function Header() {
 
         <div className="hidden items-center gap-1 md:flex">
           <LocaleSwitcher compact tone="light" />
-          <SignedOut>
-            <Link
-              href={SIGN_IN_HREF}
-              className="gl-nav-link px-3 py-1.5"
-              onClick={() => track("Sign In Started", { source: "header" })}
-            >
-              {t("signIn")}
-            </Link>
-            <Link
-              href={signUpHref("creator")}
-              className="gl-btn-ghost gl-bubble-btn"
-              onClick={() => track("Sign Up Started", { role: "creator", source: "header" })}
-            >
-              {t("ctaCreator")}
-            </Link>
-            <Link
-              href={signUpHref("merchant")}
-              className="gl-btn-primary"
-              onClick={() => track("Sign Up Started", { role: "merchant", source: "header" })}
-            >
-              {t("ctaMerchant")}
-            </Link>
-          </SignedOut>
-          <SignedIn>
-            <Link href="/dashboard" className="gl-btn-primary">
-              {t("openDashboard")}
-            </Link>
-            <UserButton />
-          </SignedIn>
+          <HeaderAuth t={t} />
         </div>
 
         <GlassBubbleTrack className="flex items-center md:hidden">
@@ -139,27 +113,7 @@ export default function Header() {
               {t("partnerPortal")}
             </Link>
           </GlassBubbleTrack>
-          <SignedOut>
-            <div className="mt-4 flex flex-col items-start gap-3">
-              <Link href={SIGN_IN_HREF} className="gl-btn-ghost" onClick={closeMenu}>
-                {t("signIn")}
-              </Link>
-              <Link href={signUpHref("merchant")} className="gl-btn-primary" onClick={closeMenu}>
-                {t("ctaMerchant")}
-              </Link>
-              <Link href={signUpHref("creator")} className="gl-btn-ghost gl-bubble-btn" onClick={closeMenu}>
-                {t("ctaCreator")}
-              </Link>
-            </div>
-          </SignedOut>
-          <SignedIn>
-            <div className="mt-4 flex items-center gap-4">
-              <Link href="/dashboard" className="gl-btn-primary" onClick={closeMenu}>
-                {t("openDashboard")}
-              </Link>
-              <UserButton />
-            </div>
-          </SignedIn>
+          <HeaderAuth t={t} onNavigate={closeMenu} stacked />
           <div className="mt-4">
             <LocaleSwitcher tone="light" />
           </div>
@@ -168,3 +122,65 @@ export default function Header() {
     </header>
   );
 }
+
+function HeaderAuth({
+  t,
+  onNavigate,
+  stacked = false,
+}: {
+  t: ReturnType<typeof useTranslations>;
+  onNavigate?: () => void;
+  stacked?: boolean;
+}) {
+  const guest = (
+    <div className={stacked ? "mt-4 flex flex-col items-start gap-3" : "contents"}>
+      <Link
+        href={SIGN_IN_HREF}
+        className={stacked ? "gl-btn-ghost" : "gl-nav-link px-3 py-1.5"}
+        onClick={() => {
+          track("Sign In Started", { source: "header" });
+          onNavigate?.();
+        }}
+      >
+        {t("signIn")}
+      </Link>
+      <Link
+        href={signUpHref("creator")}
+        className="gl-btn-ghost gl-bubble-btn"
+        onClick={() => {
+          track("Sign Up Started", { role: "creator", source: "header" });
+          onNavigate?.();
+        }}
+      >
+        {t("ctaCreator")}
+      </Link>
+      <Link
+        href={signUpHref("merchant")}
+        className="gl-btn-primary"
+        onClick={() => {
+          track("Sign Up Started", { role: "merchant", source: "header" });
+          onNavigate?.();
+        }}
+      >
+        {t("ctaMerchant")}
+      </Link>
+    </div>
+  );
+
+  if (!CLERK_ENABLED) return guest;
+
+  return (
+    <>
+      <SignedOut>{guest}</SignedOut>
+      <SignedIn>
+        <div className={stacked ? "mt-4 flex items-center gap-4" : "contents"}>
+          <Link href="/dashboard" className="gl-btn-primary" onClick={onNavigate}>
+            {t("openDashboard")}
+          </Link>
+          <UserButton />
+        </div>
+      </SignedIn>
+    </>
+  );
+}
+
