@@ -3,7 +3,7 @@
 import { randomBytes } from "crypto";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
-import { computeWaterfall } from "@/lib/ledger/waterfall";
+import { computeWaterfall, type WaterfallResult } from "@/lib/ledger/waterfall";
 import type { AttributionSource } from "@/lib/domain/enums";
 import { CONTACT_LEAK_WARNING_AR, scanForContactLeak } from "@/lib/security/antiLeak";
 import { productVariants } from "@/lib/catalog-db";
@@ -49,8 +49,10 @@ function newTrackingToken(): string {
   return randomBytes(12).toString("base64url");
 }
 
-function attributionFor(_storeUsername: string): AttributionSource {
-  return readRefCookie() ? "creator_link" : "direct";
+function attributionFor(storeUsername: string): AttributionSource {
+  const ref = readRefCookie();
+  if (!ref) return "direct";
+  return ref === normalizeCreatorHandle(storeUsername) ? "creator_link" : "direct";
 }
 
 async function loadActiveDeal(dealId: string) {
@@ -171,9 +173,17 @@ export async function placeCodCheckout(input: {
   const storeUsername = input.username
     ? normalizeCreatorHandle(input.username)
     : firstDeal.creator.username;
+  const attributionSource = attributionFor(storeUsername);
 
-  const createdIds: string[] = [];
-
+  // Validate every line first so a later failure never leaves a partial cart paid.
+  type PreparedLine = {
+    deal: Awaited<ReturnType<typeof loadActiveDeal>>;
+    quantity: number;
+    size: string;
+    unitPriceCharged: number;
+    waterfall: WaterfallResult;
+  };
+  const prepared: PreparedLine[] = [];
   for (const line of cartItems) {
     const quantity = Math.floor(Number(line.quantity));
     const size = line.size.trim().slice(0, 40);
@@ -192,28 +202,37 @@ export async function placeCodCheckout(input: {
     }
 
     const unitPriceCharged = deal.lockedUnitPrice;
-    const waterfall = computeWaterfall({
+    prepared.push({
+      deal,
       quantity,
+      size,
       unitPriceCharged,
-      lockedUnitPrice: deal.lockedUnitPrice,
-      lockedCommissionPct: deal.lockedCommissionPct,
-      discountCapPct: deal.discountCapPct,
-      settlementChannel: "cod",
+      waterfall: computeWaterfall({
+        quantity,
+        unitPriceCharged,
+        lockedUnitPrice: deal.lockedUnitPrice,
+        lockedCommissionPct: deal.lockedCommissionPct,
+        discountCapPct: deal.discountCapPct,
+        settlementChannel: "cod",
+      }),
     });
+  }
 
-    const order = await prisma.$transaction(async (tx) => {
+  const createdIds = await prisma.$transaction(async (tx) => {
+    const ids: string[] = [];
+    for (const line of prepared) {
       const created = await tx.order.create({
         data: {
-          dealId: deal.id,
+          dealId: line.deal.id,
           buyerName,
           buyerPhone,
           buyerAddress,
           buyerCity,
-          variantLabel: size,
-          quantity,
-          unitPriceCharged,
-          currency: deal.product.currency,
-          attributionSource: attributionFor(deal.creator.username),
+          variantLabel: line.size,
+          quantity: line.quantity,
+          unitPriceCharged: line.unitPriceCharged,
+          currency: line.deal.product.currency,
+          attributionSource,
           settlementChannel: "cod",
           trackingToken,
           escrowStatus: "held",
@@ -223,20 +242,20 @@ export async function placeCodCheckout(input: {
       await tx.ledgerEntry.create({
         data: {
           orderId: created.id,
-          attributedGmv: waterfall.attributedGmv,
-          paymentFee: waterfall.paymentFee,
-          platformShare: waterfall.platformShare,
-          merchantShare: waterfall.merchantShare,
-          creatorShare: waterfall.creatorShare,
-          holdbackAmount: waterfall.holdbackAmount,
-          availableAmount: waterfall.availableAmount,
-          holdbackDays: waterfall.holdbackDays,
+          attributedGmv: line.waterfall.attributedGmv,
+          paymentFee: line.waterfall.paymentFee,
+          platformShare: line.waterfall.platformShare,
+          merchantShare: line.waterfall.merchantShare,
+          creatorShare: line.waterfall.creatorShare,
+          holdbackAmount: line.waterfall.holdbackAmount,
+          availableAmount: line.waterfall.availableAmount,
+          holdbackDays: line.waterfall.holdbackDays,
         },
       });
-      return created;
-    });
-    createdIds.push(order.id);
-  }
+      ids.push(created.id);
+    }
+    return ids;
+  });
 
   clearCartCookie();
   revalidatePath(`/creator/${storeUsername}`);

@@ -19,6 +19,13 @@ export async function getCurrentUser() {
     }
   }
 
+  // Without a secret key, auth() throws if clerkMiddleware ran in a degraded
+  // mode — skip Clerk and fall through to dev impersonation or anonymous.
+  if (!process.env.CLERK_SECRET_KEY) {
+    if (isActiveDevImpersonation()) return getCurrentDevUser();
+    return null;
+  }
+
   const { userId } = await auth();
   if (!userId) {
     if (isActiveDevImpersonation()) return getCurrentDevUser();

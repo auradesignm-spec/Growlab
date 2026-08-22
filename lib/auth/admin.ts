@@ -31,13 +31,15 @@ function emailIsAdmin(email: string | null | undefined): boolean {
  * Grant via ADMIN_CLERK_USER_IDS and/or ADMIN_EMAILS.
  */
 export async function isCurrentUserAdmin(): Promise<boolean> {
-  const { userId } = await auth();
-  if (userId && adminUserIds().has(userId)) return true;
+  if (process.env.CLERK_SECRET_KEY) {
+    const { userId } = await auth();
+    if (userId && adminUserIds().has(userId)) return true;
 
-  if (userId) {
-    const clerk = await currentUser();
-    const email = clerk?.emailAddresses[0]?.emailAddress;
-    if (emailIsAdmin(email)) return true;
+    if (userId) {
+      const clerk = await currentUser();
+      const email = clerk?.emailAddresses[0]?.emailAddress;
+      if (emailIsAdmin(email)) return true;
+    }
   }
 
   if (isActiveDevImpersonation()) {

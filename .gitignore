@@ -14,3 +14,4 @@ storage/kyc
 *.tsbuildinfo
 **/__pycache__/
 skills-lock.json
+.vercel
