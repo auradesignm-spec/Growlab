@@ -8,9 +8,9 @@ export default function Footer() {
   const footer = useTranslations("marketing.footer");
 
   return (
-    <footer className="relative border-t border-line py-10">
+    <footer className="relative py-14">
       <div className="mx-auto max-w-wrap px-5 sm:px-8">
-        <div className="flex flex-wrap items-center justify-between gap-4 text-[14px] text-frost-faint">
+        <div className="gl-stage flex flex-wrap items-center justify-between gap-4 px-5 py-6 text-[14px] text-frost-faint sm:px-8">
           <p className="text-[15px] font-medium text-frost">Growlab</p>
           <nav className="flex flex-wrap items-center gap-4 text-[14px]">
             <a href="/#compare" className="hover:text-frost">

@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import Reveal from "@/components/Reveal";
+import StageGlow from "@/components/StageGlow";
 
 export default async function Founders() {
   const t = await getTranslations("marketing.founders");
@@ -13,7 +14,8 @@ export default async function Founders() {
         </Reveal>
 
         <Reveal>
-          <div className="gl-glass mt-10 grid grid-cols-1 items-start gap-10 p-6 sm:p-8 md:grid-cols-[1fr_1.3fr] md:gap-14">
+          <StageGlow className="mt-10" tone="meadow">
+          <div className="gl-stage grid grid-cols-1 items-start gap-10 p-6 sm:p-8 md:grid-cols-[1fr_1.3fr] md:gap-14">
             <div>
               <h3 className="text-xl font-semibold text-frost">{t("name")}</h3>
               <p className="mt-1 text-[14px] text-frost-dim">{t("role")}</p>
@@ -32,6 +34,7 @@ export default async function Founders() {
               </blockquote>
             </div>
           </div>
+          </StageGlow>
         </Reveal>
       </div>
     </section>

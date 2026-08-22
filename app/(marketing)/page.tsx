@@ -20,11 +20,11 @@ export default function MarketingHome() {
     <main>
       <Header />
       <Hero />
+      <Gallery />
       <Problem />
       <HowItWorks />
       <Compare />
       <Roadmap />
-      <Gallery />
       <LedgerPreview />
       <ValueChain />
       <PartnerBenefits />

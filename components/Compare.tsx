@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import Reveal from "@/components/Reveal";
+import StageGlow from "@/components/StageGlow";
 import { track } from "@/lib/analytics";
 
 type Point = { title: string; us: string; them: string };
@@ -34,40 +35,44 @@ export default function Compare() {
           <p className="gl-lede mt-4">{t("lede")}</p>
         </Reveal>
 
-        <div className="mt-8 flex flex-wrap gap-2">
-          {(["merchant", "creator"] as const).map((id) => (
-            <button
-              key={id}
-              type="button"
-              aria-pressed={audience === id}
-              onClick={() => {
-                setAudience(id);
-                track("Comparison Track Selected", { role: id });
-              }}
-              className={`rounded-full px-4 py-2 text-[14px] font-medium transition-colors duration-150 ease-out ${
-                audience === id ? "bg-[#111318] text-white" : "border border-line bg-white text-[#111318]"
-              }`}
-            >
-              {id === "merchant" ? t("merchantLabel") : t("creatorLabel")}
-            </button>
-          ))}
+        <div className="mt-8">
+          <div className="gl-seg">
+            {(["merchant", "creator"] as const).map((id) => (
+              <button
+                key={id}
+                type="button"
+                aria-pressed={audience === id}
+                onClick={() => {
+                  setAudience(id);
+                  track("Comparison Track Selected", { role: id });
+                }}
+                className="gl-seg-btn"
+              >
+                {id === "merchant" ? t("merchantLabel") : t("creatorLabel")}
+              </button>
+            ))}
+          </div>
         </div>
 
-        <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {points.map((point) => (
-            <article key={point.title} className="gl-glass gl-glass-hover flex h-full flex-col p-6">
-              <div className="flex items-start gap-2">
-                <Mark tone="good" />
-                <h3 className="text-[14px] font-semibold leading-snug text-frost">{point.title}</h3>
-              </div>
-              <p className="mt-3 text-[14px] leading-relaxed text-frost-dim">{point.us}</p>
-              <div className="mt-4 flex items-start gap-2 border-t border-line pt-3">
-                <Mark tone="bad" />
-                <p className="text-[13px] leading-relaxed text-frost-faint">{point.them}</p>
-              </div>
-            </article>
-          ))}
-        </div>
+        <StageGlow className="mt-8" tone="dusk">
+          <div className="gl-stage p-3 sm:p-4">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {points.map((point) => (
+              <article key={point.title} className="gl-tile flex h-full flex-col p-6">
+                <div className="flex items-start gap-2">
+                  <Mark tone="good" />
+                  <h3 className="text-[14px] font-semibold leading-snug text-frost">{point.title}</h3>
+                </div>
+                <p className="mt-3 text-[14px] leading-relaxed text-frost-dim">{point.us}</p>
+                <div className="mt-4 flex items-start gap-2 border-t border-line pt-3">
+                  <Mark tone="bad" />
+                  <p className="text-[13px] leading-relaxed text-frost-faint">{point.them}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+          </div>
+        </StageGlow>
       </div>
     </section>
   );

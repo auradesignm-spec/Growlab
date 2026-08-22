@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import Reveal from "@/components/Reveal";
+import StageGlow from "@/components/StageGlow";
 
 export default async function PartnerBenefits() {
   const t = await getTranslations("marketing.partners");
@@ -14,16 +15,20 @@ export default async function PartnerBenefits() {
           <p className="gl-lede mt-4">{t("lede")}</p>
         </Reveal>
 
-        <div className="mt-10 grid grid-cols-1 gap-4 lg:grid-cols-3">
-          {items.map((item) => (
-            <Reveal key={item.title} className="h-full">
-              <article className="gl-glass gl-glass-hover flex h-full flex-col p-6 sm:p-8">
-                <h3 className="text-[16px] font-semibold leading-snug text-frost">{item.title}</h3>
-                <p className="mt-3 text-[14px] leading-relaxed text-frost-dim">{item.text}</p>
-              </article>
-            </Reveal>
-          ))}
-        </div>
+        <StageGlow className="mt-10" tone="meadow">
+          <div className="gl-stage p-3 sm:p-4">
+          <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
+            {items.map((item) => (
+              <Reveal key={item.title} className="h-full">
+                <article className="gl-tile gl-tile-hover flex h-full flex-col p-6 sm:p-8">
+                  <h3 className="text-[16px] font-semibold leading-snug text-frost">{item.title}</h3>
+                  <p className="mt-3 text-[14px] leading-relaxed text-frost-dim">{item.text}</p>
+                </article>
+              </Reveal>
+            ))}
+          </div>
+          </div>
+        </StageGlow>
       </div>
     </section>
   );

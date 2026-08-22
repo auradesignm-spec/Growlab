@@ -98,7 +98,7 @@ export default function CheckoutForm({
             event.preventDefault();
             onSubmit(new FormData(event.currentTarget));
           }}
-          className="gl-glass space-y-4 p-6"
+          className="gl-stage space-y-4 p-6"
         >
           <label className="block">
             <span className="text-[13px] text-frost-faint">{t("buyerName")}</span>

@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import Reveal from "@/components/Reveal";
+import StageGlow from "@/components/StageGlow";
 
 type GovernanceIcon = "floor" | "lock" | "clock" | "ledger" | "shield" | "link";
 
@@ -74,19 +75,23 @@ export default async function Governance() {
           <p className="gl-lede mt-4">{t("lede")}</p>
         </Reveal>
 
-        <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {items.map((item) => (
-            <Reveal key={item.title} className="h-full">
-              <article className="gl-glass gl-glass-hover flex h-full items-start gap-4 p-6 sm:p-8">
-                <ItemIcon icon={item.icon} />
-                <div>
-                  <h3 className="text-[16px] font-semibold leading-snug text-frost">{item.title}</h3>
-                  <p className="mt-2 text-[14px] leading-relaxed text-frost-dim">{item.text}</p>
-                </div>
-              </article>
-            </Reveal>
-          ))}
+        <StageGlow className="mt-10" tone="sky" place="start">
+          <div className="gl-stage p-3 sm:p-4">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {items.map((item) => (
+              <Reveal key={item.title} className="h-full">
+                <article className="gl-tile gl-tile-hover flex h-full items-start gap-4 p-6 sm:p-8">
+                  <ItemIcon icon={item.icon} />
+                  <div>
+                    <h3 className="text-[16px] font-semibold leading-snug text-frost">{item.title}</h3>
+                    <p className="mt-2 text-[14px] leading-relaxed text-frost-dim">{item.text}</p>
+                  </div>
+                </article>
+              </Reveal>
+            ))}
+          </div>
         </div>
+        </StageGlow>
       </div>
     </section>
   );

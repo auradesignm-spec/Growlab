@@ -57,7 +57,7 @@ export default function CreatorStorefront({
         </aside>
 
         <section className="px-5 py-10 sm:px-8 lg:col-span-7">
-          <div className="max-w-xl">
+          <div className="gl-stage max-w-xl p-6 sm:p-8">
             <p className="gl-eyebrow">{t("featured")}</p>
             <h2 className="mt-2 text-display-lg font-semibold">
               <Link href={`/creator/${username}/p/${heroProduct.dealId}`}>{heroProduct.title}</Link>
@@ -69,12 +69,12 @@ export default function CreatorStorefront({
             {catalog.length > 1 && (
               <div className="mt-12 max-w-md border-t border-line pt-6">
                 <p className="text-[12px] text-frost-faint">{t("moreFrom", { name })}</p>
-                <ul className="mt-4 space-y-3">
+                <ul className="mt-4 space-y-2">
                   {otherDeals.map((deal) => (
                     <li key={deal.dealId}>
                       <Link
                         href={`/creator/${username}/p/${deal.dealId}`}
-                        className="flex w-full items-baseline justify-between gap-4 border-b border-line pb-3 text-start"
+                        className="gl-tile gl-tile-hover flex w-full items-baseline justify-between gap-4 px-4 py-3 text-start"
                       >
                         <span className="text-[15px]">{deal.title}</span>
                         <span className="font-mono text-[14px]">

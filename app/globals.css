@@ -4,15 +4,21 @@
 
 @layer base {
   :root {
-    --paper: #f5f5f7;
+    /* Cloud.Craft: cool paper, white cards. Mesh color lives in .gl-mesh orbs. Ink stays the CTA. */
+    --paper: #f7f8fa;
     --paper-card: #ffffff;
-    --paper-sunk: #eceef2;
+    --paper-sunk: #eef1f4;
     --ink: #111318;
     --ink-dim: #5c6573;
     --ink-faint: #8b93a1;
     --line: rgba(17, 19, 24, 0.08);
     --focus-ring: #111318;
-    --shadow-card: 0 1px 2px rgba(17, 19, 24, 0.06), 0 8px 24px rgba(17, 19, 24, 0.04);
+    --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04), 0 16px 40px rgba(15, 23, 42, 0.06);
+    --shadow-stage: 0 4px 6px rgba(15, 23, 42, 0.03), 0 28px 56px rgba(15, 23, 42, 0.08);
+    --mesh-cyan: #7dd3fc;
+    --mesh-lime: #86efac;
+    --mesh-sun: #fde68a;
+    --mesh-coral: #fdba74;
   }
 
   html {
@@ -30,9 +36,9 @@
   }
 
   body {
-    background: var(--paper);
     color: var(--ink);
     cursor: auto;
+    background-color: var(--paper);
     @apply font-body text-[16px];
   }
 
@@ -89,7 +95,95 @@
   }
 
   .gl-glass-hover:hover {
-    background: var(--paper-sunk);
+    background: var(--paper);
+  }
+
+  .gl-tile {
+    background: var(--paper-card);
+    border: 1px solid var(--line);
+    @apply rounded-2xl;
+  }
+
+  .gl-tile-hover {
+    @apply transition-colors duration-150 ease-out;
+  }
+
+  .gl-tile-hover:hover {
+    background: var(--paper);
+  }
+
+  .gl-seg {
+    @apply inline-flex flex-wrap gap-1 rounded-full border border-line bg-white p-1;
+  }
+
+  .gl-seg-btn {
+    color: var(--ink);
+    @apply rounded-full px-4 py-2 text-[14px] font-medium transition-colors duration-150 ease-out;
+  }
+
+  .gl-seg-btn:hover {
+    background: var(--paper);
+  }
+
+  .gl-seg-btn[aria-pressed="true"],
+  .gl-seg-btn[aria-checked="true"] {
+    background: var(--ink);
+    color: #ffffff;
+  }
+
+  .gl-seg-btn[aria-pressed="true"]:hover,
+  .gl-seg-btn[aria-checked="true"]:hover {
+    background: #000000;
+  }
+
+  .gl-tabs {
+    @apply flex flex-wrap gap-1 border-b border-line bg-white px-5 py-3 sm:px-8;
+  }
+
+  .gl-tab {
+    color: var(--ink-dim);
+    @apply rounded-full px-4 py-2 text-[13px] font-medium transition-colors duration-150 ease-out;
+  }
+
+  .gl-tab:hover {
+    color: var(--ink);
+    background: var(--paper);
+  }
+
+  .gl-tab.is-on {
+    background: var(--ink);
+    color: #ffffff;
+  }
+
+  .gl-tab.is-on:hover {
+    background: #000000;
+    color: #ffffff;
+  }
+
+  .gl-wash-path {
+    background: linear-gradient(
+      to inline-end,
+      var(--mesh-cyan),
+      var(--mesh-lime),
+      var(--mesh-sun),
+      var(--mesh-coral)
+    );
+  }
+
+  .gl-wash-sky {
+    background: radial-gradient(circle at 32% 28%, #d9f3fd, var(--mesh-cyan) 72%);
+  }
+
+  .gl-wash-lime {
+    background: radial-gradient(circle at 32% 28%, #def9e8, var(--mesh-lime) 72%);
+  }
+
+  .gl-wash-sun {
+    background: radial-gradient(circle at 32% 28%, #fff6cc, var(--mesh-sun) 72%);
+  }
+
+  .gl-wash-coral {
+    background: radial-gradient(circle at 32% 28%, #ffe7cc, var(--mesh-coral) 72%);
   }
 
   .gl-nav-link {
@@ -113,7 +207,7 @@
   }
 
   .gl-btn-ghost {
-    background: #ffffff;
+    background: var(--paper-card);
     color: var(--ink);
     border: 1px solid var(--line);
     @apply inline-flex h-10 items-center justify-center gap-2 rounded-full px-5 text-[14px] font-medium transition-colors duration-150 ease-out;
@@ -124,7 +218,7 @@
   }
 
   .gl-input {
-    background: #ffffff;
+    background: var(--paper-card);
     color: var(--ink);
     border: 1px solid var(--line);
     @apply w-full rounded-3xl px-4 py-2.5 font-body text-[16px] transition-colors duration-150 ease-out;
@@ -149,14 +243,21 @@
     @apply inline-flex items-center rounded-full px-3 py-1 font-mono text-[12px];
   }
 
-  /* iPhone frosted glass. Translucent fill so blur is visible. */
+  .gl-stage {
+    background: var(--paper-card);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-stage);
+    @apply rounded-[28px];
+  }
+
+  /* Frosted white over the pastel mesh. */
   .gl-nav-glass {
     position: relative;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: rgb(255 255 255 / 0.52);
+    border: 1px solid rgb(255 255 255 / 0.72);
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.28),
-      0 8px 32px rgba(17, 19, 24, 0.06);
+      inset 0 1px 0 rgb(255 255 255 / 0.8),
+      0 10px 32px rgb(15 23 42 / 0.06);
     backdrop-filter: blur(48px) saturate(160%);
     -webkit-backdrop-filter: blur(48px) saturate(160%);
   }
@@ -191,22 +292,22 @@
   }
 
   .gl-bubble-btn {
-    background: rgba(255, 255, 255, 0.12);
-    border: 1px solid rgba(255, 255, 255, 0.28);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.32);
-    backdrop-filter: blur(16px) saturate(180%);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    background: rgb(255 255 255 / 0.28);
+    border: 1px solid rgb(255 255 255 / 0.5);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.6);
+    backdrop-filter: blur(16px) saturate(160%);
+    -webkit-backdrop-filter: blur(16px) saturate(160%);
   }
 
   .gl-nav-glass .gl-btn-ghost,
   .gl-bubble-btn.gl-btn-ghost {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.28);
+    background: rgb(255 255 255 / 0.28);
+    border-color: rgb(255 255 255 / 0.5);
   }
 
   .gl-nav-glass .gl-btn-ghost:hover,
   .gl-bubble-btn.gl-btn-ghost:hover {
-    background: rgba(255, 255, 255, 0.22);
+    background: rgb(255 255 255 / 0.5);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -217,12 +318,101 @@
 
   @supports not ((backdrop-filter: blur(2px)) or (-webkit-backdrop-filter: blur(2px))) {
     .gl-nav-glass {
-      background: rgba(255, 255, 255, 0.88);
+      background: rgb(255 255 255 / 0.94);
     }
     .gl-liquid-bubble,
     .gl-bubble-btn {
-      background: rgba(255, 255, 255, 0.7);
+      background: rgb(255 255 255 / 0.82);
     }
+  }
+}
+
+.gl-mesh {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.gl-mesh-orb {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(88px);
+  opacity: 0.55;
+}
+
+.gl-mesh-cyan {
+  width: 28rem;
+  height: 28rem;
+  background: var(--mesh-cyan);
+  top: -3rem;
+  inset-inline-start: 8%;
+}
+
+.gl-mesh-lime {
+  width: 22rem;
+  height: 22rem;
+  background: var(--mesh-lime);
+  top: 12rem;
+  inset-inline-start: 38%;
+}
+
+.gl-mesh-sun {
+  width: 24rem;
+  height: 24rem;
+  background: var(--mesh-sun);
+  top: 2rem;
+  inset-inline-end: 6%;
+}
+
+.gl-mesh-coral {
+  width: 20rem;
+  height: 20rem;
+  background: var(--mesh-coral);
+  top: 16rem;
+  inset-inline-end: 22%;
+}
+
+.gl-mesh-mid-cyan {
+  width: 22rem;
+  height: 22rem;
+  background: var(--mesh-cyan);
+  top: 42%;
+  inset-inline-start: 6%;
+  opacity: 0.32;
+}
+
+.gl-mesh-mid-sun {
+  width: 20rem;
+  height: 20rem;
+  background: var(--mesh-sun);
+  top: 48%;
+  inset-inline-end: 4%;
+  opacity: 0.28;
+}
+
+.gl-mesh-late-lime {
+  width: 24rem;
+  height: 24rem;
+  background: var(--mesh-lime);
+  top: 72%;
+  inset-inline-start: 22%;
+  opacity: 0.24;
+}
+
+.gl-mesh-late-coral {
+  width: 18rem;
+  height: 18rem;
+  background: var(--mesh-coral);
+  top: 78%;
+  inset-inline-end: 14%;
+  opacity: 0.22;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gl-mesh-orb {
+    filter: blur(48px);
+    opacity: 0.32;
   }
 }
 
@@ -340,9 +530,14 @@
   animation: gl-bar-grow 200ms ease-out both;
 }
 
-.gl-mock-front,
-.gl-mock-back {
-  transition: transform 150ms ease-out;
+.gl-feed-peek {
+  height: 52px;
+  overflow: hidden;
+  border-radius: 16px 16px 0 0;
+}
+
+.gl-feed-track-motion {
+  transition: transform 520ms ease-out;
 }
 
 .gl-bento:hover .gl-mock-front,
@@ -386,15 +581,15 @@
 .gl-hero-cash {
   pointer-events: none;
   position: absolute;
-  inset: 0;
+  inset: -70% -42%;
   z-index: 0;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .gl-bill {
   position: absolute;
   left: 50%;
-  top: 46%;
+  top: 48%;
   width: var(--bill-w);
   height: auto;
   opacity: 0;
@@ -484,6 +679,181 @@
   }
 }
 
+.gl-stage-glow {
+  position: absolute;
+  inset: -6% -5%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.gl-stage-glow-a,
+.gl-stage-glow-b {
+  position: absolute;
+  width: 52%;
+  height: 42%;
+  border-radius: 999px;
+  filter: blur(64px);
+  opacity: 0.32;
+}
+
+.gl-stage-glow[data-place="end"] .gl-stage-glow-a {
+  top: -8%;
+  inset-inline-end: -10%;
+}
+
+.gl-stage-glow[data-place="end"] .gl-stage-glow-b {
+  bottom: -10%;
+  inset-inline-start: -8%;
+}
+
+.gl-stage-glow[data-place="start"] .gl-stage-glow-a {
+  top: -8%;
+  inset-inline-start: -10%;
+}
+
+.gl-stage-glow[data-place="start"] .gl-stage-glow-b {
+  bottom: -10%;
+  inset-inline-end: -8%;
+}
+
+.gl-stage-glow[data-tone="sky"] .gl-stage-glow-a {
+  background: var(--mesh-cyan);
+}
+
+.gl-stage-glow[data-tone="sky"] .gl-stage-glow-b {
+  background: var(--mesh-lime);
+}
+
+.gl-stage-glow[data-tone="sun"] .gl-stage-glow-a {
+  background: var(--mesh-sun);
+}
+
+.gl-stage-glow[data-tone="sun"] .gl-stage-glow-b {
+  background: var(--mesh-coral);
+}
+
+.gl-stage-glow[data-tone="dusk"] .gl-stage-glow-a {
+  background: var(--mesh-cyan);
+}
+
+.gl-stage-glow[data-tone="dusk"] .gl-stage-glow-b {
+  background: var(--mesh-coral);
+}
+
+.gl-stage-glow[data-tone="meadow"] .gl-stage-glow-a {
+  background: var(--mesh-lime);
+}
+
+.gl-stage-glow[data-tone="meadow"] .gl-stage-glow-b {
+  background: var(--mesh-sun);
+}
+
+.gl-stage-glow.is-drift .gl-stage-glow-a,
+.gl-stage-glow.is-drift .gl-stage-glow-b {
+  will-change: transform, opacity;
+}
+
+.gl-stage-glow.is-drift .gl-stage-glow-a {
+  animation: gl-stage-glow-extend 16s ease-in-out infinite;
+}
+
+.gl-stage-glow.is-drift .gl-stage-glow-b {
+  animation: gl-stage-glow-extend 21s ease-in-out infinite reverse;
+  animation-delay: -7s;
+}
+
+@keyframes gl-stage-glow-extend {
+  0%,
+  100% {
+    transform: scale(0.92);
+    opacity: 0.22;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.38;
+  }
+}
+
+.gl-prob-swap-a,
+.gl-prob-swap-b {
+  animation: gl-prob-cross-a 3.2s ease-in-out infinite;
+}
+
+.gl-prob-swap-b {
+  animation-name: gl-prob-cross-b;
+}
+
+.gl-prob-reach {
+  width: 24%;
+  animation: gl-prob-fill 3.2s ease-in-out infinite;
+}
+
+.gl-prob-fee {
+  animation: gl-prob-fee 3.2s ease-in-out infinite;
+}
+
+@keyframes gl-prob-cross-a {
+  0%,
+  22% {
+    inset-inline-start: 0;
+    z-index: 2;
+  }
+  50%,
+  72% {
+    inset-inline-start: 54%;
+    z-index: 1;
+  }
+  100% {
+    inset-inline-start: 0;
+    z-index: 2;
+  }
+}
+
+@keyframes gl-prob-cross-b {
+  0%,
+  22% {
+    inset-inline-start: 54%;
+    z-index: 1;
+  }
+  50%,
+  72% {
+    inset-inline-start: 0;
+    z-index: 2;
+  }
+  100% {
+    inset-inline-start: 54%;
+    z-index: 1;
+  }
+}
+
+@keyframes gl-prob-fill {
+  0%,
+  18% {
+    width: 24%;
+  }
+  48%,
+  70% {
+    width: 92%;
+  }
+  100% {
+    width: 24%;
+  }
+}
+
+@keyframes gl-prob-fee {
+  0%,
+  30% {
+    opacity: 0.4;
+  }
+  48%,
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.4;
+  }
+}
+
 .gl-mock-order {
   opacity: 0;
 }
@@ -509,11 +879,37 @@
   .gl-bento:hover .gl-mock-bar,
   .gl-bento:focus-within .gl-mock-bar,
   .gl-bento:hover .gl-mock-order,
-  .gl-bento:focus-within .gl-mock-order {
+  .gl-bento:focus-within .gl-mock-order,
+  .gl-prob-swap-a,
+  .gl-prob-swap-b,
+  .gl-prob-reach,
+  .gl-prob-fee,
+  .gl-feed-track-motion {
     animation: none;
-    opacity: 1;
-    transform: none;
     transition: none;
+  }
+
+  .gl-stage-glow-a,
+  .gl-stage-glow-b {
+    animation: none;
+    transform: scale(1);
+    opacity: 0.4;
+  }
+
+  .gl-prob-swap-a {
+    inset-inline-start: 0;
+  }
+
+  .gl-prob-swap-b {
+    inset-inline-start: 54%;
+  }
+
+  .gl-prob-reach {
+    width: 88%;
+  }
+
+  .gl-prob-fee {
+    opacity: 1;
   }
 
   .gl-hero-cash {
@@ -525,5 +921,6 @@
   .gl-bento:hover .gl-mock-back,
   .gl-bento:focus-within .gl-mock-back {
     transform: none;
+    opacity: 1;
   }
 }

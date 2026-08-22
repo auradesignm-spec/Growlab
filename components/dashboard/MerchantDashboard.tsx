@@ -302,7 +302,7 @@ export default function MerchantDashboard({
         ) : (
           <div className="space-y-8">
             {d.adWallets.map((w) => (
-              <div key={w.walletId} className="border border-white/10">
+              <div key={w.walletId} className="gl-stage overflow-hidden">
                 <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 px-4 py-3">
                   <div>
                     <p className="font-display text-lg">{w.productTitle}</p>
@@ -319,7 +319,7 @@ export default function MerchantDashboard({
                   </div>
                 )}
 
-                <div className="grid grid-cols-2 divide-x divide-white/10 border-b border-white/10 sm:grid-cols-4">
+                <div className="grid grid-cols-2 gap-3 p-3 sm:grid-cols-4">
                   <Metric label={t("ads.balance")} value={formatMoney(w.availableBalance)} />
                   <Metric label={t("ads.dailyCap")} value={formatMoney(w.dailyCap)} />
                   <Metric label={t("ads.dealCap")} value={formatMoney(w.dealCap)} />
@@ -531,15 +531,13 @@ function TabBar({
   onChange: (id: never) => void;
 }) {
   return (
-    <div className="flex flex-wrap border-b border-white/10">
+    <div className="gl-tabs">
       {tabs.map((tabItem) => (
         <button
           key={tabItem.id}
           type="button"
           onClick={() => onChange(tabItem.id as never)}
-          className={`border-e border-white/10 px-5 py-3 text-[12px] transition-colors duration-150 ease-out ${
-            active === tabItem.id ? "bg-white/10 text-frost" : "text-frost-dim hover:text-frost"
-          }`}
+          className={`gl-tab ${active === tabItem.id ? "is-on" : ""}`}
         >
           {tabItem.label}
         </button>

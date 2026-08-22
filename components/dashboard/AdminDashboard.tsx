@@ -30,15 +30,13 @@ export default function AdminDashboard({ data }: { data: AdminDashboardData }) {
 
   return (
     <div>
-      <div className="flex flex-wrap border-b border-white/10">
+      <div className="gl-tabs">
         {tabs.map((tabItem) => (
           <button
             key={tabItem.id}
             type="button"
             onClick={() => setTab(tabItem.id)}
-            className={`border-e border-white/10 px-5 py-3 text-[12px] transition-colors duration-150 ease-out ${
-              tab === tabItem.id ? "bg-white/10 text-frost" : "text-frost-dim hover:text-frost"
-            }`}
+            className={`gl-tab ${tab === tabItem.id ? "is-on" : ""}`}
           >
             {tabItem.label}
           </button>
@@ -70,7 +68,7 @@ function OverviewTab({
   const totals = data.totals;
   return (
     <section className="px-5 py-10 sm:px-8">
-      <div className="grid grid-cols-2 gap-px overflow-hidden border border-white/10 bg-white/10 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <Metric label={t("overview.merchants")} value={String(totals.merchants)} />
         <Metric label={t("overview.verifiedMerchants")} value={String(totals.verifiedMerchants)} />
         <Metric label={t("overview.pendingCreators")} value={String(totals.pendingCreators)} />
@@ -78,7 +76,7 @@ function OverviewTab({
       </div>
 
       <p className="gl-eyebrow mt-12">{t("overview.ledgerTitle")}</p>
-      <div className="mt-4 grid grid-cols-2 gap-px overflow-hidden border border-white/10 bg-white/10 sm:grid-cols-4">
+      <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <Metric label={t("overview.gmv")} value={formatMoney(totals.attributedGmv)} />
         <Metric label={t("overview.creatorShare")} value={formatMoney(totals.creatorShare)} />
         <Metric label={t("overview.merchantShare")} value={formatMoney(totals.merchantShare)} />
@@ -86,7 +84,7 @@ function OverviewTab({
       </div>
 
       <p className="gl-eyebrow mt-12">{t("overview.escrowTitle")}</p>
-      <div className="mt-4 grid grid-cols-2 gap-px overflow-hidden border border-white/10 bg-white/10 sm:grid-cols-4">
+      <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <Metric label={t("overview.escrowHeld")} value={String(totals.escrowHeld)} />
         <Metric label={t("overview.escrowReleased")} value={String(totals.escrowReleased)} />
         <Metric label={t("overview.escrowRefunded")} value={String(totals.escrowRefunded)} />

@@ -11,6 +11,8 @@ import { parseList } from "@/lib/catalog-db";
  *   - "proven converter" bonus: the candidate product already converted well
  *     (net attributed sales) for other creators who share this creator's tier
  *     or share a tag with this creator's existing products (+ scaled bonus)
+ *   - published media kit (+1) and video in the kit (+1) — a light trending
+ *     boost so products with assets surface above empty listings
  *
  * This is a plain scored query over local data — no model, no training, no
  * external service. Label it as heuristic everywhere it surfaces in the UI.
@@ -31,6 +33,8 @@ export interface MatchSuggestion {
 const CATEGORY_MATCH_SCORE = 3;
 const TAG_MATCH_SCORE = 1;
 const PROVEN_CONVERTER_MAX_BONUS = 4;
+const KIT_BONUS = 1;
+const VIDEO_BONUS = 1;
 const MAX_SUGGESTIONS = 6;
 
 export async function suggestProductsForCreator(creatorId: string): Promise<MatchSuggestion[]> {
@@ -52,7 +56,7 @@ export async function suggestProductsForCreator(creatorId: string): Promise<Matc
       merchant: { verificationStatus: "verified" },
       id: { notIn: Array.from(dealtProductIds) },
     },
-    include: { merchant: true },
+    include: { merchant: true, mediaAssets: { select: { type: true } } },
   });
 
   if (candidates.length === 0) return [];
@@ -112,6 +116,17 @@ export async function suggestProductsForCreator(creatorId: string): Promise<Matc
       const bonus = (convertedNetSales / maxConvertedNetSales) * PROVEN_CONVERTER_MAX_BONUS;
       score += bonus;
       reasons.push(`Converts well for creators in your tier or interest area`);
+    }
+
+    const hasKit = product.mediaAssets.length > 0;
+    const hasVideo = product.mediaAssets.some((asset) => asset.type === "video");
+    if (hasKit) {
+      score += KIT_BONUS;
+      reasons.push("Published media kit");
+    }
+    if (hasVideo) {
+      score += VIDEO_BONUS;
+      reasons.push("Has video in the kit");
     }
 
     return {

@@ -63,19 +63,29 @@ export default function MediaKitManager({
           ) : (
             <ul className="space-y-1.5">
               {assets.map((asset) => (
-                <li key={asset.id} className="flex items-center justify-between gap-3 border border-white/10 px-3 py-2">
-                  <div className="min-w-0">
-                    <span className="font-mono text-[10px] uppercase text-pulse">
+                <li key={asset.id} className="flex items-center justify-between gap-3 rounded-2xl border border-line bg-white px-3 py-2">
+                  <div className="flex min-w-0 items-center gap-3">
+                    {asset.type === "image" ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={asset.url} alt="" className="h-10 w-10 rounded-lg object-cover" />
+                    ) : (
+                      <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-night font-mono text-[10px] text-frost">
+                        {t("typeVideo")}
+                      </span>
+                    )}
+                    <div className="min-w-0">
+                    <span className="font-mono text-[10px] uppercase text-frost-faint">
                       {asset.type === "image" ? t("typeImage") : t("typeVideo")}
                     </span>
                     <a
                       href={asset.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="ms-2 truncate font-mono text-xs underline"
+                      className="block truncate font-mono text-xs text-frost-dim"
                     >
                       {asset.url}
                     </a>
+                    </div>
                   </div>
                   <button
                     type="button"

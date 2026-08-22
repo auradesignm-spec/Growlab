@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import Reveal from "@/components/Reveal";
+import StageGlow from "@/components/StageGlow";
 import { signUpHref, type PartnerRole } from "@/lib/auth/paths";
 import { track } from "@/lib/analytics";
 
@@ -37,24 +38,25 @@ export default function Roadmap() {
           <p className="gl-lede mt-4">{t("lede")}</p>
         </Reveal>
 
-        <div className="mt-8 flex flex-wrap gap-2">
-          {(["merchant", "creator"] as PartnerRole[]).map((id) => (
-            <button
-              key={id}
-              type="button"
-              onClick={() => switchRole(id)}
-              aria-pressed={role === id}
-              className={`rounded-full px-4 py-2 text-[14px] font-medium transition-colors duration-150 ease-out ${
-                role === id ? "bg-[#111318] text-white" : "border border-line bg-white text-[#111318]"
-              }`}
-            >
-              {id === "merchant" ? t("merchantLabel") : t("creatorLabel")}
-            </button>
-          ))}
+        <div className="mt-8">
+          <div className="gl-seg">
+            {(["merchant", "creator"] as PartnerRole[]).map((id) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => switchRole(id)}
+                aria-pressed={role === id}
+                className="gl-seg-btn"
+              >
+                {id === "merchant" ? t("merchantLabel") : t("creatorLabel")}
+              </button>
+            ))}
+          </div>
         </div>
 
-        <div className="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-          <ol className="gl-glass flex flex-col p-3">
+        <StageGlow className="mt-8" tone="meadow" place="start">
+          <div className="gl-stage grid grid-cols-1 gap-3 p-3 sm:p-4 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+          <ol className="flex flex-col rounded-2xl bg-night p-2">
             {steps.map((item, index) => {
               const active = index === stepIndex;
               return (
@@ -65,8 +67,8 @@ export default function Roadmap() {
                       setStepIndex(index);
                       track("Roadmap Step Viewed", { role, step: index + 1 });
                     }}
-                    className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-start transition-colors duration-150 ease-out ${
-                      active ? "bg-[#F5F5F7] text-[#111318]" : "text-[#5C6573] hover:bg-[#F5F5F7]"
+                    className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-start transition-colors duration-150 ease-out ${
+                      active ? "bg-white text-frost" : "text-frost-dim hover:bg-white/70"
                     }`}
                   >
                     <span className="font-mono text-[12px]">{item.n}</span>
@@ -77,7 +79,7 @@ export default function Roadmap() {
             })}
           </ol>
 
-          <div className="gl-glass flex flex-col justify-between p-6 sm:p-8">
+          <div className="gl-tile flex flex-col justify-between p-6 sm:p-8">
             <div>
               <p className="font-mono text-[12px] text-frost-faint">{step.n}</p>
               <h3 className="mt-3 text-[20px] font-semibold text-frost">{step.title}</h3>
@@ -106,7 +108,8 @@ export default function Roadmap() {
               ) : null}
             </div>
           </div>
-        </div>
+          </div>
+        </StageGlow>
       </div>
     </section>
   );

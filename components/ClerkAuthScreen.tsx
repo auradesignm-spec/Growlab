@@ -14,7 +14,7 @@ export default function ClerkAuthScreen({
 
   if (!enabled) {
     return (
-      <p className="max-w-md text-center text-[15px] leading-relaxed text-[#5C6573]">
+      <p className="max-w-md text-center text-[15px] leading-relaxed text-frost-dim">
         التسجيل غير مفعّل على الإنتاج بعد. في Vercel أضف NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY و
         CLERK_SECRET_KEY ثم Redeploy.
         <span className="mt-4 block">

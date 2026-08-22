@@ -29,14 +29,14 @@ export default async function BrowsePage() {
   if (!viewer?.creatorProfile || viewer.creatorProfile.verificationStatus !== "verified") {
     return (
       <main>
-        <section className="border-b border-white/10">
+        <section className="border-b border-line">
           <div className="px-5 py-12 sm:px-8">
             <p className="gl-eyebrow">{t("kicker")}</p>
             <h1 className="mt-4 font-display text-display-lg">{t("title")}</h1>
           </div>
         </section>
         <div className="px-5 py-16 sm:px-8">
-          <p className="max-w-md border border-dashed border-white/15 px-5 py-8 font-serif text-sm italic text-frost-dim">
+          <p className="max-w-md rounded-2xl border border-dashed border-line bg-white px-5 py-8 text-[14px] text-frost-dim">
             {t("creatorOnly")}
           </p>
           <Link href="/dashboard" className="gl-btn-ghost mt-8 inline-flex">
@@ -51,7 +51,7 @@ export default async function BrowsePage() {
 
   return (
     <main>
-      <section className="border-b border-white/10">
+      <section className="border-b border-line">
         <div className="px-5 py-12 sm:px-8">
           <p className="gl-eyebrow">{t("kicker")}</p>
           <h1 className="mt-4 font-display text-display-lg">{t("title")}</h1>

@@ -59,24 +59,24 @@ export default function ApplyCampaignModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-night/80 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-frost/40 p-4"
       role="dialog"
       aria-modal="true"
       onClick={onClose}
     >
       <div
-        className="max-h-[90vh] w-full max-w-2xl overflow-y-auto border border-white/10 bg-white/[0.04] p-6 sm:p-8"
+        className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-line bg-white p-6 sm:p-8"
         onClick={(e) => e.stopPropagation()}
       >
         {result ? (
           <div>
-            <p className="font-display text-xl">{t("successTitle")}</p>
-            <p className="mt-3 font-serif text-sm italic text-frost-dim">
+            <p className="text-[20px] font-semibold text-frost">{t("successTitle")}</p>
+            <p className="mt-3 text-[14px] leading-relaxed text-frost-dim">
               {result.path === "media_kit" ? t("successMediaKit") : t("successSample")}
             </p>
-            <div className="mt-6 border border-signal/30 bg-signal/10 p-4">
-              <p className="font-west text-[10px] uppercase tracking-[0.24em] text-frost-dim">{t("linkLabel")}</p>
-              <p className="mt-1.5 break-all font-mono text-sm">{fullLink}</p>
+            <div className="mt-6 rounded-2xl border border-line bg-night p-4">
+              <p className="text-[12px] text-frost-faint">{t("linkLabel")}</p>
+              <p className="mt-1.5 break-all font-mono text-[14px] text-frost">{fullLink}</p>
               <button type="button" onClick={copyLink} className="gl-btn-primary mt-3">
                 {copied ? t("copied") : t("copyCta")}
               </button>
@@ -87,8 +87,8 @@ export default function ApplyCampaignModal({
           </div>
         ) : (
           <div>
-            <p className="font-display text-xl">{t("title")}</p>
-            <p className="mt-1.5 font-serif text-sm italic text-frost-dim">
+            <p className="text-[20px] font-semibold text-frost">{t("title")}</p>
+            <p className="mt-1.5 text-[14px] leading-relaxed text-frost-dim">
               {t("subtitle", {
                 merchant: row.merchantBusinessName,
                 amount: formatMoney(row.estimatedNetProfit, row.currency),
@@ -96,13 +96,13 @@ export default function ApplyCampaignModal({
             </p>
 
             <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="flex flex-col justify-between border border-white/10 p-4">
+              <div className="flex flex-col justify-between rounded-2xl border border-line bg-night p-4">
                 <div>
-                  <p className="font-display text-base">{t("mediaKitTitle")}</p>
-                  <p className="mt-2 font-serif text-xs italic text-frost-dim">{t("mediaKitDesc")}</p>
+                  <p className="text-[16px] font-semibold text-frost">{t("mediaKitTitle")}</p>
+                  <p className="mt-2 text-[13px] leading-relaxed text-frost-dim">{t("mediaKitDesc")}</p>
                   {hasMediaKit ? (
                     <div className="mt-3 space-y-2">
-                      <p className="font-mono text-xs text-pulse">
+                      <p className="font-mono text-[12px] text-frost-faint">
                         {t("mediaKitCount", { count: row.mediaAssets.length })}
                       </p>
                       <ul className="flex flex-wrap gap-2">
@@ -113,7 +113,7 @@ export default function ApplyCampaignModal({
                               key={asset.id}
                               src={asset.url}
                               alt={asset.caption ?? ""}
-                              className="h-14 w-14 border border-white/10 object-cover"
+                              className="h-14 w-14 rounded-lg border border-line object-cover"
                             />
                           ) : (
                             <a
@@ -121,16 +121,16 @@ export default function ApplyCampaignModal({
                               href={asset.url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="flex h-14 w-14 items-center justify-center border border-white/10 font-mono text-[10px] uppercase text-frost-dim"
+                              className="flex h-14 w-14 items-center justify-center rounded-lg border border-line bg-white font-mono text-[10px] text-frost"
                             >
-                              ▶ video
+                              {tBrowse("videoBadge")}
                             </a>
                           )
                         )}
                       </ul>
                     </div>
                   ) : (
-                    <p className="mt-3 border border-dashed border-white/15 px-3 py-3 font-serif text-xs italic text-frost-dim">
+                    <p className="mt-3 rounded-2xl border border-dashed border-line bg-white px-3 py-3 text-[13px] text-frost-dim">
                       {t("mediaKitEmpty")}
                     </p>
                   )}
@@ -145,14 +145,14 @@ export default function ApplyCampaignModal({
                 </button>
               </div>
 
-              <div className="flex flex-col justify-between border border-white/10 p-4">
+              <div className="flex flex-col justify-between rounded-2xl border border-line bg-night p-4">
                 <div>
-                  <p className="font-display text-base">{t("sampleTitle")}</p>
-                  <p className="mt-2 font-serif text-xs italic text-frost-dim">{t("sampleDesc")}</p>
-                  <p className="mt-3 font-mono text-xs text-danger">
+                  <p className="text-[16px] font-semibold text-frost">{t("sampleTitle")}</p>
+                  <p className="mt-2 text-[13px] leading-relaxed text-frost-dim">{t("sampleDesc")}</p>
+                  <p className="mt-3 font-mono text-[12px] text-danger">
                     {t("depositNotice", { amount: formatMoney(row.basePrice, row.currency) })}
                   </p>
-                  <p className="mt-1.5 font-serif text-xs italic text-frost-dim">{t("deadlineNotice")}</p>
+                  <p className="mt-1.5 text-[13px] leading-relaxed text-frost-dim">{t("deadlineNotice")}</p>
 
                   <input
                     value={note}
@@ -162,8 +162,8 @@ export default function ApplyCampaignModal({
                     }}
                     placeholder={tBrowse("sampleNotePlaceholder")}
                     aria-label={tBrowse("sampleNotePlaceholder")}
-                    className={`mt-3 w-full border bg-transparent px-3 py-2 font-serif text-sm italic ${
-                      leak.flagged ? "border-danger/60" : "border-white/10"
+                    className={`mt-3 w-full rounded-xl border bg-white px-3 py-2 text-[14px] ${
+                      leak.flagged ? "border-danger/60" : "border-line"
                     }`}
                   />
                   {leak.flagged && (
@@ -172,7 +172,7 @@ export default function ApplyCampaignModal({
                     </p>
                   )}
 
-                  <label className="mt-3 flex items-start gap-2 font-serif text-xs italic text-frost-dim">
+                  <label className="mt-3 flex items-start gap-2 text-[13px] text-frost-dim">
                     <input
                       type="checkbox"
                       checked={ack}
@@ -193,8 +193,8 @@ export default function ApplyCampaignModal({
               </div>
             </div>
 
-            {pending && <p className="mt-4 font-mono text-xs text-frost-dim">{t("submitting")}</p>}
-            {error && <p className="mt-4 font-mono text-xs text-danger">{error}</p>}
+            {pending && <p className="mt-4 font-mono text-[12px] text-frost-dim">{t("submitting")}</p>}
+            {error && <p className="mt-4 font-mono text-[12px] text-danger">{error}</p>}
 
             <button type="button" onClick={onClose} className="gl-btn-ghost mt-6">
               {t("close")}

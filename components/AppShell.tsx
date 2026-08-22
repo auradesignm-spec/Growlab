@@ -1,10 +1,4 @@
-/**
- * Shared paper chrome. Light page, ink type. No decorative blobs.
- */
+/** Shared page chrome. Marketing mesh lives in the marketing layout. */
 export default function AppShell({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="relative min-h-screen" style={{ background: "#F5F5F7", color: "#111318" }}>
-      {children}
-    </div>
-  );
+  return <div className="relative min-h-screen text-frost">{children}</div>;
 }

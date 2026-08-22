@@ -10,6 +10,7 @@ const MAX_URL_LENGTH = 500;
 const MAX_CAPTION_LENGTH = 140;
 
 function isPlausibleUrl(value: string): boolean {
+  if (value.startsWith("/") && !value.startsWith("//") && value.length > 1) return true;
   try {
     const parsed = new URL(value);
     return parsed.protocol === "https:" || parsed.protocol === "http:";

@@ -564,15 +564,13 @@ function TabBar({
   onChange: (id: never) => void;
 }) {
   return (
-    <div className="flex flex-wrap border-b border-white/10">
+    <div className="gl-tabs">
       {tabs.map((tabItem) => (
         <button
           key={tabItem.id}
           type="button"
           onClick={() => onChange(tabItem.id as never)}
-          className={`border-e border-white/10 px-5 py-3 text-[12px] transition-colors duration-150 ease-out ${
-            active === tabItem.id ? "bg-white/10 text-frost" : "text-frost-dim hover:text-frost"
-          }`}
+          className={`gl-tab ${active === tabItem.id ? "is-on" : ""}`}
         >
           {tabItem.label}
         </button>

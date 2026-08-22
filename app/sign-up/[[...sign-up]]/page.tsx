@@ -3,7 +3,7 @@ import ClerkAuthScreen from "@/components/ClerkAuthScreen";
 
 export default function SignUpPage() {
   return (
-    <div className="flex min-h-screen flex-col" style={{ background: "#F5F5F7", color: "#111318" }}>
+    <div className="flex min-h-screen flex-col text-frost">
       <header className="flex items-center justify-between px-5 py-6 sm:px-8">
         <Link href="/" className="text-[15px] font-semibold">
           Growlab

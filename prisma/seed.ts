@@ -30,6 +30,7 @@ async function resetDatabase() {
   await prisma.order.deleteMany();
   await prisma.creatorDeal.deleteMany();
   await prisma.sampleRequest.deleteMany();
+  await prisma.mediaAsset.deleteMany();
   await prisma.product.deleteMany();
   await prisma.creatorProfile.deleteMany();
   await prisma.merchantProfile.deleteMany();
@@ -229,6 +230,17 @@ async function main() {
       },
     }),
   ]);
+
+  await prisma.mediaAsset.createMany({
+    data: [
+      { productId: muttrahNight.id, type: "image", url: "/feed/attar-night.png", caption: "Bottle still" },
+      { productId: roseGarden.id, type: "image", url: "/feed/attar-rose.png", caption: "Bottle still" },
+      { productId: roseGarden.id, type: "video", url: "/feed/attar-rose.png", caption: "Reel cut" },
+      { productId: amberTravel.id, type: "image", url: "/feed/attar-amber.png", caption: "Travel set" },
+      { productId: khalasCrate.id, type: "image", url: "/feed/dates-khalas.png", caption: "Crate still" },
+      { productId: dateTruffle.id, type: "image", url: "/feed/dates-truffle.png", caption: "Box still" },
+    ],
+  });
 
   // ---------------------------------------------------------------------
   // Creators (5, across tiers — tier assigned directly here as fixture

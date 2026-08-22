@@ -36,9 +36,9 @@ const config: Config = {
         warn: "#C4A35A",
 
         night: {
-          DEFAULT: "#F4F5F7",
+          DEFAULT: "#F7F8FA",
           soft: "#FFFFFF",
-          deep: "#ECEEF2",
+          deep: "#EEF1F4",
           raised: "#FFFFFF",
         },
         frost: {
@@ -86,11 +86,11 @@ const config: Config = {
         1200: "1200ms",
       },
       spacing: {
-        section: "clamp(2.5rem, 6vw, 6rem)",
+        section: "clamp(3.25rem, 8vw, 7.5rem)",
       },
       boxShadow: {
-        overlay: "0 1px 2px rgba(17,19,24,0.08)",
-        card: "0 1px 2px rgba(17,19,24,0.06), 0 8px 24px rgba(17,19,24,0.04)",
+        overlay: "0 1px 2px rgba(15,23,42,0.05)",
+        card: "0 1px 2px rgba(15,23,42,0.04), 0 16px 40px rgba(15,23,42,0.06)",
       },
     },
   },

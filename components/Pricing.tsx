@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import Reveal from "@/components/Reveal";
+import StageGlow from "@/components/StageGlow";
 
 export default async function Pricing() {
   const t = await getTranslations("marketing.pricing");
@@ -15,7 +16,8 @@ export default async function Pricing() {
           <p className="gl-lede mt-4">{t("lede")}</p>
         </Reveal>
 
-        <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2">
+        <StageGlow className="mt-10" tone="sun" place="start">
+          <div className="gl-stage grid grid-cols-1 gap-3 p-3 sm:p-4 md:grid-cols-2">
           <Reveal>
             <SplitCard
               title={t("merchantTitle")}
@@ -37,6 +39,7 @@ export default async function Pricing() {
             />
           </Reveal>
         </div>
+        </StageGlow>
       </div>
     </section>
   );
@@ -58,7 +61,7 @@ function SplitCard({
   readonly featured?: boolean;
 }) {
   return (
-    <article className={`gl-glass gl-glass-hover relative p-6 sm:p-8 ${featured ? "border-signal/40" : ""}`}>
+    <article className={`gl-tile relative h-full p-6 sm:p-8 ${featured ? "bg-night" : ""}`}>
       <h3 className="text-xl font-semibold text-frost">{title}</h3>
       <p className="mt-1 text-[14px] text-frost-dim">{subtitle}</p>
       <p className="mt-6 font-mono text-[32px] font-medium text-frost">{stat}</p>
@@ -66,7 +69,7 @@ function SplitCard({
 
       <ul>
         {features.map((feature) => (
-          <li key={feature} className="border-t border-white/10 py-2.5 text-[14px] text-frost-dim">
+          <li key={feature} className="border-t border-line py-2.5 text-[14px] text-frost-dim">
             {feature}
           </li>
         ))}

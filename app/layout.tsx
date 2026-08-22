@@ -59,7 +59,7 @@ export default async function RootLayout({
                 colorPrimary: "#111318",
                 colorBackground: "#FFFFFF",
                 colorText: "#111318",
-                colorInputBackground: "#F4F5F7",
+                colorInputBackground: "#F7F8FA",
                 colorInputText: "#111318",
                 colorTextSecondary: "#5C6573",
                 borderRadius: "24px",
@@ -67,7 +67,7 @@ export default async function RootLayout({
               },
               elements: {
                 card: {
-                  boxShadow: "0 1px 2px rgba(17,19,24,0.06), 0 8px 24px rgba(17,19,24,0.04)",
+                  boxShadow: "0 1px 2px rgba(15,23,42,0.04), 0 16px 40px rgba(15,23,42,0.06)",
                   border: "1px solid rgba(17,19,24,0.08)",
                 },
                 formButtonPrimary: {
@@ -79,7 +79,7 @@ export default async function RootLayout({
                 },
                 footerActionLink: { color: "#2563C4" },
                 userButtonPopoverCard: {
-                  boxShadow: "0 1px 2px rgba(17,19,24,0.08)",
+                  boxShadow: "0 1px 2px rgba(15,23,42,0.04), 0 16px 40px rgba(15,23,42,0.06)",
                   border: "1px solid rgba(17,19,24,0.08)",
                 },
               },

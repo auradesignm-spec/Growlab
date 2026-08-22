@@ -74,7 +74,7 @@ export default function Contact() {
 
         <div className="mt-11 grid grid-cols-1 items-start gap-8 md:grid-cols-2">
           <Reveal>
-          <form onSubmit={handleSubmit} noValidate aria-label={t("formAria")} className="gl-glass p-8">
+          <form onSubmit={handleSubmit} noValidate aria-label={t("formAria")} className="gl-stage p-6 sm:p-8">
             <Field
               id="name"
               label={t("name")}
@@ -167,7 +167,7 @@ interface ContactCardProps {
 
 function ContactCard({ href, title, subtitle }: ContactCardProps) {
   return (
-    <a href={href} className="gl-glass gl-glass-hover flex items-center px-5 py-4 text-frost">
+    <a href={href} className="gl-tile gl-tile-hover flex items-center px-5 py-4 text-frost">
       <span>
         <strong className="block text-[15px] font-medium">{title}</strong>
         <span className="text-[13px] text-frost-faint">{subtitle}</span>
