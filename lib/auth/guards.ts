@@ -1,3 +1,4 @@
+import { isAccountRestricted } from "@/lib/auth/account";
 import { getCurrentUser } from "@/lib/auth/session";
 
 export class AccessDeniedError extends Error {
@@ -10,7 +11,7 @@ export class AccessDeniedError extends Error {
 export async function requireActiveUser() {
   const viewer = await getCurrentUser();
   if (!viewer) throw new AccessDeniedError("Sign in required.");
-  if (viewer.accountStatus === "banned") {
+  if (isAccountRestricted(viewer.accountStatus)) {
     throw new AccessDeniedError("This account has been suspended.");
   }
   return viewer;

@@ -14,7 +14,7 @@ export type PlatformParty = (typeof PLATFORM_PARTIES)[number];
 export const VERIFICATION_STATUSES = ["unsubmitted", "pending", "verified", "rejected"] as const;
 export type VerificationStatus = (typeof VERIFICATION_STATUSES)[number];
 
-export const ACCOUNT_STATUSES = ["active", "banned"] as const;
+export const ACCOUNT_STATUSES = ["active", "suspended", "banned"] as const;
 export type AccountStatus = (typeof ACCOUNT_STATUSES)[number];
 
 export const MERCHANT_KYC_KINDS = ["commercial_register", "owner_id_front", "owner_id_back"] as const;

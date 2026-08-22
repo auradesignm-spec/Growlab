@@ -20,8 +20,10 @@ npm run dev
 
 1. أنشئ قاعدة Postgres على [Neon](https://neon.tech) وانسخ سلسلة الاتصال.
 2. في Vercel اضبط `DATABASE_URL` على تلك السلسلة (تبدأ بـ `postgresql://`).
-3. اضبط مفاتيح Clerk و`ADMIN_CLERK_USER_IDS`.
+3. اضبط مفاتيح Clerk ثم `ADMIN_EMAILS` ببريدك (أو `ADMIN_CLERK_USER_IDS`).
 4. انشر. البناء يشغّل `prisma generate` ثم `migrate deploy` **بدون زرع ديمو**. البيانات تبقى.
+
+بعد تسجيل الدخول بذلك البريد تُفتح غرفة العمليات على `/dashboard/admin`. محلياً: ازرع القاعدة ثم اختر حساب `admin — قصي` من شريط التطوير (`qusay@growlab.local`).
 
 لا تضع `ALLOW_DEV_IMPERSONATION` على Vercel.
 

@@ -1,4 +1,5 @@
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
+import { getCurrentDevUser, isActiveDevImpersonation } from "@/lib/dev/session";
 
 function adminUserIds(): Set<string> {
   return new Set(
@@ -9,15 +10,40 @@ function adminUserIds(): Set<string> {
   );
 }
 
+function adminEmails(): Set<string> {
+  const emails = (process.env.ADMIN_EMAILS ?? "")
+    .split(",")
+    .map((email) => email.trim().toLowerCase())
+    .filter(Boolean);
+  if (emails.length === 0 && process.env.NODE_ENV === "development") {
+    emails.push("qusay@growlab.local");
+  }
+  return new Set(emails);
+}
+
+function emailIsAdmin(email: string | null | undefined): boolean {
+  const normalized = email?.trim().toLowerCase();
+  return Boolean(normalized && adminEmails().has(normalized));
+}
+
 /**
- * Platform admin is an env-config allowlist of Clerk user IDs, NOT a role
- * stored on the User row. The self-serve onboarding flow (claimRole in
- * onboarding-actions.ts) can only ever write "merchant" or "creator" — this
- * keeps admin access impossible to self-grant through the app itself.
- * Set ADMIN_CLERK_USER_IDS="user_abc,user_def" in the environment to grant it.
+ * Platform admin is env-config only — never a self-serve User.role.
+ * Grant via ADMIN_CLERK_USER_IDS and/or ADMIN_EMAILS.
  */
 export async function isCurrentUserAdmin(): Promise<boolean> {
   const { userId } = await auth();
-  if (!userId) return false;
-  return adminUserIds().has(userId);
+  if (userId && adminUserIds().has(userId)) return true;
+
+  if (userId) {
+    const clerk = await currentUser();
+    const email = clerk?.emailAddresses[0]?.emailAddress;
+    if (emailIsAdmin(email)) return true;
+  }
+
+  if (isActiveDevImpersonation()) {
+    const viewer = await getCurrentDevUser();
+    if (emailIsAdmin(viewer?.email) || emailIsAdmin(viewer?.inviteEmail)) return true;
+  }
+
+  return false;
 }

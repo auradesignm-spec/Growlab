@@ -57,6 +57,19 @@ interface OrderSeed {
 async function main() {
   await resetDatabase();
 
+  await prisma.user.create({
+    data: {
+      name: "قصي",
+      role: "unassigned",
+      locale: "ar",
+      firstName: "قصي",
+      lastName: "المدير",
+      phone: "+96897844742",
+      email: "qusay@growlab.local",
+      profileCompletedAt: new Date(),
+    },
+  });
+
   // ---------------------------------------------------------------------
   // Merchants (mixed verification status)
   // ---------------------------------------------------------------------

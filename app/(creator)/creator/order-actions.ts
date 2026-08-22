@@ -67,7 +67,12 @@ async function loadActiveDeal(dealId: string) {
   if (deal.product.merchant.verificationStatus !== "verified") {
     throw new Error("This piece is no longer available.");
   }
-  if (deal.product.merchant.user.accountStatus === "banned" || deal.creator.user.accountStatus === "banned") {
+  if (
+    deal.product.merchant.user.accountStatus === "banned" ||
+    deal.product.merchant.user.accountStatus === "suspended" ||
+    deal.creator.user.accountStatus === "banned" ||
+    deal.creator.user.accountStatus === "suspended"
+  ) {
     throw new Error("This piece is no longer available.");
   }
   if (deal.creator.verificationStatus !== "verified") {

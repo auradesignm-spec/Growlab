@@ -96,7 +96,7 @@ export async function getCreatorStorefront(usernameRaw: string): Promise<Storefr
   });
 
   if (!creator) return null;
-  if (creator.user.accountStatus === "banned") return null;
+  if (creator.user.accountStatus === "banned" || creator.user.accountStatus === "suspended") return null;
   if (creator.verificationStatus !== "verified") {
     return {
       username: creator.username,

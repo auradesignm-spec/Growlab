@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
+import { isAccountRestricted } from "@/lib/auth/account";
+import { isCurrentUserAdmin } from "@/lib/auth/admin";
 import { getCurrentUser } from "@/lib/auth/session";
 import { ENTER_HREF } from "@/lib/auth/paths";
 import { loadMerchantDashboardData } from "@/lib/dashboard/merchant";
@@ -36,6 +38,10 @@ export default async function DashboardPage({
     redirect(ENTER_HREF);
   }
 
+  if (await isCurrentUserAdmin()) {
+    redirect("/dashboard/admin");
+  }
+
   if (
     viewer.role === "creator" &&
     viewer.creatorProfile?.verificationStatus === "verified" &&
@@ -46,8 +52,12 @@ export default async function DashboardPage({
 
   return (
     <main>
-      {viewer.accountStatus === "banned" ? (
-        <AccountBanned title={tKyc("banned.title")} lede={tKyc("banned.lede")} reason={viewer.banReason} />
+      {isAccountRestricted(viewer.accountStatus) ? (
+        <AccountBanned
+          title={tKyc(viewer.accountStatus === "suspended" ? "suspended.title" : "banned.title")}
+          lede={tKyc(viewer.accountStatus === "suspended" ? "suspended.lede" : "banned.lede")}
+          reason={viewer.banReason}
+        />
       ) : !hasCompletedProfile(viewer) ? (
         <ProfileDetailsForm
           initial={{

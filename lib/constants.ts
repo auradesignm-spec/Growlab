@@ -13,6 +13,13 @@ export function getWhatsAppShareUrl(text: string): string {
   return `https://wa.me/?text=${encodeURIComponent(text)}`;
 }
 
+export function getDirectWhatsAppUrl(phone: string, message?: string): string | null {
+  const digits = phone.replace(/\D/g, "");
+  if (digits.length < 8) return null;
+  const base = `https://wa.me/${digits}`;
+  return message ? `${base}?text=${encodeURIComponent(message)}` : base;
+}
+
 export const WHATSAPP_GENERAL_URL = getWhatsAppUrl("مرحباً Growlab، أريد الاستفسار عن خدماتكم.");
 export const WHATSAPP_CONSULTATION_URL = getWhatsAppUrl(
   "مرحباً Growlab، أريد حجز استشارة مجانية لمدة 15 دقيقة."

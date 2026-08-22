@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import { computeSimpleSplit } from "@/lib/domain/commission";
 import { getWalletSnapshot } from "@/lib/ledger/wallet";
+import { excerpt, scanModeration, type ModerationReason } from "@/lib/security/moderation";
 import { storeQualityFromOrders, type StoreQualityRow } from "@/lib/shop/storeQuality";
 
 export interface AdminKycDoc {
@@ -115,6 +116,50 @@ export interface AdminPayoutRow {
   accountNumber: string;
 }
 
+export interface AdminUserRow {
+  id: string;
+  name: string;
+  role: string;
+  accountStatus: string;
+  banReason: string | null;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  email: string;
+  createdAt: string;
+  handle: string;
+}
+
+export interface AdminTrafficDay {
+  date: string;
+  visits: number;
+}
+
+export interface AdminTrafficStore {
+  username: string;
+  visits: number;
+}
+
+export interface AdminLeadRow {
+  id: string;
+  name: string;
+  biz: string;
+  phone: string;
+  msg: string;
+  createdAt: string;
+}
+
+export interface AdminFlagRow {
+  id: string;
+  kind: "product" | "bio" | "sample";
+  title: string;
+  owner: string;
+  excerpt: string;
+  reasons: ModerationReason[];
+  productId?: string;
+  userId?: string;
+}
+
 export interface AdminDashboardData {
   totals: {
     merchants: number;
@@ -123,6 +168,13 @@ export interface AdminDashboardData {
     pendingCreators: number;
     creators: number;
     bannedAccounts: number;
+    suspendedAccounts: number;
+    users: number;
+    visits7d: number;
+    visitsToday: number;
+    walletCash: number;
+    contactLeads: number;
+    flaggedContent: number;
     orders: number;
     attributedGmv: number;
     creatorShare: number;
@@ -135,6 +187,11 @@ export interface AdminDashboardData {
     escrowRefunded: number;
     flaggedStores: number;
   };
+  trafficDays: AdminTrafficDay[];
+  trafficStores: AdminTrafficStore[];
+  users: AdminUserRow[];
+  leads: AdminLeadRow[];
+  flags: AdminFlagRow[];
   merchants: AdminMerchantRow[];
   creators: AdminCreatorRow[];
   ordersByStatus: AdminOrderStatusRow[];
@@ -159,6 +216,12 @@ export async function loadAdminDashboardData(): Promise<AdminDashboardData> {
     pendingSampleRequests,
     pendingPayouts,
     bannedAccounts,
+    suspendedAccounts,
+    users,
+    visits,
+    leads,
+    walletSum,
+    sampleNotes,
   ] = await Promise.all([
       prisma.merchantProfile.findMany({
         include: { products: true, wallet: true, user: { include: { kycDocuments: true } } },
@@ -189,6 +252,27 @@ export async function loadAdminDashboardData(): Promise<AdminDashboardData> {
       prisma.sampleRequest.count({ where: { status: "pending" } }),
       prisma.payoutRequest.count({ where: { status: "requested" } }),
       prisma.user.count({ where: { accountStatus: "banned" } }),
+      prisma.user.count({ where: { accountStatus: "suspended" } }),
+      prisma.user.findMany({
+        orderBy: { createdAt: "desc" },
+        include: { merchantProfile: true, creatorProfile: true },
+      }),
+      prisma.storefrontVisit.findMany({
+        where: { createdAt: { gte: daysAgo(7) } },
+        select: { username: true, createdAt: true },
+      }),
+      prisma.contactLead.findMany({ take: 40, orderBy: { createdAt: "desc" } }),
+      prisma.merchantWallet.aggregate({ _sum: { balance: true } }),
+      prisma.sampleRequest.findMany({
+        where: { note: { not: null } },
+        select: {
+          id: true,
+          note: true,
+          creator: { select: { username: true, userId: true } },
+          product: { select: { title: true } },
+        },
+        take: 200,
+      }),
     ]);
 
   const attributedGmv = sum(ledgerEntries.map((l) => l.attributedGmv));
@@ -209,8 +293,34 @@ export async function loadAdminDashboardData(): Promise<AdminDashboardData> {
     orderStatuses.map((o) => ({ username: o.deal.creator.username, status: o.status })),
   );
   const flaggedStores = storeQuality.filter((row) => row.flag).length;
+  const traffic = bucketVisits(visits);
+  const flags = collectFlags(merchants, creators, sampleNotes);
 
   return {
+    trafficDays: traffic.days,
+    trafficStores: traffic.stores,
+    users: users.map((user) => ({
+      id: user.id,
+      name: user.name,
+      role: user.role,
+      accountStatus: user.accountStatus,
+      banReason: user.banReason,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      phone: user.phone,
+      email: user.email || user.inviteEmail || "",
+      createdAt: user.createdAt.toISOString(),
+      handle: user.creatorProfile?.username || user.merchantProfile?.businessName || user.name,
+    })),
+    leads: leads.map((lead) => ({
+      id: lead.id,
+      name: lead.name,
+      biz: lead.biz,
+      phone: lead.phone,
+      msg: lead.msg,
+      createdAt: lead.createdAt.toISOString(),
+    })),
+    flags,
     totals: {
       merchants: merchants.length,
       verifiedMerchants: merchants.filter((m) => m.verificationStatus === "verified").length,
@@ -218,6 +328,13 @@ export async function loadAdminDashboardData(): Promise<AdminDashboardData> {
       pendingCreators: creators.filter((c) => c.verificationStatus === "pending").length,
       creators: creators.length,
       bannedAccounts,
+      suspendedAccounts,
+      users: users.length,
+      visits7d: visits.length,
+      visitsToday: traffic.today,
+      walletCash: round2(walletSum._sum.balance ?? 0),
+      contactLeads: leads.length,
+      flaggedContent: flags.length,
       orders: orderStatuses.length,
       attributedGmv: round2(attributedGmv),
       creatorShare: round2(creatorShare),
@@ -351,6 +468,107 @@ export async function loadAdminDashboardData(): Promise<AdminDashboardData> {
       .sort((a, b) => Number(b.status === "requested") - Number(a.status === "requested")),
     storeQuality,
   };
+}
+
+function daysAgo(n: number): Date {
+  const date = new Date();
+  date.setDate(date.getDate() - n);
+  date.setHours(0, 0, 0, 0);
+  return date;
+}
+
+function dayKey(date: Date): string {
+  return date.toISOString().slice(0, 10);
+}
+
+function bucketVisits(visits: { username: string; createdAt: Date }[]) {
+  const todayKey = dayKey(new Date());
+  const days: AdminTrafficDay[] = [];
+  for (let i = 6; i >= 0; i -= 1) {
+    const date = daysAgo(i);
+    days.push({ date: dayKey(date), visits: 0 });
+  }
+  const byDay = new Map(days.map((row) => [row.date, row]));
+  const byStore = new Map<string, number>();
+  let today = 0;
+  for (const visit of visits) {
+    const key = dayKey(visit.createdAt);
+    const day = byDay.get(key);
+    if (day) day.visits += 1;
+    if (key === todayKey) today += 1;
+    byStore.set(visit.username, (byStore.get(visit.username) ?? 0) + 1);
+  }
+  const stores = [...byStore.entries()]
+    .map(([username, count]) => ({ username, visits: count }))
+    .sort((a, b) => b.visits - a.visits)
+    .slice(0, 8);
+  return { days, stores, today };
+}
+
+function collectFlags(
+  merchants: Array<{
+    businessName: string;
+    userId: string;
+    products: Array<{ id: string; title: string; category: string; tags: string }>;
+  }>,
+  creators: Array<{ username: string; bio: string | null; userId: string }>,
+  samples: Array<{
+    id: string;
+    note: string | null;
+    creator: { username: string; userId: string };
+    product: { title: string };
+  }>
+): AdminFlagRow[] {
+  const flags: AdminFlagRow[] = [];
+
+  for (const merchant of merchants) {
+    for (const product of merchant.products) {
+      const text = `${product.title} ${product.category} ${product.tags}`;
+      const hit = scanModeration(text);
+      if (!hit.flagged) continue;
+      flags.push({
+        id: `product:${product.id}`,
+        kind: "product",
+        title: product.title,
+        owner: merchant.businessName,
+        excerpt: excerpt(text),
+        reasons: [...hit.reasons],
+        productId: product.id,
+      });
+    }
+  }
+
+  for (const creator of creators) {
+    if (!creator.bio) continue;
+    const hit = scanModeration(creator.bio);
+    if (!hit.flagged) continue;
+    flags.push({
+      id: `bio:${creator.userId}`,
+      kind: "bio",
+      title: `@${creator.username}`,
+      owner: creator.username,
+      excerpt: excerpt(creator.bio),
+      reasons: [...hit.reasons],
+      userId: creator.userId,
+    });
+  }
+
+  for (const sample of samples) {
+    if (!sample.note) continue;
+    const hit = scanModeration(sample.note);
+    if (!hit.flagged) continue;
+    flags.push({
+      id: `sample:${sample.id}`,
+      kind: "sample",
+      title: sample.product.title,
+      owner: `@${sample.creator.username}`,
+      excerpt: excerpt(sample.note),
+      reasons: [...hit.reasons],
+      userId: sample.creator.userId,
+    });
+  }
+
+  return flags;
 }
 
 function sum(values: number[]): number {

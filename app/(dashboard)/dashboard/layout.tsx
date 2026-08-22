@@ -38,7 +38,7 @@ export default async function DashboardLayout({
           id: user.id,
           name: user.name,
           role: user.role,
-          label: `${user.role} — ${user.merchantProfile?.businessName ?? user.creatorProfile?.username ?? user.name}`,
+          label: `${user.email === "qusay@growlab.local" ? "admin" : user.role} — ${user.merchantProfile?.businessName ?? user.creatorProfile?.username ?? user.name}`,
         }))
       : [];
 
@@ -50,7 +50,7 @@ export default async function DashboardLayout({
       <header className="relative z-40 border-b border-line bg-white pt-[env(safe-area-inset-top,0px)]">
         <div className="mx-auto flex max-w-wrap items-stretch justify-between px-4 sm:px-8">
           <Link
-            href={isVerifiedCreator ? "/dashboard/browse" : "/"}
+            href={isAdmin ? "/dashboard/admin" : isVerifiedCreator ? "/dashboard/browse" : "/"}
             className="flex min-h-11 items-center py-3 text-[15px] font-medium text-frost sm:py-5"
             aria-label={nav("homeAria")}
           >
@@ -87,7 +87,7 @@ export default async function DashboardLayout({
       {alerts.length > 0 ? <AppAlerts alerts={alerts} /> : null}
       <PwaInstall />
       <div className={isVerifiedCreator ? "pb-24" : ""}>{children}</div>
-      {isVerifiedCreator ? (
+      {isVerifiedCreator && !isAdmin ? (
         <Suspense fallback={null}>
           <MarketerAppNav />
         </Suspense>

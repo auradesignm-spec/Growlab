@@ -815,12 +815,15 @@
       }
     },
     "admin": {
-      "kicker": "Admin",
-      "title": "Platform admin",
-      "lede": "A full view of everything moving on the platform — live figures, not a demo.",
+      "kicker": "General manager",
+      "title": "Operations room",
+      "lede": "Monitor the site, users, traffic, cash, and the content filter. Ban, suspend, and warn from here.",
       "forbidden": "This account doesn't have access to the admin dashboard.",
       "backToPortal": "Back to portal",
       "tabs": {
+        "monitor": "Monitor",
+        "users": "Users",
+        "filter": "Filter",
         "overview": "Overview",
         "kyc": "KYC audit",
         "orders": "Orders",
@@ -855,6 +858,61 @@
         "storeQualityTitle": "Store quality",
         "storeQualityWatch": "{orders} orders · returned {returned} · cancelled {cancelled}",
         "ordersByStatus": "Orders by status"
+      },
+      "monitor": {
+        "users": "Users",
+        "visitsToday": "Visits today",
+        "visits7d": "Visits, 7 days",
+        "walletCash": "Wallet cash",
+        "orders": "Orders",
+        "gmv": "Sales",
+        "platformShare": "Platform share",
+        "flagged": "Open flags",
+        "trafficTitle": "Traffic this week",
+        "storesTitle": "Most visited stores",
+        "leadsTitle": "Contact leads",
+        "leadsEmpty": "No contact leads yet.",
+        "whatsapp": "WhatsApp",
+        "warnLead": "Hello {name}, this is Growlab operations."
+      },
+      "users": {
+        "empty": "No users yet.",
+        "hint": "Contact details are visible only to you, so you can warn, suspend, or ban.",
+        "whatsapp": "WhatsApp",
+        "email": "Email",
+        "suspend": "Suspend",
+        "ban": "Ban",
+        "restore": "Restore",
+        "reason": "Reason shown to the user",
+        "warnMessage": "Hello {name}, this is a message from Growlab about your account.",
+        "status": {
+          "active": "Active",
+          "suspended": "Suspended",
+          "banned": "Banned"
+        },
+        "columns": {
+          "person": "Person",
+          "role": "Role",
+          "contact": "Contact",
+          "status": "Status",
+          "actions": "Actions"
+        }
+      },
+      "filter": {
+        "empty": "No flagged text or products right now.",
+        "hint": "The detector reviews products and copy for contact leaks and prohibited content.",
+        "hideProduct": "Take product down",
+        "suspendUser": "Suspend account",
+        "autoSuspend": "Flagged by the content filter",
+        "kind": {
+          "product": "Product",
+          "bio": "Store bio",
+          "sample": "Sample note"
+        },
+        "reason": {
+          "contact_leak": "Contact leak",
+          "prohibited": "Prohibited content"
+        }
       },
       "merchants": {
         "empty": "No merchants yet.",
@@ -986,8 +1044,12 @@
   },
   "kyc": {
     "banned": {
-      "title": "This account is suspended.",
-      "lede": "A platform admin has locked this account. Contact Growlab if you believe this is a mistake."
+      "title": "This account is banned.",
+      "lede": "The general manager has locked this account. Contact Growlab if you believe this is a mistake."
+    },
+    "suspended": {
+      "title": "This account is temporarily suspended.",
+      "lede": "Operations paused the account pending review. Check the warning or contact Growlab."
     },
     "pending": {
       "title": "Your documents are in review.",

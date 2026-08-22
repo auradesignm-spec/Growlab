@@ -7,16 +7,32 @@ import type { AdminDashboardData } from "@/lib/dashboard/admin";
 import { EmptyState, Metric, TableShell } from "@/components/dashboard/ui";
 import { AddMerchantTab, CreatorAccountRow, KycQueueTab, MerchantAccountRow } from "@/components/dashboard/AdminOps";
 import { OrdersTab, PayoutsTab, ProductActiveToggle, SamplesTab } from "@/components/dashboard/AdminOpsTables";
+import { FilterTab, MonitorTab, UsersTab } from "@/components/dashboard/AdminCommand";
 
-type Tab = "overview" | "kyc" | "orders" | "samples" | "payouts" | "merchants" | "creators" | "invite" | "products";
+type Tab =
+  | "monitor"
+  | "users"
+  | "filter"
+  | "overview"
+  | "kyc"
+  | "orders"
+  | "samples"
+  | "payouts"
+  | "merchants"
+  | "creators"
+  | "invite"
+  | "products";
 
 export default function AdminDashboard({ data }: { data: AdminDashboardData }) {
   const t = useTranslations("dashboardApp.admin");
   const tStatus = useTranslations("dashboardApp.status");
   const locale = useLocale();
-  const [tab, setTab] = useState<Tab>("overview");
+  const [tab, setTab] = useState<Tab>("monitor");
 
   const tabs: Array<{ id: Tab; label: string }> = [
+    { id: "monitor", label: t("tabs.monitor") },
+    { id: "users", label: t("tabs.users") },
+    { id: "filter", label: t("tabs.filter") },
     { id: "overview", label: t("tabs.overview") },
     { id: "kyc", label: t("tabs.kyc") },
     { id: "orders", label: t("tabs.orders") },
@@ -43,6 +59,9 @@ export default function AdminDashboard({ data }: { data: AdminDashboardData }) {
         ))}
       </div>
 
+      {tab === "monitor" && <MonitorTab data={data} />}
+      {tab === "users" && <UsersTab data={data} />}
+      {tab === "filter" && <FilterTab data={data} />}
       {tab === "overview" && <OverviewTab data={data} t={t} onOpenTab={setTab} />}
       {tab === "kyc" && <KycQueueTab data={data} />}
       {tab === "orders" && <OrdersTab data={data} locale={locale} />}

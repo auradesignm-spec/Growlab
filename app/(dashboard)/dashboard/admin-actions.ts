@@ -64,9 +64,13 @@ export async function adminSetAccountStatus(userId: string, status: AccountStatu
   await prisma.user.update({
     where: { id: userId },
     data:
-      status === "banned"
-        ? { accountStatus: "banned", bannedAt: new Date(), banReason: banReason || "Suspended by admin." }
-        : { accountStatus: "active", bannedAt: null, banReason: null },
+      status === "active"
+        ? { accountStatus: "active", bannedAt: null, banReason: null }
+        : {
+            accountStatus: status,
+            bannedAt: new Date(),
+            banReason: banReason || (status === "suspended" ? "Suspended by admin." : "Banned by admin."),
+          },
   });
   revalidateAdmin();
 }

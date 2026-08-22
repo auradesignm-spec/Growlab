@@ -45,7 +45,7 @@ export default async function AdminPage() {
         <div className="px-5 py-12 sm:px-8">
           <p className="gl-eyebrow">{t("kicker")}</p>
           <h1 className="mt-4 font-display text-display-lg">{t("title")}</h1>
-          <p className="mt-4 max-w-md text-[15px] leading-relaxed text-frost-dim">{t("lede")}</p>
+          <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-frost-dim">{t("lede")}</p>
         </div>
       </section>
       <AdminDashboard data={data} />
