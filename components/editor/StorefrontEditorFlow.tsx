@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import CreatorStorefront from "@/components/creator/CreatorStorefront";
 import { formatMoney } from "@/lib/format";
-import { uniqueDealSlugs } from "@/lib/storefront";
+import { uniqueDealSlugs } from "@/lib/storefront-slugs";
 
 export interface EditorDealOption {
   dealId: string;
