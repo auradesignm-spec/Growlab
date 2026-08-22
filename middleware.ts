@@ -1,0 +1,74 @@
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextRequest, NextResponse } from "next/server";
+import { DEFAULT_LOCALE, isLocale, LOCALE_COOKIE, type Locale } from "@/i18n/config";
+import { GL_REF_COOKIE, REF_MAX_AGE_SEC, normalizeCreatorHandle } from "@/lib/shop/cookies";
+
+const isProtectedRoute = createRouteMatcher(["/dashboard(.*)", "/api/kyc(.*)"]);
+
+function detectLocale(request: NextRequest): Locale {
+  const cookie = request.cookies.get(LOCALE_COOKIE)?.value;
+  if (isLocale(cookie)) return cookie;
+
+  const header = request.headers.get("accept-language")?.toLowerCase() ?? "";
+  const parts = header.split(",").map((part) => part.split(";")[0]?.trim() ?? "");
+
+  for (const part of parts) {
+    if (part === "ar" || part.startsWith("ar-")) return "ar";
+    if (part === "en" || part.startsWith("en-")) return "en";
+  }
+
+  return DEFAULT_LOCALE;
+}
+
+function withLocaleCookie(response: NextResponse, locale: Locale) {
+  response.cookies.set(LOCALE_COOKIE, locale, {
+    path: "/",
+    maxAge: 60 * 60 * 24 * 365,
+    sameSite: "lax",
+  });
+  return response;
+}
+
+function stampFirstTouchRef(request: NextRequest, response: NextResponse) {
+  if (request.cookies.get(GL_REF_COOKIE)?.value) return;
+
+  const parts = request.nextUrl.pathname.split("/").filter(Boolean);
+  if (parts[0] !== "creator" || !parts[1]) return;
+
+  const handle = normalizeCreatorHandle(parts[1]);
+  if (!handle) return;
+
+  response.cookies.set(GL_REF_COOKIE, handle, {
+    path: "/",
+    maxAge: REF_MAX_AGE_SEC,
+    sameSite: "lax",
+    httpOnly: true,
+  });
+}
+
+export default clerkMiddleware(async (auth, request) => {
+  const locale = detectLocale(request);
+
+  // Explicit redirect: auth.protect() rewrites to a missing route and surfaces
+  // as a 404 ("protect-rewrite") on this Next 14 + catch-all sign-in setup.
+  if (isProtectedRoute(request)) {
+    const { userId } = await auth();
+    if (!userId) {
+      const signIn = new URL("/sign-in", request.url);
+      signIn.searchParams.set("redirect_url", `${request.nextUrl.pathname}${request.nextUrl.search}`);
+      return withLocaleCookie(NextResponse.redirect(signIn), locale);
+    }
+  }
+
+  const response = withLocaleCookie(NextResponse.next(), locale);
+  stampFirstTouchRef(request, response);
+  return response;
+});
+
+export const config = {
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|.*\\..*).*)",
+    "/(api|trpc)(.*)",
+    "/__clerk/:path*",
+  ],
+};

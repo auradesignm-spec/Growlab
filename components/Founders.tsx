@@ -1,34 +1,38 @@
-export default function Founders() {
+import { getTranslations } from "next-intl/server";
+import Reveal from "@/components/Reveal";
+
+export default async function Founders() {
+  const t = await getTranslations("marketing.founders");
+
   return (
-    <section id="founders" className="section-padding-sm bg-paper-alt">
-      <div className="container-wrap">
-        <div className="eyebrow">مين إحنا</div>
-        <h2 className="section-heading">قصتنا</h2>
+    <section id="founders" className="relative scroll-mt-24 py-section">
+      <div className="mx-auto max-w-wrap px-5 sm:px-8">
+        <Reveal>
+          <p className="gl-eyebrow">{t("eyebrow")}</p>
+          <h2 className="gl-heading mt-2 text-display-lg">{t("title")}</h2>
+        </Reveal>
 
-        <div className="mt-10 grid grid-cols-1 items-start gap-10 md:grid-cols-[1fr_1.3fr] md:gap-14">
-          <div className="flex" aria-hidden="true">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full border-4 border-paper bg-ink font-display text-xl font-extrabold text-gold-soft">
-              A
+        <Reveal>
+          <div className="gl-glass mt-10 grid grid-cols-1 items-start gap-10 p-6 sm:p-8 md:grid-cols-[1fr_1.3fr] md:gap-14">
+            <div>
+              <h3 className="text-xl font-semibold text-frost">{t("name")}</h3>
+              <p className="mt-1 text-[14px] text-frost-dim">{t("role")}</p>
+              <div className="mt-5 flex flex-wrap gap-2">
+                <span className="gl-pill">{t("pillSecurity")}</span>
+                <span className="gl-pill">{t("pillMarketing")}</span>
+              </div>
             </div>
-            <div className="-ms-4 flex h-16 w-16 items-center justify-center rounded-full border-4 border-paper bg-ink font-display text-xl font-extrabold text-gold-soft">
-              M
+
+            <div>
+              <p className="mb-5 text-[16px] leading-relaxed text-frost-dim">{t("p1")}</p>
+              <p className="mb-5 text-[16px] leading-relaxed text-frost-dim">{t("p2")}</p>
+              <p className="mb-5 text-[16px] leading-relaxed text-frost-dim">{t("p3")}</p>
+              <blockquote className="mt-6 border-s-2 border-frost ps-5 text-xl font-semibold text-frost">
+                “{t("quote")}”
+              </blockquote>
             </div>
           </div>
-
-          <div>
-            <p className="mb-5 text-base text-muted">
-              إحنا طالبين بسنة ثالثة، قررنا نبني الشراكة اللي كنا نتمناها لو كنا أصحاب مشروع: تواصل
-              مباشر، شفافية كاملة، ومصلحة مشتركة.
-            </p>
-            <p className="mb-5 text-base text-muted">
-              ما عندنا فريق ضخم ولا مكتب فخم — عندنا وقت كامل لكل عميل، وتقنية حديثة تعوض الفرق
-              بالحجم.
-            </p>
-            <blockquote className="mt-6 border-s-[3px] border-gold ps-5 font-display text-xl font-bold text-ink-3">
-              &ldquo;ما نكسب إلا لو كسبت. هذا كل الفرق.&rdquo;
-            </blockquote>
-          </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

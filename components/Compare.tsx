@@ -1,59 +1,72 @@
-import type { CompareRow } from "@/lib/types";
+"use client";
 
-const ROWS: readonly CompareRow[] = [
-  { label: "التواصل", us: "مباشر مع المؤسسين", them: "عبر مدير حساب" },
-  { label: "من يدير حسابك", us: "المؤسسين أنفسهم", them: "موظف جونيور غالبًا" },
-  { label: "التقارير", us: "أسبوعية، ومربوطة بمبيعاتك", them: "شهرية ومعقدة" },
-  { label: "الالتزام بالنتيجة", us: "نسبة من نتائجك جزء من الاتفاق", them: "بدون ضمان" },
-  { label: "مدة الالتزام", us: "شهر بشهر", them: "عقود طويلة غالبًا" },
-] as const;
+import { useState } from "react";
+import { useTranslations } from "next-intl";
+import Reveal from "@/components/Reveal";
+import { track } from "@/lib/analytics";
+
+type Point = { title: string; us: string; them: string };
+
+function Mark({ tone }: { tone: "good" | "bad" }) {
+  return tone === "good" ? (
+    <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4 shrink-0 text-ok" aria-hidden="true">
+      <path d="m5 12 5 5 9-10" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  ) : (
+    <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4 shrink-0 text-danger" aria-hidden="true">
+      <path d="M7 7l10 10M17 7 7 17" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
 
 export default function Compare() {
-  return (
-    <section id="compare" className="section-padding">
-      <div className="container-wrap">
-        <div className="eyebrow">الفرق واضح</div>
-        <h2 className="section-heading">Growlab مقابل وكالات التسويق التقليدية</h2>
+  const t = useTranslations("marketing.compare");
+  const [audience, setAudience] = useState<"merchant" | "creator">("merchant");
+  const heading = audience === "merchant" ? t("merchantHeading") : t("creatorHeading");
+  const points = t.raw(audience === "merchant" ? "merchantPoints" : "creatorPoints") as Point[];
 
-        <div className="mt-10 overflow-x-auto rounded-card border border-line bg-white shadow-card">
-          <table className="w-full min-w-[520px] border-collapse text-[14.5px]">
-            <caption className="sr-only">
-              مقارنة بين Growlab والوكالات التقليدية
-            </caption>
-            <thead>
-              <tr>
-                <th
-                  scope="col"
-                  className="w-[36%] bg-paper-alt p-4 text-start text-sm font-semibold text-muted"
-                />
-                <th
-                  scope="col"
-                  className="bg-teal-soft p-4 text-start text-sm font-semibold text-teal"
-                >
-                  Growlab
-                </th>
-                <th
-                  scope="col"
-                  className="bg-paper-alt p-4 text-start text-sm font-semibold text-muted"
-                >
-                  الوكالات التقليدية
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {ROWS.map((row) => (
-                <tr key={row.label} className="group transition-colors duration-250 hover:bg-paper/50">
-                  <th scope="row" className="border-t border-line p-4 text-start font-normal">
-                    {row.label}
-                  </th>
-                  <td className="border-t border-line bg-teal-muted p-4 font-medium text-ink-3 group-hover:bg-teal-soft/80">
-                    {row.us}
-                  </td>
-                  <td className="border-t border-line p-4 text-muted">{row.them}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+  return (
+    <section id="compare" className="relative scroll-mt-24 py-section">
+      <div className="mx-auto max-w-wrap px-5 sm:px-8">
+        <Reveal>
+          <p className="gl-eyebrow">{t("eyebrow")}</p>
+          <h2 className="gl-heading mt-2 max-w-2xl text-balance text-display-lg">{heading}</h2>
+          <p className="gl-lede mt-4">{t("lede")}</p>
+        </Reveal>
+
+        <div className="mt-8 flex flex-wrap gap-2">
+          {(["merchant", "creator"] as const).map((id) => (
+            <button
+              key={id}
+              type="button"
+              aria-pressed={audience === id}
+              onClick={() => {
+                setAudience(id);
+                track("Comparison Track Selected", { role: id });
+              }}
+              className={`rounded-full px-4 py-2 text-[14px] font-medium transition-colors duration-150 ease-out ${
+                audience === id ? "bg-[#111318] text-white" : "border border-line bg-white text-[#111318]"
+              }`}
+            >
+              {id === "merchant" ? t("merchantLabel") : t("creatorLabel")}
+            </button>
+          ))}
+        </div>
+
+        <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {points.map((point) => (
+            <article key={point.title} className="gl-glass gl-glass-hover flex h-full flex-col p-6">
+              <div className="flex items-start gap-2">
+                <Mark tone="good" />
+                <h3 className="text-[14px] font-semibold leading-snug text-frost">{point.title}</h3>
+              </div>
+              <p className="mt-3 text-[14px] leading-relaxed text-frost-dim">{point.us}</p>
+              <div className="mt-4 flex items-start gap-2 border-t border-line pt-3">
+                <Mark tone="bad" />
+                <p className="text-[13px] leading-relaxed text-frost-faint">{point.them}</p>
+              </div>
+            </article>
+          ))}
         </div>
       </div>
     </section>

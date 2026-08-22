@@ -1,51 +1,43 @@
-import type { StepItem } from "@/lib/types";
+import Link from "next/link";
+import { getTranslations } from "next-intl/server";
+import Reveal from "@/components/Reveal";
+import { signUpHref } from "@/lib/auth/paths";
 
-const STEPS: readonly StepItem[] = [
-  {
-    n: "01",
-    title: "محتوى وإعلانات مصممة لك",
-    text: "نصمم فيديو تسويقي ومحتوى خاص بمنتجك، وندير حملتك على ميتا يوميًا — مو قالب جاهز يتكرر لكل عميل.",
-  },
-  {
-    n: "02",
-    title: "وكيل ذكاء اصطناعي يقفل المبيعات",
-    text: "يرد على كل عميل محتمل فورًا، يتابعه، ويساعد يقفل البيع — حتى وأنت نايم أو بمحاضرة.",
-  },
-  {
-    n: "03",
-    title: "لوحة تحكم شفافة بالكامل",
-    text: "تتابع كل رقم — مبيعات، مصروف إعلانات، أرباح — بلوحة تحكم خاصة فيك، تتحدث أول بأول.",
-  },
-] as const;
+export default async function HowItWorks() {
+  const t = await getTranslations("marketing.how");
+  const steps = t.raw("steps") as readonly { n: string; title: string; text: string }[];
 
-export default function HowItWorks() {
   return (
-    <section id="how" className="section-padding">
-      <div className="container-wrap">
-        <div className="eyebrow">كيف نشتغل</div>
-        <h2 className="section-heading">ثلاث خطوات، وضوح كامل</h2>
-        <p className="section-lead">
-          من أول محتوى تسويقي، إلى بيع فعلي، إلى رقم تشوفه بعينك.
-        </p>
+    <section id="how" className="relative scroll-mt-24 py-section">
+      <div className="mx-auto max-w-wrap px-5 sm:px-8">
+        <Reveal>
+          <p className="gl-eyebrow">{t("eyebrow")}</p>
+          <h2 className="gl-heading mt-2 text-display-lg">{t("title")}</h2>
+          <p className="gl-lede mt-4">{t("lede")}</p>
+        </Reveal>
 
-        <ol className="mt-10 list-none">
-          {STEPS.map((step, index) => (
-            <li
-              key={step.n}
-              className={`grid grid-cols-[56px_1fr] gap-6 border-t border-line py-8 transition-colors duration-250 hover:bg-paper/40 md:grid-cols-[90px_1fr] ${
-                index === STEPS.length - 1 ? "border-b" : ""
-              }`}
-            >
-              <span className="font-mono text-2xl font-medium text-gold md:text-[28px]" aria-hidden="true">
-                {step.n}
-              </span>
-              <div>
-                <h3 className="mb-2 text-[19px] font-bold">{step.title}</h3>
-                <p className="max-w-xl text-[15.5px] text-muted">{step.text}</p>
+        <div className="relative mt-10 grid grid-cols-1 gap-4 md:grid-cols-3">
+          {steps.map((step, index) => (
+            <Reveal key={step.n} className="h-full" delay={index * 70}>
+              <div className="gl-glass gl-glass-hover flex h-full flex-col p-6 sm:p-8">
+                <span className="font-mono text-[12px] text-frost-faint" aria-hidden="true">
+                  {step.n}
+                </span>
+                <h3 className="mt-8 text-[20px] font-semibold leading-snug text-frost">{step.title}</h3>
+                <p className="mt-2 text-[14px] leading-relaxed text-frost-dim">{step.text}</p>
               </div>
-            </li>
+            </Reveal>
           ))}
-        </ol>
+        </div>
+
+        <div className="mt-8 flex flex-wrap gap-3">
+          <Link href={signUpHref("merchant")} className="gl-btn-primary">
+            {t("startMerchant")}
+          </Link>
+          <Link href={signUpHref("creator")} className="gl-btn-ghost">
+            {t("startCreator")}
+          </Link>
+        </div>
       </div>
     </section>
   );
