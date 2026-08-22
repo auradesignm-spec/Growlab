@@ -1,15 +1,14 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { cookies } from "next/headers";
 import { prisma } from "@/lib/db";
-import { DEV_VIEWER_COOKIE, getCurrentDevUser } from "@/lib/dev/session";
-import { isDevImpersonationEnabled } from "@/lib/dev/guard";
+import { DEV_VIEWER_COOKIE, getCurrentDevUser, isActiveDevImpersonation } from "@/lib/dev/session";
 
 /**
  * Real session resolution via Clerk. Local impersonation of seeded users is
  * gated by isDevImpersonationEnabled() — never NODE_ENV alone.
  */
 export async function getCurrentUser() {
-  if (isDevImpersonationEnabled()) {
+  if (isActiveDevImpersonation()) {
     const cookieUid = cookies().get(DEV_VIEWER_COOKIE)?.value;
     if (cookieUid) {
       const impersonated = await prisma.user.findUnique({
@@ -22,7 +21,7 @@ export async function getCurrentUser() {
 
   const { userId } = await auth();
   if (!userId) {
-    if (isDevImpersonationEnabled()) return getCurrentDevUser();
+    if (isActiveDevImpersonation()) return getCurrentDevUser();
     return null;
   }
 

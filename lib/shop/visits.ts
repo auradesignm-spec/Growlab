@@ -1,7 +1,12 @@
+import { headers } from "next/headers";
 import { prisma } from "@/lib/db";
+import { clientIpFromHeaders, consumeRateLimit } from "@/lib/shop/rateLimit";
 
 export async function recordStorefrontVisit(username: string, dealId?: string | null) {
   try {
+    const ip = clientIpFromHeaders(headers());
+    if (!consumeRateLimit(`visit:ip:${ip}`, 20, 10 * 60 * 1000)) return;
+
     await prisma.storefrontVisit.create({
       data: {
         username: username.trim().toLowerCase(),

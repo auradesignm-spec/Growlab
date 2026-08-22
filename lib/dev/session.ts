@@ -1,7 +1,14 @@
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { prisma } from "@/lib/db";
+import { isDevImpersonationEnabled, isLoopbackHost } from "@/lib/dev/guard";
 
 export { isDevImpersonationEnabled } from "@/lib/dev/guard";
+
+export function isActiveDevImpersonation(): boolean {
+  if (!isDevImpersonationEnabled()) return false;
+  const host = headers().get("host")?.split(":")[0] ?? "";
+  return isLoopbackHost(host);
+}
 
 export const DEV_VIEWER_COOKIE = "gl_dev_uid";
 

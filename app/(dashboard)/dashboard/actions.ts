@@ -1,10 +1,13 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth/session";
 import { computeCreatorBalances, computeInstantPayoutFee, MIN_PAYOUT_OMR } from "@/lib/ledger/payouts";
 import { creatorHasPayoutAccount } from "@/lib/ledger/account";
+
+type BalanceDb = Prisma.TransactionClient | typeof prisma;
 
 /**
  * Self-serve verification is closed. Merchants submit KYC; only ADMIN_CLERK_USER_IDS
@@ -21,8 +24,8 @@ async function assertOwningCreator(creatorProfileId: string) {
   }
 }
 
-async function currentAvailableBalance(creatorProfileId: string) {
-  const creator = await prisma.creatorProfile.findUniqueOrThrow({
+async function currentAvailableBalance(creatorProfileId: string, db: BalanceDb = prisma) {
+  const creator = await db.creatorProfile.findUniqueOrThrow({
     where: { id: creatorProfileId },
     include: {
       deals: { include: { orders: { include: { ledgerEntry: true } } } },
@@ -60,21 +63,23 @@ export async function requestInstantPayout(creatorProfileId: string, amount: num
   });
   if (!creatorHasPayoutAccount(account)) throw new Error("PAYOUT_ACCOUNT_REQUIRED");
 
-  const balances = await currentAvailableBalance(creatorProfileId);
-  if (amount > balances.availableBalance) {
-    throw new Error("Requested amount exceeds available (unheld) balance.");
-  }
-
   const feeAmount = computeInstantPayoutFee(amount);
 
-  await prisma.payoutRequest.create({
-    data: {
-      creatorId: creatorProfileId,
-      type: "instant",
-      amount,
-      feeAmount,
-      status: "requested",
-    },
+  await prisma.$transaction(async (tx) => {
+    const balances = await currentAvailableBalance(creatorProfileId, tx);
+    if (amount > balances.availableBalance) {
+      throw new Error("Requested amount exceeds available (unheld) balance.");
+    }
+
+    await tx.payoutRequest.create({
+      data: {
+        creatorId: creatorProfileId,
+        type: "instant",
+        amount,
+        feeAmount,
+        status: "requested",
+      },
+    });
   });
 
   revalidatePath("/dashboard");
@@ -92,19 +97,21 @@ export async function requestScheduledPayout(creatorProfileId: string, amount: n
   });
   if (!creatorHasPayoutAccount(account)) throw new Error("PAYOUT_ACCOUNT_REQUIRED");
 
-  const balances = await currentAvailableBalance(creatorProfileId);
-  if (amount > balances.availableBalance) {
-    throw new Error("Requested amount exceeds available (unheld) balance.");
-  }
+  await prisma.$transaction(async (tx) => {
+    const balances = await currentAvailableBalance(creatorProfileId, tx);
+    if (amount > balances.availableBalance) {
+      throw new Error("Requested amount exceeds available (unheld) balance.");
+    }
 
-  await prisma.payoutRequest.create({
-    data: {
-      creatorId: creatorProfileId,
-      type: "scheduled",
-      amount,
-      feeAmount: 0,
-      status: "requested",
-    },
+    await tx.payoutRequest.create({
+      data: {
+        creatorId: creatorProfileId,
+        type: "scheduled",
+        amount,
+        feeAmount: 0,
+        status: "requested",
+      },
+    });
   });
 
   revalidatePath("/dashboard");

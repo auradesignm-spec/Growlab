@@ -2,7 +2,7 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { DEFAULT_LOCALE, isLocale, LOCALE_COOKIE, type Locale } from "@/i18n/config";
 import { GL_REF_COOKIE, REF_MAX_AGE_SEC, normalizeCreatorHandle } from "@/lib/shop/cookieNames";
-import { isDevImpersonationEnabled } from "@/lib/dev/guard";
+import { isDevImpersonationEnabled, isLoopbackHost } from "@/lib/dev/guard";
 
 const isProtectedRoute = createRouteMatcher(["/dashboard(.*)", "/api/kyc(.*)"]);
 
@@ -62,7 +62,7 @@ export default clerkIsConfigured()
   ? clerkMiddleware(async (auth, request) => {
       const locale = detectLocale(request);
 
-      if (isProtectedRoute(request) && !isDevImpersonationEnabled()) {
+      if (isProtectedRoute(request) && !(isDevImpersonationEnabled() && isLoopbackHost(request.nextUrl.hostname))) {
         const { userId } = await auth();
         if (!userId) {
           if (request.nextUrl.pathname.startsWith("/api/kyc")) {

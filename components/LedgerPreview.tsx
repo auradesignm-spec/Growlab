@@ -7,7 +7,7 @@ export default async function LedgerPreview() {
   const t = await getTranslations("marketing.ledger");
 
   return (
-    <section id="ledger" className="relative scroll-mt-24 py-section">
+    <section className="relative py-section">
       <div className="mx-auto max-w-wrap px-5 sm:px-8">
         <Reveal>
           <p className="gl-eyebrow">{t("eyebrow")}</p>

@@ -10,8 +10,7 @@ import AppAlerts from "@/components/dashboard/AppAlerts";
 import DevRoleSwitcher from "@/components/dev/DevRoleSwitcher";
 import { isCurrentUserAdmin } from "@/lib/auth/admin";
 import { getCurrentUser } from "@/lib/auth/session";
-import { listDevUsers } from "@/lib/dev/session";
-import { isDevImpersonationEnabled } from "@/lib/dev/guard";
+import { isActiveDevImpersonation, listDevUsers } from "@/lib/dev/session";
 import { loadCreatorAlerts, loadMerchantAlerts } from "@/lib/dashboard/alerts";
 
 export default async function DashboardLayout({
@@ -34,7 +33,7 @@ export default async function DashboardLayout({
       ? await loadMerchantAlerts(viewer.merchantProfile.id)
       : [];
 
-  const devUsers = isDevImpersonationEnabled()
+  const devUsers = isActiveDevImpersonation()
       ? (await listDevUsers()).map((user) => ({
           id: user.id,
           name: user.name,

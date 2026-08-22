@@ -16,6 +16,7 @@ const STORY_HREFS = [
   { href: "/#compare", key: "compare" },
   { href: "/#roadmap", key: "roadmap" },
   { href: "/#how", key: "method" },
+  { href: "/#ledger", key: "profits" },
 ] as const;
 
 export default function Header() {

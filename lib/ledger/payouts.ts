@@ -34,6 +34,9 @@ export interface CreatorBalances {
 }
 
 const PAYABLE_ORDER_STATUSES = new Set(["fulfilled"]);
+/** Open and settled payouts occupy available balance so a second request cannot over-commit. */
+const RESERVED_PAYOUT_STATUSES = new Set(["requested", "approved", "paid"]);
+const SETTLED_PAYOUT_STATUSES = new Set(["paid", "approved"]);
 
 export function computeCreatorBalances(
   ledgerLines: readonly LedgerBalanceLine[],
@@ -62,13 +65,16 @@ export function computeCreatorBalances(
     }
   }
 
+  const reserved = payoutRequests
+    .filter((p) => RESERVED_PAYOUT_STATUSES.has(p.status))
+    .reduce((sum, p) => sum + p.amount, 0);
   const totalPaidOut = payoutRequests
-    .filter((p) => p.status === "paid" || p.status === "approved")
+    .filter((p) => SETTLED_PAYOUT_STATUSES.has(p.status))
     .reduce((sum, p) => sum + p.amount, 0);
 
   return {
     totalEarned: round2(totalEarned),
-    availableBalance: round2(Math.max(0, availableBalance - totalPaidOut)),
+    availableBalance: round2(Math.max(0, availableBalance - reserved)),
     heldBalance: round2(heldBalance),
     totalPaidOut: round2(totalPaidOut),
   };

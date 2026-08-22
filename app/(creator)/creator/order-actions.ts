@@ -16,6 +16,8 @@ import {
   type CartItem,
   type ShopCart,
 } from "@/lib/shop/cookies";
+import { clientIpFromHeaders, consumeRateLimit } from "@/lib/shop/rateLimit";
+import { headers } from "next/headers";
 
 const MAX_QTY = 8;
 
@@ -147,6 +149,14 @@ export async function placeCodCheckout(input: {
   if (!isPlausiblePhone(buyerPhone)) throw new Error("Enter a valid phone number.");
   if (buyerAddress.length < 6) throw new Error("Enter a delivery address.");
   if (buyerCity.length < 2) throw new Error("Enter a city.");
+
+  const ip = clientIpFromHeaders(headers());
+  if (!consumeRateLimit(`cod:ip:${ip}`, 8, 60 * 60 * 1000)) {
+    throw new Error("Too many orders from this network. Try again later.");
+  }
+  if (!consumeRateLimit(`cod:phone:${buyerPhone}`, 5, 60 * 60 * 1000)) {
+    throw new Error("Too many orders for this phone. Try again later.");
+  }
 
   const cartItems = input.items ?? readCartCookie()?.items ?? [];
   if (cartItems.length === 0) throw new Error("Your cart is empty.");

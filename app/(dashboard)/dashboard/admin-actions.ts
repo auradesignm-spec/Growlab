@@ -7,6 +7,7 @@ import { ACCOUNT_STATUSES, ESCROW_STATUSES, PAYOUT_STATUSES, VERIFICATION_STATUS
 import type { OrderActionStatus } from "@/lib/domain/orders";
 import { applyOrderStatusTransition } from "@/lib/shop/orderTransition";
 import { creditMerchantWallet, ensureMerchantWallet } from "@/lib/ledger/wallet";
+import { computeCreatorBalances } from "@/lib/ledger/payouts";
 import { CONTACT_LEAK_WARNING_AR, generateShippingRef, scanForContactLeak } from "@/lib/security/antiLeak";
 import { computeUgcDeadline } from "@/lib/domain/ugc";
 
@@ -222,6 +223,39 @@ export async function adminSetPayoutStatus(payoutId: string, status: PayoutStatu
   }
   if (payout.status === "approved" && status === "approved") {
     throw new Error("Already approved.");
+  }
+
+  if (status === "paid") {
+    const creator = await prisma.creatorProfile.findUniqueOrThrow({
+      where: { id: payout.creatorId },
+      include: {
+        deals: { include: { orders: { include: { ledgerEntry: true } } } },
+        payoutRequests: true,
+      },
+    });
+    const others = creator.payoutRequests
+      .filter((row) => row.id !== payout.id)
+      .map((row) => ({ amount: row.amount, status: row.status }));
+    const balances = computeCreatorBalances(
+      creator.deals.flatMap((deal) =>
+        deal.orders
+          .filter((order) => order.ledgerEntry)
+          .map((order) => ({
+            orderCreatedAt: order.createdAt,
+            creatorShare: order.ledgerEntry!.creatorShare,
+            holdbackAmount: order.ledgerEntry!.holdbackAmount,
+            availableAmount: order.ledgerEntry!.availableAmount,
+            holdbackDays: order.ledgerEntry!.holdbackDays,
+            orderStatus: order.status,
+            escrowStatus: order.escrowStatus,
+            escrowReleasedAt: order.escrowReleasedAt,
+          }))
+      ),
+      others
+    );
+    if (payout.amount > balances.availableBalance) {
+      throw new Error("Payout exceeds the creator's remaining available balance.");
+    }
   }
 
   await prisma.payoutRequest.update({

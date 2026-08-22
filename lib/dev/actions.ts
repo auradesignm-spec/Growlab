@@ -1,14 +1,15 @@
 "use server";
 
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { DEV_VIEWER_COOKIE } from "@/lib/dev/session";
-import { isDevImpersonationEnabled } from "@/lib/dev/guard";
+import { isDevImpersonationEnabled, isLoopbackHost } from "@/lib/dev/guard";
 
 /** Dev-only — sets the "viewing as" cookie. See lib/dev/session.ts. */
 export async function setDevViewer(formData: FormData) {
-  if (!isDevImpersonationEnabled()) return;
+  const host = headers().get("host")?.split(":")[0] ?? "";
+  if (!isDevImpersonationEnabled() || !isLoopbackHost(host)) return;
 
   const userId = String(formData.get("userId") ?? "").trim();
   if (!userId) return;

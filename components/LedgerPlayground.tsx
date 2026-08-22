@@ -103,7 +103,7 @@ export default function LedgerPlayground() {
   }
 
   return (
-    <div className="gl-stage p-4 sm:p-6">
+    <div id="ledger" className="gl-stage scroll-mt-28 p-4 sm:p-6">
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:items-start">
         <div className="space-y-5">
           <div>
