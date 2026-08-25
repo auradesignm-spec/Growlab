@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import Reveal from "@/components/Reveal";
 import StageGlow from "@/components/StageGlow";
+import TourStartLink from "@/components/TourStartLink";
 import { enterHref } from "@/lib/auth/paths";
 
 export default async function HowItWorks() {
@@ -19,7 +19,7 @@ export default async function HowItWorks() {
 
         <StageGlow className="mt-10" tone="sun" place="start">
           <div className="gl-stage p-3 sm:p-4">
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+          <div data-guide="how" className="grid grid-cols-1 gap-3 md:grid-cols-3">
             {steps.map((step, index) => (
               <Reveal key={step.n} className="h-full" delay={index * 70}>
                 <div className="gl-tile gl-tile-hover flex h-full flex-col p-6 sm:p-8">
@@ -36,9 +36,9 @@ export default async function HowItWorks() {
         </StageGlow>
 
         <div className="mt-8 flex flex-wrap gap-3">
-          <Link href={enterHref("merchant")} className="gl-btn-primary">
+          <TourStartLink href={enterHref("merchant")} source="how-merchant" className="gl-btn-primary">
             {t("startMerchant")}
-          </Link>
+          </TourStartLink>
         </div>
       </div>
     </section>

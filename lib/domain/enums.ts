@@ -54,7 +54,7 @@ export type OrderStatus = (typeof ORDER_STATUSES)[number];
 export const ATTRIBUTION_SOURCES = ["creator_link", "platform_agent", "direct"] as const;
 export type AttributionSource = (typeof ATTRIBUTION_SOURCES)[number];
 
-/** Logical COD escrow on the ledger. Real card capture is out of scope. */
+/** Ledger escrow. Card uses delivery-hold clock in lib/domain/deliveryHold.ts. */
 export const ESCROW_STATUSES = ["held", "released", "refunded"] as const;
 export type EscrowStatus = (typeof ESCROW_STATUSES)[number];
 

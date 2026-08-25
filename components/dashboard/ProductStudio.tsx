@@ -26,6 +26,8 @@ type Draft = {
   basePrice: string;
   costPrice: string;
   commissionPct: string;
+  deliveryDaysMax: string;
+  shippingFee: string;
   attributes: ProductAttributes;
   featuresText: string;
   promo: StorePromo;
@@ -52,6 +54,8 @@ function rowToDraft(p: MerchantProductRow): Draft {
     costPrice: String(p.costPrice),
     commissionPct:
       p.commissionType === "pct" ? String(Math.round(p.commissionValue * 1000) / 10) : "15",
+    deliveryDaysMax: String(p.deliveryDaysMax ?? 4),
+    shippingFee: String(p.shippingFee ?? 1.5),
     attributes: {
       size: [...(p.attributes?.size ?? [])],
       color: [...(p.attributes?.color ?? [])],
@@ -77,6 +81,8 @@ function emptyDraft(): Draft {
     basePrice: "",
     costPrice: "0",
     commissionPct: "15",
+    deliveryDaysMax: "4",
+    shippingFee: "1.5",
     attributes: { ...EMPTY_ATTRIBUTES, size: [], color: [], material: [], custom: [] },
     featuresText: "",
     promo: { ...DEFAULT_PROMO },
@@ -244,6 +250,8 @@ export default function ProductStudio({ products }: { products: MerchantProductR
           costPrice: Number(draft.costPrice),
           commissionType: "pct",
           commissionValue: Number(draft.commissionPct) / 100,
+          deliveryDaysMax: Number(draft.deliveryDaysMax) || 4,
+          shippingFee: Number(draft.shippingFee) || 1.5,
           attributes: draft.attributes,
           features: draft.featuresText
             .split("\n")
@@ -458,6 +466,22 @@ export default function ProductStudio({ products }: { products: MerchantProductR
                   <input
                     value={draft.costPrice}
                     onChange={(e) => patch({ costPrice: e.target.value })}
+                    inputMode="decimal"
+                    className="studio-field"
+                  />
+                </Field>
+                <Field label={tForm("deliveryDaysLabel")}>
+                  <input
+                    value={draft.deliveryDaysMax}
+                    onChange={(e) => patch({ deliveryDaysMax: e.target.value })}
+                    inputMode="numeric"
+                    className="studio-field"
+                  />
+                </Field>
+                <Field label={tForm("shippingFeeLabel")}>
+                  <input
+                    value={draft.shippingFee}
+                    onChange={(e) => patch({ shippingFee: e.target.value })}
                     inputMode="decimal"
                     className="studio-field"
                   />

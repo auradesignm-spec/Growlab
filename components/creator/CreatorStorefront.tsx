@@ -76,7 +76,7 @@ export default function CreatorStorefront({
                     <li key={deal.dealId}>
                       <Link
                         href={`/creator/${username}/${deal.slug}`}
-                        className="gl-tile gl-tile-hover flex w-full items-baseline justify-between gap-4 px-4 py-3 text-start"
+                        className="gl-tile gl-tile-hover gl-lift flex w-full items-baseline justify-between gap-4 px-4 py-3 text-start"
                       >
                         <span className="text-[15px]">{deal.title}</span>
                         <span className="font-mono text-[14px]">

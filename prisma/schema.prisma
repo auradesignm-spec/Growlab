@@ -430,6 +430,10 @@ model Product {
   // lib/domain/commission.ts#commissionToPoolSharePct for how this becomes
   // CreatorDeal.lockedCommissionPct at deal-creation time.
   commissionValue Float  @default(0.25)
+  // Max calendar days after prepaid capture before the buyer may claim a refund.
+  deliveryDaysMax Int    @default(4)
+  // Buyer shipping, prepaid at checkout even when the product is pay-at-the-door.
+  shippingFee Float @default(1.5)
   active    Boolean  @default(true)
   createdAt DateTime @default(now())
 
@@ -542,6 +546,16 @@ model Order {
   // "held" | "released" | "refunded" — ledger escrow, not a card capture.
   escrowStatus      String   @default("held")
   escrowReleasedAt  DateTime?
+  // Card hold clock. COD leaves these null.
+  paidAt                   DateTime?
+  deliveryDueAt            DateTime?
+  buyerRefundRequestedAt   DateTime?
+  merchantMarkedDeliveredAt DateTime?
+  buyerConfirmedReceivedAt  DateTime?
+  buyerDeniedReceivedAt     DateTime?
+  receiveConfirmToken       String   @default("")
+  shippingFeeCharged Float @default(0)
+  shippingPrepaidAt  DateTime?
   // "pending" | "confirmed" | "fulfilled" | "returned" | "cancelled"
   status            String   @default("pending")
   shippingRef       String?
@@ -556,6 +570,7 @@ model Order {
   @@index([trackingToken])
   @@index([escrowStatus])
   @@index([referrerCreatorId])
+  @@index([receiveConfirmToken])
 }
 
 // One split computation per order — always produced by lib/ledger/waterfall.ts.

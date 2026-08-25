@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
+import CartBadgeLink from "@/components/shop/CartBadgeLink";
 
 export default function StorefrontChrome({
   username,
@@ -23,10 +24,7 @@ export default function StorefrontChrome({
           <span className="ms-3 text-[14px] font-normal text-frost-dim">@{username}</span>
         </Link>
         <div className="flex items-center gap-3">
-          <Link href={`/creator/${username}/checkout`} className="text-[14px] text-frost-dim">
-            {cartLabel}
-            {cartCount > 0 ? ` (${cartCount})` : ""}
-          </Link>
+          <CartBadgeLink href={`/creator/${username}/checkout`} label={cartLabel} count={cartCount} />
           <LocaleSwitcher compact />
         </div>
       </div>

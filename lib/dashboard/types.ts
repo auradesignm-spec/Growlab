@@ -16,6 +16,9 @@ export interface OrderLedgerRow {
   attributionSource: string;
   status: string;
   shippingRef?: string | null;
+  trackingToken?: string;
+  deliveryBucket?: "not_delivered" | "awaiting_buyer" | "delivered" | "closed";
+  buyerNotifyHref?: string | null;
   createdAt: string;
   ledger: {
     attributedGmv: number;

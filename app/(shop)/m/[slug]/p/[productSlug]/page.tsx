@@ -44,6 +44,12 @@ export default async function MerchantProductPage({
             <p className="mt-8 font-mono text-[32px] font-medium" style={{ color: store.theme.accent }}>
               {product.price.toFixed(2)} {product.currency}
             </p>
+            <p className="mt-2 text-[14px] text-frost-dim">
+              {tShop("deliveryWindow", { days: product.deliveryDaysMax })}
+            </p>
+            <p className="mt-1 text-[14px] text-frost-dim">
+              {tShop("shippingPrepaid")} {product.shippingFee.toFixed(2)} {product.currency}
+            </p>
             {product.promo?.active && product.promo.headline ? (
               <div className="mt-6 rounded-xl border border-line bg-white/60 px-4 py-3">
                 <p className="text-[12px] text-frost-faint">{tShop("productOffer")}</p>

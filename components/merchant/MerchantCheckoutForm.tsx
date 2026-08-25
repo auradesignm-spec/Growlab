@@ -4,6 +4,8 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { placeMerchantStoreCheckout } from "@/app/(shop)/m/order-actions";
+import { checkoutShippingFee } from "@/lib/domain/shipping";
+import CheckoutPaySummary from "@/components/shop/CheckoutPaySummary";
 
 interface Line {
   dealId: string;
@@ -14,6 +16,7 @@ interface Line {
   currency: string;
   quantity: number;
   size: string;
+  shippingFeeOmr?: number;
 }
 
 export default function MerchantCheckoutForm({
@@ -33,9 +36,13 @@ export default function MerchantCheckoutForm({
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [pay, setPay] = useState<"cod" | "card">("cod");
   const computedSubtotal =
     subtotal ?? lines.reduce((sum, line) => sum + (line.listPriceOmr ?? line.priceOmr) * line.quantity, 0);
   const total = lines.reduce((sum, line) => sum + line.priceOmr * line.quantity, 0);
+  const shipping = checkoutShippingFee(lines.map((line) => line.shippingFeeOmr ?? 1.5));
+  const dueNow = pay === "card" ? total + shipping : shipping;
+  const dueDoor = pay === "cod" ? total : 0;
   const currency = lines[0]?.currency ?? "OMR";
 
   function onSubmit(formData: FormData) {
@@ -48,6 +55,7 @@ export default function MerchantCheckoutForm({
           buyerPhone: String(formData.get("buyerPhone") ?? ""),
           buyerAddress: String(formData.get("buyerAddress") ?? ""),
           buyerCity: String(formData.get("buyerCity") ?? ""),
+          settlementChannel: String(formData.get("settlementChannel") ?? "cod"),
         });
         router.push(`/order/${result.trackingToken}`);
       } catch (e) {
@@ -61,7 +69,7 @@ export default function MerchantCheckoutForm({
       <section className="lg:col-span-7">
         <h1 className="text-display-lg font-semibold">{t("checkoutTitle")}</h1>
         <p className="gl-lede mt-3">{t("checkoutLede")}</p>
-        <ul className="mt-8 divide-y divide-line border-y border-line">
+        <ul className="gl-checkout-lines mt-8 divide-y divide-line border-y border-line">
           {lines.map((line) => (
             <li key={`${line.dealId}-${line.size}`} className="flex items-center justify-between gap-4 py-4">
               <div>
@@ -91,9 +99,7 @@ export default function MerchantCheckoutForm({
             </p>
           </div>
         ) : null}
-        <p className="mt-4 font-mono text-[18px]">
-          {t("total")} {total.toFixed(2)} {currency}
-        </p>
+        <CheckoutPaySummary shipping={shipping} dueNow={dueNow} dueDoor={dueDoor} currency={currency} />
       </section>
 
       <section className="lg:col-span-5">
@@ -102,7 +108,7 @@ export default function MerchantCheckoutForm({
             event.preventDefault();
             onSubmit(new FormData(event.currentTarget));
           }}
-          className="gl-stage space-y-4 p-6"
+          className="gl-stage gl-enter space-y-4 p-6"
         >
           <label className="block">
             <span className="mb-1.5 block text-[12px] text-frost-dim">{t("buyerName")}</span>
@@ -121,8 +127,31 @@ export default function MerchantCheckoutForm({
             <span className="mb-1.5 block text-[12px] text-frost-dim">{t("buyerAddress")}</span>
             <textarea name="buyerAddress" required rows={3} className="gl-input w-full" />
           </label>
-          {error ? <p className="text-[13px] text-danger">{error}</p> : null}
-          <button type="submit" disabled={pending} className="gl-btn-primary w-full disabled:opacity-40">
+          <fieldset className="space-y-2">
+            <legend className="mb-1.5 text-[12px] text-frost-dim">{t("payMethod")}</legend>
+            <label className={`gl-pay-option${pay === "cod" ? " is-on" : ""}`}>
+              <input
+                type="radio"
+                name="settlementChannel"
+                value="cod"
+                checked={pay === "cod"}
+                onChange={() => setPay("cod")}
+              />
+              <span>{t("payCod")}</span>
+            </label>
+            <label className={`gl-pay-option${pay === "card" ? " is-on" : ""}`}>
+              <input
+                type="radio"
+                name="settlementChannel"
+                value="card"
+                checked={pay === "card"}
+                onChange={() => setPay("card")}
+              />
+              <span>{t("payCard")}</span>
+            </label>
+          </fieldset>
+          {error ? <p className="text-[13px] text-danger" role="alert">{error}</p> : null}
+          <button type="submit" disabled={pending} aria-busy={pending} className="gl-btn-primary min-h-11 w-full disabled:opacity-40">
             {pending ? t("placing") : t("placeOrder")}
           </button>
         </form>

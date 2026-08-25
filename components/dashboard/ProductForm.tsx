@@ -27,6 +27,8 @@ export interface ProductFormInitial {
   costPrice: number;
   commissionType: string;
   commissionValue: number;
+  deliveryDaysMax?: number;
+  shippingFee?: number;
 }
 
 const CATEGORY_SUGGESTIONS = ["attar", "dates", "home", "electronics", "fashion", "accessories"];
@@ -58,6 +60,8 @@ export default function ProductForm({
   const [commissionFixed, setCommissionFixed] = useState(
     initial?.commissionType === "fixed" ? String(initial?.commissionValue ?? "") : ""
   );
+  const [deliveryDaysMax, setDeliveryDaysMax] = useState(String(initial?.deliveryDaysMax ?? 4));
+  const [shippingFee, setShippingFee] = useState(String(initial?.shippingFee ?? 1.5));
 
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -95,6 +99,8 @@ export default function ProductForm({
       costPrice: costPriceNum,
       commissionType,
       commissionValue: commissionValueNum,
+      deliveryDaysMax: Number(deliveryDaysMax) || 4,
+      shippingFee: Number(shippingFee) || 1.5,
       coverImageUrl: coverImage?.kind === "image" ? coverImage.url : undefined,
       coverVideoUrl: coverVideo?.kind === "video" ? coverVideo.url : undefined,
       shortDescription,
@@ -198,6 +204,30 @@ export default function ProductForm({
             />
           </Field>
         </div>
+
+        <Field label={t("deliveryDaysLabel")} hint={t("deliveryDaysHint")}>
+          <input
+            type="number"
+            min={1}
+            max={14}
+            step={1}
+            value={deliveryDaysMax}
+            onChange={(e) => setDeliveryDaysMax(e.target.value)}
+            className="w-full border border-white/15 bg-white/[0.03] px-3 py-2 font-mono text-sm"
+          />
+        </Field>
+
+        <Field label={t("shippingFeeLabel")} hint={t("shippingFeeHint")}>
+          <input
+            type="number"
+            min={0.1}
+            max={50}
+            step={0.1}
+            value={shippingFee}
+            onChange={(e) => setShippingFee(e.target.value)}
+            className="w-full border border-white/15 bg-white/[0.03] px-3 py-2 font-mono text-sm"
+          />
+        </Field>
 
         <fieldset>
           <legend className="font-west text-[10px] uppercase tracking-[0.24em] text-frost-dim">

@@ -3,6 +3,8 @@
  * Does NOT spend ad budget. Marketing API launch is Wave C.
  */
 
+import { coachSystemPrompt } from "@/lib/meta/coachPersona";
+
 export type PsychLever =
   | "curiosity_gap"
   | "prediction_break"
@@ -12,6 +14,19 @@ export type PsychLever =
   | "fomo"
   | "belonging"
   | "none";
+
+export type AdPlatformId = "reels" | "feed" | "stories" | "tiktok" | "ctwa";
+
+export type AdPlatformFit = {
+  id: AdPlatformId;
+  score: number;
+  fit: string;
+};
+
+export type AdFrameInput = {
+  mime: string;
+  dataBase64: string;
+};
 
 export type AdPerformanceContext = {
   leadsTotal: number;
@@ -23,6 +38,8 @@ export type AdPerformanceContext = {
   whatsappConnected: boolean;
   productTitle?: string;
   productPrice?: number;
+  productCategory?: string;
+  productShort?: string;
 };
 
 export type AdAnalysisResult = {
@@ -48,6 +65,22 @@ export type AdAnalysisResult = {
   suggestedVisualHook: string;
   suggestedCta: string;
   rationale: string;
+  visualRead: string;
+  platforms: AdPlatformFit[];
+  market: string;
+  competitorPatterns: string[];
+};
+
+export type MerchantLessonExample = {
+  productHint: string;
+  hook: string;
+  caption: string;
+  note: string;
+};
+
+export type AdSoundInput = {
+  mime: string;
+  dataBase64: string;
 };
 
 export type AdAnalyzeInput = {
@@ -57,11 +90,83 @@ export type AdAnalyzeInput = {
   script: string;
   visualHook: string;
   context: AdPerformanceContext;
+  frames?: AdFrameInput[];
+  audio?: AdSoundInput;
+  /** Approved past creatives — few-shot learning from this merchant. */
+  lessons?: MerchantLessonExample[];
 };
 
 function clampScore(n: number): number {
   if (!Number.isFinite(n)) return 0;
   return Math.max(0, Math.min(10, Math.round(n * 10) / 10));
+}
+
+const PLATFORM_IDS: AdPlatformId[] = ["reels", "feed", "stories", "tiktok", "ctwa"];
+
+function defaultPlatforms(ar: boolean, overall: number): AdPlatformFit[] {
+  const notes: Record<AdPlatformId, { ar: string; en: string }> = {
+    reels: {
+      ar: "أول كادر يوقف التمرير؛ نص كبير في 0–3 ثوانٍ.",
+      en: "First frame must stop the scroll; big type in 0–3s.",
+    },
+    feed: {
+      ar: "المنتج واضح في مربع/عمودي 4:5 مع سعر أو COD.",
+      en: "Product readable in 1:1 or 4:5 with price or COD.",
+    },
+    stories: {
+      ar: "عمودي 9:16، منطقة آمنة تحت الشريط.",
+      en: "9:16 vertical with safe area under the UI chrome.",
+    },
+    tiktok: {
+      ar: "إيقاع أسرع؛ الوجه أو اليد في أول ثانية.",
+      en: "Faster cut; face or hands in the first second.",
+    },
+    ctwa: {
+      ar: "الهدف محادثة واتساب لا زيارة موقع.",
+      en: "Objective is a WhatsApp thread, not a site visit.",
+    },
+  };
+  return PLATFORM_IDS.map((id) => ({
+    id,
+    score: clampScore(overall + (id === "ctwa" ? 0.4 : 0)),
+    fit: ar ? notes[id].ar : notes[id].en,
+  }));
+}
+
+function visionExtras(input: AdAnalyzeInput, overall: number): Pick<
+  AdAnalysisResult,
+  "visualRead" | "platforms" | "market" | "competitorPatterns"
+> {
+  const ar = input.locale === "ar";
+  const hasFrames = Boolean(input.frames?.length);
+  const cat = input.context.productCategory?.trim() || (ar ? "منتجات COD" : "COD goods");
+  const title = input.context.productTitle?.trim() || (ar ? "المنتج" : "the product");
+  return {
+    visualRead: hasFrames
+      ? ar
+        ? "رفعنا الكادر. التحليل البصري الكامل يحتاج مفتاح الذكاء الاصطناعي — هذا تقدير أولي."
+        : "Frames received. Full visual read needs the AI key — this is a first-pass estimate."
+      : ar
+        ? "لا صورة ولا فيديو — التحليل من النص فقط."
+        : "No image or video — analysis is copy-only.",
+    platforms: defaultPlatforms(ar, overall),
+    market: ar
+      ? `سوق ${cat} في عُمان يعتمد الثقة والدفع عند الاستلام. الإعلان الذي يبيع قبل أن يُظهر المنتج والنقد عند الباب يضيّع التحويل.`
+      : `Oman ${cat} buyers still need trust and COD. Ads that sell before showing the product and doorstep cash lose the click-to-chat.`,
+    competitorPatterns: ar
+      ? [
+          `الفئة (${cat}) غالباً تبدأ بوجه أو منتج قريب الكاميرا خلال ثانية.`,
+          "الكابشن الناجح يذكر السعر أو COD قبل الهاشتاق.",
+          `اربط ${title} بمشكلة يومية لا بمواصفات عامة.`,
+          "CTA واتساب أقصر من «زوروا الموقع».",
+        ]
+      : [
+          `This category (${cat}) usually opens on a face or a tight product shot in the first second.`,
+          "Winning captions name price or COD before hashtags.",
+          `Tie ${title} to a daily job, not generic specs.`,
+          "WhatsApp CTAs beat “visit the website”.",
+        ],
+  };
 }
 
 function detectLevers(text: string): PsychLever[] {
@@ -85,7 +190,9 @@ function heuristicAnalyze(input: AdAnalyzeInput): AdAnalysisResult {
   const opportunities: string[] = [];
 
   let hookStrength = 5;
-  if (input.hook.trim().length < 8) {
+  if (!input.hook.trim() && input.frames?.length) {
+    hookStrength = 6;
+  } else if (input.hook.trim().length < 8) {
     hookStrength = 2;
     issues.push(ar ? "الهوك قصير جداً — أول 3 ثوانٍ ضعيفة." : "Hook is too short for the first 3 seconds.");
   } else if (input.hook.trim().length > 12) {
@@ -141,6 +248,7 @@ function heuristicAnalyze(input: AdAnalyzeInput): AdAnalysisResult {
   }
 
   const overall = clampScore((hookStrength + psychFit + metaFit + ctaClarity) / 4);
+  const extras = visionExtras(input, overall);
   const product = input.context.productTitle?.trim() || (ar ? "المنتج" : "the product");
   const price =
     typeof input.context.productPrice === "number" && input.context.productPrice > 0
@@ -152,13 +260,13 @@ function heuristicAnalyze(input: AdAnalyzeInput): AdAnalysisResult {
   const suggestedHook = ar
     ? input.hook.trim().length > 8
       ? `وقف… ${input.hook.trim().slice(0, 60)}`
-      : `ليش تدفع أغلى و${product} يوصلك والدفع عند الباب؟`
+      : `لماذا تدفع أكثر و${product} يصلك والدفع عند الباب؟`
     : input.hook.trim().length > 8
       ? `Wait — ${input.hook.trim().slice(0, 60)}`
       : `Why overpay when ${product} arrives COD to your door?`;
 
   const suggestedCaption = ar
-    ? `${suggestedHook}\n\n${product}${price ? ` — ${price}` : ""}.\nدفع عند الاستلام. اضغط الراسلنا على واتساب واكتب: نعم`
+    ? `${suggestedHook}\n\n${product}${price ? ` — ${price}` : ""}.\nالدفع عند الاستلام. راسلنا على واتساب واكتب: نعم`
     : `${suggestedHook}\n\n${product}${price ? ` — ${price}` : ""}.\nCash on delivery. Tap WhatsApp and reply: YES`;
 
   const suggestedScript = ar
@@ -202,6 +310,7 @@ function heuristicAnalyze(input: AdAnalyzeInput): AdAnalysisResult {
     rationale: ar
       ? `رصدنا روافع: ${levers.join(", ")}. ركّزنا على هوك أول 3 ثوانٍ + CTA واتساب + COD لأن هذا ما يخدم Click-to-WhatsApp والتحصيل لاحقاً.`
       : `Levers seen: ${levers.join(", ")}. We prioritized a 0–3s hook + WhatsApp CTA + COD to fit CTWA and later cash collection.`,
+    ...extras,
   };
 }
 
@@ -213,22 +322,95 @@ function parseAiJson(content: string): Partial<AdAnalysisResult> | null {
   }
 }
 
-async function openAiAnalyze(input: AdAnalyzeInput): Promise<AdAnalysisResult | null> {
-  const key = process.env.OPENAI_API_KEY?.trim();
-  if (!key) return null;
+function parsePlatforms(raw: unknown, fallback: AdPlatformFit[]): AdPlatformFit[] {
+  if (!Array.isArray(raw)) return fallback;
+  const byId = new Map<string, AdPlatformFit>();
+  for (const row of raw) {
+    if (!row || typeof row !== "object") continue;
+    const rec = row as { id?: string; score?: number; fit?: string };
+    if (!PLATFORM_IDS.includes(rec.id as AdPlatformId)) continue;
+    byId.set(rec.id as string, {
+      id: rec.id as AdPlatformId,
+      score: clampScore(Number(rec.score)),
+      fit: String(rec.fit ?? "").slice(0, 180),
+    });
+  }
+  return PLATFORM_IDS.map((id) => byId.get(id) ?? fallback.find((p) => p.id === id)!);
+}
 
-  const ar = input.locale === "ar";
-  const system = ar
-    ? `أنت مدقق إعلانات Meta/Instagram لتجار COD في الخليج. حلّل نفسياً (فجوة فضول، كسر توقع، مشهد، وعد، سلطة، FOMO، انتماء) ووافق خوارزمية ميتا (هوك 0–3ث، CTA واتساب، تنوع إبداعي). أعد JSON فقط بالمفاتيح: scores{hookStrength,psychFit,metaAlgorithmFit,ctaClarity,overall 0-10}, leversDetected[], issues[], opportunities[], predicted{interestLift low|medium|high, confidence low|medium|high, note}, suggestedHook, suggestedCaption, suggestedScript, suggestedVisualHook, suggestedCta, rationale. لا تعد برواد مضمون.`
-    : `You are a Meta/Instagram ads auditor for Gulf COD merchants. Analyze psychology levers and Meta algorithm fit (0–3s hook, WhatsApp CTA). Return JSON only with keys: scores{hookStrength,psychFit,metaAlgorithmFit,ctaClarity,overall}, leversDetected[], issues[], opportunities[], predicted{interestLift,confidence,note}, suggestedHook, suggestedCaption, suggestedScript, suggestedVisualHook, suggestedCta, rationale. Never promise ROAS.`;
-
-  const user = JSON.stringify({
+function analysisBrief(input: AdAnalyzeInput): string {
+  return JSON.stringify({
     hook: input.hook,
     caption: input.caption,
     script: input.script,
     visualHook: input.visualHook,
     performanceContext: input.context,
+    frameCount: input.frames?.length ?? 0,
+    hasAudio: Boolean(input.audio?.dataBase64),
+    merchantLessons: (input.lessons ?? []).slice(0, 8),
   });
+}
+
+function mergeParsed(parsed: Partial<AdAnalysisResult>, fallback: AdAnalysisResult): AdAnalysisResult | null {
+  if (!parsed.suggestedHook || !parsed.scores) return null;
+  return {
+    scores: {
+      hookStrength: clampScore(Number(parsed.scores?.hookStrength ?? fallback.scores.hookStrength)),
+      psychFit: clampScore(Number(parsed.scores?.psychFit ?? fallback.scores.psychFit)),
+      metaAlgorithmFit: clampScore(
+        Number(parsed.scores?.metaAlgorithmFit ?? fallback.scores.metaAlgorithmFit),
+      ),
+      ctaClarity: clampScore(Number(parsed.scores?.ctaClarity ?? fallback.scores.ctaClarity)),
+      overall: clampScore(Number(parsed.scores?.overall ?? fallback.scores.overall)),
+    },
+    leversDetected: Array.isArray(parsed.leversDetected)
+      ? (parsed.leversDetected as PsychLever[])
+      : fallback.leversDetected,
+    issues: Array.isArray(parsed.issues) ? parsed.issues.map(String).slice(0, 8) : fallback.issues,
+    opportunities: Array.isArray(parsed.opportunities)
+      ? parsed.opportunities.map(String).slice(0, 8)
+      : fallback.opportunities,
+    predicted: {
+      interestLift:
+        parsed.predicted?.interestLift === "high" ||
+        parsed.predicted?.interestLift === "medium" ||
+        parsed.predicted?.interestLift === "low"
+          ? parsed.predicted.interestLift
+          : fallback.predicted.interestLift,
+      confidence:
+        parsed.predicted?.confidence === "high" ||
+        parsed.predicted?.confidence === "medium" ||
+        parsed.predicted?.confidence === "low"
+          ? parsed.predicted.confidence
+          : fallback.predicted.confidence,
+      note: String(parsed.predicted?.note ?? fallback.predicted.note).slice(0, 400),
+    },
+    suggestedHook: String(parsed.suggestedHook).slice(0, 200),
+    suggestedCaption: String(parsed.suggestedCaption ?? fallback.suggestedCaption).slice(0, 2000),
+    suggestedScript: String(parsed.suggestedScript ?? fallback.suggestedScript).slice(0, 2000),
+    suggestedVisualHook: String(parsed.suggestedVisualHook ?? fallback.suggestedVisualHook).slice(0, 300),
+    suggestedCta: String(parsed.suggestedCta ?? fallback.suggestedCta).slice(0, 120),
+    rationale: String(parsed.rationale ?? fallback.rationale).slice(0, 1200),
+    visualRead: String(parsed.visualRead ?? fallback.visualRead).slice(0, 600),
+    platforms: parsePlatforms(parsed.platforms, fallback.platforms),
+    market: String(parsed.market ?? fallback.market).slice(0, 500),
+    competitorPatterns: Array.isArray(parsed.competitorPatterns)
+      ? parsed.competitorPatterns.map(String).slice(0, 5)
+      : fallback.competitorPatterns,
+  };
+}
+
+async function openAiAnalyze(input: AdAnalyzeInput): Promise<AdAnalysisResult | null> {
+  const key = process.env.OPENAI_API_KEY?.trim();
+  if (!key) return null;
+
+  const system = coachSystemPrompt(input.locale);
+  const brief = analysisBrief(input);
+
+  const imageParts = (input.frames ?? []).slice(0, 3).map((frame) => ({
+    type: "image_url" as const,
+    image_url: { url: `data:${frame.mime};base64,${frame.dataBase64}` },
+  }));
 
   try {
     const res = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -243,7 +425,10 @@ async function openAiAnalyze(input: AdAnalyzeInput): Promise<AdAnalysisResult | 
         response_format: { type: "json_object" },
         messages: [
           { role: "system", content: system },
-          { role: "user", content: user },
+          {
+            role: "user",
+            content: [{ type: "text", text: brief }, ...imageParts],
+          },
         ],
       }),
     });
@@ -252,51 +437,39 @@ async function openAiAnalyze(input: AdAnalyzeInput): Promise<AdAnalysisResult | 
     const content = data.choices?.[0]?.message?.content;
     if (!content) return null;
     const parsed = parseAiJson(content);
-    if (!parsed?.suggestedHook || !parsed?.scores) return null;
-
-    const fallback = heuristicAnalyze(input);
-    return {
-      scores: {
-        hookStrength: clampScore(Number(parsed.scores?.hookStrength ?? fallback.scores.hookStrength)),
-        psychFit: clampScore(Number(parsed.scores?.psychFit ?? fallback.scores.psychFit)),
-        metaAlgorithmFit: clampScore(
-          Number(parsed.scores?.metaAlgorithmFit ?? fallback.scores.metaAlgorithmFit),
-        ),
-        ctaClarity: clampScore(Number(parsed.scores?.ctaClarity ?? fallback.scores.ctaClarity)),
-        overall: clampScore(Number(parsed.scores?.overall ?? fallback.scores.overall)),
-      },
-      leversDetected: Array.isArray(parsed.leversDetected)
-        ? (parsed.leversDetected as PsychLever[])
-        : fallback.leversDetected,
-      issues: Array.isArray(parsed.issues) ? parsed.issues.map(String).slice(0, 8) : fallback.issues,
-      opportunities: Array.isArray(parsed.opportunities)
-        ? parsed.opportunities.map(String).slice(0, 8)
-        : fallback.opportunities,
-      predicted: {
-        interestLift:
-          parsed.predicted?.interestLift === "high" ||
-          parsed.predicted?.interestLift === "medium" ||
-          parsed.predicted?.interestLift === "low"
-            ? parsed.predicted.interestLift
-            : fallback.predicted.interestLift,
-        confidence:
-          parsed.predicted?.confidence === "high" ||
-          parsed.predicted?.confidence === "medium" ||
-          parsed.predicted?.confidence === "low"
-            ? parsed.predicted.confidence
-            : fallback.predicted.confidence,
-        note: String(parsed.predicted?.note ?? fallback.predicted.note).slice(0, 400),
-      },
-      suggestedHook: String(parsed.suggestedHook).slice(0, 200),
-      suggestedCaption: String(parsed.suggestedCaption ?? fallback.suggestedCaption).slice(0, 2000),
-      suggestedScript: String(parsed.suggestedScript ?? fallback.suggestedScript).slice(0, 2000),
-      suggestedVisualHook: String(parsed.suggestedVisualHook ?? fallback.suggestedVisualHook).slice(0, 300),
-      suggestedCta: String(parsed.suggestedCta ?? fallback.suggestedCta).slice(0, 120),
-      rationale: String(parsed.rationale ?? fallback.rationale).slice(0, 1200),
-    };
+    if (!parsed) return null;
+    return mergeParsed(parsed, heuristicAnalyze(input));
   } catch {
     return null;
   }
+}
+
+async function geminiAnalyze(input: AdAnalyzeInput): Promise<AdAnalysisResult | null> {
+  const { geminiAnalyzeJson } = await import("@/lib/meta/geminiCoach");
+  const content = await geminiAnalyzeJson({
+    locale: input.locale,
+    userPayload: analysisBrief(input),
+    frames: input.frames,
+    audio: input.audio,
+  });
+  if (!content) return null;
+  const parsed = parseAiJson(content);
+  if (!parsed) return null;
+  return mergeParsed(parsed, heuristicAnalyze(input));
+}
+
+async function ollamaAnalyze(input: AdAnalyzeInput): Promise<AdAnalysisResult | null> {
+  if (process.env.OLLAMA_DISABLED === "1") return null;
+  const { ollamaAnalyzeJson } = await import("@/lib/meta/ollamaCoach");
+  const content = await ollamaAnalyzeJson({
+    locale: input.locale,
+    userPayload: analysisBrief(input),
+    frames: input.frames,
+  });
+  if (!content) return null;
+  const parsed = parseAiJson(content);
+  if (!parsed) return null;
+  return mergeParsed(parsed, heuristicAnalyze(input));
 }
 
 export async function analyzeAdCreative(input: AdAnalyzeInput): Promise<AdAnalysisResult> {
@@ -304,9 +477,24 @@ export async function analyzeAdCreative(input: AdAnalyzeInput): Promise<AdAnalys
   const caption = input.caption.trim().slice(0, 2200);
   const script = input.script.trim().slice(0, 2200);
   const visualHook = input.visualHook.trim().slice(0, 400);
+  const frames = (input.frames ?? [])
+    .filter((f) => f.dataBase64 && f.dataBase64.length < 400_000)
+    .slice(0, 3)
+    .map((f) => ({
+      mime: f.mime === "image/png" ? "image/png" : "image/jpeg",
+      dataBase64: f.dataBase64,
+    }));
+  const audio =
+    input.audio?.dataBase64 && input.audio.dataBase64.length < 1_200_000
+      ? { mime: "audio/wav", dataBase64: input.audio.dataBase64 }
+      : undefined;
 
-  if (!hook && !caption && !script) {
-    throw new Error(input.locale === "ar" ? "أدخل هوك أو كابشن أو سكريبت على الأقل." : "Enter at least a hook, caption, or script.");
+  if (!hook && !caption && !script && frames.length === 0 && !audio) {
+    throw new Error(
+      input.locale === "ar"
+        ? "ارفع صورة أو فيديو، أو اكتب هوك/كابشن."
+        : "Upload a photo or video, or write a hook/caption.",
+    );
   }
 
   const normalized: AdAnalyzeInput = {
@@ -315,8 +503,14 @@ export async function analyzeAdCreative(input: AdAnalyzeInput): Promise<AdAnalys
     caption,
     script,
     visualHook,
+    frames,
+    audio,
   };
 
-  const ai = await openAiAnalyze(normalized);
+  const preferGemini = Boolean(audio);
+  const ai = preferGemini
+    ? (await geminiAnalyze(normalized)) ?? (await openAiAnalyze(normalized)) ?? (await ollamaAnalyze(normalized))
+    : (await openAiAnalyze(normalized)) ?? (await geminiAnalyze(normalized)) ?? (await ollamaAnalyze(normalized));
   return ai ?? heuristicAnalyze(normalized);
 }
+

@@ -8,15 +8,15 @@ import LocaleSwitcher from "@/components/LocaleSwitcher";
 import GlassBubbleTrack from "@/components/GlassBubbleTrack";
 import { SIGN_IN_HREF } from "@/lib/auth/paths";
 import { track } from "@/lib/analytics";
+import TourStartLink from "@/components/TourStartLink";
 
 const CLERK_ENABLED = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
 
 const STORY_HREFS = [
-  { href: "/#manifesto", key: "idea" },
-  { href: "/#compare", key: "compare" },
-  { href: "/#roadmap", key: "roadmap" },
   { href: "/#how", key: "method" },
-  { href: "/#ledger", key: "profits" },
+  { href: "/#proof", key: "proof" },
+  { href: "/#pricing", key: "pricing" },
+  { href: "/#faq", key: "faq" },
 ] as const;
 
 export default function Header() {
@@ -39,7 +39,7 @@ export default function Header() {
   }, [open, closeMenu]);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 px-4 pt-4 sm:px-6">
+    <header className="fixed inset-x-0 top-0 z-50 px-4 pt-4 sm:px-6" style={{ touchAction: "manipulation" }}>
       <div className="gl-nav-glass mx-auto flex h-14 max-w-wrap items-center justify-between gap-3 rounded-full px-3 sm:px-4">
         <Link
           href="/"
@@ -85,7 +85,11 @@ export default function Header() {
       </div>
 
       {open && (
-        <nav id={menuId} className="gl-nav-glass mx-auto mt-2 max-w-wrap rounded-3xl px-5 py-6 md:hidden" aria-label={t("mobileNav")}>
+        <nav
+          id={menuId}
+          className="gl-nav-glass gl-nav-sheet mx-auto mt-2 max-w-wrap rounded-3xl px-5 py-6 md:hidden"
+          aria-label={t("mobileNav")}
+        >
           <GlassBubbleTrack className="flex flex-col gap-1">
             {STORY_HREFS.map((link) => (
               <a
@@ -121,30 +125,33 @@ function HeaderAuth({
   compact?: boolean;
 }) {
   const guest = compact ? (
-    <Link
+    <TourStartLink
       href={SIGN_IN_HREF}
-      data-bubble-item
-      className="relative z-[1] inline-flex h-9 shrink-0 items-center whitespace-nowrap rounded-full px-3 text-[14px] font-medium"
-      style={{ color: "#111318" }}
-      onClick={() => {
+      guide="sign-in"
+      source="header-mobile"
+      bubble
+      onNavigate={() => {
         track("Sign In Started", { source: "header-mobile" });
         onNavigate?.();
       }}
+      className="relative z-[1] inline-flex h-9 shrink-0 items-center whitespace-nowrap rounded-full px-3 text-[14px] font-medium"
     >
       {t("signIn")}
-    </Link>
+    </TourStartLink>
   ) : (
     <div className={stacked ? "mt-4 flex flex-col items-start gap-3" : "contents"}>
-      <Link
+      <TourStartLink
         href={SIGN_IN_HREF}
-        className="gl-btn-primary"
-        onClick={() => {
+        guide="sign-in"
+        source={stacked ? "header-mobile-menu" : "header"}
+        onNavigate={() => {
           track("Sign In Started", { source: stacked ? "header-mobile-menu" : "header" });
           onNavigate?.();
         }}
+        className="gl-btn-primary"
       >
         {t("signIn")}
-      </Link>
+      </TourStartLink>
     </div>
   );
 

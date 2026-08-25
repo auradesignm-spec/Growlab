@@ -4,6 +4,7 @@ import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { addToMerchantCart } from "@/app/(shop)/m/order-actions";
+import { announceCartAdded } from "@/lib/shop/cartMotion";
 
 export type AttrGroup = { key: string; label: string; values: string[] };
 
@@ -35,6 +36,7 @@ export default function MerchantAddToCartForm({
   });
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [added, setAdded] = useState(false);
 
   function encodeOptions(): string {
     return groups
@@ -56,8 +58,13 @@ export default function MerchantAddToCartForm({
     startTransition(async () => {
       try {
         await addToMerchantCart({ storeSlug, dealId, quantity: 1, size });
+        announceCartAdded();
         if (thenCheckout) router.push(`/m/${storeSlug}/checkout`);
-        else router.refresh();
+        else {
+          setAdded(true);
+          window.setTimeout(() => setAdded(false), 1400);
+          router.refresh();
+        }
       } catch (e) {
         setError(e instanceof Error ? e.message : t("cartFailed"));
       }
@@ -85,7 +92,7 @@ export default function MerchantAddToCartForm({
                   type="button"
                   onClick={() => setSelected((s) => ({ ...s, [g.key]: option }))}
                   aria-pressed={isOn}
-                  className="min-w-[4.5rem] rounded-lg border px-4 py-2 text-[14px] transition-colors duration-150 ease-out"
+                  className="min-h-11 min-w-[4.5rem] rounded-lg border px-4 py-2 text-[14px] transition-colors duration-150 ease-out"
                   style={
                     isOn
                       ? { borderColor: accent, backgroundColor: accent, color: "#fff" }
@@ -99,19 +106,27 @@ export default function MerchantAddToCartForm({
           </div>
         </fieldset>
       ))}
-      {error && <p className="text-[13px] text-danger">{error}</p>}
+      {error && <p className="text-[13px] text-danger" role="alert">{error}</p>}
+      <p className="sr-only" aria-live="polite">
+        {added ? t("cartAdded") : ""}
+      </p>
       <div className="flex flex-wrap gap-3">
         <button
           type="button"
           disabled={pending}
-          className="gl-btn-primary disabled:opacity-40"
+          className="gl-btn-primary min-h-11 disabled:opacity-40"
           style={{ backgroundColor: accent }}
           onClick={() => add(true)}
         >
           {pending ? t("adding") : t("buyCod")}
         </button>
-        <button type="button" disabled={pending} className="gl-btn-ghost disabled:opacity-40" onClick={() => add(false)}>
-          {t("addToCart")}
+        <button
+          type="button"
+          disabled={pending}
+          className={`gl-btn-ghost min-h-11 disabled:opacity-40${added ? " is-added" : ""}`}
+          onClick={() => add(false)}
+        >
+          {added ? t("cartAdded") : t("addToCart")}
         </button>
       </div>
       <p className="text-[13px] text-frost-faint">{t("codHint")}</p>

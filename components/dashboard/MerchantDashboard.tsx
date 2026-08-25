@@ -9,6 +9,7 @@ import type { MerchantDashboardData } from "@/lib/dashboard/merchant";
 import { respondToSampleRequest, respondToUgcSubmission } from "@/app/(dashboard)/dashboard/sample-actions";
 import { merchantSetOrderStatus, merchantSetShippingRef } from "@/app/(dashboard)/dashboard/order-actions";
 import { getNewOrderWhatsAppUrl } from "@/lib/shop/notify";
+import { commissionPayState } from "@/lib/shop/commissionPayState";
 import { nextOrderStatuses, type OrderActionStatus } from "@/lib/domain/orders";
 import WaterfallBreakdown from "@/components/dashboard/WaterfallBreakdown";
 import ProductStudio from "@/components/dashboard/ProductStudio";
@@ -421,10 +422,13 @@ export default function MerchantDashboard({
     const [pending, startTransition] = useTransition();
     const [actionError, setActionError] = useState<string | null>(null);
 
-    const filtered = useMemo(
-      () => (filter === "all" ? d.ordersLedger : d.ordersLedger.filter((o) => o.status === filter)),
-      [d.ordersLedger, filter]
-    );
+    const filtered = useMemo(() => {
+      if (filter === "all") return d.ordersLedger;
+      if (filter === "not_delivered" || filter === "awaiting_buyer" || filter === "delivered") {
+        return d.ordersLedger.filter((o) => o.deliveryBucket === filter);
+      }
+      return d.ordersLedger.filter((o) => o.status === filter);
+    }, [d.ordersLedger, filter]);
 
     function setStatus(orderId: string, status: OrderActionStatus) {
       setActionError(null);
@@ -449,6 +453,9 @@ export default function MerchantDashboard({
             className="border border-white/15 bg-white/[0.03] px-3 py-1.5 font-mono text-xs"
           >
             <option value="all">{t("orders.filterAll")}</option>
+            <option value="not_delivered">{t("orders.filterNotDelivered")}</option>
+            <option value="awaiting_buyer">{t("orders.filterAwaiting")}</option>
+            <option value="delivered">{t("orders.filterDelivered")}</option>
             {["pending", "confirmed", "fulfilled", "returned", "cancelled"].map((s) => (
               <option key={s} value={s}>
                 {tStatus(`order.${s}` as "order.pending")}
@@ -465,6 +472,7 @@ export default function MerchantDashboard({
           <ul className="space-y-3">
             {filtered.map((o) => {
               const next = nextOrderStatuses(o.status);
+              const pay = commissionPayState([o.status]);
               return (
                 <li key={o.orderId} className="border border-white/10">
                   <button
@@ -485,6 +493,14 @@ export default function MerchantDashboard({
                           {t("orders.shipTo")}: {[o.buyerCity, o.buyerAddress].filter(Boolean).join(" · ")}
                         </p>
                       )}
+                      {o.trackingToken ? (
+                        <p className="mt-1 font-mono text-[12px] text-frost-dim">
+                          {t("orders.serial")}: <span className="text-frost">{o.trackingToken}</span>
+                        </p>
+                      ) : null}
+                      {o.deliveryBucket === "awaiting_buyer" ? (
+                        <p className="mt-1 max-w-md text-[13px] text-frost-dim">{t("orders.awaitingBuyer")}</p>
+                      ) : null}
                       {o.shippingRef ? (
                         <p className="mt-1 font-mono text-[12px] text-frost-dim">
                           {t("orders.shippingRef")}: <span className="text-frost">{o.shippingRef}</span>
@@ -495,6 +511,13 @@ export default function MerchantDashboard({
                       <StatusPill ok={o.status === "fulfilled" || o.status === "confirmed"}>
                         {tStatus(`order.${o.status}` as "order.pending")}
                       </StatusPill>
+                      <p className="max-w-[14rem] text-end text-[12px] leading-snug text-frost-dim">
+                        {pay === "confirmed"
+                          ? t("orders.commissionConfirmed")
+                          : pay === "void"
+                            ? t("orders.commissionVoid")
+                            : t("orders.commissionPending")}
+                      </p>
                       {o.escrowStatus && (
                         <StatusPill ok={o.escrowStatus === "released"}>
                           {tStatus(`escrow.${o.escrowStatus}` as "escrow.held")}
@@ -517,6 +540,16 @@ export default function MerchantDashboard({
                         {t(`orders.actions.${status}` as "orders.actions.confirmed")}
                       </button>
                     ))}
+                    {o.buyerNotifyHref ? (
+                      <a
+                        href={o.buyerNotifyHref}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="gl-btn-primary"
+                      >
+                        {t("orders.askBuyer")}
+                      </a>
+                    ) : null}
                     <a
                       href={getNewOrderWhatsAppUrl({
                         productTitle: o.productTitle,

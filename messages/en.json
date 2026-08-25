@@ -9,9 +9,12 @@
     "idea": "The idea",
     "gallery": "Salon",
     "method": "How it works",
+    "proof": "Guarantees",
     "profits": "How we calculate profits",
     "compare": "Compare",
     "roadmap": "Your path",
+    "pricing": "Pricing",
+    "faq": "FAQ",
     "splits": "Revenue split",
     "dashboard": "Dashboard",
     "signIn": "Sign in",
@@ -106,39 +109,106 @@
   },
   "marketing": {
     "hero": {
-      "title": "Your customer is your project's best marketer.",
-      "lede": "Open a campaign with your cap. Customers buy and refer — you pay only on visits and collected sales. No upfront ads, no agency.",
-      "ctaMerchant": "Open your company account",
+      "title": "Not one rial until they pay at the door",
+      "audience": "For shops that sell cash on delivery: fragrance, fashion, electronics, or any catalog you deliver.",
+      "lede": "Shipping is paid now so the order is not cancelled on the way. Product price at the door if they choose that. Then share commission from the spend cap. Clicks are free.",
+      "ctaMerchant": "Open your account",
+      "ctaConsult": "15-minute consult",
       "ctaDemo": "Try interactive demo",
       "enterPlatform": "Enter the platform",
       "startCampaign": "Start your campaign",
       "hasAccount": "Already have an account?",
       "signIn": "Sign in"
     },
+    "survey": {
+      "title": "Two short questions",
+      "result": "This is what you do in Growlab",
+      "skip": "Skip",
+      "back": "Back",
+      "next": "Next",
+      "show": "Start the walkthrough",
+      "done": "Got it",
+      "point": "Here",
+      "progress": "{current} of {total}",
+      "q1": "Who are you?",
+      "q2": "What is the biggest problem?",
+      "adviceAds": "Ads here do not deduct before cash. Clicks are free. A cap stops spend. Open your account on the marked button.",
+      "adviceNoshow": "Shipping is paid with the order so a parcel does not move without a stake. Goods at the door if they choose. Open the account on the marked button.",
+      "adviceWhatsapp": "The order closes on a page: name, phone, address. Not a chat. Open the account on the marked button.",
+      "adviceStore": "Your store stays. We import the product and run the campaign on top. Read the two marked cards.",
+      "adviceRead": "Three steps: commission, ship now, then post the link. Read the marked steps."
+    },
+    "tour": {
+      "progress": "{current} of {total}",
+      "next": "Next",
+      "back": "Back",
+      "skip": "Skip",
+      "start": "Start"
+    },
+    "trust": {
+      "eyebrow": "Guarantees",
+      "title": "When a rial leaves your cap",
+      "lede": "When a rial leaves — and how prepaid funds are held.",
+      "pathsEyebrow": "Two paths. One loop.",
+      "paths": [
+        {
+          "title": "No online store yet",
+          "text": "A pay-at-the-door order page. You set the share commission. Who receives it can photograph and post the tracking link. Not a full commerce OS."
+        },
+        {
+          "title": "You already have a store (Salla, Zid, or similar)",
+          "text": "We import the product as it is. Campaign, commission, and spend cap sit on top of your store. You do not move the catalog."
+        }
+      ],
+      "served": "For shops that take cash at the door",
+      "marks": ["Fragrance", "Fashion", "Electronics", "Any cash-on-delivery product"],
+      "facts": [
+        {
+          "title": "Clicks are free",
+          "text": "A site visit does not take share commission."
+        },
+        {
+          "title": "A cap that stops spend",
+          "text": "Set a maximum. When it runs out, the campaign stops."
+        },
+        {
+          "title": "Cash to the courier",
+          "text": "Product price at the door. Shipping is paid now so the order is not cancelled on the way."
+        },
+        {
+          "title": "Reels after you say yes",
+          "text": "If someone films, commission waits for your OK."
+        },
+        {
+          "title": "Hold until the delivery window",
+          "text": "If the buyer pays on the platform, funds stay held for the days you set on the product (usually 4). Delivered on time, or no refund claim — they go to you. Late and they claim — they go back."
+        }
+      ]
+    },
     "problem": {
       "eyebrow": "The problem",
-      "title": "You pay twice… and still ask: where are the customers?",
-      "lede": "WhatsApp organizes chat. Agencies sell promises. \"We will build you a store\" is a commodity. There is no customer engine working for you.",
+      "title": "You spend on marketing — cash still does not hit the till",
+      "lede": "Owners pay for ads, agencies, or a store, then chase orders on WhatsApp. Growlab ties store, COD, and sharing — spend follows real collection.",
       "items": [
         {
           "num": "01",
           "title": "Upfront ad spend",
-          "text": "You pay cash before you know if the campaign brought a collected sale."
+          "text": "You pay before you know anyone paid on delivery."
         },
         {
           "num": "02",
-          "title": "Agency without performance accounting",
-          "text": "Reach and reports… while orders stay WhatsApp chaos."
+          "title": "Agency with no collection link",
+          "text": "Reach and reports… while orders stay chat, with no ledger closing credit."
         },
         {
           "num": "03",
-          "title": "\"Online store\" is a commodity",
-          "text": "You do not need another storefront — you need people who distribute and a ledger that closes attribution."
+          "title": "A store with no customer engine",
+          "text": "A storefront alone does not distribute. You need a share link after every sale."
         },
         {
           "num": "04",
-          "title": "Customers lost as a channel",
-          "text": "They bought and are happy… but nothing turns them into a distribution network working for you."
+          "title": "Happy buyers go unused",
+          "text": "They bought and liked it — nothing turns them into the next customer's invite."
         }
       ],
       "vizYou": "You",
@@ -161,51 +231,51 @@
     },
     "how": {
       "eyebrow": "How it works",
-      "title": "Three steps from your campaign to collected sales",
-      "lede": "From opening the campaign, to COD orders, to performance measured and spent from your cap.",
-      "startMerchant": "Open your company account",
+      "title": "Set the rate. They receive. They post the link.",
+      "lede": "You lock the share commission on the product before the order. Shipping is paid now. Product price at the door if they choose that. Then they photograph and post the tracking link. Clicks are free.",
+      "startMerchant": "Open your account",
       "steps": [
         {
           "n": "01",
-          "title": "Build your store and open a campaign",
-          "text": "KYC, then Odoo store and products. Set purchase % and reel CPM with a budget cap — top up the wallet."
+          "title": "Share commission in advance",
+          "text": "You set the buyer’s rate on the product before they order. That is your cap — not a surprise after collection."
         },
         {
           "n": "02",
-          "title": "Customers buy and share",
-          "text": "COD order → share link. Buyers promote. Optional reels multiply earnings after you approve."
+          "title": "Ship now, product at the door",
+          "text": "Shipping is paid with the order. Product price with the courier. You confirm in the dashboard. Nothing comes off the cap before you confirm."
         },
         {
           "n": "03",
-          "title": "Pay on performance only",
-          "text": "After collection: share earns + attested views from the cap and wallet. No pay for link clicks."
+          "title": "They photograph and post the tracking link",
+          "text": "They open the product, photograph it, post the clip, and add the share link. Commission comes off after you confirm or after you approve the clip — not on the click."
         }
       ]
     },
     "compare": {
       "eyebrow": "Compare",
-      "lede": "Growlab versus familiar options — from the merchant's point of view.",
-      "merchantHeading": "Growlab versus ads, agencies, and storefronts",
+      "lede": "When does a rial leave?",
+      "merchantHeading": "Growlab versus ads you pay before the cash",
       "merchantPoints": [
         {
-          "title": "Customer acquisition",
-          "us": "Share + content + clip loop — your customers become the channel",
-          "them": "Upfront ad cash or an agency with no tie to sales"
+          "title": "The click",
+          "us": "Free. No commission.",
+          "them": "You pay for reach before cash arrives"
         },
         {
-          "title": "What you buy",
-          "us": "Performance with a budget cap you control",
-          "them": "Reach promises or \"a new store\""
+          "title": "Pay at the door",
+          "us": "Cash to the courier. You confirm.",
+          "them": "Reports with no cash in the till"
         },
         {
-          "title": "Cost",
-          "us": "Visit and collected sale — auto-stop at cap",
-          "them": "Fixed fees even when the campaign fails"
+          "title": "Share commission",
+          "us": "Taken after door pay or after you OK a reel.",
+          "them": "A monthly bill even with no cash"
         },
         {
-          "title": "COD and ledger",
-          "us": "Every order is an open line: sale, performance, your share",
-          "them": "WhatsApp chaos and reports without collection"
+          "title": "Spend cap",
+          "us": "A max. Empty, campaign stops.",
+          "them": "A vague cap that never stops"
         }
       ]
     },
@@ -244,25 +314,25 @@
       ]
     },
     "gallery": {
-      "storeTitle": "Active campaign on your dashboard",
-      "storeCaption": "Product, media, performance pricing, and budget cap — all from the merchant's point of view.",
-      "feedKicker": "Distribution campaign",
-      "feedNote": "Visit and collected sale. The cap stops the campaign automatically.",
+      "storeTitle": "Product and campaign in one place",
+      "storeCaption": "Open a campaign with a spend cap from the catalog. Visits do not take commission.",
+      "feedKicker": "Campaign",
+      "feedNote": "Sale after pay at the door. The cap stops the campaign.",
       "videoBadge": "Video",
       "priceLabel": "Sale price",
-      "budgetCap": "Budget cap",
-      "linkTitle": "The distribution loop works for you",
-      "linkCaption": "Your customers share after purchase. Every visit and COD order is attributed to the campaign and spent from your cap.",
-      "ledgerTitle": "Campaign performance",
-      "ledgerCaption": "Visits, orders, and spend from the cap — in one board.",
+      "budgetCap": "Spend cap",
+      "linkTitle": "Who paid shares your link",
+      "linkCaption": "After pay at the door they share. Commission from the spend cap — not before cash.",
+      "ledgerTitle": "See the cash before you raise spend",
+      "ledgerCaption": "Visits, pay at the door, and share commission — one glance.",
       "todayOrder": "New order",
       "dashLabel": "Campaign dashboard",
       "dashWeek": "This week's movement",
-      "dashNote": "Performance updates with every visit and collected order.",
+      "dashNote": "Updates with every door payment.",
       "dashKpi": {
         "visits": "Visits",
         "sales": "Sales",
-        "spent": "Spent"
+        "spent": "Share commission"
       },
       "dashDays": {
         "sat": "Sa",
@@ -274,8 +344,8 @@
         "fri": "Fr"
       },
       "dashSplit": {
-        "merchant": "Your share",
-        "performance": "Campaign performance"
+        "merchant": "Your cash after door pay",
+        "performance": "Share commission"
       },
       "omr": "OMR",
       "productA": "Royal perfume",
@@ -286,7 +356,7 @@
       "budgetB": "Cap 300 OMR",
       "budgetC": "Cap 400 OMR",
       "campaignStatus": "Active",
-      "newOrder": "COD order from Muscat",
+      "newOrder": "COD order from the city",
       "linkProduct": "Product in your campaign",
       "linkStepShare": "1. Customer shares",
       "linkStepTap": "2. Visit from the link",
@@ -380,21 +450,21 @@
       "splitPlatform": "Platform"
     },
     "partners": {
-      "eyebrow": "For merchants and companies",
-      "title": "Operational advantages for the business owner",
-      "lede": "No vague promises. This is the mechanism that protects your wallet and brings customers on performance.",
+      "eyebrow": "Benefits — not features",
+      "title": "You sell more because spend is tied to the till",
+      "lede": "Features describe the product. Benefits close the sale. Not “analytics reports” — you see which sales hit the till before you spend another rial on marketing.",
       "items": [
         {
-          "title": "A budget cap you control",
-          "text": "Set the campaign cap. Spend stops automatically when it runs out — no surprise invoice."
+          "title": "Decide at a glance",
+          "text": "Collection and the campaign sit on one board. Not a visit report detached from cash the courier actually brought back."
         },
         {
-          "title": "Pay on collected performance",
-          "text": "Visit and sale after collection is confirmed. No upfront ads and no fixed fees without results."
+          "title": "Each sale opens the next sale",
+          "text": "After purchase the buyer shares your link. The channel grows with collection — not with prepaid clicks."
         },
         {
-          "title": "An open ledger per order",
-          "text": "Sale, network performance, your share — one line per COD order. Same numbers on your dashboard."
+          "title": "The wallet is not drained before you test",
+          "text": "The cap stops spend. Commission counts after collection. You still approve a reel before it spends."
         }
       ]
     },
@@ -437,50 +507,59 @@
     },
     "faq": {
       "eyebrow": "FAQ",
-      "title": "COD, sharing, UGC, and KYC",
+      "title": "What a business owner asks before opening an account",
       "items": [
         {
+          "q": "Who is this for?",
+          "a": "Anyone selling pay-at-the-door. No store: an order page. Salla or Zid already: we import the product and run the campaign on top — you do not move the catalog. Same loop after collection. Business papers and owner ID before go-live."
+        },
+        {
+          "q": "When does a rial leave?",
+          "a": "After you confirm pay at the door. Share commission on a sale from the link, and on a reel after you OK it. Clicks are free."
+        },
+        {
+          "q": "What if nothing sells?",
+          "a": "No commission on empty clicks. The spend cap stops the campaign. Pro is not cap money."
+        },
+        {
+          "q": "Must buyers film?",
+          "a": "No. Sharing the link is enough. Reels are optional. Commission only after you OK."
+        },
+        {
           "q": "Do buyers need an account to order?",
-          "a": "No. COD needs phone and address. After purchase they claim a share link with a simple sign-in."
+          "a": "No. COD needs phone and address. They claim a share link after purchase with a simple sign-in."
         },
         {
-          "q": "When do I pay marketers?",
-          "a": "Only after collection is confirmed. Pay on collected purchases from share links and attested reel views — never for link clicks."
-        },
-        {
-          "q": "Is filming required?",
-          "a": "No. Sharing the link is enough. Reels are optional and multiply earnings after you approve them."
-        },
-        {
-          "q": "What about KYC?",
-          "a": "Merchants upload commercial registration and owner ID before listing products. Admin reviews before full activation."
+          "q": "We are bigger than a shop?",
+          "a": "Same loop: spend cap, commission, campaign. A storefront if you have none, or import if you do. Pro raises product and cap limits. Book a 15-minute consult before you top up."
         }
       ]
     },
     "pricing": {
       "eyebrow": "Pricing",
-      "title": "Free to start — Pro to scale",
-      "lede": "Start free with a store, products, and one performance campaign. Upgrade to Pro for unlimited products, AI store tools, and a higher campaign cap.",
+      "title": "Start with no signup fee. Grow when it works",
+      "lede": "Free: store, up to 3 products, one campaign with a 100 OMR spend cap. Pro for a bigger catalog and a higher cap.",
+      "cta": "Start here",
       "freeTitle": "Free",
-      "freeSubtitle": "For merchants testing Growlab",
+      "freeSubtitle": "Test the store and campaign on a real product",
       "freeStat": "0 OMR/mo",
       "freeStatNote": "No signup fee",
       "proTitle": "Pro",
-      "proSubtitle": "For serious distribution",
+      "proSubtitle": "For a company distributing more than one line",
       "proStat": "15 OMR/mo",
       "proStatNote": "Cancel anytime",
-      "performanceNote": "Performance spend (campaign cap + wallet top-ups) is separate from subscription — you only pay on visits and collected sales.",
+      "performanceNote": "The subscription is one thing. Spend-cap money is another. Share commission after pay at the door or after you OK a reel. Clicks are free.",
       "freeFeatures": [
         "Up to 3 products",
-        "1 active performance campaign",
-        "Campaign cap up to 100 OMR",
+        "1 active campaign",
+        "Spend cap up to 100 OMR",
         "Manual store editor",
         "8 media assets per product"
       ],
       "proFeatures": [
         "Unlimited products",
         "Unlimited active campaigns",
-        "Campaign cap up to 2,000 OMR",
+        "Spend cap up to 2,000 OMR",
         "AI assistant + store offers",
         "Unlimited media per product"
       ]
@@ -499,8 +578,8 @@
     },
     "contact": {
       "eyebrow": "Let's start",
-      "title": "Ready to open your first campaign?",
-      "lede": "Book a free 15-minute consult, or message us directly on WhatsApp.",
+      "title": "Shop or company owner? Let's open the first campaign",
+      "lede": "Fifteen minutes: your products, your cap, and whether COD fits. Or WhatsApp us directly.",
       "formAria": "Contact form",
       "name": "Name",
       "namePlaceholder": "Your full name",
@@ -529,6 +608,10 @@
       "startCampaign": "Register your company"
     },
     "footer": {
+      "lede": "Not one rial until they pay at the door.",
+      "colProduct": "Product",
+      "colAccount": "Account",
+      "colLegal": "Legal",
       "rights": "All rights reserved.",
       "terms": "Terms",
       "privacy": "Privacy",
@@ -555,6 +638,11 @@
     "signUpToClaim": "Sign up to claim your link",
     "waText": "{product} — order from: {link}",
     "strictRules": "No pay for link clicks. Earn on merchant-approved reel views + collected sales from your link.",
+    "payState": {
+      "pending": "Awaiting door pay. Clicks are free.",
+      "confirmed": "Commission taken — they paid at the door. Share the link.",
+      "void": "Voided. No share commission on this order."
+    },
     "reelTitle": "Your buyer reel",
     "reelLede": "Post an Instagram/TikTok reel. The merchant approves it and attests views — you never self-report counts.",
     "reelUrlLabel": "Public reel URL",
@@ -680,6 +768,21 @@
     "failed": "Could not save. Try again."
   },
   "dashboardApp": {
+    "storeBrief": {
+      "title": "Prepare the store from your first answers",
+      "lede": "Business name, who you sell to, slogan, and product category. We draft the store and a first product, then you finish verification.",
+      "progress": "{current} of {total}",
+      "name": "Your project or business name",
+      "audience": "Who do you sell to?",
+      "slogan": "Company slogan",
+      "sloganHint": "A short line that sits at the top of the store.",
+      "category": "Product category",
+      "next": "Next",
+      "back": "Back",
+      "build": "Prepare the store",
+      "saving": "Preparing…",
+      "failed": "Could not save the draft. Try again."
+    },
     "noSeedData": "No seeded users yet — run \"npm run db:seed\" and reload.",
     "noProfile": "This dev user has no merchant or creator profile.",
     "merchant": {
@@ -760,7 +863,29 @@
         "toChannels": "WhatsApp channels",
         "kicker": "Ad Coach",
         "title": "Improve the ad — then launch from Growlab",
-        "lede": "Paste your hook, caption, script, and on-screen visual hook. We score psychology + Meta CTWA fit, you approve edits, then launch a Click-to-WhatsApp campaign with Advantage placements — no Ads Manager.",
+        "lede": "Upload a photo or video of the ad, pick the product, and the engine reads the frame, platforms, and market — then you approve copy before any spend.",
+        "formTitle": "Ad vision engine",
+        "visionLede": "Upload the image or video. The local engine reads frames if the vision model is installed. Spoken lines: paste them into the script, or transcribe with Whisper then paste.",
+        "product": "Product",
+        "needProduct": "Select a product first.",
+        "needCreative": "Upload a photo or video, or write a hook/caption.",
+        "dropTitle": "Drop the ad image, video, or audio here",
+        "dropHint": "Frames are read locally. Sound events (car engine, horn, music) need a Gemini API key on the server — not speech-to-text alone.",
+        "dropClear": "Remove",
+        "extrasToggle": "Extra details (optional hook and caption)",
+        "scan": {
+          "visual": "Visual read",
+          "platforms": "Platforms",
+          "psych": "Psychology",
+          "performance": "Your campaign data"
+        },
+        "platform": {
+          "reels": "Reels",
+          "feed": "Feed",
+          "stories": "Stories",
+          "tiktok": "TikTok",
+          "ctwa": "WhatsApp CTWA"
+        },
         "launchNotice": "Spend only happens after you connect an Ad Account, approve copy, set a daily budget, and tick the spend confirmation. Meta still reviews ads before delivery.",
         "ctxLeads": "{count} interested chats",
         "ctxAd": "{count} from ads",
@@ -773,7 +898,8 @@
         "adsConnecting": "Connecting…",
         "adsDisconnect": "Disconnect ads",
         "adsAccountConnected": "Connected · {name} · {currency}",
-        "adsNotConfigured": "Set NEXT_PUBLIC_META_APP_ID (and META_ADS_DRY_RUN=true for local demo).",
+        "adsNotConfigured": "Facebook ads are not set up on this server. You can keep using the store and campaign without paid ads, or ask ops to enable Meta.",
+        "adsDryRunNote": "Local practice mode: connect is simulated and no real ad spend happens.",
         "adsSdkMissing": "Meta SDK failed to load.",
         "adsLoginCancelled": "Meta ads login was cancelled.",
         "adsConnectFailed": "Could not connect ad account.",
@@ -786,8 +912,8 @@
         "needWhatsapp": "Connect WhatsApp on Channels before launching CTWA ads.",
         "whatsappReady": "WhatsApp ready · {phone}",
         "pickProductImage": "Or pick a product image",
-        "formTitle": "Creative to audit",
-        "product": "Product (optional)",
+        "formTitle": "Ad vision engine",
+        "product": "Product",
         "productNone": "No product",
         "hook": "Hook (first line / first 3 seconds)",
         "caption": "Caption",
@@ -893,15 +1019,15 @@
       },
       "campaign": {
         "kicker": "Distribution campaign",
-        "title": "Open a campaign with a budget cap",
-        "lede": "Set visit and purchase rates. The network spends from your cap — auto-stop when exhausted.",
+        "title": "Open a campaign with a spend cap",
+        "lede": "Share commission is taken after pay at the door until the spend cap is empty and the campaign stops. Clicks are free.",
         "needProduct": "Add an active product first.",
         "product": "Product",
-        "budgetCap": "Budget cap (OMR)",
+        "budgetCap": "Spend cap (OMR)",
         "visitSharer": "Visit — sharer (OMR)",
         "purchaseSharer": "Purchase — sharer rate (0.10 = 10%)",
         "ugcBrief": "Content rules (optional)",
-        "spent": "Spent",
+        "spent": "Share commission",
         "save": "Save draft",
         "saving": "Saving…",
         "activate": "Activate campaign",
@@ -996,8 +1122,14 @@
         "score": "Score {score}"
       },
       "orders": {
-        "filterLabel": "Filter by status",
-        "filterAll": "All statuses",
+        "filterLabel": "Filter",
+        "filterAll": "All",
+        "filterNotDelivered": "Not delivered",
+        "filterAwaiting": "Waiting for buyer yes",
+        "filterDelivered": "Delivered",
+        "serial": "Order no.",
+        "askBuyer": "Ask buyer: did you receive it?",
+        "awaitingBuyer": "You marked delivered — waiting for the buyer’s yes. Your tap alone does not release funds.",
         "empty": "No orders yet.",
         "actionFailed": "Could not update this order.",
         "shipTo": "Ship to",
@@ -1005,9 +1137,12 @@
         "shippingRef": "Shipping reference",
         "shippingPlaceholder": "Shipping reference",
         "saveShipping": "Save reference",
+        "commissionPending": "Awaiting door pay",
+        "commissionConfirmed": "Commission taken",
+        "commissionVoid": "Voided",
         "actions": {
           "confirmed": "Confirm to ship",
-          "fulfilled": "Confirm collection",
+          "fulfilled": "Mark delivered",
           "returned": "Returned",
           "cancelled": "Cancel"
         }
@@ -1053,6 +1188,10 @@
         "basePriceLabel": "Retail price (OMR)",
         "costPriceLabel": "Cost price",
         "costPriceHint": "🔒 Secret — never shown to creators, used only for your own math.",
+        "deliveryDaysLabel": "Max delivery days",
+        "deliveryDaysHint": "After prepaid checkout we hold the money for this many days. Default 4. If shipping is late, the buyer can claim a refund.",
+        "shippingFeeLabel": "Buyer shipping (paid now)",
+        "shippingFeeHint": "Even if they pay for the product at the door, shipping is collected now so the order is not cancelled. Default 1.5 OMR.",
         "commissionLabel": "Marketer commission",
         "commissionTypePct": "Percent",
         "commissionTypeFixed": "Fixed amount",
@@ -1129,7 +1268,7 @@
         "freePrice": "0 OMR/mo",
         "proPrice": "{amount}/mo",
         "expires": "Expires {date}",
-        "performanceNote": "Performance spend (campaign cap + wallet) is separate from the monthly subscription.",
+        "performanceNote": "The subscription is one thing. Spend-cap money is another. Commission after pay at the door.",
         "upgradeCta": "Upgrade to Pro",
         "checkoutPending": "Redirecting…",
         "checkoutFailed": "Could not start checkout.",
@@ -1140,13 +1279,13 @@
         "freeFeatures": [
           "Up to 3 products",
           "1 active campaign",
-          "100 OMR campaign cap",
+          "100 OMR spend cap",
           "Manual store editor"
         ],
         "proFeatures": [
           "Unlimited products",
           "Unlimited campaigns",
-          "2,000 OMR campaign cap",
+          "2,000 OMR spend cap",
           "AI + store offers"
         ]
       }
@@ -1723,7 +1862,7 @@
     "cart": "Cart",
     "productsHeading": "Products",
     "contactHeading": "Contact us",
-    "contactLede": "Order COD from the product page — we deliver across Oman."
+    "contactLede": "Order COD from the product page — we deliver to your address."
   },
   "merchantStoreEditor": {
     "kicker": "Your store",
@@ -1781,7 +1920,7 @@
       "live": "Live preview",
       "products": "Products",
       "contact": "Contact us",
-      "contactLede": "Order COD from the product page — we deliver across Oman."
+      "contactLede": "Order COD from the product page — we deliver to your address."
     },
     "promo": {
       "active": "Activate offer on the store",
@@ -1839,7 +1978,7 @@
       "offerHeadline": "Offer title",
       "offerHeadlinePlaceholder": "Example: Launch offer — fast delivery",
       "offerBody": "Offer details",
-      "offerBodyPlaceholder": "Pay cash on delivery across Oman."
+      "offerBodyPlaceholder": "Pay cash on delivery — we deliver to your address."
     },
     "published": {
       "kicker": "Ready",
@@ -1953,11 +2092,12 @@
     "cartFailed": "Could not update the cart.",
     "size": "Size",
     "adding": "Adding…",
-    "buyCod": "Buy — cash on delivery",
+    "buyCod": "Buy — ship now, product at the door",
     "addToCart": "Add to cart",
-    "codHint": "Buy with cash on delivery. Your phone tracks the order and your share — after checkout, claim the share link with your account.",
+    "cartAdded": "Added to cart",
+    "codHint": "Shipping is paid now. Product price at the door if you choose that. Your phone tracks the order.",
     "checkoutTitle": "Checkout",
-    "checkoutLede": "Pay when the order arrives. Your phone links the order to sharing and performance — enter it carefully.",
+    "checkoutLede": "Shipping is prepaid. Product at the door, or pay everything now. Enter your phone carefully.",
     "total": "Total",
     "subtotal": "Subtotal",
     "discount": "Discount",
@@ -1967,7 +2107,14 @@
     "buyerCity": "City",
     "buyerAddress": "Delivery address",
     "placing": "Placing order…",
-    "placeOrder": "Place order — cash on delivery",
+    "placeOrder": "Place order",
+    "payMethod": "How you pay",
+    "payCod": "Product at the door — shipping paid now",
+    "payCard": "Pay product and shipping now — held until the delivery window",
+    "shippingPrepaid": "Shipping (paid now)",
+    "payNow": "Pay now",
+    "payAtDoor": "At the door",
+    "deliveryWindow": "Delivery within {days} days at most. If you prepay the product we hold it until then. Shipping is always paid now.",
     "orderFailed": "Could not place the order. Try again.",
     "emptyCart": "Your cart is empty",
     "emptyCartLede": "Add a piece from the store, then come back to check out.",
@@ -1978,9 +2125,35 @@
     "trackRef": "Ref {token}",
     "shippingRef": "Shipping reference",
     "returnsPolicy": "For a return or support, use this page and your order reference. Do not contact the merchant or marketer off-platform.",
+    "holdTitle": "Funds on hold",
+    "holdLede": "If you paid on the platform, money stays held until the product’s delivery window. Arrived on time, or you did not claim after it lapsed — it goes to the merchant. Late and you claim — it comes back to you.",
+    "holdDue": "Deliver by {date}",
+    "holdRefundCta": "Request a refund",
+    "holdRefunding": "Requesting…",
+    "receiveEyebrow": "Delivery confirm",
+    "receiveTitle": "Did you receive this order?",
+    "receiveLede": "Yes releases funds to the merchant. No keeps them frozen. This link works once.",
+    "receiveSerial": "Order no. {serial}",
+    "receiveYes": "Yes, I received it",
+    "receiveNo": "No, I did not receive it",
+    "receiveWorking": "Saving…",
     "shareTitle": "Share and earn",
     "shareLede": "Share link is ready right after checkout. Open it, activate, and film unboxing when the product arrives.",
-    "shareCta": "Open share link",
+    "shareCta": "Activate share link",
+    "whatsappShare": "Share on WhatsApp",
+    "waShareText": "{product} — order from: {link}",
+    "payEyebrow": "Share commission",
+    "payTitle": {
+      "pending": "Awaiting door pay",
+      "confirmed": "Commission taken",
+      "void": "Voided"
+    },
+    "payLede": {
+      "pending": "Prepare the link now. Commission does not leave the spend cap until you confirm pay at the door.",
+      "confirmed": "Paid at the door. Commission taken. Share on WhatsApp.",
+      "void": "Not paid at the door. No commission."
+    },
+    "payAmount": "Share cut {amount} {currency}",
     "attributionReceipt": "Attribution receipt",
     "status": {
       "pending": "Awaiting confirmation",

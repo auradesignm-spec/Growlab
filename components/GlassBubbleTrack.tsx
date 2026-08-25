@@ -9,7 +9,7 @@ interface Box {
   readonly h: number;
 }
 
-/** Liquid hover bubble — desktop fine pointers only. Touch skips tracking to keep scroll smooth. */
+/** Liquid hover/tap bubble — same spring on desktop and phone; coarse pointers skip move-tracking. */
 export default function GlassBubbleTrack({
   children,
   className = "",
@@ -28,6 +28,7 @@ export default function GlassBubbleTrack({
   const [box, setBox] = useState<Box | null>(null);
   const [reduceMotion, setReduceMotion] = useState(false);
   const [enableBubble, setEnableBubble] = useState(false);
+  const [finePointer, setFinePointer] = useState(false);
 
   const clearHot = useCallback(() => {
     const track = trackRef.current;
@@ -67,7 +68,8 @@ export default function GlassBubbleTrack({
     const fine = window.matchMedia("(hover: hover) and (pointer: fine)");
     const sync = () => {
       setReduceMotion(motion.matches);
-      setEnableBubble(fine.matches && !motion.matches);
+      setFinePointer(fine.matches);
+      setEnableBubble(!motion.matches);
     };
     sync();
     motion.addEventListener("change", sync);
@@ -106,9 +108,10 @@ export default function GlassBubbleTrack({
       ref={trackRef}
       className={`relative ${className}`}
       aria-label={ariaLabel}
-      onPointerEnter={enableBubble ? onPointer : undefined}
-      onPointerMove={enableBubble ? onPointer : undefined}
-      onPointerLeave={enableBubble ? (persistPressed ? parkPressed : hide) : undefined}
+      onPointerDown={enableBubble ? onPointer : undefined}
+      onPointerEnter={enableBubble && finePointer ? onPointer : undefined}
+      onPointerMove={enableBubble && finePointer ? onPointer : undefined}
+      onPointerLeave={enableBubble && finePointer ? (persistPressed ? parkPressed : hide) : undefined}
       onFocusCapture={enableBubble ? onPointer : undefined}
       onBlurCapture={
         enableBubble

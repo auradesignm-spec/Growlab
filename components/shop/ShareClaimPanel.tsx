@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { claimShareEntitlement } from "@/app/(dashboard)/dashboard/share-actions";
 import { submitBuyerReel } from "@/app/(dashboard)/dashboard/content-actions";
+import { commissionPayState } from "@/lib/shop/commissionPayState";
 
 export default function ShareClaimPanel({
   data,
@@ -80,6 +81,9 @@ export default function ShareClaimPanel({
   return (
     <div className="mt-10 max-w-xl space-y-8">
       <p className="text-[14px] text-warn">{t("strictRules")}</p>
+      <p className="rounded-xl border border-line px-4 py-3 text-[14px] text-frost">
+        {t(`payState.${commissionPayState([data.orderStatus])}`)}
+      </p>
 
       {claimed ? (
         <>

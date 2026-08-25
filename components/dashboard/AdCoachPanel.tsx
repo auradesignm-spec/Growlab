@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState, useTransition } from "react";
+import { useCallback, useEffect, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import {
   analyzeMerchantAdCreative,
@@ -18,6 +18,10 @@ import {
   type MetaAdOptionLists,
 } from "@/app/(dashboard)/dashboard/ad-actions";
 import type { AdPerformanceContext } from "@/lib/meta/adAgent";
+import { extractAdFrames, type AdFramePayload } from "@/lib/media/extractAdFrames";
+import { extractAdSound, type AdSoundPayload } from "@/lib/media/extractAdSound";
+import CreativeDropzone from "@/components/dashboard/CreativeDropzone";
+import { uploadProductMedia } from "@/app/(dashboard)/dashboard/media-actions";
 
 declare global {
   interface Window {
@@ -86,6 +90,12 @@ export default function AdCoachPanel({
   const [caption, setCaption] = useState("");
   const [script, setScript] = useState("");
   const [visualHook, setVisualHook] = useState("");
+  const [frames, setFrames] = useState<AdFramePayload[]>([]);
+  const [audioClip, setAudioClip] = useState<AdSoundPayload | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewKind, setPreviewKind] = useState<"image" | "video" | "audio" | null>(null);
+  const [extrasOpen, setExtrasOpen] = useState(false);
+  const [scanStep, setScanStep] = useState(0);
   const [budget, setBudget] = useState("5");
   const [imageUrl, setImageUrl] = useState(products[0]?.imageUrl ?? "");
   const [confirmSpend, setConfirmSpend] = useState(false);
@@ -105,17 +115,72 @@ export default function AdCoachPanel({
     whatsappConnected &&
     Boolean(adAccount.pageId);
 
+  useEffect(() => {
+    if (!pending) {
+      setScanStep(0);
+      return;
+    }
+    setScanStep(0);
+    const id = window.setInterval(() => {
+      setScanStep((n) => (n + 1) % 4);
+    }, 700);
+    return () => window.clearInterval(id);
+  }, [pending]);
+
+  function clearCreative() {
+    if (previewUrl?.startsWith("blob:")) URL.revokeObjectURL(previewUrl);
+    setPreviewUrl(null);
+    setPreviewKind(null);
+    setFrames([]);
+    setAudioClip(null);
+  }
+
+  async function onCreativeFile(file: File) {
+    setError(null);
+    clearCreative();
+    const kind = file.type.startsWith("video/")
+      ? "video"
+      : file.type.startsWith("audio/")
+        ? "audio"
+        : "image";
+    setPreviewKind(kind);
+    setPreviewUrl(URL.createObjectURL(file));
+    try {
+      if (kind !== "audio") setFrames(await extractAdFrames(file));
+      else setFrames([]);
+      setAudioClip(await extractAdSound(file));
+      if (kind !== "audio") {
+        const form = new FormData();
+        form.set("file", file);
+        const saved = await uploadProductMedia(form);
+        if (saved.kind === "image") setImageUrl(saved.url);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t("analyzeFailed"));
+    }
+  }
+
   function runAnalyze() {
     setError(null);
+    if (!productId) {
+      setError(t("needProduct"));
+      return;
+    }
+    if (frames.length === 0 && !audioClip && !hook.trim() && !caption.trim() && !script.trim()) {
+      setError(t("needCreative"));
+      return;
+    }
     startTransition(async () => {
       try {
         const row = await analyzeMerchantAdCreative({
           locale,
-          productId: productId || undefined,
+          productId,
           hook,
           caption,
           script,
           visualHook,
+          frames,
+          audio: audioClip ?? undefined,
         });
         setDrafts((prev) => [row, ...prev]);
         setActiveId(row.id);
@@ -437,6 +502,9 @@ export default function AdCoachPanel({
             {t("whatsappReady", { phone: whatsappPhone || "—" })}
           </p>
         )}
+        {adAccount.dryRun && !adAccount.connected ? (
+          <p className="mt-2 text-[12px] text-frost-faint">{t("adsDryRunNote")}</p>
+        ) : null}
       </section>
 
       {error ? (
@@ -445,6 +513,7 @@ export default function AdCoachPanel({
 
       <section className="rounded-2xl border border-line bg-white p-5">
         <h3 className="text-[15px] font-semibold text-frost">{t("formTitle")}</h3>
+        <p className="mt-1 text-[13px] leading-relaxed text-frost-dim">{t("visionLede")}</p>
         {products.length > 0 ? (
           <label className="mt-3 block text-[13px] text-frost-dim">
             {t("product")}
@@ -469,46 +538,81 @@ export default function AdCoachPanel({
           </label>
         ) : null}
 
-        <label className="mt-3 block text-[13px] text-frost-dim">
-          {t("hook")}
-          <input
-            className="mt-1 w-full rounded-xl border border-line bg-[var(--paper)] px-3 py-2 text-[14px] text-frost"
-            value={hook}
-            onChange={(e) => setHook(e.target.value)}
-            maxLength={300}
+        <div className="mt-4">
+          <CreativeDropzone
+            previewUrl={previewUrl}
+            kind={previewKind}
+            onFile={(file) => void onCreativeFile(file)}
+            onClear={clearCreative}
           />
-        </label>
-        <label className="mt-3 block text-[13px] text-frost-dim">
-          {t("caption")}
-          <textarea
-            className="mt-1 w-full rounded-xl border border-line bg-[var(--paper)] px-3 py-2 text-[14px] text-frost"
-            rows={4}
-            value={caption}
-            onChange={(e) => setCaption(e.target.value)}
-            maxLength={2200}
-          />
-        </label>
-        <label className="mt-3 block text-[13px] text-frost-dim">
-          {t("script")}
-          <textarea
-            className="mt-1 w-full rounded-xl border border-line bg-[var(--paper)] px-3 py-2 text-[14px] text-frost"
-            rows={4}
-            value={script}
-            onChange={(e) => setScript(e.target.value)}
-            maxLength={2200}
-          />
-        </label>
-        <label className="mt-3 block text-[13px] text-frost-dim">
-          {t("visualHook")}
-          <input
-            className="mt-1 w-full rounded-xl border border-line bg-[var(--paper)] px-3 py-2 text-[14px] text-frost"
-            value={visualHook}
-            onChange={(e) => setVisualHook(e.target.value)}
-            maxLength={400}
-          />
-        </label>
+        </div>
 
-        <button type="button" className="gl-btn-primary mt-4" disabled={pending} onClick={runAnalyze}>
+        {pending ? (
+          <ol className="mt-4 grid gap-2 sm:grid-cols-4">
+            {(["visual", "platforms", "psych", "performance"] as const).map((key, i) => (
+              <li
+                key={key}
+                className={`rounded-xl border px-3 py-2 text-[12px] ${
+                  scanStep === i ? "border-signal bg-signal/10 text-frost" : "border-line text-frost-faint"
+                }`}
+              >
+                {t(`scan.${key}`)}
+              </li>
+            ))}
+          </ol>
+        ) : null}
+
+        <button
+          type="button"
+          className="mt-4 text-[13px] text-frost-dim underline-offset-2 hover:underline"
+          onClick={() => setExtrasOpen((o) => !o)}
+        >
+          {t("extrasToggle")}
+        </button>
+        {extrasOpen ? (
+          <div className="mt-3 space-y-3">
+            <label className="block text-[13px] text-frost-dim">
+              {t("hook")}
+              <input
+                className="mt-1 w-full rounded-xl border border-line bg-[var(--paper)] px-3 py-2 text-[14px] text-frost"
+                value={hook}
+                onChange={(e) => setHook(e.target.value)}
+                maxLength={300}
+              />
+            </label>
+            <label className="block text-[13px] text-frost-dim">
+              {t("caption")}
+              <textarea
+                className="mt-1 w-full rounded-xl border border-line bg-[var(--paper)] px-3 py-2 text-[14px] text-frost"
+                rows={4}
+                value={caption}
+                onChange={(e) => setCaption(e.target.value)}
+                maxLength={2200}
+              />
+            </label>
+            <label className="block text-[13px] text-frost-dim">
+              {t("script")}
+              <textarea
+                className="mt-1 w-full rounded-xl border border-line bg-[var(--paper)] px-3 py-2 text-[14px] text-frost"
+                rows={4}
+                value={script}
+                onChange={(e) => setScript(e.target.value)}
+                maxLength={2200}
+              />
+            </label>
+            <label className="block text-[13px] text-frost-dim">
+              {t("visualHook")}
+              <input
+                className="mt-1 w-full rounded-xl border border-line bg-[var(--paper)] px-3 py-2 text-[14px] text-frost"
+                value={visualHook}
+                onChange={(e) => setVisualHook(e.target.value)}
+                maxLength={400}
+              />
+            </label>
+          </div>
+        ) : null}
+
+        <button type="button" className="gl-btn-primary mt-4 min-h-11" disabled={pending} onClick={runAnalyze}>
           {pending ? t("analyzing") : t("analyze")}
         </button>
       </section>
@@ -521,6 +625,31 @@ export default function AdCoachPanel({
               {active.status}
             </span>
           </div>
+
+          {active.analysis.visualRead ? (
+            <p className="mt-5 text-[14px] leading-relaxed text-frost">{active.analysis.visualRead}</p>
+          ) : null}
+          {active.analysis.platforms && active.analysis.platforms.length > 0 ? (
+            <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
+              {active.analysis.platforms.map((p) => (
+                <article key={p.id} className="rounded-xl border border-line bg-[var(--paper)] p-3">
+                  <p className="text-[11px] text-frost-faint">{t(`platform.${p.id}`)}</p>
+                  <p className="mt-1 font-mono text-lg text-frost">{p.score}</p>
+                  <p className="mt-1 text-[12px] leading-snug text-frost-dim">{p.fit}</p>
+                </article>
+              ))}
+            </div>
+          ) : null}
+          {active.analysis.market ? (
+            <p className="mt-4 text-[13px] leading-relaxed text-frost-dim">{active.analysis.market}</p>
+          ) : null}
+          {active.analysis.competitorPatterns && active.analysis.competitorPatterns.length > 0 ? (
+            <ul className="mt-3 list-disc space-y-1 ps-5 text-[13px] text-frost-dim">
+              {active.analysis.competitorPatterns.map((item, i) => (
+                <li key={`pat-${i}`}>{item}</li>
+              ))}
+            </ul>
+          ) : null}
 
           <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-5">
             {(

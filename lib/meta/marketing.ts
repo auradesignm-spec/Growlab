@@ -5,7 +5,9 @@
  */
 
 import { decryptSecret, encryptSecret } from "@/lib/meta/crypto";
-import { graphBase, metaConfigured } from "@/lib/meta/config";
+import { graphBase, metaAdsDryRun, metaConfigured } from "@/lib/meta/config";
+
+export { metaAdsDryRun };
 
 type GraphError = { error?: { message?: string; error_user_msg?: string } };
 
@@ -48,11 +50,6 @@ function actPath(adAccountId: string): string {
 
 function digitsPhone(display: string): string {
   return display.replace(/[^\d]/g, "");
-}
-
-export function metaAdsDryRun(): boolean {
-  const v = process.env.META_ADS_DRY_RUN?.trim().toLowerCase();
-  return v === "1" || v === "true" || v === "yes";
 }
 
 export function metaAdsLoginConfigured(): boolean {

@@ -89,7 +89,7 @@ async function buildPerformanceContext(
     productId
       ? prisma.product.findFirst({
           where: { id: productId, merchantId },
-          select: { title: true, basePrice: true },
+          select: { title: true, basePrice: true, category: true, shortDescription: true },
         })
       : Promise.resolve(null),
   ]);
@@ -104,6 +104,8 @@ async function buildPerformanceContext(
     whatsappConnected: connection?.status === "active",
     productTitle: product?.title,
     productPrice: product?.basePrice,
+    productCategory: product?.category,
+    productShort: product?.shortDescription,
   };
 }
 
@@ -268,25 +270,30 @@ export async function loadAdCoachState(): Promise<{
 
 export async function analyzeMerchantAdCreative(input: {
   locale?: "ar" | "en";
-  productId?: string;
+  productId: string;
   hook: string;
   caption: string;
   script: string;
   visualHook: string;
+  frames?: { mime: string; dataBase64: string }[];
+  audio?: { mime: string; dataBase64: string };
 }): Promise<AdDraftView> {
   const merchant = await requireVerifiedMerchant();
   const locale = input.locale === "en" ? "en" : "ar";
-  const productId = input.productId?.trim() || undefined;
-
-  if (productId) {
-    const owned = await prisma.product.findFirst({
-      where: { id: productId, merchantId: merchant.id },
-      select: { id: true },
-    });
-    if (!owned) throw new Error("Product not found.");
+  const productId = input.productId?.trim();
+  if (!productId) {
+    throw new Error(locale === "ar" ? "حدّد المنتج أولاً." : "Select a product first.");
   }
 
+  const owned = await prisma.product.findFirst({
+    where: { id: productId, merchantId: merchant.id },
+    select: { id: true },
+  });
+  if (!owned) throw new Error("Product not found.");
+
   const context = await buildPerformanceContext(merchant.id, productId);
+  const { loadMerchantLessons } = await import("@/lib/meta/merchantLessons");
+  const lessons = await loadMerchantLessons(merchant.id);
   const analysis = await analyzeAdCreative({
     locale,
     hook: input.hook,
@@ -294,12 +301,15 @@ export async function analyzeMerchantAdCreative(input: {
     script: input.script,
     visualHook: input.visualHook,
     context,
+    frames: input.frames,
+    audio: input.audio,
+    lessons,
   });
 
   const row = await prisma.adCreativeDraft.create({
     data: {
       merchantId: merchant.id,
-      productId: productId ?? null,
+      productId,
       locale,
       originalHook: input.hook.trim().slice(0, 300),
       originalCaption: input.caption.trim().slice(0, 2200),

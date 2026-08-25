@@ -55,6 +55,7 @@ export default async function MerchantCheckoutPage({ params }: { params: { slug:
     currency: line.currency,
     quantity: line.quantity,
     size: line.size,
+    shippingFeeOmr: Number((byId.get(line.dealId)?.product as { shippingFee?: number } | undefined)?.shippingFee ?? 1.5),
   }));
 
   const cartCount = merchantCartItemCount(cart);

@@ -1,6 +1,10 @@
 import { prisma } from "@/lib/db";
 import { productVariants } from "@/lib/catalog-db";
 import { effectiveShareStatus } from "@/lib/domain/share";
+import { commissionPayState, type CommissionPayState } from "@/lib/shop/commissionPayState";
+import { canBuyerRequestRefund } from "@/lib/domain/deliveryHold";
+import { settleDueCardHolds } from "@/lib/shop/settleCardHold";
+import { settleSilentReceiveAcks } from "@/lib/shop/settleReceiveAck";
 
 export interface TrackedOrderLine {
   id: string;
@@ -15,6 +19,7 @@ export interface TrackedOrderLine {
   createdAt: string;
   attributionReceiptCode: string | null;
   attributionTipHash: string | null;
+  shippingFeeCharged?: number;
 }
 
 export interface ShareLinkInfo {
@@ -22,6 +27,7 @@ export interface ShareLinkInfo {
   status: string;
   storeUrl: string | null;
   refUsername: string | null;
+  productTitle: string;
 }
 
 export interface TrackedCheckout {
@@ -33,11 +39,19 @@ export interface TrackedCheckout {
   storeHref: string;
   lines: TrackedOrderLine[];
   share: ShareLinkInfo | null;
+  payState: CommissionPayState;
+  creatorShare: number | null;
+  settlementChannel: string;
+  holdDueAt: string | null;
+  canRequestHoldRefund: boolean;
 }
 
 export async function getCheckoutByToken(tokenRaw: string): Promise<TrackedCheckout | null> {
   const trackingToken = tokenRaw.trim();
   if (!trackingToken) return null;
+
+  await settleDueCardHolds();
+  await settleSilentReceiveAcks();
 
   const orders = await prisma.order.findMany({
     where: { trackingToken },
@@ -50,6 +64,7 @@ export async function getCheckoutByToken(tokenRaw: string): Promise<TrackedCheck
       },
       shareEntitlement: { include: { creator: true } },
       attributionChain: { select: { receiptCode: true, tipHash: true } },
+      ledgerEntry: { select: { creatorShare: true } },
     },
     orderBy: { createdAt: "asc" },
   });
@@ -80,8 +95,23 @@ export async function getCheckoutByToken(tokenRaw: string): Promise<TrackedCheck
       status,
       storeUrl: base,
       refUsername: ref ?? null,
+      productTitle: first.deal.product.title,
     };
   }
+
+  const now = new Date();
+  const canRequestHoldRefund = orders.some((order) =>
+    canBuyerRequestRefund({
+      settlementChannel: order.settlementChannel,
+      escrowStatus: order.escrowStatus,
+      orderStatus: order.status,
+      paidAt: order.paidAt,
+      deliveryDueAt: order.deliveryDueAt,
+      buyerRefundRequestedAt: order.buyerRefundRequestedAt,
+      now,
+    }),
+  );
+  const due = orders.map((o) => o.deliveryDueAt).find((d) => d);
 
   return {
     trackingToken,
@@ -91,6 +121,11 @@ export async function getCheckoutByToken(tokenRaw: string): Promise<TrackedCheck
     storeLabel,
     storeHref,
     share,
+    payState: commissionPayState(orders.map((order) => order.status)),
+    creatorShare: orders.reduce((sum, order) => sum + (order.ledgerEntry?.creatorShare ?? 0), 0) || null,
+    settlementChannel: first.settlementChannel,
+    holdDueAt: due ? due.toISOString() : null,
+    canRequestHoldRefund,
     lines: orders.map((order) => ({
       id: order.id,
       productTitle: order.deal.product.title,
@@ -104,6 +139,7 @@ export async function getCheckoutByToken(tokenRaw: string): Promise<TrackedCheck
       createdAt: order.createdAt.toISOString(),
       attributionReceiptCode: order.attributionChain?.receiptCode ?? null,
       attributionTipHash: order.attributionChain?.tipHash ?? null,
+      shippingFeeCharged: Number((order as { shippingFeeCharged?: number }).shippingFeeCharged ?? 0),
     })),
   };
 }
@@ -125,6 +161,7 @@ export async function hydrateCartDeals(items: { dealId: string; quantity: number
         currency: deal.product.currency,
         quantity: item.quantity,
         size: item.size,
+        shippingFeeOmr: Number((deal.product as { shippingFee?: number }).shippingFee ?? 1.5),
         variants: productVariants(deal.product),
         username: deal.creator.username,
       },

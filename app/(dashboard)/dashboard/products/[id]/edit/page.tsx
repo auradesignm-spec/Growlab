@@ -39,6 +39,8 @@ export default async function EditProductPage({ params }: { params: { id: string
           costPrice: product.costPrice,
           commissionType: product.commissionType,
           commissionValue: product.commissionValue,
+          deliveryDaysMax: product.deliveryDaysMax,
+          shippingFee: Number((product as { shippingFee?: number }).shippingFee ?? 1.5),
         }}
       />
     </main>

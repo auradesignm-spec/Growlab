@@ -29,12 +29,11 @@ export default function Gallery() {
   return (
     <section id="gallery" className="relative scroll-mt-24 pb-section">
       <div className="mx-auto max-w-wrap px-5 sm:px-8">
-        <div className="gl-stage p-3 sm:p-4">
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-3 md:items-stretch">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-3 md:items-stretch">
             {FACETS.map((facet, index) => (
               <Reveal key={facet.id} className="h-full" delay={index * 70}>
-                <article className="gl-bento flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-white transition-colors duration-150 ease-out hover:bg-night">
-                  <div className="flex h-[28rem] shrink-0 items-stretch justify-center bg-night p-4">
+                <article className="gl-bento gl-tile flex h-full flex-col overflow-hidden rounded-2xl">
+                  <div className="gl-mock-well flex h-[31rem] shrink-0 items-stretch justify-center rounded-2xl p-4">
                     <BentoVisual kind={facet.visual} />
                   </div>
                   <div className="flex flex-1 flex-col px-6 pb-7 pt-5">
@@ -46,7 +45,6 @@ export default function Gallery() {
                 </article>
               </Reveal>
             ))}
-          </div>
         </div>
       </div>
     </section>
@@ -86,7 +84,7 @@ function BentoVisual({ kind }: { kind: (typeof FACETS)[number]["visual"] }) {
 
 function MockFrame({ children }: { children: ReactNode }) {
   return (
-    <div className="flex h-full w-full max-w-[320px] flex-col overflow-hidden rounded-2xl border border-line bg-white p-4">
+    <div className="flex h-full w-full max-w-[320px] flex-col overflow-visible p-4 pb-5">
       {children}
     </div>
   );
@@ -103,7 +101,7 @@ function MockTitle({ children }: { children: ReactNode }) {
 function MockNote({ children, live = false }: { children: ReactNode; live?: boolean }) {
   return (
     <p
-      className="mt-auto pt-3 text-[12px] leading-relaxed text-frost-dim"
+      className="mt-auto shrink-0 pt-3 pb-1 text-[12px] leading-[1.7] text-frost-dim"
       {...(live ? { "aria-live": "polite" as const } : {})}
     >
       {children}
@@ -157,8 +155,8 @@ function LedgerMock() {
         ))}
       </ul>
 
-      <p className="mt-4 text-[11px] leading-4 text-frost-faint">{t("dashWeek")}</p>
-      <div className="mt-2 flex min-h-[4.5rem] flex-1 items-end gap-1.5" aria-hidden="true">
+      <p className="mt-4 shrink-0 text-[11px] leading-4 text-frost-faint">{t("dashWeek")}</p>
+      <div className="mt-2 flex h-14 shrink-0 items-end gap-1.5" aria-hidden="true">
         {WEEK_BARS.map((day, i) => (
           <div key={WEEK_DAYS[i]} className="flex h-full min-w-0 flex-1 flex-col items-center justify-end gap-1">
             <div className="relative flex w-full min-h-0 flex-1 items-end justify-center">
@@ -181,7 +179,7 @@ function LedgerMock() {
           </div>
         ))}
       </div>
-      <div className="mt-2 flex items-center gap-3 text-[11px] text-frost-faint">
+      <div className="mt-2 flex shrink-0 items-center gap-3 text-[11px] text-frost-faint">
         <span className="inline-flex items-center gap-1.5">
           <span className="size-1.5 rounded-sm" style={{ background: "var(--paper-sunk)" }} />
           {t("dashKpi.visits")}
@@ -192,7 +190,7 @@ function LedgerMock() {
         </span>
       </div>
 
-      <p className="mt-4 text-[11px] leading-4 text-frost-faint">{t("todayOrder")}</p>
+      <p className="mt-4 shrink-0 text-[11px] leading-4 text-frost-faint">{t("todayOrder")}</p>
       <p className="mt-0.5 font-mono text-[16px] tabular-nums text-frost">128.40 {t("omr")}</p>
       <div
         className="mt-2 flex h-1.5 overflow-hidden rounded-full bg-night"

@@ -13,7 +13,10 @@
     "db:reset": "prisma migrate reset --skip-seed --force && tsx prisma/seed.ts",
     "smoke:onboarding": "node scripts/smoke-onboarding.mjs",
     "postinstall": "prisma generate",
-    "vercel-build": "node scripts/vercel-build.mjs"
+    "vercel-build": "node scripts/vercel-build.mjs",
+    "coach:setup": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/setup-local-coach.ps1",
+    "coach:vision": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/setup-local-vision.ps1",
+    "coach:export": "tsx scripts/export-coach-dataset.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

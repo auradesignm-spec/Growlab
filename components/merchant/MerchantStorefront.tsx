@@ -8,7 +8,7 @@ export default function MerchantStorefront({
   store,
   productsHeading = "Products",
   contactHeading = "Contact",
-  contactLede = "Order COD from the product page — we deliver across Oman.",
+  contactLede = "Order COD from the product page — we deliver to your address.",
 }: {
   store: MerchantStoreData;
   productsHeading?: string;
@@ -153,7 +153,7 @@ function HeroCard({
   return (
     <Link
       href={`/m/${storeSlug}/p/${product.slug}`}
-      className={`gl-tile block overflow-hidden transition-colors hover:bg-night ${split ? "lg:grid lg:grid-cols-2 lg:gap-0" : ""} ${centered && featured ? "mx-auto max-w-lg" : ""}`}
+      className={`gl-tile gl-lift block overflow-hidden transition-colors hover:bg-night ${split ? "lg:grid lg:grid-cols-2 lg:gap-0" : ""} ${centered && featured ? "mx-auto max-w-lg" : ""}`}
     >
       <div className={`relative bg-night ${featured ? "min-h-[16rem]" : "aspect-[4/3]"}`}>
         {product.coverUrl ? (

@@ -82,13 +82,13 @@ export async function loadChannelState(): Promise<{
       autoReplyEnabled: connection?.autoReplyEnabled ?? true,
       autoReplyText:
         connection?.autoReplyText ??
-        "حياك في متجرنا. السعر والدفع عند الاستلام. للتأكيد اكتب: نعم",
+        "مرحباً بك في متجرنا. السعر والدفع عند الاستلام. للتأكيد اكتب: نعم",
       recoveryEnabled: connection?.recoveryEnabled ?? true,
-      recoveryText1h: connection?.recoveryText1h ?? "هل ما زلت مهتم؟ للطلب اكتب: نعم",
+      recoveryText1h: connection?.recoveryText1h ?? "هل ما زلت مهتماً؟ للطلب اكتب: نعم",
       recoveryText6h:
-        connection?.recoveryText6h ?? "باقي كمية محدودة. للدفع عند الاستلام اكتب: نعم",
+        connection?.recoveryText6h ?? "تبقى كمية محدودة. للدفع عند الاستلام اكتب: نعم",
       recoveryText24h:
-        connection?.recoveryText24h ?? "آخر تذكير — نقدر نجهّز طلبك COD. اكتب: نعم",
+        connection?.recoveryText24h ?? "آخر تذكير — يمكننا تجهيز طلبك بالدفع عند الاستلام. اكتب: نعم",
       datasetId: connection?.datasetId ?? "",
       lastError: connection?.lastError ?? "",
       connectedAt: connection?.connectedAt?.toISOString() ?? null,

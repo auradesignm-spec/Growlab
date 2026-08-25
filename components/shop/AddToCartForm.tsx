@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { addToCart } from "@/app/(creator)/creator/order-actions";
+import { announceCartAdded } from "@/lib/shop/cartMotion";
 
 export default function AddToCartForm({
   username,
@@ -19,6 +20,7 @@ export default function AddToCartForm({
   const [size, setSize] = useState(sizes[0] ?? "");
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [added, setAdded] = useState(false);
 
   function add(thenCheckout: boolean) {
     setError(null);
@@ -29,8 +31,13 @@ export default function AddToCartForm({
     startTransition(async () => {
       try {
         await addToCart({ username, dealId, quantity: 1, size });
+        announceCartAdded();
         if (thenCheckout) router.push(`/creator/${username}/checkout`);
-        else router.refresh();
+        else {
+          setAdded(true);
+          window.setTimeout(() => setAdded(false), 1400);
+          router.refresh();
+        }
       } catch (e) {
         setError(e instanceof Error ? e.message : t("cartFailed"));
       }
@@ -51,7 +58,7 @@ export default function AddToCartForm({
                   type="button"
                   onClick={() => setSize(option)}
                   aria-pressed={selected}
-                  className={`min-w-[4.5rem] rounded-lg border px-4 py-2 text-[14px] transition-colors duration-150 ease-out ${
+                  className={`min-h-11 min-w-[4.5rem] rounded-lg border px-4 py-2 text-[14px] transition-colors duration-150 ease-out ${
                     selected
                       ? "border-[rgba(17,19,24,0.2)] bg-[#111318] text-white"
                       : "border-line bg-white text-[#111318]"
@@ -64,13 +71,21 @@ export default function AddToCartForm({
           </div>
         </fieldset>
       )}
-      {error && <p className="text-[13px] text-danger">{error}</p>}
+      {error && <p className="text-[13px] text-danger" role="alert">{error}</p>}
+      <p className="sr-only" aria-live="polite">
+        {added ? t("cartAdded") : ""}
+      </p>
       <div className="flex flex-wrap gap-3">
-        <button type="button" disabled={pending} className="gl-btn-primary disabled:opacity-40" onClick={() => add(true)}>
+        <button type="button" disabled={pending} className="gl-btn-primary min-h-11 disabled:opacity-40" onClick={() => add(true)}>
           {pending ? t("adding") : t("buyCod")}
         </button>
-        <button type="button" disabled={pending} className="gl-btn-ghost disabled:opacity-40" onClick={() => add(false)}>
-          {t("addToCart")}
+        <button
+          type="button"
+          disabled={pending}
+          className={`gl-btn-ghost min-h-11 disabled:opacity-40${added ? " is-added" : ""}`}
+          onClick={() => add(false)}
+        >
+          {added ? t("cartAdded") : t("addToCart")}
         </button>
       </div>
       <p className="text-[13px] text-frost-faint">{t("codHint")}</p>

@@ -27,6 +27,8 @@ export interface MerchantStoreProduct {
   features: string[];
   attributeGroups: Array<{ key: string; label: string; values: string[] }>;
   promo: import("@/lib/merchant-store/promo").StorePromo | null;
+  deliveryDaysMax: number;
+  shippingFee: number;
 }
 
 export interface MerchantStoreData {
@@ -59,6 +61,8 @@ async function toStoreProduct(
     cogsPct: number;
     commissionType: string;
     commissionValue: number;
+    deliveryDaysMax?: number;
+    shippingFee?: number;
     mediaAssets: { url: string; type: string }[];
   },
 ): Promise<MerchantStoreProduct> {
@@ -89,6 +93,8 @@ async function toStoreProduct(
     features,
     attributeGroups: attributeOptionGroups(attrs),
     promo,
+    deliveryDaysMax: product.deliveryDaysMax ?? 4,
+    shippingFee: product.shippingFee ?? 1.5,
   };
 }
 

@@ -5,6 +5,10 @@ import type { OrderLedgerRow } from "@/lib/dashboard/types";
 import { effectiveUgcStatus } from "@/lib/domain/ugc";
 import { computeSimpleSplit, type SimpleSplitResult } from "@/lib/domain/commission";
 import { getWalletSnapshot, type WalletSnapshot } from "@/lib/ledger/wallet";
+import { settleDueCardHolds } from "@/lib/shop/settleCardHold";
+import { settleSilentReceiveAcks } from "@/lib/shop/settleReceiveAck";
+import { deliveryBucket } from "@/lib/domain/deliveryAck";
+import { getBuyerReceiveConfirmWhatsAppUrl } from "@/lib/shop/notify";
 import { countVisitsByDealIds } from "@/lib/shop/visits";
 import { loadMerchantCampaigns } from "@/app/(dashboard)/dashboard/performance-actions";
 import { loadWalletTopupRequests } from "@/app/(dashboard)/dashboard/wallet-actions";
@@ -45,6 +49,8 @@ export interface MerchantProductRow {
   costPrice: number;
   commissionType: string;
   commissionValue: number;
+  deliveryDaysMax: number;
+  shippingFee: number;
   active: boolean;
   activeDealsCount: number;
   mediaAssets: MerchantMediaAssetRow[];
@@ -126,6 +132,8 @@ export interface MerchantDashboardData {
 }
 
 export async function loadMerchantDashboardData(merchantId: string): Promise<MerchantDashboardData> {
+  await settleDueCardHolds();
+  await settleSilentReceiveAcks();
   const merchant = await prisma.merchantProfile.findUniqueOrThrow({
     where: { id: merchantId },
     include: {
@@ -151,6 +159,8 @@ export async function loadMerchantDashboardData(merchantId: string): Promise<Mer
       promoJson?: string | null;
       promoEndsAt?: Date | null;
       sourceUrl?: string;
+      deliveryDaysMax?: number;
+      shippingFee?: number;
     };
     return {
       id: row.id,
@@ -171,6 +181,8 @@ export async function loadMerchantDashboardData(merchantId: string): Promise<Mer
       costPrice: row.costPrice,
       commissionType: row.commissionType,
       commissionValue: row.commissionValue,
+      deliveryDaysMax: row.deliveryDaysMax ?? 4,
+      shippingFee: row.shippingFee ?? 1.5,
       active: row.active,
       activeDealsCount: row.deals.filter((d) => d.status === "active").length,
       mediaAssets: row.mediaAssets.map((a) => ({ id: a.id, type: a.type, url: a.url, caption: a.caption })),
@@ -283,6 +295,24 @@ export async function loadMerchantDashboardData(merchantId: string): Promise<Mer
         attributionSource: order.attributionSource,
         status: order.status,
         shippingRef: order.shippingRef,
+        trackingToken: order.trackingToken,
+        deliveryBucket: deliveryBucket({
+          status: order.status,
+          merchantMarkedDeliveredAt: order.merchantMarkedDeliveredAt,
+          buyerConfirmedReceivedAt: order.buyerConfirmedReceivedAt,
+          buyerDeniedReceivedAt: order.buyerDeniedReceivedAt,
+        }),
+        buyerNotifyHref:
+          order.receiveConfirmToken && order.status === "confirmed"
+            ? getBuyerReceiveConfirmWhatsAppUrl({
+                buyerPhone: order.buyerPhone,
+                productTitle: deal.product.title,
+                serial: order.trackingToken || order.id.slice(-8),
+                quantity: order.quantity,
+                variantLabel: order.variantLabel,
+                confirmToken: order.receiveConfirmToken,
+              })
+            : null,
         createdAt: order.createdAt.toISOString(),
             ledger: order.ledgerEntry
           ? {

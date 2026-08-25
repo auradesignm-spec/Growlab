@@ -30,7 +30,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: "Growlab",
-  description: "شبكة توزيع أدائي للتجار العمانيين — سقف ميزانية، دفع بعد التحصيل.",
+  description: "شبكة توزيع بالدفع عند الباب — حد صرف، وعمولة بعد التأكيد.",
   metadataBase: new URL("https://growlab.om"),
   robots: { index: true, follow: true },
   manifest: "/manifest.webmanifest",

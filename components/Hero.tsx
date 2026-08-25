@@ -6,9 +6,10 @@ import { useLocale, useTranslations } from "next-intl";
 
 import type { CSSProperties } from "react";
 
-import { enterHref } from "@/lib/auth/paths";
+import { enterHref, SIGN_IN_HREF } from "@/lib/auth/paths";
 
 import { track } from "@/lib/analytics";
+import TourStartLink from "@/components/TourStartLink";
 
 
 
@@ -59,12 +60,13 @@ const BILLS = [
 
 
 function isCashWord(word: string, locale: string): boolean {
-  // Strip punctuation + Arabic diacritics so «مسوّق» matches «مسوق»
   const clean = word
     .replace(/[^\p{L}]/gu, "")
     .replace(/[\u064B-\u065F\u0670]/g, "")
+    .replace(/[أإآ]/g, "ا")
     .toLowerCase();
-  return locale === "ar" ? clean === "مسوق" : clean === "marketer";
+  if (locale === "ar") return clean === "ريال" || clean === "الباب" || clean === "تخصم";
+  return clean === "rial" || clean === "door" || clean === "pay";
 }
 
 
@@ -175,19 +177,24 @@ export default function Hero() {
 
           </h1>
 
-          <p className="gl-enter-2 relative z-[1] mt-6 max-w-md text-start text-[16px] leading-relaxed text-frost-dim">
-
+          <p className="gl-enter-2 relative z-[1] mt-5 max-w-xl text-start text-[16px] leading-relaxed text-frost-dim">
             {t("lede")}
-
           </p>
-
           <div className="relative z-[1] mt-6 flex flex-wrap items-center justify-start gap-3">
-            <a
+            <TourStartLink
               href={enterHref("merchant")}
+              guide="open-account"
+              source="hero-merchant"
               className="gl-btn-primary"
-              onClick={() => track("Sign Up Started", { source: "hero-merchant" })}
             >
               {t("ctaMerchant")}
+            </TourStartLink>
+            <a
+              href="/#contact"
+              className="gl-btn-ghost"
+              onClick={() => track("Consult Clicked", { source: "hero-consult" })}
+            >
+              {t("ctaConsult")}
             </a>
             {process.env.NEXT_PUBLIC_DEMO_MODE === "true" ? (
               <a
@@ -199,6 +206,12 @@ export default function Hero() {
               </a>
             ) : null}
           </div>
+          <p className="relative z-[1] mt-4 text-start text-[13px] text-frost-faint">
+            {t("hasAccount")}{" "}
+            <a href={SIGN_IN_HREF} className="text-frost underline-offset-2 hover:underline">
+              {t("signIn")}
+            </a>
+          </p>
 
         </div>
 

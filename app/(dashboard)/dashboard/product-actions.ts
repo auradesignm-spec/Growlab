@@ -5,6 +5,8 @@ import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth/session";
 import { serializeList } from "@/lib/catalog-db";
 import { COMMISSION_TYPES, type CommissionType } from "@/lib/domain/enums";
+import { clampDeliveryDays, DEFAULT_DELIVERY_DAYS_MAX } from "@/lib/domain/deliveryHold";
+import { clampShippingFee, DEFAULT_SHIPPING_FEE } from "@/lib/domain/shipping";
 import { assertPublishableProduct } from "@/lib/domain/commission";
 import { CONTACT_LEAK_WARNING_AR, scanForContactLeak } from "@/lib/security/antiLeak";
 import { slugifyProductTitle } from "@/lib/merchant-store/slugs";
@@ -42,6 +44,8 @@ export interface ProductFormInput {
   slug?: string;
   shortDescription?: string;
   descriptionHtml?: string;
+  deliveryDaysMax?: number;
+  shippingFee?: number;
 }
 
 function sanitizeAndValidate(input: ProductFormInput) {
@@ -98,6 +102,8 @@ function sanitizeAndValidate(input: ProductFormInput) {
     cogsPct: basePrice > 0 ? costPrice / basePrice : 0,
     commissionType: input.commissionType,
     commissionValue,
+    deliveryDaysMax: clampDeliveryDays(Number(input.deliveryDaysMax ?? DEFAULT_DELIVERY_DAYS_MAX)),
+    shippingFee: clampShippingFee(Number(input.shippingFee ?? DEFAULT_SHIPPING_FEE)),
   };
 }
 
@@ -249,6 +255,8 @@ export interface ProductStudioInput {
     getQty: number;
     percentOff: number;
   };
+  deliveryDaysMax?: number;
+  shippingFee?: number;
   coverImageUrl?: string;
   sourceUrl?: string;
   active?: boolean;
@@ -289,6 +297,8 @@ export async function saveProductStudio(productId: string | null, input: Product
     commissionValue: input.commissionValue,
     shortDescription: input.shortDescription,
     descriptionHtml: input.descriptionHtml,
+    deliveryDaysMax: input.deliveryDaysMax,
+    shippingFee: input.shippingFee,
   });
 
   const promo = parsePromoJson(JSON.stringify({ ...input.promo, productIds: null }));

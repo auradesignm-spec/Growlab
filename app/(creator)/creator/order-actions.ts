@@ -21,6 +21,8 @@ import { headers } from "next/headers";
 import { grantShareEntitlementOnPurchase } from "@/lib/share/grantEntitlement";
 import { resolveReferrerCreatorId } from "@/lib/performance/referrer";
 import { sealOrderAttribution } from "@/lib/ledger/attribution";
+import { cardHoldCreateFields, parseSettlementChannel } from "@/lib/domain/deliveryHold";
+import { checkoutShippingFee, DEFAULT_SHIPPING_FEE } from "@/lib/domain/shipping";
 
 const MAX_QTY = 8;
 
@@ -149,6 +151,7 @@ export async function placeCodCheckout(input: {
   items?: CartItem[];
   /** Optional per-line unit prices (merchant store promos). Key = dealId + "::" + size */
   unitPriceOverrides?: Record<string, number>;
+  settlementChannel?: string;
 }): Promise<PlaceCodOrderResult> {
   const buyerName = input.buyerName.trim().slice(0, 80);
   const buyerPhone = normalizePhone(input.buyerPhone);
@@ -161,6 +164,9 @@ export async function placeCodCheckout(input: {
   if (!isPlausiblePhone(buyerPhone)) throw new Error("Enter a valid phone number.");
   if (buyerAddress.length < 6) throw new Error("Enter a delivery address.");
   if (buyerCity.length < 2) throw new Error("Enter a city.");
+
+  const settlementChannel = parseSettlementChannel(input.settlementChannel);
+  const paidAt = settlementChannel === "card" ? new Date() : null;
 
   const ip = clientIpFromHeaders(headers());
   if (!consumeRateLimit(`cod:ip:${ip}`, 8, 60 * 60 * 1000)) {
@@ -224,13 +230,21 @@ export async function placeCodCheckout(input: {
         lockedUnitPrice: deal.lockedUnitPrice,
         lockedCommissionPct: deal.lockedCommissionPct,
         discountCapPct: deal.discountCapPct,
-        settlementChannel: "cod",
+        settlementChannel,
       }),
     });
   }
 
+  const shipment = checkoutShippingFee(
+    prepared.map((line) =>
+      Number((line.deal.product as { shippingFee?: number }).shippingFee ?? DEFAULT_SHIPPING_FEE),
+    ),
+  );
+  const shippingPrepaidAt = new Date();
+
   const createdIds = await prisma.$transaction(async (tx) => {
     const ids: string[] = [];
+    let lineIndex = 0;
     for (const line of prepared) {
       const created = await tx.order.create({
         data: {
@@ -245,12 +259,18 @@ export async function placeCodCheckout(input: {
           currency: line.deal.product.currency,
           attributionSource,
           referrerCreatorId,
-          settlementChannel: "cod",
+          settlementChannel,
           trackingToken,
           escrowStatus: "held",
           status: "pending",
+          shippingFeeCharged: lineIndex === 0 ? shipment : 0,
+          shippingPrepaidAt,
+          ...(paidAt
+            ? cardHoldCreateFields(line.deal.product.deliveryDaysMax, paidAt)
+            : {}),
         },
       });
+      lineIndex += 1;
       await tx.ledgerEntry.create({
         data: {
           orderId: created.id,

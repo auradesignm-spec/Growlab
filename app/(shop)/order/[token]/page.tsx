@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 import { getCheckoutByToken } from "@/lib/shop/tracking";
+import PostCollectionPanel from "@/components/shop/PostCollectionPanel";
+import BuyerHoldPanel from "@/components/shop/BuyerHoldPanel";
 
 export default async function OrderTrackingPage({ params }: { params: { token: string } }) {
   const t = await getTranslations("shop");
@@ -10,7 +12,9 @@ export default async function OrderTrackingPage({ params }: { params: { token: s
   if (!checkout) notFound();
 
   const currency = checkout.lines[0]?.currency ?? "OMR";
-  const total = checkout.lines.reduce((sum, line) => sum + line.unitPriceCharged * line.quantity, 0);
+  const goods = checkout.lines.reduce((sum, line) => sum + line.unitPriceCharged * line.quantity, 0);
+  const shipping = checkout.lines.reduce((sum, line) => sum + (line.shippingFeeCharged ?? 0), 0);
+  const total = goods + shipping;
 
   return (
     <main>
@@ -29,17 +33,24 @@ export default async function OrderTrackingPage({ params }: { params: { token: s
         </p>
 
         {checkout.share ? (
-          <div className="mt-8 max-w-xl rounded-xl border border-signal/30 bg-signal/5 p-5">
-            <p className="font-medium text-frost">{t("shareTitle")}</p>
-            <p className="mt-2 text-[14px] text-frost-dim">{t("shareLede")}</p>
-            <Link
-              href={`/share/${checkout.share.claimToken}`}
-              className="gl-btn gl-btn-primary mt-4 inline-flex"
-            >
-              {t("shareCta")}
-            </Link>
-          </div>
+          <PostCollectionPanel
+            share={checkout.share}
+            payState={checkout.payState}
+            creatorShare={checkout.creatorShare}
+            currency={currency}
+          />
         ) : null}
+
+        <BuyerHoldPanel
+          trackingToken={checkout.trackingToken}
+          canRefund={checkout.canRequestHoldRefund}
+          dueLabel={
+            checkout.holdDueAt
+              ? t("holdDue", { date: new Date(checkout.holdDueAt).toLocaleDateString() })
+              : null
+          }
+          settlementChannel={checkout.settlementChannel}
+        />
 
         <ul className="mt-10 divide-y divide-line border-y border-line">
           {checkout.lines.map((line) => (
@@ -73,7 +84,12 @@ export default async function OrderTrackingPage({ params }: { params: { token: s
           ))}
         </ul>
 
-        <p className="mt-4 font-mono text-[18px]">
+        {shipping > 0 ? (
+          <p className="mt-4 text-[14px] text-frost-dim">
+            {t("shippingPrepaid")}: {shipping.toFixed(2)} {currency}
+          </p>
+        ) : null}
+        <p className="mt-2 font-mono text-[18px]">
           {t("total")} {total.toFixed(2)} {currency}
         </p>
         <p className="mt-6 max-w-xl text-[14px] leading-relaxed text-frost-dim">{t("returnsPolicy")}</p>

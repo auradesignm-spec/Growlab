@@ -15,6 +15,9 @@ export async function applyOrderStatusTransition(orderId: string, status: OrderA
     },
   });
   if (!order) throw new Error("الطلب غير موجود.");
+  if (status === "fulfilled" && order.buyerRefundRequestedAt) {
+    throw new Error("المشتري طلب استرجاع المبلغ بعد انتهاء مهلة التوصيل. لا يمكن تأكيد التسليم.");
+  }
 
   const allowed = nextOrderStatuses(order.status);
   if (!allowed.includes(status)) {

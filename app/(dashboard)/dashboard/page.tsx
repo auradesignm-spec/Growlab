@@ -12,6 +12,8 @@ import CreatorDashboard from "@/components/dashboard/CreatorDashboard";
 import RoleOnboarding from "@/components/dashboard/RoleOnboarding";
 import ProfileDetailsForm from "@/components/dashboard/ProfileDetailsForm";
 import { hasCompletedProfile } from "@/lib/auth/profile";
+import { prisma } from "@/lib/db";
+import StoreBriefSurvey from "@/components/dashboard/StoreBriefSurvey";
 import MerchantKycForm from "@/components/kyc/MerchantKycForm";
 import CreatorKycCapture from "@/components/kyc/CreatorKycCapture";
 import { AccountBanned, KycPending } from "@/components/kyc/KycStatus";
@@ -95,6 +97,13 @@ async function MerchantGate({
   initialTab?: string;
 }) {
   const tKyc = await getTranslations("kyc");
+  const store = await prisma.merchantStore.findUnique({
+    where: { merchantId: merchant.id },
+    select: { tagline: true },
+  });
+  if (!store?.tagline.trim()) {
+    return <StoreBriefSurvey initialName={merchant.businessName} />;
+  }
   if (merchant.verificationStatus === "unsubmitted" || merchant.verificationStatus === "rejected") {
     return (
       <MerchantKycForm

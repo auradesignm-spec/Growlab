@@ -161,6 +161,8 @@ export default function MerchantStoreEditorFlow({
             features: [],
             attributeGroups: [],
             promo: null,
+            deliveryDaysMax: 4,
+            shippingFee: 1.5,
           }
         : null,
       products: initial.products
@@ -181,6 +183,8 @@ export default function MerchantStoreEditorFlow({
           features: [],
           attributeGroups: [],
           promo: null,
+          deliveryDaysMax: 4,
+          shippingFee: 1.5,
         })),
     };
   }, [

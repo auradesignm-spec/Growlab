@@ -94,6 +94,7 @@ export async function placeMerchantStoreCheckout(input: {
   buyerPhone: string;
   buyerAddress: string;
   buyerCity: string;
+  settlementChannel?: string;
 }) {
   const storeSlug = input.storeSlug.trim().toLowerCase();
   const cart = readMerchantCartCookie();
@@ -142,6 +143,7 @@ export async function placeMerchantStoreCheckout(input: {
     buyerCity: input.buyerCity,
     items: cart.items,
     unitPriceOverrides: priced.applied ? unitPriceOverrides : undefined,
+    settlementChannel: input.settlementChannel,
   });
 
   clearMerchantCartCookie();

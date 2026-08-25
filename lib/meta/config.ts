@@ -19,14 +19,20 @@ export function graphBase(): string {
   return `https://graph.facebook.com/${graphVersion()}`;
 }
 
+export function metaAdsDryRun(): boolean {
+  // Local without a Meta App ID: simulate connect/launch so merchants can walk the flow.
+  if (process.env.NODE_ENV === "development" && !process.env.NEXT_PUBLIC_META_APP_ID?.trim()) {
+    return true;
+  }
+  const v = process.env.META_ADS_DRY_RUN?.trim().toLowerCase();
+  return v === "1" || v === "true" || v === "yes";
+}
+
 export function publicMetaClientConfig() {
   return {
     configured: metaConfigured(),
     appId: process.env.NEXT_PUBLIC_META_APP_ID?.trim() ?? "",
     configId: process.env.META_EMBEDDED_SIGNUP_CONFIG_ID?.trim() ?? "",
-    adsDryRun:
-      process.env.META_ADS_DRY_RUN?.trim().toLowerCase() === "1" ||
-      process.env.META_ADS_DRY_RUN?.trim().toLowerCase() === "true" ||
-      process.env.META_ADS_DRY_RUN?.trim().toLowerCase() === "yes",
+    adsDryRun: metaAdsDryRun(),
   };
 }

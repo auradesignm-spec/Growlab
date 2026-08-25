@@ -5,6 +5,7 @@ import { prisma } from "@/lib/db";
 import { requireVerifiedMerchant } from "@/lib/auth/guards";
 import type { OrderActionStatus } from "@/lib/domain/orders";
 import { applyOrderStatusTransition } from "@/lib/shop/orderTransition";
+import { canMerchantMarkDelivered, mintReceiveConfirmToken } from "@/lib/domain/deliveryAck";
 
 export async function merchantSetOrderStatus(orderId: string, status: OrderActionStatus) {
   const viewer = await requireVerifiedMerchant();
@@ -17,6 +18,25 @@ export async function merchantSetOrderStatus(orderId: string, status: OrderActio
   });
   if (!order || order.deal.product.merchantId !== merchant.id) {
     throw new Error("Order not found.");
+  }
+
+  if (status === "fulfilled") {
+    if (order.status === "fulfilled") return;
+    if (!canMerchantMarkDelivered({ status: order.status, buyerRefundRequestedAt: order.buyerRefundRequestedAt })) {
+      throw new Error("أكّد الطلب للشحن أولاً قبل ضغط تم التسليم.");
+    }
+    const token = mintReceiveConfirmToken();
+    await prisma.order.update({
+      where: { id: order.id },
+      data: {
+        merchantMarkedDeliveredAt: new Date(),
+        buyerDeniedReceivedAt: null,
+        receiveConfirmToken: token,
+      },
+    });
+    revalidatePath("/dashboard");
+    if (order.trackingToken) revalidatePath(`/order/${order.trackingToken}`);
+    return;
   }
 
   const updated = await applyOrderStatusTransition(orderId, status);
