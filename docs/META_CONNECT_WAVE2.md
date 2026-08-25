@@ -15,7 +15,11 @@ Built on Wave 1 (`MetaConnection` + `InterestLead` + Embedded Signup + webhook +
 ### Recovery sequences
 
 - On new chat: schedule +1h nudge
-- Cron: `GET/POST /api/cron/meta-recovery` (Bearer `CRON_SECRET` or `META_RECOVERY_CRON_SECRET`)
+- Endpoint: `GET/POST /api/cron/meta-recovery` (Bearer `CRON_SECRET` or `META_RECOVERY_CRON_SECRET`)
+- Run every **10–15 minutes** (needed for +1h / +6h nudges and 30-minute error backoff).
+- **Vercel Hobby** does not allow Cron Jobs more than once per day, so `vercel.json` has no crons.
+- Production schedule: GitHub Action `.github/workflows/meta-recovery.yml` (`*/15 * * * *`). Set repo secrets `GROWLAB_APP_URL` and `CRON_SECRET` (same value as on Vercel). Or ping the URL from [cron-job.org](https://cron-job.org).
+- Vercel **Pro** can instead put `"schedule": "*/15 * * * *"` back in `vercel.json`.
 - Free-form only inside the **24h** customer-care window
 - Stops on: `نعم` / reject / collected Purchase / window expiry
 - Merchant edits texts on `/dashboard/channels`

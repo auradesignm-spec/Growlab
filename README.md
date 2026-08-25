@@ -35,7 +35,7 @@ npm run dev
 3. اضبط مفاتيح Clerk ثم `ADMIN_EMAILS` ببريدك (أو `ADMIN_CLERK_USER_IDS`).
 4. اختياري: Stripe Pro (`STRIPE_SECRET_KEY`, `STRIPE_PRO_PRICE_ID`, `STRIPE_WEBHOOK_SECRET`, `NEXT_PUBLIC_APP_URL`).
 5. اختياري: `CLERK_WEBHOOK_SECRET` لـ `/api/clerk/webhook`، `OPENAI_API_KEY` لنسخ المتجر.
-6. اختياري — Meta/WhatsApp Cloud API (ربط التجار + CTWA): راجع [docs/META_CONNECT.md](docs/META_CONNECT.md). مدرب الإعلان + إطلاق CTWA Advantage+: [docs/META_AD_AGENT.md](docs/META_AD_AGENT.md) و [docs/META_AD_LAUNCH.md](docs/META_AD_LAUNCH.md) (`META_ADS_DRY_RUN` للتجربة المحلية).
+6. اختياري — Meta/WhatsApp Cloud API (ربط التجار + CTWA): راجع [docs/META_CONNECT.md](docs/META_CONNECT.md). مدرب الإعلان + إطلاق CTWA Advantage+: [docs/META_AD_AGENT.md](docs/META_AD_AGENT.md) و [docs/META_AD_LAUNCH.md](docs/META_AD_LAUNCH.md) (`META_ADS_DRY_RUN` للتجربة المحلية). تذكيرات واتساب كل 15 دقيقة: GitHub Action (أسرار `GROWLAB_APP_URL` + `CRON_SECRET`) — خطة Vercel المجانية لا تدعم كرون أقل من يوم.
 7. انشر. البناء يشغّل `prisma generate` ثم `migrate deploy` **بدون زرع ديمو**.
 
 بعد تسجيل الدخول بذلك البريد تُفتح غرفة العمليات على `/dashboard/admin`. محلياً: ازرع القاعدة ثم اختر حساب `admin — قصي` من شريط التطوير (`qusay@growlab.local`).

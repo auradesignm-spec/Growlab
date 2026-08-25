@@ -1,0 +1,25 @@
+# WhatsApp recovery nudges — every 15 minutes.
+# Vercel Hobby forbids sub-daily Cron Jobs; this workflow hits the same route.
+name: meta-recovery
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: POST /api/cron/meta-recovery
+        env:
+          APP_URL: ${{ secrets.GROWLAB_APP_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          if [ -z "$APP_URL" ] || [ -z "$CRON_SECRET" ]; then
+            echo "Skipping: set repo secrets GROWLAB_APP_URL (https://your-app.vercel.app) and CRON_SECRET (same as Vercel)."
+            exit 0
+          fi
+          curl -fsS -X POST \
+            -H "Authorization: Bearer ${CRON_SECRET}" \
+            "${APP_URL%/}/api/cron/meta-recovery"
