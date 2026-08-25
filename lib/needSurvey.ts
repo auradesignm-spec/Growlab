@@ -35,11 +35,6 @@ export const SURVEY_ADVICE: Record<AdviceKey, { ar: string; en: string }> = {
   },
 };
 
-export type SurveyWho = "no_store" | "has_store" | "browse";
-export type SurveyPain = "ads" | "noshow" | "whatsapp";
-export type GuideTarget = "open-account" | "how" | "proof-paths";
-export type AdviceKey = "adviceAds" | "adviceNoshow" | "adviceWhatsapp" | "adviceStore" | "adviceRead";
-
 export const SURVEY_WHO = [
   { id: "no_store" as const, ar: "تاجر — ما عندي متجر إلكتروني", en: "Merchant — no online store yet" },
   { id: "has_store" as const, ar: "تاجر — عندي سلة أو زد", en: "Merchant — I have Salla or Zid" },
