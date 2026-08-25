@@ -3,7 +3,12 @@
 import { useState, useTransition } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { submitStoreBrief } from "@/app/(dashboard)/dashboard/onboarding-actions";
-import { BRIEF_AUDIENCES, BRIEF_CATEGORIES } from "@/lib/merchant-store/brief";
+import {
+  BRIEF_AUDIENCES,
+  BRIEF_CATEGORIES,
+  type BriefAudienceId,
+  type BriefCategoryId,
+} from "@/lib/merchant-store/brief";
 
 export default function StoreBriefSurvey({ initialName = "" }: { initialName?: string }) {
   const t = useTranslations("dashboardApp.storeBrief");
@@ -11,9 +16,9 @@ export default function StoreBriefSurvey({ initialName = "" }: { initialName?: s
   const ar = locale === "ar";
   const [step, setStep] = useState<0 | 1 | 2 | 3>(0);
   const [businessName, setBusinessName] = useState(initialName);
-  const [audienceId, setAudienceId] = useState(BRIEF_AUDIENCES[0].id);
+  const [audienceId, setAudienceId] = useState<BriefAudienceId>(BRIEF_AUDIENCES[0].id);
   const [slogan, setSlogan] = useState("");
-  const [categoryId, setCategoryId] = useState(BRIEF_CATEGORIES[0].id);
+  const [categoryId, setCategoryId] = useState<BriefCategoryId>(BRIEF_CATEGORIES[0].id);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
