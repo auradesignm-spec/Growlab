@@ -18,9 +18,9 @@
     "admin": "Admin",
     "partnerPortal": "Partner portal",
     "ctaMerchant": "Register as merchant",
-    "ctaCreator": "Register as creator",
+    "ctaCreator": "Register as merchant",
     "enterPlatform": "Enter the platform",
-    "startEarning": "Start earning profits",
+    "startEarning": "Open your company account",
     "backHome": "Home",
     "openDashboard": "My dashboard",
     "openMenu": "Open menu",
@@ -35,25 +35,44 @@
   },
   "enter": {
     "eyebrow": "Enter the platform",
-    "title": "What do you want to do?",
-    "lede": "Pick the sentence that fits. We'll send you to the right account.",
-    "merchantTitle": "I have products and need people to sell them",
-    "merchantLede": "List products, accept marketers, and collect cash on delivery.",
+    "title": "Open your company account",
+    "lede": "A performance distribution network for merchants. Budget cap, pay on collected performance.",
+    "merchantTitle": "I sell products and need customers on performance",
+    "merchantLede": "Open a capped campaign, track COD orders, and pay on visits and collected sales.",
     "merchantNext": "After signup we review your commercial registration and owner ID.",
-    "creatorTitle": "I want to share links and earn",
-    "creatorLede": "Pick from the feed, share your link, and earn after collection.",
-    "creatorNext": "After signup you verify your ID and face, then you get your link.",
     "confirmMerchant": "Good. We'll open a merchant account.",
-    "confirmCreator": "Good. We'll open a marketer account.",
     "continue": "Create account",
-    "change": "Change choice",
     "signInPrompt": "Already have an account?",
     "signIn": "Sign in"
+  },
+  "demo": {
+    "eyebrow": "Interactive demo",
+    "title": "Build your store — Odoo-style",
+    "lede": "Enter as merchant to open Start Now → configurator → building → blocks editor. Or try the post-purchase buyer path.",
+    "merchantKicker": "Merchant",
+    "merchantTitle": "Create your online store",
+    "merchantLede": "Opens Start Now, then sentence config, collage, and the blocks editor — the Odoo flow we built.",
+    "merchantCta": "Start now",
+    "buyerKicker": "Buyer",
+    "buyerTitle": "Customer who bought",
+    "buyerLede": "See how to share after COD purchase, submit your reel, and copy your product link.",
+    "buyerCta": "Enter as buyer",
+    "storeHint": "Or browse the ready demo store at",
+    "badge": "Demo",
+    "asMerchant": "Viewing as Muttrah Attars (merchant)",
+    "asBuyer": "Viewing as demo buyer",
+    "asGuest": "Demo session",
+    "switchMerchant": "Switch to merchant",
+    "switchBuyer": "Switch to buyer",
+    "visitStore": "Visit store",
+    "shareLink": "Share link",
+    "sampleOrder": "Sample order",
+    "exit": "Exit demo"
   },
   "appShell": {
     "nav": {
       "aria": "Marketer navigation",
-      "feed": "Feed",
+      "feed": "How to earn",
       "store": "My store",
       "earnings": "Earnings",
       "account": "Account"
@@ -80,30 +99,47 @@
         "deal_accepted": "The merchant accepted",
         "new_order": "New order",
         "commission": "Commission hit the ledger",
-        "new_application": "A marketer applied"
+        "new_application": "A marketer applied",
+        "low_wallet": "Wallet low — top up before activating a campaign"
       }
     }
   },
   "marketing": {
     "hero": {
-      "title": "Share more. Earn more.",
-      "lede": "A pay-on-collection sales channel. The merchant lists, the marketer sells from their link, and you pay only after the cash arrives.",
-      "ctaMerchant": "Register as a merchant",
-      "ctaCreator": "Register to sell from home",
+      "title": "Your customer is your project's best marketer.",
+      "lede": "Open a campaign with your cap. Customers buy and refer — you pay only on visits and collected sales. No upfront ads, no agency.",
+      "ctaMerchant": "Open your company account",
+      "ctaDemo": "Try interactive demo",
       "enterPlatform": "Enter the platform",
-      "startEarning": "Start earning profits",
+      "startCampaign": "Start your campaign",
       "hasAccount": "Already have an account?",
       "signIn": "Sign in"
     },
     "problem": {
       "eyebrow": "The problem",
-      "title": "Why WhatsApp selling eats your margin before you scale",
-      "lede": "The problem is not an agency. It is commission, cash, and returns with no ledger.",
+      "title": "You pay twice… and still ask: where are the customers?",
+      "lede": "WhatsApp organizes chat. Agencies sell promises. \"We will build you a store\" is a commodity. There is no customer engine working for you.",
       "items": [
-        { "num": "01", "title": "Deals lost in chat", "text": "Every marketer is a verbal deal. Terms drift, and the order disappears between threads." },
-        { "num": "02", "title": "Who closed this order?", "text": "Without a locked link, credit becomes a fight. The merchant pays twice or the marketer never gets paid." },
-        { "num": "03", "title": "Orders without cash", "text": "COD fails at the door. If you pay commission on the order, not collection, you lose twice." },
-        { "num": "04", "title": "Commission before cash arrives", "text": "You pay on a maybe. The right platform deducts after collection and holds a returns reserve." }
+        {
+          "num": "01",
+          "title": "Upfront ad spend",
+          "text": "You pay cash before you know if the campaign brought a collected sale."
+        },
+        {
+          "num": "02",
+          "title": "Agency without performance accounting",
+          "text": "Reach and reports… while orders stay WhatsApp chaos."
+        },
+        {
+          "num": "03",
+          "title": "\"Online store\" is a commodity",
+          "text": "You do not need another storefront — you need people who distribute and a ledger that closes attribution."
+        },
+        {
+          "num": "04",
+          "title": "Customers lost as a channel",
+          "text": "They bought and are happy… but nothing turns them into a distribution network working for you."
+        }
       ],
       "vizYou": "You",
       "vizManager": "Manager",
@@ -124,81 +160,109 @@
       "vizFail": "Failed"
     },
     "how": {
-      "eyebrow": "How the market works",
-      "title": "Three steps. Full clarity.",
-      "lede": "From first registration, to a real sale on a creator link, to a share you can see.",
-      "startMerchant": "Start as a merchant",
-      "startCreator": "Start as a marketer",
+      "eyebrow": "How it works",
+      "title": "Three steps from your campaign to collected sales",
+      "lede": "From opening the campaign, to COD orders, to performance measured and spent from your cap.",
+      "startMerchant": "Open your company account",
       "steps": [
-        { "n": "01", "title": "Register and pick your role", "text": "Merchant or creator? Choose in two minutes. No signup fee and no long manual approval." },
-        { "n": "02", "title": "The merchant lists. The creator builds a store.", "text": "The merchant uploads products and sets commission. The creator opens a personal store and picks what to promote." },
-        { "n": "03", "title": "Cash arrives, then it splits", "text": "The buyer orders COD. After collection is confirmed, commission and 6% leave the merchant wallet. One ledger for both sides." }
+        {
+          "n": "01",
+          "title": "Build your store and open a campaign",
+          "text": "KYC, then Odoo store and products. Set purchase % and reel CPM with a budget cap — top up the wallet."
+        },
+        {
+          "n": "02",
+          "title": "Customers buy and share",
+          "text": "COD order → share link. Buyers promote. Optional reels multiply earnings after you approve."
+        },
+        {
+          "n": "03",
+          "title": "Pay on performance only",
+          "text": "After collection: share earns + attested views from the cap and wallet. No pay for link clicks."
+        }
       ]
     },
     "compare": {
       "eyebrow": "Compare",
-      "lede": "Pick merchant or marketer. Each row puts Growlab against the old way.",
-      "merchantLabel": "For merchants",
-      "creatorLabel": "For marketers",
-      "merchantHeading": "Growlab versus agencies and manual outreach",
-      "creatorHeading": "Growlab versus hunting for merchants one by one",
+      "lede": "Growlab versus familiar options — from the merchant's point of view.",
+      "merchantHeading": "Growlab versus ads, agencies, and storefronts",
       "merchantPoints": [
-        { "title": "Reach a ready marketer network", "us": "Creators add your product to their stores in one tap. No one-by-one hunting.", "them": "You hunt marketers yourself, or pay an agency up front with no guaranteed sale." },
-        { "title": "Your product shows in ready storefronts", "us": "The listing appears in personal stores that already exist. No extra design work from you.", "them": "You build a sales channel yourself, on time and budget separate from your core work." },
-        { "title": "You pay from a real sale", "us": "No monthly fee. The share is taken from a closed order in the ledger.", "them": "A fixed fee whether the campaign works or fails." },
-        { "title": "An open ledger", "us": "Merchant share and commission show at the moment of the order.", "them": "Reach reports with no link to sales." }
-      ],
-      "creatorPoints": [
-        { "title": "A personal store, ready", "us": "A storefront under your name at signup. Pick products and share one link.", "them": "You hunt merchants and negotiate one by one." },
-        { "title": "Every sale from your link", "us": "The order is attributed to your link automatically. No guessing who closed it.", "them": "Disputes over who made the sale and what the commission is." },
-        { "title": "Commission written at once", "us": "The engine writes your share into the ledger at the order.", "them": "A late manual transfer, or a verbal deal." },
-        { "title": "Samples inside the platform", "us": "A built-in sample request. The merchant approves from their dashboard.", "them": "You buy the product yourself to film it." }
+        {
+          "title": "Customer acquisition",
+          "us": "Share + content + clip loop — your customers become the channel",
+          "them": "Upfront ad cash or an agency with no tie to sales"
+        },
+        {
+          "title": "What you buy",
+          "us": "Performance with a budget cap you control",
+          "them": "Reach promises or \"a new store\""
+        },
+        {
+          "title": "Cost",
+          "us": "Visit and collected sale — auto-stop at cap",
+          "them": "Fixed fees even when the campaign fails"
+        },
+        {
+          "title": "COD and ledger",
+          "us": "Every order is an open line: sale, performance, your share",
+          "them": "WhatsApp chaos and reports without collection"
+        }
       ]
     },
     "roadmap": {
       "eyebrow": "Your path",
-      "title": "Pick a role. Take the next step.",
-      "lede": "Five clear steps. Tap a step to read what happens next.",
+      "title": "From signup to your first distribution campaign",
+      "lede": "Five clear steps for the merchant or company.",
       "next": "Next step",
-      "merchantLabel": "Merchant or company",
-      "creatorLabel": "Marketer or creator",
-      "merchantCta": "Start as a merchant",
-      "creatorCta": "Start as a marketer",
+      "merchantCta": "Open your company account",
       "merchantSteps": [
-        { "n": "01", "title": "Register the company", "text": "Two minutes. You pick the merchant role, fill registry details, then enter your portal." },
-        { "n": "02", "title": "Add the product and commission", "text": "Photo, price, sizes if needed, and the marketer share. It appears in the catalog at once." },
-        { "n": "03", "title": "A marketer adds it to their store", "text": "Creators pick from your catalog. No one-off WhatsApp threads." },
-        { "n": "04", "title": "You confirm the order", "text": "Every COD order lands on your dashboard. Approve or reject. Same status the admin sees." },
-        { "n": "05", "title": "Profit after collection", "text": "Merchant share, commission, and 6% show after cash is confirmed. A 14-day returns reserve, then payout." }
-      ],
-      "creatorSteps": [
-        { "n": "01", "title": "Register and open your store", "text": "Pick the marketer role. The storefront is ready at signup. One link with your name." },
-        { "n": "02", "title": "Pick merchant products", "text": "The feed shows trending products as posts. Pick one, apply, and see commission before you share." },
-        { "n": "03", "title": "Share the link", "text": "Story, reel, or bio. Every tap on your link is yours. No guessing who closed the sale." },
-        { "n": "04", "title": "The order is counted for you", "text": "The customer pays cash on delivery from your store. The order shows for the merchant and for you." },
-        { "n": "05", "title": "Your commission after collection", "text": "Your share is calculated after cash is confirmed. You see it on the dashboard, same numbers as the merchant, with a 14-day returns reserve." }
+        {
+          "n": "01",
+          "title": "Register the company",
+          "text": "Two minutes. Commercial registration details, then your portal."
+        },
+        {
+          "n": "02",
+          "title": "Add the product and open a campaign",
+          "text": "Price, media, performance pricing, budget cap, and UGC terms if you want them."
+        },
+        {
+          "n": "03",
+          "title": "The distribution network launches",
+          "text": "Shares from your customers, approved content, and clips — without managing every person by hand."
+        },
+        {
+          "n": "04",
+          "title": "Confirm COD orders",
+          "text": "Every order lands on your board. Approve or reject. Collection is recorded in the ledger."
+        },
+        {
+          "n": "05",
+          "title": "Track performance and cap",
+          "text": "Visits, sales, and spend from the budget — no surprise invoice."
+        }
       ]
     },
     "gallery": {
-      "storeTitle": "Trending in the feed",
-      "storeCaption": "Photo or video posts from what the merchant published. Marketers pick a product and apply.",
-      "feedKicker": "Merchant post",
-      "feedNote": "Photo or video. Commission shows before you apply.",
+      "storeTitle": "Active campaign on your dashboard",
+      "storeCaption": "Product, media, performance pricing, and budget cap — all from the merchant's point of view.",
+      "feedKicker": "Distribution campaign",
+      "feedNote": "Visit and collected sale. The cap stops the campaign automatically.",
       "videoBadge": "Video",
       "priceLabel": "Sale price",
-      "yourCommission": "Your commission",
-      "linkTitle": "A link that tracks every sale",
-      "linkCaption": "You share your store link. The buyer enters without an account, orders from the store, and pays cash on delivery. The order is attributed to your link.",
-      "ledgerTitle": "A product tracking dashboard",
-      "ledgerCaption": "Link visits, orders, and your commission in one board. The same ledger numbers at the order.",
-      "todayOrder": "Today's order",
-      "dashLabel": "Product dashboard",
+      "budgetCap": "Budget cap",
+      "linkTitle": "The distribution loop works for you",
+      "linkCaption": "Your customers share after purchase. Every visit and COD order is attributed to the campaign and spent from your cap.",
+      "ledgerTitle": "Campaign performance",
+      "ledgerCaption": "Visits, orders, and spend from the cap — in one board.",
+      "todayOrder": "New order",
+      "dashLabel": "Campaign dashboard",
       "dashWeek": "This week's movement",
-      "dashNote": "Profit, sales, and visits update with each order. No external report.",
+      "dashNote": "Performance updates with every visit and collected order.",
       "dashKpi": {
         "visits": "Visits",
         "sales": "Sales",
-        "profit": "Profit"
+        "spent": "Spent"
       },
       "dashDays": {
         "sat": "Sa",
@@ -210,35 +274,32 @@
         "fri": "Fr"
       },
       "dashSplit": {
-        "merchant": "Merchant share",
-        "yours": "Your commission"
+        "merchant": "Your share",
+        "performance": "Campaign performance"
       },
       "omr": "OMR",
       "productA": "Royal perfume",
       "productB": "High-power flashlight",
       "productC": "Professional shaver",
       "productD": "Car charger",
-      "commissionA": "Commission 5.60",
-      "commissionB": "Commission 3.80",
-      "commissionC": "Commission 4.20",
-      "creatorLink": "Marketer link",
-      "copyLink": "Copy marketer link",
-      "copiedLink": "Link copied",
-      "ordersFromLink": "3 orders from this link",
-      "newOrder": "New order from Muscat",
+      "budgetA": "Cap 500 OMR",
+      "budgetB": "Cap 300 OMR",
+      "budgetC": "Cap 400 OMR",
+      "campaignStatus": "Active",
+      "newOrder": "COD order from Muscat",
       "linkProduct": "Product in your campaign",
-      "linkStepShare": "1. Share your store link",
-      "linkStepTap": "2. The buyer enters",
-      "linkStepOrder": "3. Orders from the store",
-      "linkGuest": "No account needed",
-      "linkCod": "Pays cash on delivery",
-      "linkFunnelTitle": "From this link",
+      "linkStepShare": "1. Customer shares",
+      "linkStepTap": "2. Visit from the link",
+      "linkStepOrder": "3. COD order",
+      "linkGuest": "Attributed to campaign",
+      "linkCod": "Cash collection",
+      "linkFunnelTitle": "Campaign performance",
       "linkFunnel": {
-        "opens": "Opens",
+        "opens": "Visits",
         "orders": "Orders",
-        "commission": "Your commission"
+        "spent": "Spent"
       },
-      "linkAttributed": "Orders are tied to your link. Tracking is the store, not the payment method."
+      "linkAttributed": "Every order is tied to the campaign. The ledger closes attribution automatically."
     },
     "ledger": {
       "eyebrow": "Open ledger",
@@ -274,93 +335,171 @@
       "currency": "OMR"
     },
     "valueChain": {
-      "eyebrow": "Value chain",
-      "title": "Publish the product. Marketers join. Product details and the link move with them.",
-      "lede": "The merchant lists the product in every marketer's feed. After the merchant accepts an application, the full product details land in the marketer's store, with a trackable referral link. Selling and profit start there.",
+      "eyebrow": "Distribution chain",
+      "title": "From your product to a performance distribution network",
+      "lede": "You are at the center: open the campaign, set the cap, and track performance. The network — share, content, clip — works for you.",
       "nodes": [
-        { "id": "feed", "title": "The feed", "desc": "Trending products show as posts: media, name, sale price, and marketer commission. Pick a product and apply from one place." },
-        { "id": "apply", "title": "Apply", "desc": "The marketer joins the campaign in one tap. No hunting merchants on WhatsApp, and no one-off terms." },
-        { "id": "accept", "title": "Merchant accept", "desc": "The merchant accepts the right marketer. The product enters no store until that accept. Control stays with the merchant." },
-        { "id": "transfer", "title": "Product details transfer", "desc": "This is the move: on accept, every product detail copies into the marketer's store, and a trackable referral link appears. Ready to share on day one, without re-uploading photos or pasting a brief." },
-        { "id": "earn", "title": "Sell and earn", "desc": "The marketer shares the link with friends and on social. Every sale from that link is attributed in the ledger. Profit comes from sales." }
+        {
+          "id": "feed",
+          "title": "Open the campaign",
+          "desc": "Product, media, performance pricing (visit/purchase), and budget cap. No subscription."
+        },
+        {
+          "id": "apply",
+          "title": "Distribution network",
+          "desc": "Your customers share after purchase. Approved UGC gets clipped and distributed — without managing every person by hand."
+        },
+        {
+          "id": "accept",
+          "title": "COD orders",
+          "desc": "Every order lands on your dashboard. Approve or reject. Collection is recorded in the ledger."
+        },
+        {
+          "id": "transfer",
+          "title": "Measured performance",
+          "desc": "Visits, sales, and spend from the cap — in open numbers. Auto-stop when the budget runs out."
+        },
+        {
+          "id": "earn",
+          "title": "The loop repeats",
+          "desc": "Share → visit → purchase → new share → content → clip. Every cycle works for your campaign."
+        }
       ],
       "vizPhoto": "Photos",
       "vizVideo": "Video",
       "vizDetail": "Brief",
-      "vizFeedItem": "Product in the feed",
-      "vizApply": "Join campaign",
-      "vizAccept": "Accepted",
-      "vizPending": "Waiting",
-      "vizLink": "Trackable referral link",
-      "shareUrl": "growlab.om/marketeer",
-      "orderLabel": "Sale from the link",
-      "splitMerchant": "Merchant",
-      "splitMarketer": "Marketer",
+      "vizFeedItem": "Active campaign",
+      "vizApply": "Distribution network",
+      "vizAccept": "COD order",
+      "vizPending": "Awaiting confirm",
+      "vizLink": "Tracked link",
+      "shareUrl": "growlab.om/campaign",
+      "orderLabel": "Collected sale",
+      "splitMerchant": "Your share",
+      "splitMarketer": "Network performance",
       "splitPlatform": "Platform"
     },
     "partners": {
-      "eyebrow": "For merchants and creators",
-      "title": "Real advantages for whoever supplies the product or the content",
-      "lede": "We are not selling you a vague promise. This is the mechanism every deal on the platform actually runs on.",
+      "eyebrow": "For merchants and companies",
+      "title": "Operational advantages for the business owner",
+      "lede": "No vague promises. This is the mechanism that protects your wallet and brings customers on performance.",
       "items": [
-        { "title": "Precise sales attribution", "text": "Every order is tied to a specific creator link or code, inside a fixed attribution window. No guessing who closed the sale." },
-        { "title": "A clear split on every collected sale", "text": "After cash is confirmed: sale minus marketer commission minus 6% platform. COD has no gateway fee. The rest is the merchant's." },
-        { "title": "Returns reserve, then payout", "text": "10% of the marketer commission is held 14 days after collection. A return pulls the line back. Then the share can be withdrawn." }
+        {
+          "title": "A budget cap you control",
+          "text": "Set the campaign cap. Spend stops automatically when it runs out — no surprise invoice."
+        },
+        {
+          "title": "Pay on collected performance",
+          "text": "Visit and sale after collection is confirmed. No upfront ads and no fixed fees without results."
+        },
+        {
+          "title": "An open ledger per order",
+          "text": "Sale, network performance, your share — one line per COD order. Same numbers on your dashboard."
+        }
       ]
     },
     "governance": {
       "eyebrow": "Governance and control",
-      "title": "Protection is built into the system, not into a promise",
-      "lede": "Six fixed rules govern every deal on the platform. They are not an exception we grant if you ask.",
+      "title": "Rules that protect the merchant wallet",
+      "lede": "Six fixed rules in the system — not promises in a contract.",
       "items": [
-        { "icon": "floor", "title": "Marketer commission", "text": "The merchant picks 10, 15, or 20%. 25% unlocks only when gross margin is above 50%. It locks on the deal." },
-        { "icon": "lock", "title": "A locked deal snapshot", "text": "Price and commission lock at the moment of agreement. A discount added later cannot cut your share retroactively." },
-        { "icon": "clock", "title": "Returns reserve", "text": "10% of the marketer commission is held 14 days after collection. Protection from returns, not delay in payout." },
-        { "icon": "ledger", "title": "A transparent ledger per order", "text": "Each order is its own line: the sale, marketer commission, 6% platform, and the merchant share. Gateway fee is zero on cash." },
-        { "icon": "shield", "title": "No direct contact between parties", "text": "Merchant and creator never exchange phone numbers or off-platform accounts. Filters block leaks in any form. Sample and shipping requests are coordinated entirely inside Growlab." },
-        { "icon": "link", "title": "Exclusive tracking protects your commission", "text": "Your commission is guaranteed only through your referral link and personal store inside Growlab. Leaving the platform is a financial risk for the creator, and a loss of sale integrity for the merchant." }
+        {
+          "icon": "floor",
+          "title": "Budget cap",
+          "text": "You set the campaign cap. Spend stops automatically when it runs out."
+        },
+        {
+          "icon": "lock",
+          "title": "Locked performance pricing",
+          "text": "Visit and purchase rates lock when the campaign opens. No retroactive changes."
+        },
+        {
+          "icon": "clock",
+          "title": "Pay after collection",
+          "text": "Performance is deducted from your cap only after COD collection is confirmed. 14-day returns reserve."
+        },
+        {
+          "icon": "ledger",
+          "title": "Transparent ledger",
+          "text": "Each order is its own line: sale, network performance, your share. Gateway fee is zero on cash."
+        },
+        {
+          "icon": "shield",
+          "title": "Approved UGC",
+          "text": "Content passes your approval before publishing. You control what gets distributed under your product."
+        },
+        {
+          "icon": "link",
+          "title": "Automatic attribution",
+          "text": "Every visit and order is tied to the campaign. No credit disputes — the ledger closes it."
+        }
+      ]
+    },
+    "faq": {
+      "eyebrow": "FAQ",
+      "title": "COD, sharing, UGC, and KYC",
+      "items": [
+        {
+          "q": "Do buyers need an account to order?",
+          "a": "No. COD needs phone and address. After purchase they claim a share link with a simple sign-in."
+        },
+        {
+          "q": "When do I pay marketers?",
+          "a": "Only after collection is confirmed. Pay on collected purchases from share links and attested reel views — never for link clicks."
+        },
+        {
+          "q": "Is filming required?",
+          "a": "No. Sharing the link is enough. Reels are optional and multiply earnings after you approve them."
+        },
+        {
+          "q": "What about KYC?",
+          "a": "Merchants upload commercial registration and owner ID before listing products. Admin reviews before full activation."
+        }
       ]
     },
     "pricing": {
-      "eyebrow": "Revenue split",
-      "title": "How we split profit. No subscription. No fees.",
-      "lede": "Every collected sale splits: marketer commission (10, 15, or 20%), then 6% platform. Cash has no gateway fee. 10% of commission is a 14-day returns reserve.",
-      "merchantTitle": "For merchants",
-      "merchantSubtitle": "You keep full control of your product and your commission rate",
-      "merchantStat": "The rest",
-      "merchantStatNote": "after commission and 6% platform — on collected cash",
-      "merchantFeatures": [
-        "You pick marketer commission at 10, 15, or 20% before any campaign",
-        "A product will not publish if your margin after cost is negative",
-        "Commission is taken from your wallet when you confirm collection",
-        "No monthly subscription or signup fee"
+      "eyebrow": "Pricing",
+      "title": "Free to start — Pro to scale",
+      "lede": "Start free with a store, products, and one performance campaign. Upgrade to Pro for unlimited products, AI store tools, and a higher campaign cap.",
+      "freeTitle": "Free",
+      "freeSubtitle": "For merchants testing Growlab",
+      "freeStat": "0 OMR/mo",
+      "freeStatNote": "No signup fee",
+      "proTitle": "Pro",
+      "proSubtitle": "For serious distribution",
+      "proStat": "15 OMR/mo",
+      "proStatNote": "Cancel anytime",
+      "performanceNote": "Performance spend (campaign cap + wallet top-ups) is separate from subscription — you only pay on visits and collected sales.",
+      "freeFeatures": [
+        "Up to 3 products",
+        "1 active performance campaign",
+        "Campaign cap up to 100 OMR",
+        "Manual store editor",
+        "8 media assets per product"
       ],
-      "creatorTitle": "For marketers",
-      "creatorSubtitle": "Your commission is what the merchant set: 10, 15, or 20%",
-      "creatorStat": "10–20%",
-      "creatorStatNote": "of the collected sale price, locked on the deal",
-      "creatorFeatures": [
-        "Your personal store is ready at signup",
-        "A referral link that tracks every sale automatically",
-        "Samples unlock after first sales, with a 25% deposit — not the full price",
-        "Withdraw after the returns reserve, minimum 9.61 OMR"
+      "proFeatures": [
+        "Unlimited products",
+        "Unlimited active campaigns",
+        "Campaign cap up to 2,000 OMR",
+        "AI assistant + store offers",
+        "Unlimited media per product"
       ]
     },
     "founders": {
       "eyebrow": "The founder",
-      "title": "One founder. Built as a market, not a service.",
+      "title": "One founder. Built a distribution network, not a store.",
       "name": "Qusay Nader Al-Nabarawi",
       "role": "Founder of Growlab",
       "pillSecurity": "Cybersecurity student",
       "pillMarketing": "5 years in marketing",
       "p1": "I am Qusay, a cybersecurity student first. The first question I ask about any system is: \"Where is the gap?\" I built Growlab on that question, not on a ready marketing slogan.",
-      "p2": "A platform that handles commissions and money for merchants and creators has to be hardened against fraud by design, not after a breach. That is what actually protects your money, and every partner's money on the platform, not just on paper.",
-      "p3": "On the other side, five years spent in real marketing. Real campaigns, real budgets, real clients. I am not building a theoretical security system only an engineer understands. I am building it for a market where every merchant and creator has to sell from day one.",
+      "p2": "A platform that handles merchant budgets and money has to be hardened against fraud by design. That is what actually protects your campaign cap and your money, not just on paper.",
+      "p3": "Five years in real marketing — campaigns, budgets, real clients. I am not building a theoretical system; I am building it for a merchant who needs customers on performance from day one.",
       "quote": "We only earn if you earn. That is the whole difference."
     },
     "contact": {
       "eyebrow": "Let's start",
-      "title": "Ready to see the difference?",
+      "title": "Ready to open your first campaign?",
       "lede": "Book a free 15-minute consult, or message us directly on WhatsApp.",
       "formAria": "Contact form",
       "name": "Name",
@@ -387,11 +526,60 @@
       "signIn": "Sign in",
       "signUp": "Join",
       "enterPlatform": "Enter the platform",
-      "startEarning": "Start earning profits"
+      "startCampaign": "Register your company"
     },
     "footer": {
-      "rights": "All rights reserved."
+      "rights": "All rights reserved.",
+      "terms": "Terms",
+      "privacy": "Privacy",
+      "merchantTerms": "Merchant agreement"
     }
+  },
+  "share": {
+    "eyebrow": "Share after purchase",
+    "title": "Your link is ready",
+    "lede": "You bought {product} from {store}. Your share link is ready now — activate and share.",
+    "waitFulfill": "Your share link appears as soon as the order is placed.",
+    "claimHint": "Activate your link now with your order phone — no need to wait for collection.",
+    "phoneLabel": "Order phone",
+    "phonePlaceholder": "+968…",
+    "claimCta": "Activate link",
+    "claiming": "Activating…",
+    "claimFailed": "Could not activate.",
+    "claimed": "Hi @{user} — your link is ready to share.",
+    "copyLink": "Copy link",
+    "whatsapp": "Share on WhatsApp",
+    "visitStore": "Visit store",
+    "noAccount": "Don't have an account?",
+    "signUpMarketer": "Sign up to activate your link",
+    "signUpToClaim": "Sign up to claim your link",
+    "waText": "{product} — order from: {link}",
+    "strictRules": "No pay for link clicks. Earn on merchant-approved reel views + collected sales from your link.",
+    "reelTitle": "Your buyer reel",
+    "reelLede": "Post an Instagram/TikTok reel. The merchant approves it and attests views — you never self-report counts.",
+    "reelUrlLabel": "Public reel URL",
+    "reelUrlPlaceholder": "https://instagram.com/reel/…",
+    "reelSubmit": "Submit for review",
+    "reelSubmitting": "Submitting…",
+    "reelFailed": "Could not submit reel.",
+    "reelPending": "Reel pending merchant review.",
+    "reelApproved": "Reel approved — views pay after merchant attestation."
+  },
+  "attribution": {
+    "eyebrow": "Signed attribution ledger",
+    "title": "Verify receipt",
+    "lede": "Each order builds an HMAC-signed event chain. Tampering breaks the tip hash.",
+    "valid": "Chain and signatures verified",
+    "invalid": "Verification failed — do not trust this receipt",
+    "tipHash": "Tip hash",
+    "eventOrderPlaced": "Order sealed",
+    "eventAttributionBound": "First-touch attribution bound",
+    "eventShareGranted": "Share entitlement granted",
+    "eventStatusChanged": "Order status changed",
+    "eventEarnRecorded": "Performance earn recorded",
+    "eventGeneric": "Ledger event",
+    "footnote": "Growlab signs events with a platform secret. This is a verifiable performance ledger — not a public blockchain.",
+    "jsonApi": "Open JSON receipt"
   },
   "creator": {
     "kicker": "From the video",
@@ -410,7 +598,7 @@
     "orderPlaced": "Order received",
     "orderFailed": "Could not place the order. Try again.",
     "orderSuccessTitle": "Order received. Cash on delivery.",
-    "orderSuccessLede": "The merchant will confirm size and delivery. No account needed.",
+    "orderSuccessLede": "Track with your phone. After purchase you get a share link — claim it with your account to track your cut.",
     "orderRef": "Ref {id}",
     "buyerName": "Your name",
     "buyerPhone": "Phone",
@@ -418,11 +606,11 @@
     "quantity": "Qty",
     "fromStore": "From this store",
     "whatsapp": "Ask on WhatsApp",
-    "cod": "Cash on delivery — no account",
+    "cod": "Cash on delivery — tracked by phone",
     "guest": "Guest",
-    "confirmHint": "Pay when the order arrives. The merchant confirms on their dashboard.",
+    "confirmHint": "Pay when the order arrives. The merchant confirms on their dashboard. Your phone links the order to share performance.",
     "home": "Growlab",
-    "orderMessage": "Order from {name} — {product} — size {size}. Cash on delivery, no account.",
+    "orderMessage": "Order from {name} — {product} — size {size}. Cash on delivery — tracked by phone.",
     "chatMessage": "Question about {name}'s piece on Growlab.",
     "moreFrom": "More from {name}",
     "emptyStorefront": {
@@ -442,15 +630,39 @@
     "signOut": "Exit",
     "emptyNote": "The portal is ready to wire. Figures below are stand-ins — not live data.",
     "metrics": [
-      { "label": "Orders this week", "value": "12" },
-      { "label": "Awaiting confirm", "value": "3" },
-      { "label": "Close rate", "value": "0.41" }
+      {
+        "label": "Orders this week",
+        "value": "12"
+      },
+      {
+        "label": "Awaiting confirm",
+        "value": "3"
+      },
+      {
+        "label": "Close rate",
+        "value": "0.41"
+      }
     ],
     "ledgerKicker": "Index / Drops",
     "rows": [
-      { "id": "01", "title": "The shirt in frame", "meta": "Night video · COD", "status": "Live" },
-      { "id": "02", "title": "Lens cap", "meta": "Story · Draft", "status": "Hold" },
-      { "id": "03", "title": "Cutting notebook", "meta": "Unpublished", "status": "—" }
+      {
+        "id": "01",
+        "title": "The shirt in frame",
+        "meta": "Night video · COD",
+        "status": "Live"
+      },
+      {
+        "id": "02",
+        "title": "Lens cap",
+        "meta": "Story · Draft",
+        "status": "Hold"
+      },
+      {
+        "id": "03",
+        "title": "Cutting notebook",
+        "meta": "Unpublished",
+        "status": "—"
+      }
     ]
   },
   "profile": {
@@ -471,12 +683,183 @@
     "noSeedData": "No seeded users yet — run \"npm run db:seed\" and reload.",
     "noProfile": "This dev user has no merchant or creator profile.",
     "merchant": {
+      "home": {
+        "kicker": "Merchant board",
+        "lede": "Finish setup, then run store, products, and campaigns from one place.",
+        "continueSetup": "Continue setup",
+        "statusLabel": "Verification",
+        "planFree": "Free plan",
+        "planPro": "Pro plan",
+        "shortcutsTitle": "Shortcuts",
+        "primaryTabs": "Primary sections",
+        "moreTabs": "More",
+        "more": "More",
+        "shortcuts": {
+          "store": "My store",
+          "storeLive": "Edit live store",
+          "storeEdit": "Create or edit store",
+          "product": "New product",
+          "productHint": "Add a product and open a campaign",
+          "campaign": "Performance",
+          "campaignHint": "Cap, rates, and reels",
+          "orders": "Orders",
+          "ordersHint": "{count} in the ledger",
+          "wallet": "Wallet",
+          "queue": "Accept queue",
+          "queueHint": "{count} waiting",
+          "channels": "WhatsApp / Meta",
+          "channelsHint": "Connect ads → capture interested buyers",
+          "adCoach": "Ad Coach",
+          "adCoachHint": "Analyze hook, caption, script — approve edits"
+        }
+      },
+      "channels": {
+        "back": "Dashboard",
+        "kicker": "Channels",
+        "title": "Connect WhatsApp for Instagram ads",
+        "lede": "Link your WhatsApp Business number once. Click-to-WhatsApp ads on Instagram land here with the buyer phone and which ad brought them — so interested non-buyers stop disappearing after the ad click.",
+        "notConfigured": "Meta is not configured on this server yet. Set NEXT_PUBLIC_META_APP_ID, META_APP_SECRET, META_EMBEDDED_SIGNUP_CONFIG_ID, and META_TOKEN_ENCRYPTION_KEY (see docs/META_CONNECT.md).",
+        "connect": "Connect WhatsApp",
+        "connecting": "Connecting…",
+        "disconnect": "Disconnect",
+        "statusActive": "Connected · {phone}",
+        "sdkMissing": "Meta SDK failed to load.",
+        "loginCancelled": "Meta login was cancelled.",
+        "sessionMissing": "WhatsApp session data did not arrive. Try again and finish Embedded Signup completely.",
+        "connectFailed": "Could not complete WhatsApp connect.",
+        "saveFailed": "Could not save.",
+        "disconnectFailed": "Could not disconnect.",
+        "lastError": "Last send error: {error}",
+        "autoReplyTitle": "First auto-reply",
+        "autoReplyLede": "Sent once when a new interested chat starts (within the 24h window). Keep it short: price, COD, ask them to reply نعم.",
+        "autoReplyEnabled": "Send auto-reply on new chats",
+        "saveAutoReply": "Save auto-reply",
+        "leadsTitle": "Interested chats",
+        "leadsLede": "Everyone who messaged your connected WhatsApp — from ads or organic.",
+        "leadsEmpty": "No chats yet. Run a Click-to-WhatsApp Instagram ad to the connected number.",
+        "statTotal": "{count} total",
+        "statAd": "{count} from ads",
+        "statOrganic": "{count} organic",
+        "badgeAd": "From ad",
+        "badgeOrganic": "Organic",
+        "markInterested": "Mark interested",
+        "markRejected": "Not interested",
+        "toAds": "Ad Coach",
+        "recoveryTitle": "Recovery nudges",
+        "recoveryLede": "Auto follow-ups at +1h / +6h / +24h while the chat is still open (24h WhatsApp window). Stops on نعم, reject, or collected cash.",
+        "recoveryEnabled": "Send recovery nudges",
+        "recovery1h": "+1 hour",
+        "recovery6h": "+6 hours",
+        "recovery24h": "+24 hours",
+        "saveRecovery": "Save recovery",
+        "capiDataset": "CAPI dataset: {id}",
+        "capiDatasetPending": "CAPI dataset creates itself on the first CTWA LeadSubmitted event."
+      },
+      "adCoach": {
+        "back": "Dashboard",
+        "toChannels": "WhatsApp channels",
+        "kicker": "Ad Coach",
+        "title": "Improve the ad — then launch from Growlab",
+        "lede": "Paste your hook, caption, script, and on-screen visual hook. We score psychology + Meta CTWA fit, you approve edits, then launch a Click-to-WhatsApp campaign with Advantage placements — no Ads Manager.",
+        "launchNotice": "Spend only happens after you connect an Ad Account, approve copy, set a daily budget, and tick the spend confirmation. Meta still reviews ads before delivery.",
+        "ctxLeads": "{count} interested chats",
+        "ctxAd": "{count} from ads",
+        "ctxWa": "WhatsApp: {state}",
+        "waOn": "connected",
+        "waOff": "not connected",
+        "adsAccountTitle": "Meta Ad Account",
+        "adsAccountLede": "Link the account that will pay for CTWA ads. Advantage placements let Meta pick Facebook + Instagram surfaces.",
+        "adsConnect": "Connect Ad Account",
+        "adsConnecting": "Connecting…",
+        "adsDisconnect": "Disconnect ads",
+        "adsAccountConnected": "Connected · {name} · {currency}",
+        "adsNotConfigured": "Set NEXT_PUBLIC_META_APP_ID (and META_ADS_DRY_RUN=true for local demo).",
+        "adsSdkMissing": "Meta SDK failed to load.",
+        "adsLoginCancelled": "Meta ads login was cancelled.",
+        "adsConnectFailed": "Could not connect ad account.",
+        "dryRunBadge": "dry-run",
+        "refreshTargets": "Refresh accounts / pages",
+        "pickAdAccount": "Ad account",
+        "pickPage": "Facebook Page",
+        "noPages": "No pages found",
+        "pageHint": "Page ID: {pageId} — refresh to switch account or page",
+        "needWhatsapp": "Connect WhatsApp on Channels before launching CTWA ads.",
+        "whatsappReady": "WhatsApp ready · {phone}",
+        "pickProductImage": "Or pick a product image",
+        "formTitle": "Creative to audit",
+        "product": "Product (optional)",
+        "productNone": "No product",
+        "hook": "Hook (first line / first 3 seconds)",
+        "caption": "Caption",
+        "script": "Spoken script (15–30s)",
+        "visualHook": "On-screen visual hook text",
+        "analyze": "Analyze & suggest",
+        "analyzing": "Analyzing…",
+        "analyzeFailed": "Analysis failed.",
+        "saveFailed": "Could not save.",
+        "resultTitle": "Analysis & suggested edits",
+        "score": {
+          "hook": "Hook",
+          "psych": "Psych",
+          "meta": "Meta fit",
+          "cta": "CTA",
+          "overall": "Overall"
+        },
+        "predict": "Interest lift {lift} · confidence {confidence}",
+        "suggestedHook": "Suggested hook",
+        "suggestedVisual": "Suggested visual hook",
+        "suggestedCaption": "Suggested caption",
+        "suggestedScript": "Suggested script",
+        "suggestedCta": "CTA",
+        "approve": "Approve suggestions",
+        "reject": "Reject",
+        "applyExport": "Apply to form (export-ready)",
+        "launchTitle": "Launch CTWA (Advantage placements)",
+        "launchLede": "Creates Campaign → Ad Set → Ad on Meta and turns them ACTIVE. No manual scheduling in Ads Manager.",
+        "dailyBudget": "Daily budget (account currency)",
+        "imageUrl": "Public image URL (https)",
+        "confirmSpend": "I authorize Meta to spend this daily budget from my linked ad account.",
+        "launch": "Launch campaign now",
+        "launching": "Launching…",
+        "launchFailed": "Launch failed.",
+        "advantageNote": "Automatic placements + Advantage audience across Facebook & Instagram → WhatsApp messages.",
+        "launchesTitle": "Live / recent launches",
+        "pause": "Pause",
+        "resume": "Resume",
+        "historyTitle": "Recent audits"
+      },
       "tabs": {
         "queue": "Accept queue",
         "products": "Products",
+        "store": "My store",
+        "campaign": "Performance campaign",
+        "wallet": "Top up wallet",
         "creators": "Creators",
         "orders": "Orders & Ledger",
-        "samples": "Sample requests"
+        "samples": "Sample requests",
+        "billing": "Subscription"
+      },
+      "store": {
+        "kicker": "Your store",
+        "title": "Publish settings",
+        "lede": "Slug, accent, and tagline — your products do the selling. Growlab sits on top of your catalog.",
+        "editCta": "Open store editor",
+        "startCta": "Start now — create store",
+        "viewCta": "View public store",
+        "publishedAt": "Live at /m/{slug}",
+        "draftAt": "Draft at /m/{slug} — publish to go live",
+        "hint": "Focus on products and offers. Store layout stays simple on purpose."
+      },
+      "onboarding": {
+        "kicker": "Store setup",
+        "hint": "Finish in order: KYC → store → product → campaign → publish.",
+        "steps": {
+          "kyc": "KYC",
+          "store": "Store",
+          "product": "Product",
+          "campaign": "Campaign",
+          "publish": "Publish"
+        }
       },
       "verificationBanner": {
         "pending": "Verification pending — your products are hidden from the public shop and can't be assigned to creators yet.",
@@ -491,6 +874,64 @@
         "balance": "Balance",
         "hint": "Commission and 6% are taken when you confirm collection. Top up via admin before you confirm orders.",
         "lowHint": "Balance is low. Confirm only after you top up, or confirmation will stop."
+      },
+      "walletTopup": {
+        "kicker": "Wallet top-up",
+        "title": "Request a balance top-up",
+        "lede": "Transfer to Growlab's bank account, then enter your transfer reference. Admin approves during business hours.",
+        "amount": "Amount (OMR)",
+        "proof": "Transfer reference",
+        "proofPlaceholder": "e.g. FT240823-1234",
+        "submit": "Submit top-up request",
+        "submitting": "Submitting…",
+        "failed": "Could not submit request.",
+        "status": {
+          "pending": "Pending approval",
+          "approved": "Approved",
+          "rejected": "Rejected"
+        }
+      },
+      "campaign": {
+        "kicker": "Distribution campaign",
+        "title": "Open a campaign with a budget cap",
+        "lede": "Set visit and purchase rates. The network spends from your cap — auto-stop when exhausted.",
+        "needProduct": "Add an active product first.",
+        "product": "Product",
+        "budgetCap": "Budget cap (OMR)",
+        "visitSharer": "Visit — sharer (OMR)",
+        "purchaseSharer": "Purchase — sharer rate (0.10 = 10%)",
+        "ugcBrief": "Content rules (optional)",
+        "spent": "Spent",
+        "save": "Save draft",
+        "saving": "Saving…",
+        "activate": "Activate campaign",
+        "pause": "Pause",
+        "saveFailed": "Could not save.",
+        "status": {
+          "draft": "Draft",
+          "active": "Active",
+          "paused": "Paused",
+          "ended": "Ended"
+        },
+        "freeLimits": "Free plan: 1 active campaign and cap up to {cap} OMR. Upgrade to Pro from the Subscription tab.",
+        "budgetCapMax": "Max {cap} OMR",
+        "budgetWarn": "Warning: {pct}% of budget used — {left} left.",
+        "strictRules": "No pay for link visits. Earn on approved buyer reel views + collected sales.",
+        "viewCpm": "View rate (OMR/1000) — buyer reel",
+        "reelsTitle": "Buyer reels",
+        "reelsLede": "Approve the reel, then enter the platform view count — min +500 between reports.",
+        "reelsEmpty": "No reels yet.",
+        "openReel": "Open reel",
+        "paidViews": "Last paid views: {count}",
+        "approveReel": "Approve reel",
+        "rejectReel": "Reject",
+        "attestViews": "Current total views",
+        "payViews": "Record views",
+        "reelStatus": {
+          "pending": "Pending",
+          "approved": "Approved",
+          "rejected": "Rejected"
+        }
       },
       "queue": {
         "title": "Accept marketers",
@@ -525,10 +966,19 @@
           "typeVideo": "Video",
           "urlPlaceholder": "Image or video URL (https://...)",
           "captionPlaceholder": "Short caption (optional)",
-          "addCta": "Add",
+          "addCta": "Add to product",
           "removeCta": "Remove",
-          "limitNote": "Up to 8 assets per product."
+          "limitNote": "Up to 8 assets per product. Upload from device or camera."
         }
+      },
+      "mediaUpload": {
+        "fromDevice": "From device",
+        "fromCamera": "Camera",
+        "uploading": "Uploading…",
+        "remove": "Remove",
+        "failed": "Upload failed",
+        "imageOnly": "Choose an image file.",
+        "videoOnly": "Choose a video file."
       },
       "creators": {
         "assignedTitle": "Assigned creators",
@@ -582,11 +1032,21 @@
         "newTitle": "Add a product and set the commission",
         "newLede": "Photo, price, and commission — it lands on the marketer feed in under a minute. Cost stays secret.",
         "coverLabel": "Post image",
-        "coverHint": "An image URL that appears on the feed immediately. Add video later from product media.",
+        "coverHint": "Upload a photo from your phone or camera — it shows on the feed immediately.",
         "coverPlaceholder": "https://… or /feed/attar-night.png",
+        "videoLabel": "Post video (optional)",
+        "videoHint": "Upload a short product clip from your gallery or camera.",
         "merchantOnly": "Switch to a merchant profile to add products.",
         "backToPortal": "Back to portal",
         "titleLabel": "Product title",
+        "slugLabel": "Product URL slug",
+        "slugHint": "Created automatically from the title",
+        "shortDescLabel": "Short description",
+        "shortDescHint": "One or two lines under the product name in the store.",
+        "shortDescPlaceholder": "Example: Royal attar — long lasting, Muscat delivery",
+        "descriptionLabel": "Product details",
+        "descriptionHint": "Write normal paragraphs. Blank line = new paragraph. Like WordPress — no code.",
+        "descriptionPlaceholder": "Why this product?\n\n• First benefit\n• Second benefit\n\nHow to order: pick a size and confirm — cash on delivery.",
         "categoryLabel": "Category",
         "tagsLabel": "Tags (comma separated)",
         "variantsLabel": "Variants (comma separated)",
@@ -616,6 +1076,79 @@
         "editCta": "Edit price & commission",
         "activateCta": "Activate",
         "deactivateCta": "Deactivate"
+      },
+      "productStudio": {
+        "kicker": "Product studio",
+        "title": "Products first",
+        "lede": "Import from your store URL, set price and commission, then publish — Growlab is the performance layer on top.",
+        "newProduct": "New product",
+        "importTitle": "Already have a store?",
+        "importLede": "Paste the product page link here to start a campaign. We pull title, image, price, sizes, and features from any platform (Shopify, WooCommerce, Salla, Zid…) — you set cost and commission.",
+        "importCta": "Import",
+        "importing": "Importing…",
+        "importOk": "Imported via {engine} — review and save.",
+        "importFailed": "Could not import that URL.",
+        "empty": "No products yet — import a URL or create one.",
+        "noImage": "No image",
+        "statusOn": "Live",
+        "statusOff": "Off",
+        "hasPromo": "Offer on",
+        "pickOrCreate": "Pick a product or create a new one.",
+        "editing": "Edit product",
+        "creating": "New product",
+        "advancedEdit": "Full form",
+        "cover": "Cover image",
+        "features": "Highlights (one per line)",
+        "featuresHint": "e.g. Free shipping · 30-day returns",
+        "attrSize": "Sizes",
+        "attrColor": "Colors",
+        "attrMaterial": "Materials",
+        "commissionPct": "Commission %",
+        "promoTitle": "Product offer",
+        "promoActive": "Active",
+        "promoHeadline": "Offer headline",
+        "promoEndsHint": "Leave empty to run until you turn it off.",
+        "presetSecondFree": "2nd free",
+        "presetBuy2Get1": "Buy 2 get 1",
+        "presetSecond20": "20% off 2nd",
+        "source": "Source",
+        "save": "Save",
+        "saving": "Saving…",
+        "saved": "Saved.",
+        "saveFailed": "Could not save.",
+        "activate": "Activate",
+        "deactivate": "Deactivate"
+      },
+      "billing": {
+        "kicker": "Subscription",
+        "title": "Your Growlab plan",
+        "lede": "Free is enough to start. Pro unlocks unlimited products, AI, and a higher campaign cap.",
+        "currentPlan": "Current plan",
+        "planFree": "Free",
+        "planPro": "Pro",
+        "freePrice": "0 OMR/mo",
+        "proPrice": "{amount}/mo",
+        "expires": "Expires {date}",
+        "performanceNote": "Performance spend (campaign cap + wallet) is separate from the monthly subscription.",
+        "upgradeCta": "Upgrade to Pro",
+        "checkoutPending": "Redirecting…",
+        "checkoutFailed": "Could not start checkout.",
+        "portalFailed": "Could not open the billing portal.",
+        "manageBilling": "Manage subscription",
+        "compareLink": "Compare plans",
+        "proActive": "Pro is active — enjoy all advanced features.",
+        "freeFeatures": [
+          "Up to 3 products",
+          "1 active campaign",
+          "100 OMR campaign cap",
+          "Manual store editor"
+        ],
+        "proFeatures": [
+          "Unlimited products",
+          "Unlimited campaigns",
+          "2,000 OMR campaign cap",
+          "AI + store offers"
+        ]
       }
     },
     "creator": {
@@ -630,7 +1163,7 @@
         "linkLabel": "Your storefront link",
         "editCta": "Edit storefront",
         "previewLive": "Preview live",
-        "browseCta": "Open the feed",
+        "browseCta": "How to earn after purchase",
         "tierProgress": "Progress to next tier",
         "nextTier": "{amount} more in net sales to reach {tier}.",
         "maxTier": "You're at the top tier.",
@@ -639,7 +1172,7 @@
         "hint": "Share your storefront link anywhere — the price and terms shown there are locked to your deal snapshot."
       },
       "deals": {
-        "empty": "No deals yet. Open the feed and pick your first product.",
+        "empty": "No share products yet — buy, activate your link after collection, and upload unboxing.",
         "featured": "Storefront hero",
         "lockedPrice": "Locked price",
         "commissionPct": "Commission %",
@@ -714,8 +1247,16 @@
     },
     "status": {
       "tierNote": "Tiers are a heuristic threshold on net sales and return rate — not a promise or guarantee.",
-      "verification": { "unsubmitted": "Not submitted", "pending": "Pending", "verified": "Verified", "rejected": "Rejected" },
-      "product": { "active": "Active", "inactive": "Inactive" },
+      "verification": {
+        "unsubmitted": "Not submitted",
+        "pending": "Pending",
+        "verified": "Verified",
+        "rejected": "Rejected"
+      },
+      "product": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
       "order": {
         "pending": "Pending",
         "confirmed": "Confirmed",
@@ -731,7 +1272,12 @@
         "depleted": "Depleted",
         "closed": "Closed"
       },
-      "deal": { "pending": "Awaiting accept", "active": "Active", "paused": "Paused", "ended": "Ended" },
+      "deal": {
+        "pending": "Awaiting accept",
+        "active": "Active",
+        "paused": "Paused",
+        "ended": "Ended"
+      },
       "payout": {
         "requested": "Requested",
         "approved": "Approved",
@@ -758,60 +1304,50 @@
       }
     },
     "browse": {
-      "kicker": "Product feed",
-      "title": "Pick a product from the feed",
-      "lede": "Trending merchant posts: media, price, and your commission. Choose one and apply to the campaign.",
-      "creatorOnly": "Switch to a creator profile to browse available products.",
+      "kicker": "After purchase",
+      "title": "You are the marketer — via your link and content",
+      "lede": "No external marketer. When the product arrives: open it, film an unboxing, send the clip link. After verification you get the product link to publish.",
+      "buyerOnly": "Activate your post-purchase share link first — public signup is for merchants only.",
+      "signUpCta": "Back to portal",
       "backToPortal": "Back to portal",
-      "empty": "No products available right now.",
-      "suggestedTitle": "Trending now",
-      "suggestedHint": "Ranked by your categories, proven sales, and product media — not AI.",
-      "othersTitle": "More products",
-      "score": "Rank {score}",
-      "videoBadge": "Video",
-      "addToStore": "Add to my store",
-      "added": "Added",
-      "requestSample": "Request a sample",
-      "sendSampleRequest": "Send request",
-      "sampleNotePlaceholder": "Optional note for the merchant",
-      "cancel": "Cancel",
-      "trustNote": "🔒 Merchants and creators never exchange personal contact details — everything routes through Growlab.",
-      "leakWarning": "Sharing phone numbers, emails, or external contact handles (WhatsApp, Instagram, etc.) here isn't allowed. Merchant/creator contact stays entirely inside Growlab.",
-      "allCategories": "All",
-      "weeklyTitle": "This week's movers",
-      "weeklyHint": "Products that converted to COD orders this week — not a general Explore tab.",
-      "weeklyOrders": "{count} orders this week",
-      "seatsLeft": "{count} seats left",
-      "verifiedMerchant": "Verified merchant",
-      "cityLabel": "{city}",
-      "commissionLabel": "Estimated profit {amount}",
-      "applyCta": "Apply to this campaign",
-      "alreadyInStore": "In your store",
-      "applyModal": {
-        "title": "How do you want to promote this product?",
-        "subtitle": "{merchant} · you earn an estimated {amount} per sale",
-        "mediaKitTitle": "Path 1: Use the ready-made product media",
-        "mediaKitDesc": "Images/videos the merchant already uploaded — promote instantly, no shipping wait.",
-        "mediaKitEmpty": "The merchant hasn't uploaded product media for this product yet — try path 2.",
-        "mediaKitCount": "{count} ready assets",
-        "mediaKitCta": "Use this path",
-        "sampleTitle": "Path 2: Request the product and try it (UGC)",
-        "sampleDesc": "Request a real sample shipped to you to film original content.",
-        "depositNotice": "{amount} will be held as a 25% deposit — not the full product price.",
-        "depositElite": "Your sample is merchant-funded — no deposit. Upload a video within 7 days of shipping.",
-        "sampleLockedNew": "New marketers promote from the media kit. Samples unlock after first sales.",
-        "deadlineNotice": "From the moment it ships, you have 7 days to upload an approved video — or the deposit is forfeited.",
-        "ackLabel": "I agree to the deposit policy and deadline above.",
-        "sampleCta": "Request the sample",
-        "successTitle": "Sent to the merchant",
-        "successMediaKit": "Your application is waiting. After they accept, the product details land in your store and the share link appears.",
-        "successSample": "The sample request and campaign are waiting on the merchant. The link appears after they accept.",
-        "pendingNote": "We will alert you here when they accept. Do not share a link before that.",
-        "linkLabel": "Your referral link",
-        "copyCta": "Copy link",
-        "copied": "Copied",
-        "close": "Close",
-        "submitting": "Working..."
+      "trustNote": "You earn on approved reel views + collected sales from your link — not empty clicks.",
+      "steps": [
+        {
+          "title": "Product arrives",
+          "text": "Your share link is available right after checkout. When the product arrives, open the box and try it."
+        },
+        {
+          "title": "Film UGC unboxing",
+          "text": "Record an unboxing on Instagram or TikTok — product clearly shown, matching the merchant brief."
+        },
+        {
+          "title": "Send the clip for review",
+          "text": "Paste the public reel URL here. The merchant checks requirements before any view payout."
+        },
+        {
+          "title": "Publish the product link",
+          "text": "Once approved, copy your product link and post it. Link clicks do not pay — only approved views and collected sales."
+        }
+      ],
+      "myProductsTitle": "Your products to share",
+      "myProductsLede": "Orders whose share link you activated. Submit the reel, wait for approval, then copy the product link.",
+      "empty": "No products yet. After any purchase, open your share link from the order page right away.",
+      "reelUrlLabel": "Unboxing clip URL",
+      "reelUrlPlaceholder": "https://instagram.com/reel/… or TikTok",
+      "reelSubmit": "Submit for review",
+      "reelSubmitting": "Submitting…",
+      "reelFailed": "Could not submit the link.",
+      "waitingReview": "Clip under review. Your product link unlocks after approval.",
+      "copyProductLink": "Copy product link",
+      "copied": "Copied",
+      "shareWhatsapp": "Share on WhatsApp",
+      "storeNotPublished": "The merchant store is not published yet — your share link appears when it goes live.",
+      "openMyReel": "Open my reel",
+      "openSharePage": "Share page",
+      "status": {
+        "needReel": "Awaiting unboxing clip",
+        "pending": "Under review",
+        "approved": "Approved — publish the link"
       }
     },
     "admin": {
@@ -829,10 +1365,25 @@
         "orders": "Orders",
         "samples": "Samples",
         "payouts": "Payouts",
+        "topups": "Wallet top-ups",
         "merchants": "Merchants",
         "creators": "Creators",
         "invite": "Add merchant",
         "products": "Product transparency"
+      },
+      "topups": {
+        "empty": "No top-up requests.",
+        "hint": "Approve after matching the bank reference, or reject with a note.",
+        "approve": "Approve",
+        "reject": "Reject",
+        "notePlaceholder": "Admin note",
+        "columns": {
+          "merchant": "Merchant",
+          "amount": "Amount",
+          "proof": "Transfer ref",
+          "status": "Status",
+          "actions": "Actions"
+        }
       },
       "overview": {
         "merchants": "Merchants",
@@ -921,7 +1472,8 @@
           "products": "Products",
           "wallet": "Wallet",
           "status": "Status",
-          "actions": "Actions"
+          "actions": "Actions",
+          "plan": "Plan"
         },
         "walletReserved": "Reserved {amount}",
         "walletTopup": "Top up",
@@ -934,7 +1486,12 @@
         "edit": "Edit",
         "save": "Save",
         "banned": "Banned",
-        "banReason": "Ban reason"
+        "banReason": "Ban reason",
+        "planFree": "Free",
+        "planPro": "Pro",
+        "setPro": "Set Pro",
+        "setFree": "Set Free",
+        "planNote": "Plan note"
       },
       "creators": {
         "empty": "No creators yet.",
@@ -1161,6 +1718,235 @@
       "editAgain": "Edit again"
     }
   },
+  "merchantStore": {
+    "home": "Growlab",
+    "cart": "Cart",
+    "productsHeading": "Products",
+    "contactHeading": "Contact us",
+    "contactLede": "Order COD from the product page — we deliver across Oman."
+  },
+  "merchantStoreEditor": {
+    "kicker": "Your store",
+    "title": "Build your store step by step",
+    "lede": "Odoo-style setup: pick your business, we build the store, then you edit and publish.",
+    "backToPortal": "Back to portal",
+    "noProducts": "Add one product first — then we open the store editor.",
+    "addProduct": "Add product",
+    "aiCta": "Set up store with AI",
+    "aiRunning": "Generating…",
+    "aiFailed": "Could not generate. Try again or continue manually.",
+    "saveFailed": "Could not save.",
+    "saveDraft": "Save draft",
+    "saving": "Saving…",
+    "publishCta": "Publish store",
+    "publishing": "Publishing…",
+    "empty": {
+      "title": "Start with a product"
+    },
+    "steps": {
+      "start": "Start",
+      "identity": "Identity",
+      "look": "Look",
+      "offer": "Offer",
+      "publish": "Publish"
+    },
+    "start": {
+      "title": "Your store is ready to build",
+      "lede": "Three simple steps. Let AI draft the first version, or start yourself.",
+      "step1": "Write the store name and a short story.",
+      "step2": "Pick a color and the product that shows first.",
+      "step3": "Add an offer if you want, then publish the link.",
+      "manual": "Start manually",
+      "aiHint": "AI suggests copy and colors from your products — you can edit everything after.",
+      "proAiCta": "Upgrade to Pro for AI",
+      "proAiHint": "AI assistant and store offers are available on Pro."
+    },
+    "identity": {
+      "title": "Store identity",
+      "lede": "What customers see when they open your link."
+    },
+    "look": {
+      "title": "Look & feel",
+      "lede": "Pick a color and layout — the preview updates live."
+    },
+    "offer": {
+      "title": "Offer banner",
+      "lede": "A strip at the top for seasonal or launch offers."
+    },
+    "nav": {
+      "back": "Back",
+      "continue": "Continue"
+    },
+    "preview": {
+      "live": "Live preview",
+      "products": "Products",
+      "contact": "Contact us",
+      "contactLede": "Order COD from the product page — we deliver across Oman."
+    },
+    "promo": {
+      "active": "Activate offer on the store",
+      "cancelOffer": "Cancel offer now",
+      "kind": "Offer type",
+      "headline": "Offer headline",
+      "body": "Offer details",
+      "buyQty": "Buy (qty)",
+      "getQty": "Get free (qty)",
+      "buyQtyBefore": "Buy first",
+      "percentOff": "Discount %",
+      "endsAt": "Ends at (date & time)",
+      "endsAtHint": "Leave empty to keep it until you cancel.",
+      "products": "Offer products",
+      "allProducts": "All store products",
+      "aiTitle": "Ask the assistant",
+      "aiPlaceholder": "e.g. buy 2 get the 3rd free, or 20% off the second item",
+      "aiCta": "Suggest an offer",
+      "aiRunning": "Suggesting…",
+      "aiFailed": "Could not suggest. Try another phrase or pick a preset.",
+      "kinds": {
+        "bxgy_free": "Buy X get Y free",
+        "nth_percent": "% off the next item",
+        "cart_percent": "% off the cart",
+        "banner": "Banner text only (no discount)"
+      },
+      "presets": {
+        "secondFree": "2nd free",
+        "buy2Get1": "Buy 2 get 3rd free",
+        "second20": "20% off 2nd",
+        "cart10": "10% off cart"
+      }
+    },
+    "fields": {
+      "storeName": "Business name",
+      "tagline": "Headline",
+      "taglineHint": "One line under the store name.",
+      "taglinePlaceholder": "Example: Muttrah attars — Muscat delivery, cash on delivery",
+      "about": "About the store",
+      "aboutHint": "Write normal paragraphs. Blank line = new paragraph. No HTML needed.",
+      "aboutPlaceholder": "Welcome to our store…\n\nWe pick products carefully and deliver to your door.",
+      "hero": "Featured product",
+      "heroHint": "Tap a product to show it at the top.",
+      "changeUrl": "Change store URL",
+      "hideUrl": "Hide URL",
+      "slug": "Store URL",
+      "accent": "Store color",
+      "layout": "Layout",
+      "layout_split": "Product beside text",
+      "layout_center": "Product centered",
+      "tone": "Writing tone",
+      "tone_modern": "Modern",
+      "tone_classic": "Classic",
+      "offerActive": "Show offer banner at the top",
+      "offerHeadline": "Offer title",
+      "offerHeadlinePlaceholder": "Example: Launch offer — fast delivery",
+      "offerBody": "Offer details",
+      "offerBodyPlaceholder": "Pay cash on delivery across Oman."
+    },
+    "published": {
+      "kicker": "Ready",
+      "title": "Your store is live",
+      "draftTitle": "Draft saved",
+      "lede": "Share the link with customers. COD orders land on your dashboard.",
+      "draftLede": "Draft saved. Publish when you like the preview.",
+      "viewLive": "Open store",
+      "editAgain": "Edit again"
+    },
+    "odoo": {
+      "appName": "E-commerce",
+      "changeApps": "Change app group",
+      "nextProductHint": "Store is live — add your first product to open the campaign and sales.",
+      "start": {
+        "title": "Start now",
+        "freeAccess": "Instant free access — no credit card required.",
+        "fullName": "First and last name",
+        "websiteName": "Website name",
+        "email": "Email",
+        "phone": "Phone number",
+        "country": "Country",
+        "countryOman": "Sultanate of Oman",
+        "language": "Language",
+        "languageAr": "Arabic",
+        "languageEn": "English",
+        "legal": "By clicking Start now, you accept the subscription agreement and privacy policy",
+        "cta": "Start now",
+        "submitting": "Preparing…"
+      },
+      "config": {
+        "want": "I want",
+        "ecommerce": "an eCommerce",
+        "forMy": "for my",
+        "business": "business",
+        "withA": "with a",
+        "detailPlaceholder": "e.g. Muttrah attars, salon, clothing store…",
+        "skip": "Skip and start from scratch",
+        "continue": "Continue",
+        "pickType": "Pick a business type…",
+        "pickValue": "key benefit"
+      },
+      "build": {
+        "title": "Your store is being built.",
+        "titleFinale": "Putting on the final touches.",
+        "ecommerce": "Installing eCommerce…",
+        "colors": "Applying your colors and design…",
+        "images": "Searching your images…",
+        "copy": "Writing inspiring text…",
+        "activate": "Activating your store."
+      },
+      "toolbar": {
+        "edit": "Edit",
+        "new": "New",
+        "desktop": "Desktop",
+        "mobile": "Mobile",
+        "published": "Published",
+        "draft": "Draft",
+        "save": "Save",
+        "discard": "Discard",
+        "reconfigure": "Re-run setup",
+        "restart": "Start over",
+        "activationPending": "Activation pending"
+      },
+      "nav": {
+        "reporting": "Reporting",
+        "config": "Configuration"
+      },
+      "tabs": {
+        "blocks": "Blocks +",
+        "content": "Content",
+        "design": "Design",
+        "theme": "Theme"
+      },
+      "blocks": {
+        "libraryHint": "Tap a block to add it to the page, then reorder or hide it in page structure.",
+        "onPage": "On page",
+        "add": "Add",
+        "pageStructure": "Page structure",
+        "moveUp": "Move up",
+        "moveDown": "Move down",
+        "hide": "Hide",
+        "show": "Show",
+        "hidden": "hidden",
+        "editing": "Editing: {block}",
+        "pickBlock": "Pick a block from Blocks or from page structure.",
+        "contactHint": "The contact section shows your store name and city. Orders happen on product pages with cash on delivery.",
+        "intro": "Intro",
+        "hero": "Featured product",
+        "columns": "Columns",
+        "images": "Images",
+        "catalog": "Catalog",
+        "offer": "Offer",
+        "contact": "Contact",
+        "design": "Design",
+        "theme": "Theme"
+      },
+      "activation": {
+        "title": "Activate your store to continue",
+        "body": "To keep your store running, complete activation with the email on your account.",
+        "emailLabel": "Email",
+        "resendPrompt": "Didn't receive the email?",
+        "resend": "Resend",
+        "close": "Close"
+      }
+    }
+  },
   "shop": {
     "cart": "Cart",
     "needSize": "Pick a size first",
@@ -1169,12 +1955,15 @@
     "adding": "Adding…",
     "buyCod": "Buy — cash on delivery",
     "addToCart": "Add to cart",
-    "codHint": "Cash on delivery. No account needed.",
+    "codHint": "Buy with cash on delivery. Your phone tracks the order and your share — after checkout, claim the share link with your account.",
     "checkoutTitle": "Checkout",
-    "checkoutLede": "Pay when the order arrives. We use your address for shipping only.",
+    "checkoutLede": "Pay when the order arrives. Your phone links the order to sharing and performance — enter it carefully.",
     "total": "Total",
+    "subtotal": "Subtotal",
+    "discount": "Discount",
     "buyerName": "Your name",
     "buyerPhone": "Phone",
+    "phoneTrackHint": "The same number unlocks your share link and commission tracking later — enter it carefully.",
     "buyerCity": "City",
     "buyerAddress": "Delivery address",
     "placing": "Placing order…",
@@ -1189,6 +1978,10 @@
     "trackRef": "Ref {token}",
     "shippingRef": "Shipping reference",
     "returnsPolicy": "For a return or support, use this page and your order reference. Do not contact the merchant or marketer off-platform.",
+    "shareTitle": "Share and earn",
+    "shareLede": "Share link is ready right after checkout. Open it, activate, and film unboxing when the product arrives.",
+    "shareCta": "Open share link",
+    "attributionReceipt": "Attribution receipt",
     "status": {
       "pending": "Awaiting confirmation",
       "confirmed": "Confirmed — shipping",
@@ -1200,6 +1993,12 @@
       "held": "Held on the ledger until collection is confirmed",
       "released": "Released on the ledger after collection",
       "refunded": "Refunded on the ledger"
-    }
+    },
+    "features": "Highlights",
+    "needOptions": "Pick your options first",
+    "attrSize": "Size",
+    "attrColor": "Color",
+    "attrMaterial": "Material",
+    "productOffer": "Offer"
   }
 }

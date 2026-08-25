@@ -27,6 +27,9 @@ export interface AdminMerchantRow {
   phone: string;
   email: string;
   productsCount: number;
+  plan: string;
+  planSource: string;
+  planExpiresAt: string | null;
   walletBalance: number;
   walletReserved: number;
   walletAvailable: number;
@@ -200,6 +203,20 @@ export interface AdminDashboardData {
   samples: AdminSampleRow[];
   payouts: AdminPayoutRow[];
   storeQuality: StoreQualityRow[];
+  walletTopups: AdminWalletTopupRow[];
+}
+
+export interface AdminWalletTopupRow {
+  id: string;
+  merchantId: string;
+  businessName: string;
+  amount: number;
+  currency: string;
+  proofNote: string;
+  status: string;
+  adminNote: string | null;
+  createdAt: string;
+  processedAt: string | null;
 }
 
 const OPS_ROW_LIMIT = 100;
@@ -222,6 +239,7 @@ export async function loadAdminDashboardData(): Promise<AdminDashboardData> {
     leads,
     walletSum,
     sampleNotes,
+    walletTopups,
   ] = await Promise.all([
       prisma.merchantProfile.findMany({
         include: { products: true, wallet: true, user: { include: { kycDocuments: true } } },
@@ -272,6 +290,11 @@ export async function loadAdminDashboardData(): Promise<AdminDashboardData> {
           product: { select: { title: true } },
         },
         take: 200,
+      }),
+      prisma.walletTopupRequest.findMany({
+        take: OPS_ROW_LIMIT,
+        orderBy: { createdAt: "desc" },
+        include: { merchant: { select: { businessName: true } } },
       }),
     ]);
 
@@ -369,6 +392,9 @@ export async function loadAdminDashboardData(): Promise<AdminDashboardData> {
             phone: m.user.phone,
             email: m.user.email,
             productsCount: m.products.length,
+            plan: m.plan,
+            planSource: m.planSource,
+            planExpiresAt: m.planExpiresAt?.toISOString() ?? null,
             walletBalance: wallet.balance,
             walletReserved: wallet.reserved,
             walletAvailable: wallet.available,
@@ -467,6 +493,18 @@ export async function loadAdminDashboardData(): Promise<AdminDashboardData> {
       }))
       .sort((a, b) => Number(b.status === "requested") - Number(a.status === "requested")),
     storeQuality,
+    walletTopups: walletTopups.map((r) => ({
+      id: r.id,
+      merchantId: r.merchantId,
+      businessName: r.merchant.businessName,
+      amount: r.amount,
+      currency: r.currency,
+      proofNote: r.proofNote,
+      status: r.status,
+      adminNote: r.adminNote,
+      createdAt: r.createdAt.toISOString(),
+      processedAt: r.processedAt?.toISOString() ?? null,
+    })),
   };
 }
 

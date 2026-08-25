@@ -22,6 +22,12 @@ export default function Footer() {
             <a href="/sign-in?redirect_url=/dashboard" className="hover:text-frost">
               {t("signIn")}
             </a>
+            <a href="/legal/terms" className="hover:text-frost">
+              {footer("terms")}
+            </a>
+            <a href="/legal/privacy" className="hover:text-frost">
+              {footer("privacy")}
+            </a>
             <a href="/dashboard" className="hover:text-frost">
               {t("dashboard")}
             </a>

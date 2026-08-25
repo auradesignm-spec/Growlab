@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { isCurrentUserAdmin } from "@/lib/auth/admin";
-import { ACCOUNT_STATUSES, ESCROW_STATUSES, PAYOUT_STATUSES, VERIFICATION_STATUSES, type AccountStatus, type EscrowStatus, type PayoutStatusId, type VerificationStatus } from "@/lib/domain/enums";
+import { ACCOUNT_STATUSES, ESCROW_STATUSES, MERCHANT_PLANS, PAYOUT_STATUSES, VERIFICATION_STATUSES, type AccountStatus, type EscrowStatus, type MerchantPlanId, type PayoutStatusId, type VerificationStatus } from "@/lib/domain/enums";
 import type { OrderActionStatus } from "@/lib/domain/orders";
 import { applyOrderStatusTransition } from "@/lib/shop/orderTransition";
 import { creditMerchantWallet, ensureMerchantWallet } from "@/lib/ledger/wallet";
@@ -37,6 +37,9 @@ export async function adminSetMerchantVerification(
     data: { verificationStatus: status, kycReviewNote: kycReviewNote || null },
   });
   revalidateAdmin();
+  if (status === "verified") {
+    revalidatePath("/dashboard/store/edit");
+  }
 }
 
 export async function adminSetCreatorVerification(
@@ -161,6 +164,73 @@ export async function adminCreditMerchantWallet(merchantProfileId: string, amoun
     amount,
     reason: "topup",
     note: note.trim().slice(0, 200) || "شحن يدوي من الإدارة",
+  });
+  revalidateAdmin();
+}
+
+export async function adminSetMerchantPlan(
+  merchantProfileId: string,
+  plan: MerchantPlanId,
+  opts?: { expiresAt?: string | null; note?: string },
+) {
+  await requireAdmin();
+  if (!MERCHANT_PLANS.includes(plan)) throw new Error("Invalid plan.");
+
+  const note = opts?.note?.trim().slice(0, 400) ?? "";
+  if (note && scanForContactLeak(note).flagged) throw new Error(CONTACT_LEAK_WARNING_AR);
+
+  const expiresAt =
+    opts?.expiresAt === undefined || opts.expiresAt === null || opts.expiresAt === ""
+      ? null
+      : new Date(opts.expiresAt);
+
+  if (plan === "pro") {
+    await prisma.merchantProfile.update({
+      where: { id: merchantProfileId },
+      data: {
+        plan: "pro",
+        planSource: "admin",
+        planExpiresAt: expiresAt,
+        adminPlanNote: note || null,
+      },
+    });
+  } else {
+    await prisma.merchantProfile.update({
+      where: { id: merchantProfileId },
+      data: {
+        plan: "free",
+        planSource: "default",
+        planExpiresAt: null,
+        adminPlanNote: note || null,
+      },
+    });
+  }
+
+  revalidateAdmin();
+}
+
+export async function adminProcessWalletTopup(requestId: string, action: "approve" | "reject", adminNote = "") {
+  await requireAdmin();
+  const request = await prisma.walletTopupRequest.findUnique({ where: { id: requestId } });
+  if (!request) throw new Error("Top-up request not found.");
+  if (request.status !== "pending") throw new Error("This request is already closed.");
+
+  if (action === "approve") {
+    await creditMerchantWallet({
+      merchantId: request.merchantId,
+      amount: request.amount,
+      reason: "topup",
+      note: request.proofNote.slice(0, 200),
+    });
+  }
+
+  await prisma.walletTopupRequest.update({
+    where: { id: requestId },
+    data: {
+      status: action === "approve" ? "approved" : "rejected",
+      adminNote: adminNote.trim().slice(0, 400) || null,
+      processedAt: new Date(),
+    },
   });
   revalidateAdmin();
 }

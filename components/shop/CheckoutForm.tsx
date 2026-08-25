@@ -106,7 +106,8 @@ export default function CheckoutForm({
           </label>
           <label className="block">
             <span className="text-[13px] text-frost-faint">{t("buyerPhone")}</span>
-            <input name="buyerPhone" required type="tel" className="gl-input mt-1.5" autoComplete="tel" />
+            <input name="buyerPhone" required type="tel" className="gl-input mt-1.5" autoComplete="tel" placeholder="+968…" />
+            <span className="mt-1.5 block text-[12px] leading-relaxed text-frost-dim">{t("phoneTrackHint")}</span>
           </label>
           <label className="block">
             <span className="text-[13px] text-frost-faint">{t("buyerCity")}</span>

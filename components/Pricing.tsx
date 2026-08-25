@@ -1,11 +1,14 @@
 import { getTranslations } from "next-intl/server";
+
 import Reveal from "@/components/Reveal";
+
 import StageGlow from "@/components/StageGlow";
 
 export default async function Pricing() {
   const t = await getTranslations("marketing.pricing");
-  const merchantFeatures = t.raw("merchantFeatures") as string[];
-  const creatorFeatures = t.raw("creatorFeatures") as string[];
+
+  const freeFeatures = t.raw("freeFeatures") as string[];
+  const proFeatures = t.raw("proFeatures") as string[];
 
   return (
     <section id="pricing" className="relative scroll-mt-24 py-section">
@@ -17,51 +20,56 @@ export default async function Pricing() {
         </Reveal>
 
         <StageGlow className="mt-10" tone="sun" place="start">
-          <div className="gl-stage grid grid-cols-1 gap-3 p-3 sm:p-4 md:grid-cols-2">
-          <Reveal>
-            <SplitCard
-              title={t("merchantTitle")}
-              subtitle={t("merchantSubtitle")}
-              stat={t("merchantStat")}
-              statNote={t("merchantStatNote")}
-              features={merchantFeatures}
-            />
-          </Reveal>
-
-          <Reveal>
-            <SplitCard
-              title={t("creatorTitle")}
-              subtitle={t("creatorSubtitle")}
-              stat={t("creatorStat")}
-              statNote={t("creatorStatNote")}
-              features={creatorFeatures}
-              featured
-            />
-          </Reveal>
-        </div>
+          <div className="gl-stage grid gap-3 p-3 sm:grid-cols-2 sm:p-4">
+            <Reveal>
+              <PlanCard
+                title={t("freeTitle")}
+                subtitle={t("freeSubtitle")}
+                stat={t("freeStat")}
+                statNote={t("freeStatNote")}
+                features={freeFeatures}
+              />
+            </Reveal>
+            <Reveal delay={80}>
+              <PlanCard
+                title={t("proTitle")}
+                subtitle={t("proSubtitle")}
+                stat={t("proStat")}
+                statNote={t("proStatNote")}
+                features={proFeatures}
+                highlight
+              />
+            </Reveal>
+          </div>
         </StageGlow>
+
+        <Reveal delay={120}>
+          <p className="mt-8 max-w-2xl text-[14px] text-frost-dim">{t("performanceNote")}</p>
+        </Reveal>
       </div>
     </section>
   );
 }
 
-function SplitCard({
+function PlanCard({
   title,
   subtitle,
   stat,
   statNote,
   features,
-  featured = false,
+  highlight,
 }: {
   readonly title: string;
   readonly subtitle: string;
   readonly stat: string;
   readonly statNote: string;
   readonly features: readonly string[];
-  readonly featured?: boolean;
+  readonly highlight?: boolean;
 }) {
   return (
-    <article className={`gl-tile relative h-full p-6 sm:p-8 ${featured ? "bg-night" : ""}`}>
+    <article
+      className={`gl-tile relative h-full p-6 sm:p-8 ${highlight ? "ring-1 ring-signal/30" : ""}`}
+    >
       <h3 className="text-xl font-semibold text-frost">{title}</h3>
       <p className="mt-1 text-[14px] text-frost-dim">{subtitle}</p>
       <p className="mt-6 font-mono text-[32px] font-medium text-frost">{stat}</p>

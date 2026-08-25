@@ -1,11 +1,22 @@
 import { prisma } from "@/lib/db";
-import { productTags, productVariants } from "@/lib/catalog-db";
+import { productAttributes, productFeatures, productPromo, productTags, productVariants } from "@/lib/catalog-db";
 import { suggestCreatorsForProduct, type CreatorMatchSuggestion } from "@/lib/matching/suggest";
 import type { OrderLedgerRow } from "@/lib/dashboard/types";
 import { effectiveUgcStatus } from "@/lib/domain/ugc";
 import { computeSimpleSplit, type SimpleSplitResult } from "@/lib/domain/commission";
 import { getWalletSnapshot, type WalletSnapshot } from "@/lib/ledger/wallet";
 import { countVisitsByDealIds } from "@/lib/shop/visits";
+import { loadMerchantCampaigns } from "@/app/(dashboard)/dashboard/performance-actions";
+import { loadWalletTopupRequests } from "@/app/(dashboard)/dashboard/wallet-actions";
+import { loadMerchantBuyerReels } from "@/app/(dashboard)/dashboard/content-actions";
+import { effectivePlan, planLimits } from "@/lib/billing/entitlements";
+import type { MerchantPlanId } from "@/lib/domain/enums";
+import {
+  merchantOnboardingProgress,
+  type MerchantOnboardingProgress,
+} from "@/lib/domain/merchantOnboarding";
+import type { CampaignRow, BuyerReelRow } from "@/components/dashboard/PerformanceCampaignPanel";
+import type { TopupRow } from "@/components/dashboard/WalletTopupPanel";
 
 export interface MerchantMediaAssetRow {
   id: string;
@@ -17,9 +28,16 @@ export interface MerchantMediaAssetRow {
 export interface MerchantProductRow {
   id: string;
   title: string;
+  slug: string;
   category: string;
   tags: string[];
   variants: string[];
+  shortDescription: string;
+  descriptionHtml: string;
+  attributes: import("@/lib/catalog-db").ProductAttributes;
+  features: string[];
+  promo: import("@/lib/merchant-store/promo").StorePromo;
+  sourceUrl: string;
   basePrice: number;
   currency: string;
   cogsPct: number;
@@ -77,10 +95,29 @@ export interface MerchantPendingApplication {
   createdAt: string;
 }
 
+export interface MerchantStoreSummary {
+  slug: string;
+  published: boolean;
+  tagline: string;
+}
+
 export interface MerchantDashboardData {
-  merchant: { id: string; businessName: string; verificationStatus: string };
+  merchant: {
+    id: string;
+    businessName: string;
+    verificationStatus: string;
+    effectivePlan: MerchantPlanId;
+    planSource: string;
+    planExpiresAt: string | null;
+    limits: ReturnType<typeof planLimits>;
+  };
+  store: MerchantStoreSummary | null;
+  onboarding: MerchantOnboardingProgress;
   wallet: WalletSnapshot;
   products: MerchantProductRow[];
+  campaigns: CampaignRow[];
+  buyerReels: BuyerReelRow[];
+  topupRequests: TopupRow[];
   assignedCreators: AssignedCreatorRow[];
   unassignedProductSuggestions: UnassignedProductSuggestion[];
   ordersLedger: OrderLedgerRow[];
@@ -92,6 +129,7 @@ export async function loadMerchantDashboardData(merchantId: string): Promise<Mer
   const merchant = await prisma.merchantProfile.findUniqueOrThrow({
     where: { id: merchantId },
     include: {
+      store: true,
       products: { include: { deals: true, mediaAssets: { orderBy: { createdAt: "asc" } } } },
       sampleRequests: {
         include: { product: true, creator: true },
@@ -103,30 +141,49 @@ export async function loadMerchantDashboardData(merchantId: string): Promise<Mer
   const productDealIds = merchant.products.flatMap((p) => p.deals.map((d) => d.id));
   const visitsByDeal = await countVisitsByDealIds(productDealIds);
 
-  const products: MerchantProductRow[] = merchant.products.map((p) => ({
-    id: p.id,
-    title: p.title,
-    category: p.category,
-    tags: productTags(p),
-    variants: productVariants(p),
-    basePrice: p.basePrice,
-    currency: p.currency,
-    cogsPct: p.cogsPct,
-    costPrice: p.costPrice,
-    commissionType: p.commissionType,
-    commissionValue: p.commissionValue,
-    active: p.active,
-    activeDealsCount: p.deals.filter((d) => d.status === "active").length,
-    mediaAssets: p.mediaAssets.map((a) => ({ id: a.id, type: a.type, url: a.url, caption: a.caption })),
-    simpleSplit: computeSimpleSplit({
-      retailPrice: p.basePrice,
-      costPrice: p.costPrice,
-      commissionType: p.commissionType,
-      commissionValue: p.commissionValue,
-      settlementChannel: "cod",
-    }),
-    visitCount: p.deals.reduce((sum, deal) => sum + (visitsByDeal.get(deal.id) ?? 0), 0),
-  }));
+  const products: MerchantProductRow[] = merchant.products.map((p) => {
+    const row = p as typeof p & {
+      slug?: string;
+      shortDescription?: string;
+      descriptionHtml?: string;
+      attributesJson?: string | null;
+      featuresJson?: string | null;
+      promoJson?: string | null;
+      promoEndsAt?: Date | null;
+      sourceUrl?: string;
+    };
+    return {
+      id: row.id,
+      title: row.title,
+      slug: row.slug || "",
+      category: row.category,
+      tags: productTags(row),
+      variants: productVariants(row),
+      shortDescription: row.shortDescription ?? "",
+      descriptionHtml: row.descriptionHtml ?? "",
+      attributes: productAttributes(row),
+      features: productFeatures(row),
+      promo: productPromo(row),
+      sourceUrl: row.sourceUrl ?? "",
+      basePrice: row.basePrice,
+      currency: row.currency,
+      cogsPct: row.cogsPct,
+      costPrice: row.costPrice,
+      commissionType: row.commissionType,
+      commissionValue: row.commissionValue,
+      active: row.active,
+      activeDealsCount: row.deals.filter((d) => d.status === "active").length,
+      mediaAssets: row.mediaAssets.map((a) => ({ id: a.id, type: a.type, url: a.url, caption: a.caption })),
+      simpleSplit: computeSimpleSplit({
+        retailPrice: row.basePrice,
+        costPrice: row.costPrice,
+        commissionType: row.commissionType,
+        commissionValue: row.commissionValue,
+        settlementChannel: "cod",
+      }),
+      visitCount: row.deals.reduce((sum, deal) => sum + (visitsByDeal.get(deal.id) ?? 0), 0),
+    };
+  });
 
   const productIds = merchant.products.map((p) => p.id);
 
@@ -244,15 +301,45 @@ export async function loadMerchantDashboardData(merchantId: string): Promise<Mer
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
   const wallet = await getWalletSnapshot(merchant.id);
+  const [campaigns, topupRequests, buyerReels] = await Promise.all([
+    loadMerchantCampaigns(merchant.id),
+    loadWalletTopupRequests(merchant.id),
+    loadMerchantBuyerReels(merchant.id),
+  ]);
+
+  const store: MerchantStoreSummary | null = merchant.store
+    ? {
+        slug: merchant.store.slug,
+        published: merchant.store.published,
+        tagline: merchant.store.tagline,
+      }
+    : null;
+
+  const onboarding = merchantOnboardingProgress({
+    verificationStatus: merchant.verificationStatus,
+    hasStore: Boolean(merchant.store),
+    storePublished: Boolean(merchant.store?.published),
+    productCount: products.length,
+    hasActiveOrDraftCampaign: campaigns.some((c) => c.status === "active" || c.status === "draft"),
+  });
 
   return {
     merchant: {
       id: merchant.id,
       businessName: merchant.businessName,
       verificationStatus: merchant.verificationStatus,
+      effectivePlan: effectivePlan(merchant),
+      planSource: merchant.planSource,
+      planExpiresAt: merchant.planExpiresAt?.toISOString() ?? null,
+      limits: planLimits(merchant),
     },
+    store,
+    onboarding,
     wallet,
     products,
+    campaigns,
+    buyerReels,
+    topupRequests,
     assignedCreators,
     unassignedProductSuggestions,
     ordersLedger,

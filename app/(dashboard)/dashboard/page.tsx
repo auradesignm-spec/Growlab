@@ -32,7 +32,7 @@ export default async function DashboardPage({
   const tKyc = await getTranslations("kyc");
   const locale = await getLocale();
   const viewer = await getCurrentUser();
-  const requestedRole = searchParams.role === "creator" ? "creator" : searchParams.role === "merchant" ? "merchant" : undefined;
+  const requestedRole = searchParams.role === "merchant" ? "merchant" : undefined;
 
   if (!viewer) {
     redirect(ENTER_HREF);

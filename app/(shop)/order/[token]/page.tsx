@@ -28,6 +28,19 @@ export default async function OrderTrackingPage({ params }: { params: { token: s
           {t("trackRef", { token: checkout.trackingToken })}
         </p>
 
+        {checkout.share ? (
+          <div className="mt-8 max-w-xl rounded-xl border border-signal/30 bg-signal/5 p-5">
+            <p className="font-medium text-frost">{t("shareTitle")}</p>
+            <p className="mt-2 text-[14px] text-frost-dim">{t("shareLede")}</p>
+            <Link
+              href={`/share/${checkout.share.claimToken}`}
+              className="gl-btn gl-btn-primary mt-4 inline-flex"
+            >
+              {t("shareCta")}
+            </Link>
+          </div>
+        ) : null}
+
         <ul className="mt-10 divide-y divide-line border-y border-line">
           {checkout.lines.map((line) => (
             <li key={line.id} className="flex flex-wrap items-start justify-between gap-4 py-5">
@@ -42,6 +55,16 @@ export default async function OrderTrackingPage({ params }: { params: { token: s
                     {t("shippingRef")}: <span className="text-frost">{line.shippingRef}</span>
                   </p>
                 ) : null}
+                {line.attributionReceiptCode ? (
+                  <p className="mt-2 text-[13px]">
+                    <Link
+                      href={`/attribution/${line.attributionReceiptCode}`}
+                      className="font-mono text-frost underline-offset-2 hover:underline"
+                    >
+                      {t("attributionReceipt")}: {line.attributionReceiptCode}
+                    </Link>
+                  </p>
+                ) : null}
               </div>
               <p className="font-mono text-[14px]">
                 {(line.unitPriceCharged * line.quantity).toFixed(2)} {line.currency}
@@ -54,8 +77,8 @@ export default async function OrderTrackingPage({ params }: { params: { token: s
           {t("total")} {total.toFixed(2)} {currency}
         </p>
         <p className="mt-6 max-w-xl text-[14px] leading-relaxed text-frost-dim">{t("returnsPolicy")}</p>
-        <Link href={`/creator/${checkout.storeUsername}`} className="mt-8 inline-flex text-[14px] underline">
-          @{checkout.storeUsername}
+        <Link href={checkout.storeHref} className="mt-8 inline-flex text-[14px] underline">
+          {checkout.storeName}
         </Link>
       </div>
     </main>

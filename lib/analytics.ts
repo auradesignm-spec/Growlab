@@ -9,3 +9,15 @@ export function track(eventName: string, properties?: EventProps) {
     console.debug("[growlab:track]", eventName, properties ?? {});
   }
 }
+
+/** Funnel milestones — use consistently across signup → KYC → publish → order → share. */
+export const FUNNEL = {
+  signupStarted: "Sign Up Started",
+  kycSubmitted: "KYC Submitted",
+  storePublished: "Store Published",
+  productCreated: "Product Created",
+  campaignActivated: "Campaign Activated",
+  orderPlaced: "Order Placed",
+  shareClaimed: "Share Claimed",
+  reelSubmitted: "Reel Submitted",
+} as const;

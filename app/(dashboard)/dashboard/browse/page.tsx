@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { getCurrentUser } from "@/lib/auth/session";
-import { loadCreatorBrowseData } from "@/lib/dashboard/browse";
-import BrowseCatalog from "@/components/dashboard/BrowseCatalog";
+import { loadBuyerShareLoopData } from "@/lib/dashboard/buyerShare";
+import BuyerEarnGuide from "@/components/dashboard/BuyerEarnGuide";
 import { AccountBanned } from "@/components/kyc/KycStatus";
 
 export const metadata: Metadata = {
-  title: "Growlab — Browse products",
+  title: "Growlab — كيف تربح بعد الشراء",
   robots: { index: false, follow: false },
 };
 
@@ -26,18 +26,21 @@ export default async function BrowsePage() {
     );
   }
 
-  if (!viewer?.creatorProfile || viewer.creatorProfile.verificationStatus !== "verified") {
+  if (!viewer?.creatorProfile) {
     return (
       <main>
         <section className="border-b border-line">
           <div className="px-4 py-8 sm:px-8 sm:py-12">
             <p className="gl-eyebrow">{t("kicker")}</p>
-            <h1 className="mt-3 text-[28px] font-semibold leading-tight text-frost sm:mt-4 sm:text-display-lg">{t("title")}</h1>
+            <h1 className="mt-3 text-[28px] font-semibold leading-tight text-frost sm:mt-4 sm:text-display-lg">
+              {t("title")}
+            </h1>
+            <p className="mt-3 max-w-lg text-[15px] leading-relaxed text-frost-dim sm:mt-4">{t("lede")}</p>
           </div>
         </section>
         <div className="px-4 py-12 sm:px-8 sm:py-16">
           <p className="max-w-md rounded-2xl border border-dashed border-line bg-white px-5 py-8 text-[14px] text-frost-dim">
-            {t("creatorOnly")}
+            {t("buyerOnly")}
           </p>
           <Link href="/dashboard" className="gl-btn-ghost mt-8 inline-flex">
             {t("backToPortal")}
@@ -47,18 +50,20 @@ export default async function BrowsePage() {
     );
   }
 
-  const data = await loadCreatorBrowseData(viewer.creatorProfile.id);
+  const data = await loadBuyerShareLoopData(viewer.creatorProfile.id);
 
   return (
     <main>
-      <section className="hidden border-b border-line sm:block">
+      <section className="border-b border-line">
         <div className="px-4 py-8 sm:px-8 sm:py-12">
           <p className="gl-eyebrow">{t("kicker")}</p>
-          <h1 className="mt-3 text-[28px] font-semibold leading-tight text-frost sm:mt-4 sm:text-display-lg">{t("title")}</h1>
-          <p className="mt-3 max-w-md text-[15px] leading-relaxed text-frost-dim sm:mt-4">{t("lede")}</p>
+          <h1 className="mt-3 text-[28px] font-semibold leading-tight text-frost sm:mt-4 sm:text-display-lg">
+            {t("title")}
+          </h1>
+          <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-frost-dim sm:mt-4">{t("lede")}</p>
         </div>
       </section>
-      <BrowseCatalog data={data} />
+      <BuyerEarnGuide data={data} />
     </main>
   );
 }

@@ -84,8 +84,8 @@ function ChainFigure({ id }: { id: NodeId }) {
           src="/feed/attar-night.png"
           priceLabel={gallery("priceLabel")}
           price={`28.00 ${gallery("omr")}`}
-          commissionLabel={gallery("yourCommission")}
-          commission={`5.60 ${gallery("omr")}`}
+          budgetLabel={gallery("budgetCap")}
+          budget={`500 ${gallery("omr")}`}
           media="image"
           videoLabel={gallery("videoBadge")}
         />

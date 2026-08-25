@@ -11,28 +11,28 @@ const FEED_ITEMS = [
     nameKey: "productA",
     src: "/feed/attar-night.png",
     price: "28.00",
-    commission: "5.60",
+    budget: "500",
     media: "image" as const,
   },
   {
     nameKey: "productB",
     src: "/feed/flashlight.png",
     price: "12.50",
-    commission: "2.50",
+    budget: "300",
     media: "video" as const,
   },
   {
     nameKey: "productC",
     src: "/feed/shaver.png",
     price: "24.00",
-    commission: "4.80",
+    budget: "400",
     media: "image" as const,
   },
   {
     nameKey: "productD",
     src: "/feed/car-charger.png",
     price: "9.90",
-    commission: "1.98",
+    budget: "250",
     media: "image" as const,
   },
 ] as const;
@@ -41,8 +41,8 @@ export function ProductFeedPost({
   name,
   priceLabel,
   price,
-  commissionLabel,
-  commission,
+  budgetLabel,
+  budget,
   src,
   media,
   videoLabel,
@@ -53,8 +53,8 @@ export function ProductFeedPost({
   name: string;
   priceLabel: string;
   price: string;
-  commissionLabel: string;
-  commission: string;
+  budgetLabel: string;
+  budget: string;
   src?: string;
   media: MediaKind;
   videoLabel: string;
@@ -104,8 +104,8 @@ export function ProductFeedPost({
             <dd className="font-mono text-[13px] tabular-nums text-frost">{price}</dd>
           </div>
           <div className="flex items-baseline justify-between gap-3">
-            <dt className="text-[12px] text-frost-faint">{commissionLabel}</dt>
-            <dd className="font-mono text-[13px] tabular-nums text-frost">{commission}</dd>
+            <dt className="text-[12px] text-frost-faint">{budgetLabel}</dt>
+            <dd className="font-mono text-[13px] tabular-nums text-frost">{budget}</dd>
           </div>
         </dl>
       </div>
@@ -182,8 +182,8 @@ function FeedSlide({
       src={item.src}
       priceLabel={t("priceLabel")}
       price={`${item.price} ${t("omr")}`}
-      commissionLabel={t("yourCommission")}
-      commission={`${item.commission} ${t("omr")}`}
+      budgetLabel={t("budgetCap")}
+      budget={`${item.budget} ${t("omr")}`}
       media={item.media}
       videoLabel={t("videoBadge")}
       kicker={compact ? t("feedKicker") : undefined}

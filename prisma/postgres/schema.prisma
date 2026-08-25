@@ -64,11 +64,209 @@ model MerchantProfile {
   verificationStatus String   @default("unsubmitted")
   kycSubmittedAt     DateTime?
   kycReviewNote      String?
+  plan               String   @default("free")
+  planSource         String   @default("default")
+  planExpiresAt      DateTime?
+  stripeCustomerId     String?
+  stripeSubscriptionId String?
+  adminPlanNote        String?
   createdAt          DateTime @default(now())
 
-  products       Product[]
-  sampleRequests SampleRequest[]
-  wallet         MerchantWallet?
+  products              Product[]
+  sampleRequests        SampleRequest[]
+  wallet                MerchantWallet?
+  performanceCampaigns  PerformanceCampaign[]
+  store                 MerchantStore?
+  metaConnection        MetaConnection?
+  interestLeads         InterestLead[]
+  adCreativeDrafts      AdCreativeDraft[]
+  metaAdAccount         MetaAdAccount?
+  metaAdLaunches        MetaAdLaunch[]
+}
+
+// WhatsApp Cloud API connection for one merchant (Embedded Signup).
+model MetaConnection {
+  id         String          @id @default(cuid())
+  merchantId String          @unique
+  merchant   MerchantProfile @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+
+  wabaId         String
+  phoneNumberId  String   @unique
+  displayPhone   String   @default("")
+  accessTokenEnc String
+  businessId     String   @default("")
+  pageId         String   @default("")
+  datasetId      String   @default("")
+  autoReplyText  String   @default("حياك في متجرنا. السعر والدفع عند الاستلام. للتأكيد اكتب: نعم")
+  autoReplyEnabled Boolean @default(true)
+  recoveryEnabled Boolean @default(true)
+  recoveryText1h  String  @default("هل ما زلت مهتم؟ للطلب اكتب: نعم")
+  recoveryText6h  String  @default("باقي كمية محدودة. للدفع عند الاستلام اكتب: نعم")
+  recoveryText24h String  @default("آخر تذكير — نقدر نجهّز طلبك COD. اكتب: نعم")
+  status         String   @default("pending")
+  lastError      String   @default("")
+  connectedAt    DateTime?
+  updatedAt      DateTime @updatedAt
+  createdAt      DateTime @default(now())
+
+  @@index([wabaId])
+  @@index([status])
+}
+
+model InterestLead {
+  id         String          @id @default(cuid())
+  merchantId String
+  merchant   MerchantProfile @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+
+  phone          String
+  productId      String?
+  campaignId     String?
+  ctwaClid         String?
+  metaAdId         String   @default("")
+  metaAdsetId      String   @default("")
+  metaCampaignId   String   @default("")
+  referralJson     String   @default("{}")
+  status           String   @default("new")
+  lastMessagePreview String @default("")
+  lastInboundAt    DateTime?
+  lastOutboundAt   DateTime?
+  consentMarketing Boolean  @default(false)
+  lastWaMessageId  String   @default("")
+  followUpStep   Int       @default(0)
+  nextFollowUpAt DateTime?
+  capiLeadAt     DateTime?
+  capiPurchaseAt DateTime?
+  linkedOrderId  String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@unique([merchantId, phone])
+  @@index([merchantId])
+  @@index([status])
+  @@index([ctwaClid])
+  @@index([lastInboundAt])
+  @@index([nextFollowUpAt])
+}
+
+model AdCreativeDraft {
+  id         String          @id @default(cuid())
+  merchantId String
+  merchant   MerchantProfile @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+
+  productId String?
+  locale    String @default("ar")
+
+  originalHook       String @default("")
+  originalCaption    String @default("")
+  originalScript     String @default("")
+  originalVisualHook String @default("")
+
+  analysisJson String @default("{}")
+
+  suggestedHook       String @default("")
+  suggestedCaption    String @default("")
+  suggestedScript     String @default("")
+  suggestedVisualHook String @default("")
+  suggestedCta        String @default("")
+  rationale           String @default("")
+
+  status String @default("draft")
+
+  launches MetaAdLaunch[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([merchantId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model MetaAdAccount {
+  id         String          @id @default(cuid())
+  merchantId String          @unique
+  merchant   MerchantProfile @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+
+  adAccountId    String
+  adAccountName  String @default("")
+  currency       String @default("OMR")
+  currencyOffset Int    @default(1000)
+  pageId         String @default("")
+  accessTokenEnc String
+  status         String @default("pending")
+  lastError      String @default("")
+  connectedAt    DateTime?
+  updatedAt      DateTime @updatedAt
+  createdAt      DateTime @default(now())
+
+  @@index([adAccountId])
+  @@index([status])
+}
+
+model MetaAdLaunch {
+  id         String          @id @default(cuid())
+  merchantId String
+  merchant   MerchantProfile @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+
+  draftId String?
+  draft   AdCreativeDraft? @relation(fields: [draftId], references: [id], onDelete: SetNull)
+
+  productId String?
+
+  metaCampaignId String @default("")
+  metaAdsetId    String @default("")
+  metaAdId       String @default("")
+  metaCreativeId String @default("")
+  imageHash      String @default("")
+
+  dailyBudgetOmr   Float
+  dailyBudgetMinor Int
+  currency         String @default("OMR")
+  countries        String @default("OM")
+  placementsMode   String @default("advantage")
+  objective        String @default("OUTCOME_ENGAGEMENT")
+
+  imageUrl    String @default("")
+  primaryText String @default("")
+  headline    String @default("")
+  ctaType     String @default("WHATSAPP_MESSAGE")
+
+  status    String  @default("creating")
+  lastError String  @default("")
+  dryRun    Boolean @default(false)
+
+  launchedAt DateTime?
+  pausedAt   DateTime?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([merchantId])
+  @@index([draftId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model MerchantStore {
+  id         String          @id @default(cuid())
+  merchantId String          @unique
+  merchant   MerchantProfile @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+
+  slug          String  @unique
+  tagline       String  @default("")
+  aboutHtml     String  @default("")
+  themeJson     String  @default("{}")
+  offerHeadline String  @default("")
+  offerBody     String  @default("")
+  offerActive   Boolean @default(false)
+  promoJson     String    @default("{}")
+  offerEndsAt   DateTime?
+  published     Boolean @default(false)
+  heroProductId String?
+
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+
+  @@index([published])
 }
 
 // Pre-funded float that pays marketer commission + platform fee when COD cash
@@ -128,9 +326,13 @@ model CreatorProfile {
   accountName   String @default("")
   accountNumber String @default("")
 
-  deals          CreatorDeal[]
-  payoutRequests PayoutRequest[]
-  sampleRequests SampleRequest[]
+  deals             CreatorDeal[]
+  payoutRequests    PayoutRequest[]
+  sampleRequests    SampleRequest[]
+  shareEntitlements ShareEntitlement[]
+  contentAssets     ContentAsset[]
+  clipPublishes     ClipPublish[]
+  performanceEarns  PerformanceEarn[]
 }
 
 model Product {
@@ -139,12 +341,20 @@ model Product {
   merchant   MerchantProfile @relation(fields: [merchantId], references: [id])
 
   title     String
+  slug      String  @default("")
+  shortDescription String @default("")
+  descriptionHtml  String @default("")
   category  String
   // Comma-separated tags — SQLite has no native array/scalar-list support in Prisma.
   // Use lib/catalog-db.ts helpers (parseTags/serializeTags) to read/write this field.
   tags      String
   // Comma-separated size/variant labels (e.g. "S,M,L,XL"). Empty string = no variants.
   variants  String   @default("")
+  attributesJson String @default("{}")
+  featuresJson   String @default("[]")
+  promoJson      String    @default("{}")
+  promoEndsAt    DateTime?
+  sourceUrl      String    @default("")
   basePrice Float
   currency  String   @default("OMR")
   // Derived from costPrice / basePrice at create/update time — this is what the
@@ -166,12 +376,16 @@ model Product {
   active    Boolean  @default(true)
   createdAt DateTime @default(now())
 
-  deals          CreatorDeal[]
-  sampleRequests SampleRequest[]
-  mediaAssets    MediaAsset[]
+  deals                 CreatorDeal[]
+  sampleRequests        SampleRequest[]
+  mediaAssets           MediaAsset[]
+  performanceCampaign   PerformanceCampaign?
+  shareEntitlements     ShareEntitlement[]
+  contentAssets         ContentAsset[]
 
   @@index([merchantId])
   @@index([category])
+  @@index([slug])
 }
 
 // Merchant-uploaded ready-to-use promo images/videos for a product. Lets a
@@ -221,6 +435,7 @@ model CreatorDeal {
   productId String
   product   Product        @relation(fields: [productId], references: [id])
 
+  dealChannel         String   @default("creator")
   lockedUnitPrice     Float
   lockedCommissionPct Float
   lockedCogsPct       Float
@@ -233,8 +448,9 @@ model CreatorDeal {
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt @default(now())
 
-  orders   Order[]
-  visits   StorefrontVisit[]
+  orders        Order[]
+  visits        StorefrontVisit[]
+  clipPublishes ClipPublish[]
 
   @@index([creatorId])
   @@index([productId])
@@ -260,6 +476,8 @@ model Order {
   attributionSource String   @default("creator_link")
   // "cod" | "card" — COD has no gateway fee; card uses CARD_PAYMENT_FEE_PCT.
   settlementChannel String   @default("cod")
+  // First-touch creator who referred this order (performance loop).
+  referrerCreatorId String?
   // Shared across line items from one checkout. Buyer tracking URL is /order/[token].
   trackingToken     String   @default("")
   // "held" | "released" | "refunded" — ledger escrow, not a card capture.
@@ -270,12 +488,15 @@ model Order {
   shippingRef       String?
   createdAt         DateTime @default(now())
 
-  ledgerEntry LedgerEntry?
+  ledgerEntry       LedgerEntry?
+  shareEntitlement  ShareEntitlement?
+  attributionChain  AttributionChain?
 
   @@index([dealId])
   @@index([status])
   @@index([trackingToken])
   @@index([escrowStatus])
+  @@index([referrerCreatorId])
 }
 
 // One split computation per order — always produced by lib/ledger/waterfall.ts.
@@ -346,6 +567,8 @@ model SampleRequest {
   // "not_applicable" | "pending" | "submitted" | "approved" | "forfeited"
   ugcStatus       String    @default("not_applicable")
 
+  contentAsset ContentAsset?
+
   @@index([creatorId])
   @@index([merchantId])
   @@index([productId])
@@ -371,5 +594,188 @@ model StorefrontVisit {
 
   @@index([username])
   @@index([dealId])
+  @@index([createdAt])
+}
+
+// —— Performance distribution loop (share → optional UGC → clip) ——
+model PerformanceCampaign {
+  id         String          @id @default(cuid())
+  productId  String          @unique
+  product    Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+  merchantId String
+  merchant   MerchantProfile @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+
+  status String @default("draft")
+
+  budgetCap   Float @default(0)
+  budgetSpent Float @default(0)
+  currency    String @default("OMR")
+
+  visitRateSharer  Float @default(0.08)
+  visitRateOrigin  Float @default(0.12)
+  visitRateClipper Float @default(0.1)
+
+  purchasePctSharer  Float @default(0.1)
+  purchasePctOrigin  Float @default(0.15)
+  purchasePctClipper Float @default(0.1)
+
+  viewCpmOrigin  Float @default(0)
+  viewCpmClipper Float @default(0)
+  originBonusPct Float @default(0.03)
+
+  ugcBrief String @default("")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  contentAssets     ContentAsset[]
+  shareEntitlements ShareEntitlement[]
+  earns             PerformanceEarn[]
+
+  @@index([merchantId])
+  @@index([status])
+}
+
+model ShareEntitlement {
+  id      String @id @default(cuid())
+  orderId String @unique
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  campaignId String?
+  campaign   PerformanceCampaign? @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+
+  buyerName  String
+  buyerPhone String
+  claimToken String @unique
+
+  creatorId String?
+  creator   CreatorProfile? @relation(fields: [creatorId], references: [id], onDelete: SetNull)
+
+  status String @default("eligible")
+  role   String @default("sharer")
+
+  expiresAt DateTime?
+  claimedAt DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([productId])
+  @@index([buyerPhone])
+  @@index([creatorId])
+  @@index([campaignId])
+  @@index([status])
+}
+
+model ContentAsset {
+  id         String  @id @default(cuid())
+  productId  String
+  product    Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  campaignId String?
+  campaign   PerformanceCampaign? @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+
+  originCreatorId String
+  originCreator   CreatorProfile @relation(fields: [originCreatorId], references: [id], onDelete: Cascade)
+
+  sampleRequestId String? @unique
+  sampleRequest   SampleRequest? @relation(fields: [sampleRequestId], references: [id], onDelete: SetNull)
+
+  videoUrl      String
+  socialPostUrl String?
+  caption       String?
+
+  lastPaidViewCount Int       @default(0)
+  lastViewReportAt  DateTime?
+  viewReportsToday  Int       @default(0)
+  viewReportDayKey  String    @default("")
+
+  status     String    @default("pending")
+  reviewedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  clips ClipPublish[]
+  earns PerformanceEarn[]
+
+  @@index([productId])
+  @@index([campaignId])
+  @@index([originCreatorId])
+  @@index([status])
+}
+
+model ClipPublish {
+  id             String         @id @default(cuid())
+  contentAssetId String
+  contentAsset   ContentAsset   @relation(fields: [contentAssetId], references: [id], onDelete: Cascade)
+  clipperId      String
+  clipper        CreatorProfile @relation(fields: [clipperId], references: [id], onDelete: Cascade)
+  dealId         String?
+  deal           CreatorDeal?   @relation(fields: [dealId], references: [id], onDelete: SetNull)
+
+  socialPostUrl String?
+  status    String   @default("pending")
+  createdAt DateTime @default(now())
+
+  @@index([contentAssetId])
+  @@index([clipperId])
+  @@index([dealId])
+}
+
+model PerformanceEarn {
+  id         String              @id @default(cuid())
+  campaignId String
+  campaign   PerformanceCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  creatorId  String
+  creator    CreatorProfile      @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+
+  role      String
+  eventType String
+  amount    Float
+  currency  String @default("OMR")
+
+  orderId        String?
+  visitId        String?
+  contentAssetId String?
+  contentAsset   ContentAsset? @relation(fields: [contentAssetId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+
+  @@index([campaignId])
+  @@index([creatorId])
+  @@index([eventType])
+  @@index([orderId])
+  @@index([createdAt])
+}
+
+// Append-only HMAC-signed attribution chain per order (verifiable receipt, not a public chain).
+model AttributionChain {
+  id          String   @id @default(cuid())
+  orderId     String   @unique
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  receiptCode String   @unique
+  tipHash     String
+  tipSeq      Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  events AttributionEvent[]
+
+  @@index([receiptCode])
+}
+
+model AttributionEvent {
+  id          String           @id @default(cuid())
+  chainId     String
+  chain       AttributionChain @relation(fields: [chainId], references: [id], onDelete: Cascade)
+  seq         Int
+  eventType   String
+  payloadJson String
+  prevHash    String
+  eventHash   String           @unique
+  signature   String
+  createdAt   DateTime         @default(now())
+
+  @@unique([chainId, seq])
+  @@index([chainId])
   @@index([createdAt])
 }

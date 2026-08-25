@@ -10,6 +10,7 @@ import {
   adminEditMerchant,
   adminSetAccountStatus,
   adminSetCreatorVerification,
+  adminSetMerchantPlan,
   adminSetMerchantVerification,
 } from "@/app/(dashboard)/dashboard/admin-actions";
 import { formatMoney } from "@/lib/format";
@@ -201,6 +202,7 @@ export function MerchantAccountRow({
   const [open, setOpen] = useState(false);
   const [banReason, setBanReason] = useState(merchant.banReason ?? "");
   const [topup, setTopup] = useState("");
+  const [planNote, setPlanNote] = useState("");
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
@@ -231,6 +233,40 @@ export function MerchantAccountRow({
         )}
       </td>
       <td className="px-4 py-3 font-mono text-sm">{merchant.productsCount}</td>
+      <td className="px-4 py-3">
+        <p className="font-west text-[11px] uppercase tracking-[0.16em] text-frost-dim">
+          {merchant.plan === "pro" ? t("merchants.planPro") : t("merchants.planFree")}
+        </p>
+        {merchant.planExpiresAt ? (
+          <p className="font-mono text-[10px] text-frost-faint">
+            {new Date(merchant.planExpiresAt).toLocaleDateString()}
+          </p>
+        ) : null}
+        <div className="mt-2 flex flex-wrap gap-1">
+          <button
+            type="button"
+            disabled={pending}
+            onClick={() => run(() => adminSetMerchantPlan(merchant.id, "pro", { note: planNote }))}
+            className="gl-btn-ghost text-[10px] disabled:opacity-40"
+          >
+            {t("merchants.setPro")}
+          </button>
+          <button
+            type="button"
+            disabled={pending}
+            onClick={() => run(() => adminSetMerchantPlan(merchant.id, "free", { note: planNote }))}
+            className="gl-btn-ghost text-[10px] disabled:opacity-40"
+          >
+            {t("merchants.setFree")}
+          </button>
+        </div>
+        <input
+          value={planNote}
+          onChange={(e) => setPlanNote(e.target.value)}
+          placeholder={t("merchants.planNote")}
+          className="gl-input mt-1 w-full max-w-[10rem] text-[11px]"
+        />
+      </td>
       <td className="px-4 py-3">
         <p className="font-mono text-sm text-frost">{formatMoney(merchant.walletAvailable)}</p>
         <p className="font-mono text-[11px] text-frost-dim">

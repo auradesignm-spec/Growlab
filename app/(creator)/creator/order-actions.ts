@@ -18,6 +18,9 @@ import {
 } from "@/lib/shop/cookies";
 import { clientIpFromHeaders, consumeRateLimit } from "@/lib/shop/rateLimit";
 import { headers } from "next/headers";
+import { grantShareEntitlementOnPurchase } from "@/lib/share/grantEntitlement";
+import { resolveReferrerCreatorId } from "@/lib/performance/referrer";
+import { sealOrderAttribution } from "@/lib/ledger/attribution";
 
 const MAX_QTY = 8;
 
@@ -144,6 +147,8 @@ export async function placeCodCheckout(input: {
   buyerAddress: string;
   buyerCity: string;
   items?: CartItem[];
+  /** Optional per-line unit prices (merchant store promos). Key = dealId + "::" + size */
+  unitPriceOverrides?: Record<string, number>;
 }): Promise<PlaceCodOrderResult> {
   const buyerName = input.buyerName.trim().slice(0, 80);
   const buyerPhone = normalizePhone(input.buyerPhone);
@@ -174,6 +179,7 @@ export async function placeCodCheckout(input: {
     ? normalizeCreatorHandle(input.username)
     : firstDeal.creator.username;
   const attributionSource = attributionFor(storeUsername);
+  const referrerCreatorId = await resolveReferrerCreatorId();
 
   // Validate every line first so a later failure never leaves a partial cart paid.
   type PreparedLine = {
@@ -201,7 +207,12 @@ export async function placeCodCheckout(input: {
       if (!size || !variants.includes(size)) throw new Error("Pick a valid size.");
     }
 
-    const unitPriceCharged = deal.lockedUnitPrice;
+    const overrideKey = `${line.dealId}::${size}`;
+    const overridden = input.unitPriceOverrides?.[overrideKey];
+    const unitPriceCharged =
+      typeof overridden === "number" && Number.isFinite(overridden) && overridden >= 0
+        ? Math.round(overridden * 100) / 100
+        : deal.lockedUnitPrice;
     prepared.push({
       deal,
       quantity,
@@ -233,6 +244,7 @@ export async function placeCodCheckout(input: {
           unitPriceCharged: line.unitPriceCharged,
           currency: line.deal.product.currency,
           attributionSource,
+          referrerCreatorId,
           settlementChannel: "cod",
           trackingToken,
           escrowStatus: "held",
@@ -251,6 +263,28 @@ export async function placeCodCheckout(input: {
           availableAmount: line.waterfall.availableAmount,
           holdbackDays: line.waterfall.holdbackDays,
         },
+      });
+      const entitlement = await grantShareEntitlementOnPurchase({
+        orderId: created.id,
+        productId: line.deal.productId,
+        buyerName,
+        buyerPhone,
+        orderedAt: created.createdAt,
+        db: tx,
+      });
+      await sealOrderAttribution({
+        orderId: created.id,
+        productId: line.deal.productId,
+        dealId: line.deal.id,
+        attributionSource,
+        referrerCreatorId,
+        attributedGmv: line.waterfall.attributedGmv,
+        currency: line.deal.product.currency,
+        quantity: line.quantity,
+        unitPriceCharged: line.unitPriceCharged,
+        buyerPhone,
+        shareClaimToken: entitlement.claimToken,
+        db: tx,
       });
       ids.push(created.id);
     }

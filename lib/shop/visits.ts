@@ -5,19 +5,26 @@ import { clientIpFromHeaders, consumeRateLimit } from "@/lib/shop/rateLimit";
 export async function recordStorefrontVisit(username: string, dealId?: string | null) {
   try {
     const ip = clientIpFromHeaders(headers());
-    if (!consumeRateLimit(`visit:ip:${ip}`, 20, 10 * 60 * 1000)) return;
+    if (!consumeRateLimit(`visit:ip:${ip}`, 20, 10 * 60 * 1000)) return null;
 
-    await prisma.storefrontVisit.create({
+    const visit = await prisma.storefrontVisit.create({
       data: {
         username: username.trim().toLowerCase(),
         dealId: dealId || null,
       },
     });
+    return visit.id;
   } catch (error) {
     if (process.env.NODE_ENV === "development") {
       console.error("[storefrontVisit]", error);
     }
+    return null;
   }
+}
+
+/** Merchant store visit keyed by store slug (username column reused). */
+export async function recordMerchantStoreVisit(storeSlug: string, dealId?: string | null) {
+  return recordStorefrontVisit(`m:${storeSlug.trim().toLowerCase()}`, dealId);
 }
 
 export async function countVisitsForUsername(username: string): Promise<number> {

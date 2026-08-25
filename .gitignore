@@ -8,6 +8,7 @@ prisma/dev.db-journal
 /dev.db-journal
 prisma/schema.postgres.prisma
 storage/kyc
+storage/product-media
 .agents/
 .cursor/
 .tmp-ref-frames/

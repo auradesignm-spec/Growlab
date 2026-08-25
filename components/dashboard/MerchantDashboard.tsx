@@ -11,14 +11,18 @@ import { merchantSetOrderStatus, merchantSetShippingRef } from "@/app/(dashboard
 import { getNewOrderWhatsAppUrl } from "@/lib/shop/notify";
 import { nextOrderStatuses, type OrderActionStatus } from "@/lib/domain/orders";
 import WaterfallBreakdown from "@/components/dashboard/WaterfallBreakdown";
-import MediaKitManager from "@/components/dashboard/MediaKitManager";
-import ProductPricingEditor from "@/components/dashboard/ProductPricingEditor";
+import ProductStudio from "@/components/dashboard/ProductStudio";
+import PerformanceCampaignPanel from "@/components/dashboard/PerformanceCampaignPanel";
+import WalletTopupPanel from "@/components/dashboard/WalletTopupPanel";
+import MerchantBillingPanel from "@/components/dashboard/MerchantBillingPanel";
 import AcceptQueue from "@/components/dashboard/AcceptQueue";
 import { EmptyState, StatusPill, TableShell, TierPill } from "@/components/dashboard/ui";
+import { merchantOnboardingHref } from "@/lib/domain/merchantOnboarding";
 
-type Tab = "queue" | "products" | "creators" | "orders" | "samples";
+type Tab = "queue" | "products" | "store" | "campaign" | "wallet" | "billing" | "creators" | "orders" | "samples";
 
-const MERCHANT_TABS: Tab[] = ["queue", "products", "creators", "orders", "samples"];
+/** MVP-visible tabs (deep links to queue/creators/samples still render if forced in code). */
+const MERCHANT_TABS: Tab[] = ["products", "store", "campaign", "wallet", "billing", "orders"];
 
 function isMerchantTab(value: string | undefined): value is Tab {
   return Boolean(value && MERCHANT_TABS.includes(value as Tab));
@@ -36,19 +40,27 @@ export default function MerchantDashboard({
   const t = useTranslations("dashboardApp.merchant");
   const tStatus = useTranslations("dashboardApp.status");
   const router = useRouter();
-  const fallback: Tab = data.pendingApplications.length > 0 ? "queue" : "products";
+  const fallback: Tab =
+    data.onboarding.current === "store" || data.onboarding.current === "publish"
+      ? "store"
+      : data.onboarding.current === "campaign"
+        ? "campaign"
+        : "products";
   const [tab, setTab] = useState<Tab>(isMerchantTab(initialTab) ? initialTab : fallback);
 
   useEffect(() => {
     if (isMerchantTab(initialTab)) setTab(initialTab);
   }, [initialTab]);
 
-  const tabs: Array<{ id: Tab; label: string }> = [
-    { id: "queue", label: t("tabs.queue") },
+  const primaryTabs: Array<{ id: Tab; label: string }> = [
+    { id: "store", label: t("tabs.store") },
     { id: "products", label: t("tabs.products") },
-    { id: "creators", label: t("tabs.creators") },
+    { id: "campaign", label: t("tabs.campaign") },
     { id: "orders", label: t("tabs.orders") },
-    { id: "samples", label: t("tabs.samples") },
+    { id: "wallet", label: t("tabs.wallet") },
+  ];
+  const moreTabs: Array<{ id: Tab; label: string }> = [
+    { id: "billing", label: t("tabs.billing") },
   ];
 
   function changeTab(next: Tab) {
@@ -57,115 +69,287 @@ export default function MerchantDashboard({
   }
 
   return (
-    <div>
-      <VerificationBanner merchant={data.merchant} />
-      <WalletBanner wallet={data.wallet} />
-      <TabBar tabs={tabs} active={tab} onChange={(id) => changeTab(id as Tab)} />
-      {tab === "queue" && <AcceptQueue applications={data.pendingApplications} />}
-      {tab === "products" && <ProductsTab data={data} />}
-      {tab === "creators" && <CreatorsTab data={data} />}
-      {tab === "orders" && <OrdersTab data={data} locale={locale} />}
-      {tab === "samples" && <SamplesTab data={data} locale={locale} />}
+    <div className="relative min-h-dvh overflow-hidden bg-[var(--paper)]">
+      <div className="gl-mesh pointer-events-none absolute inset-0 opacity-70" aria-hidden>
+        <span className="gl-mesh-orb gl-mesh-cyan" />
+        <span className="gl-mesh-orb gl-mesh-lime" />
+        <span className="gl-mesh-orb gl-mesh-sun" />
+      </div>
+
+      <div className="relative z-[1] mx-auto max-w-wrap px-4 pb-16 pt-6 sm:px-8 sm:pt-8">
+        <header className="mb-6">
+          <p className="gl-eyebrow">{t("home.kicker")}</p>
+          <h1 className="mt-1 text-display-md font-semibold text-frost">{data.merchant.businessName}</h1>
+          <p className="mt-2 max-w-xl text-[14px] leading-relaxed text-frost-dim">{t("home.lede")}</p>
+        </header>
+
+        <OnboardingProgressBar progress={data.onboarding} />
+
+        <div className="mt-4 grid gap-4 sm:grid-cols-2">
+          <StatusCard merchant={data.merchant} />
+          <WalletCard wallet={data.wallet} onOpenWallet={() => changeTab("wallet")} />
+        </div>
+
+        <ShortcutsRow
+          store={data.store}
+          onTab={changeTab}
+          orderCount={data.ordersLedger.length}
+        />
+
+        <div className="mt-6 overflow-hidden rounded-[1.75rem] border border-line bg-white shadow-[var(--shadow-card)]">
+          <TabBar tabs={primaryTabs} moreTabs={moreTabs} active={tab} onChange={changeTab} />
+          <div className="border-t border-line">
+            {tab === "queue" && <AcceptQueue applications={data.pendingApplications} />}
+            {tab === "products" && <ProductsTab data={data} />}
+            {tab === "store" && <StoreTab store={data.store} />}
+            {tab === "campaign" && (
+              <PerformanceCampaignPanel
+                products={data.products.map((p) => ({ id: p.id, title: p.title, active: p.active }))}
+                campaigns={data.campaigns}
+                reels={data.buyerReels}
+                maxBudgetCap={data.merchant.limits.maxBudgetCap}
+                isPro={data.merchant.effectivePlan === "pro"}
+              />
+            )}
+            {tab === "wallet" && <WalletTopupPanel requests={data.topupRequests} />}
+            {tab === "billing" && <MerchantBillingPanel merchant={data.merchant} />}
+            {tab === "creators" && <CreatorsTab data={data} />}
+            {tab === "orders" && <OrdersTab data={data} locale={locale} />}
+            {tab === "samples" && <SamplesTab data={data} locale={locale} />}
+          </div>
+        </div>
+      </div>
     </div>
   );
 
-  function VerificationBanner({ merchant }: { merchant: MerchantDashboardData["merchant"] }) {
-    const status = merchant.verificationStatus;
-    const toneClass =
-      status === "verified"
-        ? "border-white/10 bg-white/[0.04]"
-        : status === "rejected"
-          ? "border-danger/60 bg-danger/10"
-          : "border-warn/50 bg-warn/10";
-
+  function OnboardingProgressBar({ progress }: { progress: MerchantDashboardData["onboarding"] }) {
+    if (progress.current === "done") return null;
+    const pct = Math.round((progress.completedCount / progress.total) * 100);
+    const nextHref = merchantOnboardingHref(progress.current);
     return (
-      <div className={`border-b px-5 py-4 sm:px-8 ${toneClass}`}>
-        <p className="text-[12px] text-frost-dim">
-          {tStatus(`verification.${status}` as "verification.pending")}
-        </p>
-        <p className="mt-1 max-w-xl text-[14px] text-frost-dim">
-          {t(`verificationBanner.${status}` as "verificationBanner.pending")}
-        </p>
-      </div>
+      <section className="rounded-[1.75rem] border border-line bg-white p-5 shadow-[var(--shadow-card)] sm:p-6">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p className="text-[12px] font-medium text-frost-faint">
+              {t("onboarding.kicker")} · {progress.completedCount}/{progress.total}
+            </p>
+            <p className="mt-1 text-[15px] font-medium text-frost">{t("onboarding.hint")}</p>
+          </div>
+          <Link href={nextHref} className="gl-btn-primary min-h-11">
+            {t("home.continueSetup")}
+          </Link>
+        </div>
+        <div
+          className="mt-4 h-2.5 overflow-hidden rounded-full bg-[var(--paper-sunk)]"
+          role="progressbar"
+          aria-valuenow={pct}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label={t("onboarding.kicker")}
+        >
+          <div
+            className="h-full rounded-full bg-frost transition-[width] duration-300 ease-out motion-reduce:transition-none"
+            style={{ width: `${pct}%` }}
+          />
+        </div>
+        <ol className="mt-4 flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {progress.steps.map((step) => {
+            const href = merchantOnboardingHref(step.id);
+            const active = progress.current === step.id;
+            return (
+              <li key={step.id} className="shrink-0">
+                <Link
+                  href={href}
+                  className={`inline-flex min-h-11 items-center gap-1.5 rounded-full border px-4 text-[13px] font-medium transition-colors duration-150 ${
+                    step.done
+                      ? "border-frost bg-frost text-white"
+                      : active
+                        ? "border-frost/30 bg-[var(--paper)] text-frost"
+                        : "border-line bg-white text-frost-dim"
+                  }`}
+                >
+                  <span aria-hidden className="text-[11px]">
+                    {step.done ? "✓" : active ? "→" : "·"}
+                  </span>
+                  {t(`onboarding.steps.${step.id}` as "onboarding.steps.kyc")}
+                </Link>
+              </li>
+            );
+          })}
+        </ol>
+      </section>
     );
   }
 
-  function WalletBanner({ wallet }: { wallet: MerchantDashboardData["wallet"] }) {
+  function StatusCard({ merchant }: { merchant: MerchantDashboardData["merchant"] }) {
+    const status = merchant.verificationStatus;
+    return (
+      <article className="rounded-[1.5rem] border border-line bg-white p-5 shadow-[var(--shadow-card)]">
+        <p className="text-[12px] font-medium text-frost-faint">{t("home.statusLabel")}</p>
+        <p className="mt-2 text-[16px] font-semibold text-frost">
+          {tStatus(`verification.${status}` as "verification.pending")}
+        </p>
+        <p className="mt-1 text-[13px] leading-relaxed text-frost-dim">
+          {t(`verificationBanner.${status}` as "verificationBanner.pending")}
+        </p>
+        <p className="mt-3 inline-flex rounded-full bg-[var(--paper-sunk)] px-3 py-1 text-[12px] font-medium text-frost-dim">
+          {merchant.effectivePlan === "pro" ? t("home.planPro") : t("home.planFree")}
+        </p>
+      </article>
+    );
+  }
+
+  function WalletCard({
+    wallet,
+    onOpenWallet,
+  }: {
+    wallet: MerchantDashboardData["wallet"];
+    onOpenWallet: () => void;
+  }) {
     const tight = wallet.available < 5;
     return (
-      <div className={`border-b px-5 py-4 sm:px-8 ${tight ? "border-warn/50 bg-warn/10" : "border-white/10 bg-white/[0.03]"}`}>
-        <p className="font-west text-[10px] uppercase tracking-[0.24em] text-frost-dim">{t("wallet.title")}</p>
-        <div className="mt-2 flex flex-wrap gap-6">
+      <article className="rounded-[1.5rem] border border-line bg-white p-5 shadow-[var(--shadow-card)]">
+        <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="font-mono text-[11px] text-frost-dim">{t("wallet.available")}</p>
-            <p className="font-mono text-lg text-frost">{formatMoney(wallet.available, wallet.currency)}</p>
+            <p className="text-[12px] font-medium text-frost-faint">{t("wallet.title")}</p>
+            <p className="mt-2 font-mono text-2xl font-semibold text-frost">
+              {formatMoney(wallet.available, wallet.currency)}
+            </p>
+            <p className="mt-1 text-[13px] text-frost-dim">
+              {tight ? t("wallet.lowHint") : t("wallet.available")}
+            </p>
           </div>
-          <div>
-            <p className="font-mono text-[11px] text-frost-dim">{t("wallet.reserved")}</p>
-            <p className="font-mono text-lg text-frost">{formatMoney(wallet.reserved, wallet.currency)}</p>
-          </div>
-          <div>
-            <p className="font-mono text-[11px] text-frost-dim">{t("wallet.balance")}</p>
-            <p className="font-mono text-lg text-frost">{formatMoney(wallet.balance, wallet.currency)}</p>
-          </div>
+          <button type="button" onClick={onOpenWallet} className="gl-btn-ghost min-h-11 shrink-0">
+            {t("home.shortcuts.wallet")}
+          </button>
         </div>
-        <p className="mt-2 max-w-xl text-[13px] leading-relaxed text-frost-dim">
-          {tight ? t("wallet.lowHint") : t("wallet.hint")}
-        </p>
-      </div>
+      </article>
+    );
+  }
+
+  function ShortcutsRow({
+    store,
+    onTab,
+    orderCount,
+  }: {
+    store: MerchantDashboardData["store"];
+    onTab: (tab: Tab) => void;
+    orderCount: number;
+  }) {
+    const items: Array<{
+      id: string;
+      label: string;
+      hint: string;
+      href?: string;
+      onClick?: () => void;
+      badge?: number;
+    }> = [
+      {
+        id: "store",
+        label: t("home.shortcuts.store"),
+        hint: store?.published ? t("home.shortcuts.storeLive") : t("home.shortcuts.storeEdit"),
+        href: store?.published ? "/dashboard/store/edit" : "/dashboard/store/edit?fresh=1",
+      },
+      {
+        id: "product",
+        label: t("home.shortcuts.product"),
+        hint: t("home.shortcuts.productHint"),
+        href: "/dashboard/products/new",
+      },
+      {
+        id: "campaign",
+        label: t("home.shortcuts.campaign"),
+        hint: t("home.shortcuts.campaignHint"),
+        onClick: () => onTab("campaign"),
+      },
+      {
+        id: "orders",
+        label: t("home.shortcuts.orders"),
+        hint: t("home.shortcuts.ordersHint", { count: orderCount }),
+        onClick: () => onTab("orders"),
+        badge: orderCount > 0 ? orderCount : undefined,
+      },
+      {
+        id: "channels",
+        label: t("home.shortcuts.channels"),
+        hint: t("home.shortcuts.channelsHint"),
+        href: "/dashboard/channels",
+      },
+      {
+        id: "adCoach",
+        label: t("home.shortcuts.adCoach"),
+        hint: t("home.shortcuts.adCoachHint"),
+        href: "/dashboard/ads",
+      },
+    ];
+
+    return (
+      <section className="mt-4">
+        <p className="mb-3 text-[12px] font-medium text-frost-faint">{t("home.shortcutsTitle")}</p>
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-6">
+          {items.map((item) => {
+            const className =
+              "group flex min-h-[5.5rem] flex-col justify-between rounded-[1.35rem] border border-line bg-white p-4 text-start shadow-[var(--shadow-card)] transition-colors duration-150 hover:border-frost/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-frost";
+            const body = (
+              <>
+                <span className="flex items-center justify-between gap-2">
+                  <span className="text-[15px] font-semibold text-frost">{item.label}</span>
+                  {item.badge != null ? (
+                    <span className="rounded-full bg-frost px-2 py-0.5 font-mono text-[11px] text-white">
+                      {item.badge}
+                    </span>
+                  ) : null}
+                </span>
+                <span className="mt-2 text-[12px] leading-snug text-frost-dim">{item.hint}</span>
+              </>
+            );
+            if (item.href) {
+              return (
+                <Link key={item.id} href={item.href} className={className}>
+                  {body}
+                </Link>
+              );
+            }
+            return (
+              <button key={item.id} type="button" onClick={item.onClick} className={className}>
+                {body}
+              </button>
+            );
+          })}
+        </div>
+      </section>
     );
   }
 
   function ProductsTab({ data: d }: { data: MerchantDashboardData }) {
+    return <ProductStudio products={d.products} />;
+  }
+
+  function StoreTab({ store }: { store: MerchantDashboardData["store"] }) {
     return (
       <section className="px-5 py-10 sm:px-8">
-        <div className="mb-6 flex justify-end">
-          <Link href="/dashboard/products/new" className="gl-btn-primary">
+        <p className="gl-eyebrow">{t("store.kicker")}</p>
+        <h2 className="mt-2 font-display text-display-md">{t("store.title")}</h2>
+        <p className="mt-3 max-w-xl text-[14px] leading-relaxed text-frost-dim">{t("store.lede")}</p>
+        {store ? (
+          <p className="mt-4 text-[14px] text-frost-dim">
+            {store.published ? t("store.publishedAt", { slug: store.slug }) : t("store.draftAt", { slug: store.slug })}
+          </p>
+        ) : null}
+        <div className="mt-8 flex flex-wrap gap-3">
+          <Link href={store?.published ? "/dashboard/store/edit" : "/dashboard/store/edit?fresh=1"} className="gl-btn-primary">
+            {store ? t("store.editCta") : t("store.startCta")}
+          </Link>
+          {store?.published ? (
+            <Link href={`/m/${store.slug}`} className="gl-btn-ghost">
+              {t("store.viewCta")}
+            </Link>
+          ) : null}
+          <Link href="/dashboard/products/new" className="gl-btn-ghost">
             {t("products.addCta")}
           </Link>
         </div>
-
-        {d.products.length === 0 ? (
-          <EmptyState text={t("products.empty")} />
-        ) : (
-          <TableShell
-            head={[
-              t("products.columns.title"),
-              t("products.columns.category"),
-              t("products.columns.tags"),
-              t("products.columns.price"),
-              t("products.columns.cogs"),
-              t("products.columns.deals"),
-              t("products.columns.visits"),
-              t("products.columns.status"),
-            ]}
-          >
-            {d.products.map((p) => (
-              <Fragment key={p.id}>
-                <tr className="border-b border-white/10">
-                  <td className="px-4 py-3 font-display text-base">{p.title}</td>
-                  <td className="px-4 py-3 font-west text-[11px] uppercase tracking-[0.16em] text-frost-dim">
-                    {p.category}
-                  </td>
-                  <td className="px-4 py-3 font-serif text-xs italic text-frost-dim">{p.tags.join(", ")}</td>
-                  <td className="px-4 py-3 font-mono text-sm">{formatMoney(p.basePrice, p.currency)}</td>
-                  <td className="px-4 py-3 font-mono text-sm">{formatPct(p.cogsPct, 0)}</td>
-                  <td className="px-4 py-3 font-mono text-sm">{p.activeDealsCount}</td>
-                  <td className="px-4 py-3 font-mono text-sm">{p.visitCount}</td>
-                  <td className="px-4 py-3">
-                    <StatusPill ok={p.active}>{p.active ? tStatus("product.active") : tStatus("product.inactive")}</StatusPill>
-                  </td>
-                </tr>
-                <tr className="border-b border-white/10 bg-white/[0.02]">
-                  <td colSpan={8} className="p-0">
-                    <MediaKitManager productId={p.id} assets={p.mediaAssets} />
-                    <ProductPricingEditor product={p} />
-                  </td>
-                </tr>
-              </Fragment>
-            ))}
-          </TableShell>
-        )}
+        <p className="mt-8 max-w-lg font-serif text-sm italic text-frost-dim">{t("store.hint")}</p>
       </section>
     );
   }
@@ -558,25 +742,63 @@ function UgcStatusPill({
 
 function TabBar({
   tabs,
+  moreTabs,
   active,
   onChange,
 }: {
-  tabs: Array<{ id: string; label: string }>;
-  active: string;
-  onChange: (id: string) => void;
+  tabs: Array<{ id: Tab; label: string }>;
+  moreTabs: Array<{ id: Tab; label: string }>;
+  active: Tab;
+  onChange: (id: Tab) => void;
 }) {
+  const t = useTranslations("dashboardApp.merchant");
+  const moreActive = moreTabs.some((x) => x.id === active);
+
   return (
-    <div className="gl-tabs">
-      {tabs.map((tabItem) => (
-        <button
-          key={tabItem.id}
-          type="button"
-          onClick={() => onChange(tabItem.id)}
-          className={`gl-tab ${active === tabItem.id ? "is-on" : ""}`}
-        >
-          {tabItem.label}
-        </button>
-      ))}
+    <div className="space-y-2 px-3 py-3 sm:px-4">
+      <div
+        className="flex gap-1 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        role="tablist"
+        aria-label={t("home.primaryTabs")}
+      >
+        {tabs.map((tabItem) => (
+          <button
+            key={tabItem.id}
+            type="button"
+            role="tab"
+            aria-selected={active === tabItem.id}
+            onClick={() => onChange(tabItem.id)}
+            className={`min-h-11 shrink-0 rounded-full px-4 text-[13px] font-medium transition-colors duration-150 ${
+              active === tabItem.id
+                ? "bg-frost text-white"
+                : "bg-[var(--paper)] text-frost-dim hover:text-frost"
+            }`}
+          >
+            {tabItem.label}
+          </button>
+        ))}
+      </div>
+      <div className="flex flex-wrap gap-1" role="tablist" aria-label={t("home.moreTabs")}>
+        <span className="me-1 self-center text-[11px] font-medium text-frost-faint">{t("home.more")}</span>
+        {moreTabs.map((tabItem) => (
+          <button
+            key={tabItem.id}
+            type="button"
+            role="tab"
+            aria-selected={active === tabItem.id}
+            onClick={() => onChange(tabItem.id)}
+            className={`min-h-10 rounded-full px-3 text-[12px] font-medium transition-colors duration-150 ${
+              active === tabItem.id
+                ? "bg-frost text-white"
+                : moreActive
+                  ? "bg-[var(--paper-sunk)] text-frost-dim"
+                  : "text-frost-faint hover:bg-[var(--paper)] hover:text-frost-dim"
+            }`}
+          >
+            {tabItem.label}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

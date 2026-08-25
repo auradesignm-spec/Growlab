@@ -3,8 +3,9 @@
 import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { formatDate, formatMoney } from "@/lib/format";
-import type { AdminDashboardData, AdminOrderRow, AdminPayoutRow, AdminProductRow, AdminSampleRow } from "@/lib/dashboard/admin";
+import type { AdminDashboardData, AdminOrderRow, AdminPayoutRow, AdminProductRow, AdminSampleRow, AdminWalletTopupRow } from "@/lib/dashboard/admin";
 import {
+  adminProcessWalletTopup,
   adminRespondToSample,
   adminSetEscrowStatus,
   adminSetOrderStatus,
@@ -322,6 +323,87 @@ function PayoutRow({ payout, locale }: { payout: AdminPayoutRow; locale: string 
             </button>
           </div>
         )}
+        {error && <p className="mt-2 font-mono text-xs text-danger">{error}</p>}
+      </td>
+    </tr>
+  );
+}
+
+export function WalletTopupsTab({ data, locale }: { data: AdminDashboardData; locale: string }) {
+  const t = useTranslations("dashboardApp.admin.topups");
+  if (data.walletTopups.length === 0) {
+    return (
+      <section className="px-5 py-10 sm:px-8">
+        <EmptyState text={t("empty")} />
+      </section>
+    );
+  }
+  return (
+    <section className="px-5 py-10 sm:px-8">
+      <p className="mb-6 max-w-lg font-serif text-sm italic text-frost-dim">{t("hint")}</p>
+      <TableShell
+        head={[
+          t("columns.merchant"),
+          t("columns.amount"),
+          t("columns.proof"),
+          t("columns.status"),
+          t("columns.actions"),
+        ]}
+      >
+        {data.walletTopups.map((row) => (
+          <WalletTopupRow key={row.id} row={row} locale={locale} />
+        ))}
+      </TableShell>
+    </section>
+  );
+}
+
+function WalletTopupRow({ row, locale }: { row: AdminWalletTopupRow; locale: string }) {
+  const t = useTranslations("dashboardApp.admin.topups");
+  const { pending, error, run } = useAction();
+  const [note, setNote] = useState("");
+
+  return (
+    <tr className={`border-b border-white/10 align-top ${row.status === "pending" ? "bg-warn/5" : ""}`}>
+      <td className="px-4 py-3">
+        <p className="font-display text-base">{row.businessName}</p>
+        <p className="font-mono text-[11px] text-frost-dim">{formatDate(row.createdAt, locale)}</p>
+      </td>
+      <td className="px-4 py-3 font-mono text-sm">{formatMoney(row.amount, row.currency)}</td>
+      <td className="px-4 py-3 text-[13px] text-frost-dim">{row.proofNote}</td>
+      <td className="px-4 py-3">
+        <StatusPill ok={row.status === "approved"}>{row.status}</StatusPill>
+        {row.adminNote ? <p className="mt-1 text-[11px] text-frost-faint">{row.adminNote}</p> : null}
+      </td>
+      <td className="px-4 py-3">
+        {row.status === "pending" ? (
+          <div className="flex flex-col gap-2">
+            <input
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              placeholder={t("notePlaceholder")}
+              className="w-full max-w-[180px] border border-white/15 bg-white/[0.03] px-2 py-1 text-[12px] text-frost"
+            />
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                disabled={pending}
+                onClick={() => run(() => adminProcessWalletTopup(row.id, "approve", note))}
+                className="gl-btn-ghost disabled:opacity-40"
+              >
+                {t("approve")}
+              </button>
+              <button
+                type="button"
+                disabled={pending}
+                onClick={() => run(() => adminProcessWalletTopup(row.id, "reject", note))}
+                className="gl-btn-ghost disabled:opacity-40"
+              >
+                {t("reject")}
+              </button>
+            </div>
+          </div>
+        ) : null}
         {error && <p className="mt-2 font-mono text-xs text-danger">{error}</p>}
       </td>
     </tr>

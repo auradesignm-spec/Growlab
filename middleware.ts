@@ -33,6 +33,20 @@ function withLocaleCookie(response: NextResponse, locale: Locale) {
 function stampFirstTouchRef(request: NextRequest, response: NextResponse) {
   if (request.cookies.get(GL_REF_COOKIE)?.value) return;
 
+  const refParam = request.nextUrl.searchParams.get("ref")?.trim();
+  if (refParam) {
+    const handle = normalizeCreatorHandle(refParam);
+    if (handle) {
+      response.cookies.set(GL_REF_COOKIE, handle, {
+        path: "/",
+        maxAge: REF_MAX_AGE_SEC,
+        sameSite: "lax",
+        httpOnly: true,
+      });
+      return;
+    }
+  }
+
   const parts = request.nextUrl.pathname.split("/").filter(Boolean);
   if (parts[0] !== "creator" || !parts[1]) return;
 

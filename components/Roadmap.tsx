@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import Reveal from "@/components/Reveal";
 import StageGlow from "@/components/StageGlow";
-import { enterHref, type PartnerRole } from "@/lib/auth/paths";
+import { enterHref } from "@/lib/auth/paths";
 import { track } from "@/lib/analytics";
 
 interface Step {
@@ -16,18 +16,10 @@ interface Step {
 
 export default function Roadmap() {
   const t = useTranslations("marketing.roadmap");
-  const [role, setRole] = useState<PartnerRole>("merchant");
   const [stepIndex, setStepIndex] = useState(0);
 
-  const steps = t.raw(role === "merchant" ? "merchantSteps" : "creatorSteps") as Step[];
+  const steps = t.raw("merchantSteps") as Step[];
   const step = steps[stepIndex];
-  const cta = role === "merchant" ? t("merchantCta") : t("creatorCta");
-
-  const switchRole = (next: PartnerRole) => {
-    setRole(next);
-    setStepIndex(0);
-    track("Roadmap Role Selected", { role: next });
-  };
 
   return (
     <section id="roadmap" className="relative scroll-mt-24 py-section">
@@ -37,22 +29,6 @@ export default function Roadmap() {
           <h2 className="gl-heading mt-2 text-display-lg">{t("title")}</h2>
           <p className="gl-lede mt-4">{t("lede")}</p>
         </Reveal>
-
-        <div className="mt-8">
-          <div className="gl-seg">
-            {(["merchant", "creator"] as PartnerRole[]).map((id) => (
-              <button
-                key={id}
-                type="button"
-                onClick={() => switchRole(id)}
-                aria-pressed={role === id}
-                className="gl-seg-btn"
-              >
-                {id === "merchant" ? t("merchantLabel") : t("creatorLabel")}
-              </button>
-            ))}
-          </div>
-        </div>
 
         <StageGlow className="mt-8" tone="meadow" place="start">
           <div className="gl-stage grid grid-cols-1 gap-3 p-3 sm:p-4 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
@@ -65,7 +41,7 @@ export default function Roadmap() {
                     type="button"
                     onClick={() => {
                       setStepIndex(index);
-                      track("Roadmap Step Viewed", { role, step: index + 1 });
+                      track("Roadmap Step Viewed", { role: "merchant", step: index + 1 });
                     }}
                     className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-start transition-colors duration-150 ease-out ${
                       active ? "bg-white text-frost" : "text-frost-dim hover:bg-white/70"
@@ -87,11 +63,11 @@ export default function Roadmap() {
             </div>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Link
-                href={enterHref(role)}
+                href={enterHref("merchant")}
                 className="gl-btn-primary"
-                onClick={() => track("Sign Up Started", { role, source: "roadmap" })}
+                onClick={() => track("Sign Up Started", { role: "merchant", source: "roadmap" })}
               >
-                {cta}
+                {t("merchantCta")}
               </Link>
               {stepIndex < steps.length - 1 ? (
                 <button
@@ -100,7 +76,7 @@ export default function Roadmap() {
                   onClick={() => {
                     const next = stepIndex + 1;
                     setStepIndex(next);
-                    track("Roadmap Step Viewed", { role, step: next + 1 });
+                    track("Roadmap Step Viewed", { role: "merchant", step: next + 1 });
                   }}
                 >
                   {t("next")}

@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import type { MerchantMediaAssetRow } from "@/lib/dashboard/merchant";
 import { addMediaAsset, removeMediaAsset } from "@/app/(dashboard)/dashboard/media-actions";
+import ProductMediaPicker, { type PickedMedia } from "@/components/dashboard/ProductMediaPicker";
 
 export default function MediaKitManager({
   productId,
@@ -14,18 +15,18 @@ export default function MediaKitManager({
 }) {
   const t = useTranslations("dashboardApp.merchant.products.mediaKit");
   const [open, setOpen] = useState(assets.length === 0);
-  const [type, setType] = useState<"image" | "video">("image");
-  const [url, setUrl] = useState("");
+  const [picked, setPicked] = useState<PickedMedia | null>(null);
   const [caption, setCaption] = useState("");
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
   function handleAdd() {
+    if (!picked) return;
     setError(null);
     startTransition(async () => {
       try {
-        await addMediaAsset(productId, type, url, caption);
-        setUrl("");
+        await addMediaAsset(productId, picked.kind, picked.url, caption);
+        setPicked(null);
         setCaption("");
       } catch (e) {
         setError(e instanceof Error ? e.message : "Failed");
@@ -69,22 +70,20 @@ export default function MediaKitManager({
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={asset.url} alt="" className="h-10 w-10 rounded-lg object-cover" />
                     ) : (
-                      <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-night font-mono text-[10px] text-frost">
-                        {t("typeVideo")}
-                      </span>
+                      <video src={asset.url} className="h-10 w-10 rounded-lg object-cover" muted playsInline />
                     )}
                     <div className="min-w-0">
-                    <span className="font-mono text-[10px] uppercase text-frost-faint">
-                      {asset.type === "image" ? t("typeImage") : t("typeVideo")}
-                    </span>
-                    <a
-                      href={asset.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block truncate font-mono text-xs text-frost-dim"
-                    >
-                      {asset.url}
-                    </a>
+                      <span className="font-mono text-[10px] uppercase text-frost-faint">
+                        {asset.type === "image" ? t("typeImage") : t("typeVideo")}
+                      </span>
+                      <a
+                        href={asset.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block truncate font-mono text-xs text-frost-dim"
+                      >
+                        {asset.url}
+                      </a>
                     </div>
                   </div>
                   <button
@@ -101,35 +100,24 @@ export default function MediaKitManager({
           )}
 
           {assets.length < 8 && (
-            <div className="flex flex-wrap items-center gap-2">
-              <select
-                value={type}
-                onChange={(e) => setType(e.target.value as "image" | "video")}
-                className="border border-white/15 bg-white/[0.03] px-2 py-1.5 font-mono text-xs"
-              >
-                <option value="image">{t("typeImage")}</option>
-                <option value="video">{t("typeVideo")}</option>
-              </select>
-              <input
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-                placeholder={t("urlPlaceholder")}
-                className="min-w-[14rem] flex-1 border border-white/15 bg-white/[0.03] px-3 py-1.5 font-mono text-xs"
-              />
-              <input
-                value={caption}
-                onChange={(e) => setCaption(e.target.value)}
-                placeholder={t("captionPlaceholder")}
-                className="min-w-[10rem] flex-1 border border-white/15 bg-white/[0.03] px-3 py-1.5 font-serif text-xs italic"
-              />
-              <button
-                type="button"
-                disabled={pending || !url.trim()}
-                onClick={handleAdd}
-                className="gl-btn-ghost disabled:opacity-40"
-              >
-                {t("addCta")}
-              </button>
+            <div className="space-y-3 rounded-xl border border-white/10 p-3">
+              <ProductMediaPicker value={picked} onChange={setPicked} accept="both" />
+              <div className="flex flex-wrap items-center gap-2">
+                <input
+                  value={caption}
+                  onChange={(e) => setCaption(e.target.value)}
+                  placeholder={t("captionPlaceholder")}
+                  className="min-w-[10rem] flex-1 border border-white/15 bg-white/[0.03] px-3 py-1.5 font-serif text-xs italic"
+                />
+                <button
+                  type="button"
+                  disabled={pending || !picked}
+                  onClick={handleAdd}
+                  className="gl-btn-ghost disabled:opacity-40"
+                >
+                  {t("addCta")}
+                </button>
+              </div>
             </div>
           )}
           <p className="font-mono text-[10px] text-frost-dim">{t("limitNote")}</p>

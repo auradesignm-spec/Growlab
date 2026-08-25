@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import Reveal from "@/components/Reveal";
 import { MarketingFeedMock } from "@/components/marketing/ProductFeedPost";
@@ -138,7 +138,7 @@ function LedgerMock() {
   const kpis = [
     { key: "visits" as const, value: "48" },
     { key: "sales" as const, value: "3" },
-    { key: "profit" as const, value: `16.80 ${t("omr")}` },
+    { key: "spent" as const, value: `16.80 ${t("omr")}` },
   ];
 
   return (
@@ -212,7 +212,7 @@ function LedgerMock() {
         <li className="flex items-baseline justify-between gap-2">
           <span className="inline-flex items-center gap-1.5 text-[12px] text-frost-dim">
             <span className="size-1.5 rounded-sm" style={{ background: "#1F6FEB" }} aria-hidden="true" />
-            {t("dashSplit.yours")}
+            {t("dashSplit.performance")}
           </span>
           <span className="font-mono text-[12px] tabular-nums text-frost">16.80 {t("omr")}</span>
         </li>
@@ -224,23 +224,12 @@ function LedgerMock() {
 
 function LinkMock() {
   const t = useTranslations("marketing.gallery");
-  const [copied, setCopied] = useState(false);
-  const url = `growlab.om/creator/layla/${t("productA").replace(/\s+/g, "-")}`;
-
-  const copyLink = async () => {
-    try {
-      await navigator.clipboard.writeText(`https://${url}`);
-    } catch {
-      /* clipboard may be blocked */
-    }
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 1200);
-  };
+  const url = `growlab.om/campaign/${t("productA").replace(/\s+/g, "-")}`;
 
   const funnel = [
-    { key: "opens" as const, value: "12", fill: "var(--ink)", width: "100%" },
-    { key: "orders" as const, value: "3", fill: "#1F6FEB", width: "42%" },
-    { key: "commission" as const, value: `5.60 ${t("omr")}`, fill: "var(--paper-sunk)", width: "28%" },
+    { key: "opens" as const, value: "95", fill: "var(--ink)", width: "100%" },
+    { key: "orders" as const, value: "28", fill: "#1F6FEB", width: "42%" },
+    { key: "spent" as const, value: `142 ${t("omr")}`, fill: "var(--paper-sunk)", width: "68%" },
   ];
 
   return (
@@ -253,15 +242,7 @@ function LinkMock() {
       <ol className="mt-3 space-y-2.5">
         <li>
           <p className="text-[11px] leading-4 text-frost-faint">{t("linkStepShare")}</p>
-          <button
-            type="button"
-            onClick={copyLink}
-            className="mt-1.5 flex w-full items-center gap-2 rounded-xl border border-line bg-night px-3 py-2 text-start transition-colors duration-150 ease-out hover:border-[rgba(17,19,24,0.2)]"
-            aria-label={copied ? t("copiedLink") : t("copyLink")}
-          >
-            <span className="size-2 shrink-0 rounded-sm bg-signal" aria-hidden="true" />
-            <span className="min-w-0 truncate font-mono text-[11px] text-frost-dim">{url}</span>
-          </button>
+          <p className="mt-0.5 font-mono text-[11px] text-frost-dim">{url}</p>
         </li>
         <li>
           <p className="text-[11px] leading-4 text-frost-faint">{t("linkStepTap")}</p>
@@ -283,7 +264,7 @@ function LinkMock() {
           width: row.width,
         }))}
       />
-      <MockNote live>{copied ? t("copiedLink") : t("linkAttributed")}</MockNote>
+      <MockNote>{t("linkAttributed")}</MockNote>
     </div>
   );
 }

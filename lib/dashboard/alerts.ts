@@ -1,13 +1,15 @@
 import { prisma } from "@/lib/db";
 import { creatorProductPath, uniqueDealSlugs } from "@/lib/storefront";
 import { getNewOrderWhatsAppUrl } from "@/lib/shop/notify";
+import { getWalletSnapshot } from "@/lib/ledger/wallet";
 
 export type AppAlertKind =
   | "waiting_accept"
   | "deal_accepted"
   | "new_order"
   | "commission"
-  | "new_application";
+  | "new_application"
+  | "low_wallet";
 
 export interface AppAlert {
   id: string;
@@ -114,36 +116,55 @@ export async function loadMerchantAlerts(merchantId: string): Promise<AppAlert[]
     select: { id: true },
   });
   const productIds = products.map((p) => p.id);
-  if (productIds.length === 0) return [];
 
   const now = Date.now();
-  const [pendingDeals, recentOrders] = await Promise.all([
-    prisma.creatorDeal.findMany({
-      where: { productId: { in: productIds }, status: "pending" },
-      include: { product: true, creator: true },
-      orderBy: { createdAt: "desc" },
-    }),
-    prisma.order.findMany({
-      where: {
-        deal: { productId: { in: productIds } },
-        createdAt: { gte: new Date(now - TWO_DAYS_MS) },
-        status: { not: "cancelled" },
-      },
-      include: { deal: { include: { product: true, creator: true } } },
-      orderBy: { createdAt: "desc" },
-      take: 8,
-    }),
+  const [pendingDeals, recentOrders, wallet] = await Promise.all([
+    productIds.length === 0
+      ? Promise.resolve([])
+      : prisma.creatorDeal.findMany({
+          where: { productId: { in: productIds }, status: "pending" },
+          include: { product: true, creator: true },
+          orderBy: { createdAt: "desc" },
+        }),
+    productIds.length === 0
+      ? Promise.resolve([])
+      : prisma.order.findMany({
+          where: {
+            deal: { productId: { in: productIds } },
+            createdAt: { gte: new Date(now - TWO_DAYS_MS) },
+            status: { not: "cancelled" },
+          },
+          include: { deal: { include: { product: true, creator: true } } },
+          orderBy: { createdAt: "desc" },
+          take: 8,
+        }),
+    getWalletSnapshot(merchantId),
   ]);
 
-  const alerts: AppAlert[] = pendingDeals.map((deal) => ({
-    id: `apply:${deal.id}`,
-    kind: "new_application" as const,
-    productTitle: deal.product.title,
-    href: "/dashboard?tab=queue",
-    createdAt: deal.createdAt.toISOString(),
-    creatorUsername: deal.creator.username,
-    dealId: deal.id,
-  }));
+  const alerts: AppAlert[] = [];
+
+  if (wallet.available < 5) {
+    alerts.push({
+      id: "wallet:low",
+      kind: "low_wallet",
+      productTitle: "",
+      href: "/dashboard?tab=wallet",
+      createdAt: new Date().toISOString(),
+      amount: wallet.available,
+    });
+  }
+
+  for (const deal of pendingDeals) {
+    alerts.push({
+      id: `apply:${deal.id}`,
+      kind: "new_application" as const,
+      productTitle: deal.product.title,
+      href: "/dashboard?tab=queue",
+      createdAt: deal.createdAt.toISOString(),
+      creatorUsername: deal.creator.username,
+      dealId: deal.id,
+    });
+  }
 
   for (const order of recentOrders) {
     alerts.push({

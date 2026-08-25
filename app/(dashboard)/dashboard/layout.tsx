@@ -8,9 +8,12 @@ import PwaInstall from "@/components/PwaInstall";
 import MarketerAppNav from "@/components/dashboard/MarketerAppNav";
 import AppAlerts from "@/components/dashboard/AppAlerts";
 import DevRoleSwitcher from "@/components/dev/DevRoleSwitcher";
+import DemoExperienceBar from "@/components/demo/DemoExperienceBar";
 import { isCurrentUserAdmin } from "@/lib/auth/admin";
 import { getCurrentUser } from "@/lib/auth/session";
 import { isActiveDevImpersonation, listDevUsers } from "@/lib/dev/session";
+import { isDemoExperienceEnabled } from "@/lib/dev/guard";
+import { resolveDemoPersonas, DEMO_MERCHANT_EMAIL, DEMO_BUYER_EMAIL } from "@/lib/dev/demo";
 import { loadCreatorAlerts, loadMerchantAlerts } from "@/lib/dashboard/alerts";
 
 export default async function DashboardLayout({
@@ -42,9 +45,26 @@ export default async function DashboardLayout({
         }))
       : [];
 
+  const demoEnabled = isDemoExperienceEnabled() && isActiveDevImpersonation();
+  const demoPersonas = demoEnabled ? await resolveDemoPersonas() : null;
+  const demoRole =
+    viewer?.email === DEMO_MERCHANT_EMAIL
+      ? ("merchant" as const)
+      : viewer?.email === DEMO_BUYER_EMAIL
+        ? ("buyer" as const)
+        : ("other" as const);
+
   return (
     <AppShell>
-      {devUsers.length > 0 ? (
+      {demoEnabled && demoPersonas ? (
+        <DemoExperienceBar
+          role={demoRole}
+          storeSlug={demoPersonas.storeSlug}
+          orderToken={demoPersonas.orderToken}
+          shareClaimToken={demoPersonas.shareClaimToken}
+        />
+      ) : null}
+      {devUsers.length > 0 && !demoEnabled ? (
         <DevRoleSwitcher users={devUsers} currentUserId={viewer?.id ?? null} />
       ) : null}
       <header className="relative z-40 border-b border-line bg-white pt-[env(safe-area-inset-top,0px)]">

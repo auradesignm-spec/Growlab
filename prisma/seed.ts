@@ -4,6 +4,15 @@ import { settleOrderOnFulfill } from "../lib/ledger/wallet";
 import { computeCreatorBalances, computeInstantPayoutFee, MIN_PAYOUT_OMR } from "../lib/ledger/payouts";
 import { serializeList } from "../lib/catalog-db";
 import { escrowForOrderStatus } from "../lib/shop/escrow";
+import { ensureMerchantStoreDeal } from "../lib/merchant-store/deals";
+import { serializeTheme } from "../lib/merchant-store/theme";
+import { defaultStoreLayout } from "../lib/merchant-store/layout";
+import { grantShareEntitlementOnPurchase } from "../lib/share/grantEntitlement";
+import {
+  DEMO_BUYER_EMAIL,
+  DEMO_ORDER_TOKEN,
+  DEMO_STORE_SLUG,
+} from "../lib/dev/demo";
 
 const prisma = new PrismaClient();
 
@@ -25,6 +34,12 @@ function daysAgo(n: number): Date {
 }
 
 async function resetDatabase() {
+  await prisma.clipPublish.deleteMany();
+  await prisma.performanceEarn.deleteMany();
+  await prisma.contentAsset.deleteMany();
+  await prisma.shareEntitlement.deleteMany();
+  await prisma.performanceCampaign.deleteMany();
+  await prisma.merchantStore.deleteMany();
   await prisma.kycDocument.deleteMany();
   await prisma.contactLead.deleteMany();
   await prisma.storefrontVisit.deleteMany();
@@ -85,6 +100,9 @@ async function main() {
       city: "Muscat",
       verificationStatus: "verified",
       kycSubmittedAt: new Date(),
+      plan: "pro",
+      planSource: "admin",
+      adminPlanNote: "Demo merchant — full Pro features",
     },
   });
 
@@ -131,6 +149,8 @@ async function main() {
       data: {
         merchantId: attarMerchant.id,
         title: "Muttrah Night Attar",
+        slug: "muttrah-night-attar",
+        shortDescription: "Deep oud blend — Muttrah souq signature.",
         category: "attar",
         tags: serializeList(["oud", "night", "gift"]),
         variants: serializeList(["30ml", "50ml", "100ml"]),
@@ -146,6 +166,8 @@ async function main() {
       data: {
         merchantId: attarMerchant.id,
         title: "Rose Garden Attar",
+        slug: "rose-garden-attar",
+        shortDescription: "Day-wear rose attar in a travel-friendly bottle.",
         category: "attar",
         tags: serializeList(["rose", "day", "gift"]),
         variants: serializeList(["15ml", "30ml"]),
@@ -161,6 +183,8 @@ async function main() {
       data: {
         merchantId: attarMerchant.id,
         title: "Amber Travel Set",
+        slug: "amber-travel-set",
+        shortDescription: "Three mini attars for gifting.",
         category: "attar",
         tags: serializeList(["amber", "travel", "gift"]),
         variants: "",
@@ -665,12 +689,138 @@ async function main() {
     });
   }
 
+  // ---------------------------------------------------------------------
+  // Interactive demo — merchant storefront + buyer share loop
+  // ---------------------------------------------------------------------
+  await prisma.merchantStore.create({
+    data: {
+      merchantId: attarMerchant.id,
+      slug: DEMO_STORE_SLUG,
+      tagline: "Attars from Muttrah — share after you buy",
+      aboutHtml:
+        "<p>Authentic Omani attars from Muttrah souq. Buy COD, share your link, earn when friends visit and purchase.</p>",
+      themeJson: serializeTheme({
+        accent: "#B45309",
+        heroStyle: "split",
+        fontTone: "classic",
+        layout: defaultStoreLayout(),
+      }),
+      offerHeadline: "Free delivery in Muscat",
+      offerBody: "On orders over 20 OMR — pay cash on delivery.",
+      offerActive: true,
+      published: true,
+      heroProductId: muttrahNight.id,
+    },
+  });
+
+  for (const product of [muttrahNight, roseGarden, amberTravel]) {
+    await ensureMerchantStoreDeal(product);
+  }
+
+  await prisma.performanceCampaign.createMany({
+    data: [
+      {
+        productId: muttrahNight.id,
+        merchantId: attarMerchant.id,
+        status: "active",
+        budgetCap: 200,
+        budgetSpent: 8.5,
+        visitRateSharer: 0,
+        visitRateOrigin: 0,
+        visitRateClipper: 0,
+        purchasePctSharer: 0.1,
+        purchasePctOrigin: 0.15,
+        viewCpmOrigin: 2.5,
+        ugcBrief:
+          "Film an unboxing reel in natural light. Show the bottle label and your first impression — no stock footage.",
+      },
+      {
+        productId: roseGarden.id,
+        merchantId: attarMerchant.id,
+        status: "active",
+        budgetCap: 120,
+        budgetSpent: 3.2,
+        visitRateSharer: 0,
+        visitRateOrigin: 0,
+        visitRateClipper: 0,
+        purchasePctSharer: 0.1,
+        purchasePctOrigin: 0.12,
+        viewCpmOrigin: 2.5,
+        ugcBrief: "Short reel showing the rose scent profile and packaging.",
+      },
+    ],
+  });
+
+  const demoBuyerUser = await prisma.user.create({
+    data: {
+      name: "زائر تجريبي",
+      role: "creator",
+      locale: "ar",
+      firstName: "زائر",
+      lastName: "تجريبي",
+      phone: "+96890001111",
+      email: DEMO_BUYER_EMAIL,
+      profileCompletedAt: new Date(),
+    },
+  });
+  const demoBuyer = await prisma.creatorProfile.create({
+    data: {
+      userId: demoBuyerUser.id,
+      username: "demo-buyer",
+      tier: "NEW",
+      bio: "حساب تجريبي — جرّب رحلة المشتري والمشاركة",
+      legalName: "زائر تجريبي",
+      verificationStatus: "verified",
+      kycSubmittedAt: new Date(),
+    },
+  });
+
+  const demoStoreDealId = await ensureMerchantStoreDeal(muttrahNight);
+  const demoOrder = await prisma.order.create({
+    data: {
+      dealId: demoStoreDealId,
+      buyerName: "زائر تجريبي",
+      buyerPhone: "+96890001111",
+      buyerCity: "مسقط",
+      buyerAddress: "حي مطرح، قرب السوق",
+      quantity: 1,
+      unitPriceCharged: 28,
+      currency: "OMR",
+      attributionSource: "direct",
+      trackingToken: DEMO_ORDER_TOKEN,
+      escrowStatus: "held",
+      status: "confirmed",
+      createdAt: daysAgo(0),
+    },
+  });
+
+  const demoEntitlement = await grantShareEntitlementOnPurchase({
+    orderId: demoOrder.id,
+    productId: muttrahNight.id,
+    buyerName: demoOrder.buyerName,
+    buyerPhone: demoOrder.buyerPhone,
+    orderedAt: demoOrder.createdAt,
+    db: prisma,
+  });
+
+  await prisma.shareEntitlement.update({
+    where: { id: demoEntitlement.id },
+    data: {
+      status: "claimed",
+      creatorId: demoBuyer.id,
+      claimedAt: new Date(),
+      role: "origin",
+    },
+  });
+
   console.log("Seed complete:");
   console.log(`  Merchants: 3 (2 verified, 1 pending)`);
-  console.log(`  Creators: 5 (layla=ELITE, omar/noor=RISING, sultan/maya=NEW)`);
+  console.log(`  Creators: 6 (+ demo-buyer for interactive demo)`);
   console.log(`  Products: 8 across attar/dates/home`);
-  console.log(`  Deals: 7`);
-  console.log(`  Orders: ${createdOrders.length}`);
+  console.log(`  Deals: 7 + merchant_store deals for Muttrah Attars`);
+  console.log(`  Orders: ${createdOrders.length + 1} (+ demo buyer order)`);
+  console.log(`  Demo store: /m/${DEMO_STORE_SLUG}`);
+  console.log(`  Demo order: /order/${DEMO_ORDER_TOKEN}`);
   console.log(`  Payout requests: 2 (1 instant/paid, 1 scheduled/requested)`);
   console.log(`  Sample requests: 2 (RISING deposits at 25%; NEW uses media kit)`);
 }

@@ -30,7 +30,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: "Growlab",
-  description: "سوق يربط التجار بالمسوّقين. كل بيعة تُقسم في دفتر مفتوح.",
+  description: "شبكة توزيع أدائي للتجار العمانيين — سقف ميزانية، دفع بعد التحصيل.",
   metadataBase: new URL("https://growlab.om"),
   robots: { index: true, follow: true },
   manifest: "/manifest.webmanifest",

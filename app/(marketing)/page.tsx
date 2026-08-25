@@ -10,6 +10,7 @@ import ValueChain from "@/components/ValueChain";
 import PartnerBenefits from "@/components/PartnerBenefits";
 import Governance from "@/components/Governance";
 import Pricing from "@/components/Pricing";
+import Faq from "@/components/Faq";
 import Founders from "@/components/Founders";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
@@ -30,6 +31,7 @@ export default function MarketingHome() {
       <PartnerBenefits />
       <Governance />
       <Pricing />
+      <Faq />
       <Founders />
       <Contact />
       <Footer />

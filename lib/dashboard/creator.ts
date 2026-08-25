@@ -164,7 +164,7 @@ export async function loadCreatorDashboardData(creatorId: string): Promise<Creat
     )
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
-  const balances = computeCreatorBalances(
+  const baseBalances = computeCreatorBalances(
     allOrders
       .filter((o) => o.ledgerEntry)
       .map((o) => ({
@@ -179,6 +179,17 @@ export async function loadCreatorDashboardData(creatorId: string): Promise<Creat
       })),
     creator.payoutRequests.map((p) => ({ amount: p.amount, status: p.status }))
   );
+
+  const performanceAgg = await prisma.performanceEarn.aggregate({
+    where: { creatorId },
+    _sum: { amount: true },
+  });
+  const performanceEarned = Math.round((performanceAgg._sum.amount ?? 0) * 100) / 100;
+  const balances = {
+    ...baseBalances,
+    totalEarned: Math.round((baseBalances.totalEarned + performanceEarned) * 100) / 100,
+    availableBalance: Math.round((baseBalances.availableBalance + performanceEarned) * 100) / 100,
+  };
 
   return {
     creator: {

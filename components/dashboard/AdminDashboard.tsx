@@ -6,7 +6,7 @@ import { formatMoney } from "@/lib/format";
 import type { AdminDashboardData } from "@/lib/dashboard/admin";
 import { EmptyState, Metric, TableShell } from "@/components/dashboard/ui";
 import { AddMerchantTab, CreatorAccountRow, KycQueueTab, MerchantAccountRow } from "@/components/dashboard/AdminOps";
-import { OrdersTab, PayoutsTab, ProductActiveToggle, SamplesTab } from "@/components/dashboard/AdminOpsTables";
+import { OrdersTab, PayoutsTab, ProductActiveToggle, SamplesTab, WalletTopupsTab } from "@/components/dashboard/AdminOpsTables";
 import { FilterTab, MonitorTab, UsersTab } from "@/components/dashboard/AdminCommand";
 
 type Tab =
@@ -18,6 +18,7 @@ type Tab =
   | "orders"
   | "samples"
   | "payouts"
+  | "topups"
   | "merchants"
   | "creators"
   | "invite"
@@ -38,6 +39,7 @@ export default function AdminDashboard({ data }: { data: AdminDashboardData }) {
     { id: "orders", label: t("tabs.orders") },
     { id: "samples", label: t("tabs.samples") },
     { id: "payouts", label: t("tabs.payouts") },
+    { id: "topups", label: t("tabs.topups") },
     { id: "merchants", label: t("tabs.merchants") },
     { id: "creators", label: t("tabs.creators") },
     { id: "invite", label: t("tabs.invite") },
@@ -67,6 +69,7 @@ export default function AdminDashboard({ data }: { data: AdminDashboardData }) {
       {tab === "orders" && <OrdersTab data={data} locale={locale} />}
       {tab === "samples" && <SamplesTab data={data} locale={locale} />}
       {tab === "payouts" && <PayoutsTab data={data} locale={locale} />}
+      {tab === "topups" && <WalletTopupsTab data={data} locale={locale} />}
       {tab === "merchants" && <MerchantsTab data={data} t={t} tStatus={tStatus} />}
       {tab === "creators" && <CreatorsTab data={data} t={t} tStatus={tStatus} />}
       {tab === "invite" && <AddMerchantTab />}
@@ -243,6 +246,7 @@ function MerchantsTab({
           head={[
             t("merchants.columns.name"),
             t("merchants.columns.products"),
+            t("merchants.columns.plan"),
             t("merchants.columns.wallet"),
             t("merchants.columns.status"),
             t("merchants.columns.actions"),

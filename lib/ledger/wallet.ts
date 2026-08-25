@@ -91,7 +91,7 @@ export async function assertWalletCanConfirm(
 }
 
 async function writeTxn(
-  db: Prisma.TransactionClient,
+  db: Db,
   input: {
     walletId: string;
     type: WalletTxnType;
@@ -182,6 +182,43 @@ export async function settleOrderOnFulfill(input: {
     amount,
     balanceAfter,
     orderId: input.orderId,
+  });
+}
+
+/** Debit merchant float for a performance-campaign earn (share / reel views). */
+export async function debitPerformanceSpend(input: {
+  merchantId: string;
+  amount: number;
+  earnId: string;
+  note?: string;
+  db?: Db;
+}) {
+  const db = input.db ?? prisma;
+  const amount = round2(input.amount);
+  if (amount <= 0) return;
+
+  const already = await db.merchantWalletTxn.findFirst({
+    where: { note: { startsWith: `perf:${input.earnId}` }, reason: "performance_spend" },
+  });
+  if (already) return;
+
+  const wallet = await ensureMerchantWallet(input.merchantId, db);
+  if (wallet.balance + 1e-9 < amount) {
+    throw new Error(WALLET_SETTLE_SHORT_AR);
+  }
+
+  const balanceAfter = round2(wallet.balance - amount);
+  await db.merchantWallet.update({
+    where: { id: wallet.id },
+    data: { balance: balanceAfter },
+  });
+  await writeTxn(db, {
+    walletId: wallet.id,
+    type: "debit",
+    reason: "performance_spend",
+    amount,
+    balanceAfter,
+    note: `perf:${input.earnId}${input.note ? ` ${input.note}` : ""}`.slice(0, 200),
   });
 }
 

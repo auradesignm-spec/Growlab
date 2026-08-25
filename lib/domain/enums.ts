@@ -39,6 +39,10 @@ export type CreatorTierId = (typeof CREATOR_TIERS)[number];
 export const DEAL_STATUSES = ["pending", "active", "paused", "ended"] as const;
 export type DealStatus = (typeof DEAL_STATUSES)[number];
 
+/** Creator storefront vs merchant-owned direct store checkout. */
+export const DEAL_CHANNELS = ["creator", "merchant_store"] as const;
+export type DealChannel = (typeof DEAL_CHANNELS)[number];
+
 export const ORDER_STATUSES = ["pending", "confirmed", "fulfilled", "returned", "cancelled"] as const;
 export type OrderStatus = (typeof ORDER_STATUSES)[number];
 
@@ -61,7 +65,13 @@ export type SettlementChannel = (typeof SETTLEMENT_CHANNELS)[number];
 export const WALLET_TXN_TYPES = ["credit", "debit"] as const;
 export type WalletTxnType = (typeof WALLET_TXN_TYPES)[number];
 
-export const WALLET_TXN_REASONS = ["topup", "order_settlement", "order_reversal", "admin_adjust"] as const;
+export const WALLET_TXN_REASONS = [
+  "topup",
+  "order_settlement",
+  "order_reversal",
+  "admin_adjust",
+  "performance_spend",
+] as const;
 export type WalletTxnReason = (typeof WALLET_TXN_REASONS)[number];
 
 export const PAYOUT_TYPES = ["instant", "scheduled"] as const;
@@ -95,3 +105,33 @@ export type CampaignApplyPath = (typeof CAMPAIGN_APPLY_PATHS)[number];
  */
 export const UGC_STATUSES = ["not_applicable", "pending", "submitted", "approved", "forfeited"] as const;
 export type UgcStatus = (typeof UGC_STATUSES)[number];
+
+/**
+ * Performance-distribution loop (share → optional UGC → clip).
+ * sharer  — bought, shares link only (no filming required)
+ * origin  — approved UGC for the campaign (higher rates + clip bonus)
+ * clipper — republishes approved library clips with own link
+ */
+export const DISTRIBUTOR_ROLES = ["sharer", "origin", "clipper"] as const;
+export type DistributorRole = (typeof DISTRIBUTOR_ROLES)[number];
+
+/** Payable performance events. Views are optional / gated until verification exists. */
+export const PERFORMANCE_EVENT_TYPES = ["visit", "purchase", "view", "origin_bonus"] as const;
+export type PerformanceEventType = (typeof PERFORMANCE_EVENT_TYPES)[number];
+
+export const PERFORMANCE_CAMPAIGN_STATUSES = ["draft", "active", "paused", "ended"] as const;
+export type PerformanceCampaignStatus = (typeof PERFORMANCE_CAMPAIGN_STATUSES)[number];
+
+/** Post-purchase share right — buyer can earn before (or without) filming. */
+export const SHARE_ENTITLEMENT_STATUSES = ["eligible", "claimed", "expired"] as const;
+export type ShareEntitlementStatus = (typeof SHARE_ENTITLEMENT_STATUSES)[number];
+
+/** Approved UGC that enters the clip library. */
+export const CONTENT_ASSET_STATUSES = ["pending", "approved", "rejected"] as const;
+export type ContentAssetStatus = (typeof CONTENT_ASSET_STATUSES)[number];
+
+export const MERCHANT_PLANS = ["free", "pro"] as const;
+export type MerchantPlanId = (typeof MERCHANT_PLANS)[number];
+
+export const MERCHANT_PLAN_SOURCES = ["default", "admin", "stripe"] as const;
+export type MerchantPlanSource = (typeof MERCHANT_PLAN_SOURCES)[number];

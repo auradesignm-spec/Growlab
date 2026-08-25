@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Growlab — شبكة توزيع أدائي</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --paper: #f7f8fa;
+      --paper-card: #ffffff;
+      --paper-sunk: #eef1f4;
+      --ink: #111318;
+      --ink-dim: #5c6573;
+      --ink-faint: #8b93a1;
+      --line: rgba(17, 19, 24, 0.08);
+      --signal: #1f6feb;
+      --signal-dim: #d6e4fa;
+      --pulse: #6f9b7c;
+      --warn: #c4a35a;
+      --mesh-cyan: #7dd3fc;
+      --mesh-lime: #86efac;
+      --mesh-sun: #fde68a;
+      --mesh-coral: #fdba74;
+      --shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 16px 40px rgba(15, 23, 42, 0.06);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "IBM Plex Sans Arabic", sans-serif;
+      background: #dfe3ea;
+      color: var(--ink);
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .slide-deck {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: var(--paper);
+    }
+
+    @media (min-width: 769px) {
+      .slide-deck {
+        max-width: calc(100vh * 16 / 9);
+        max-height: calc(100vw * 9 / 16);
+        margin: auto;
+        position: absolute;
+        inset: 0;
+        border-radius: 12px;
+        box-shadow: 0 24px 64px rgba(17, 19, 24, 0.12);
+      }
+      body { display: grid; place-items: center; min-height: 100vh; }
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: clamp(28px, 5vw, 64px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s ease, visibility 0.4s;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse 70% 50% at 100% 0%, rgba(125, 211, 252, 0.18), transparent 55%),
+        radial-gradient(ellipse 55% 45% at 0% 100%, rgba(134, 239, 172, 0.14), transparent 50%),
+        var(--paper);
+    }
+
+    .slide.active { opacity: 1; visibility: visible; }
+
+    .slide-content {
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+      max-height: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(12px, 2vh, 24px);
+    }
+
+    .eyebrow {
+      font-size: clamp(12px, 1.4vw, 14px);
+      font-weight: 500;
+      color: var(--ink-faint);
+      letter-spacing: 0.02em;
+    }
+
+    h1 {
+      font-size: clamp(32px, 5.5vw, 64px);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+    }
+
+    h2 {
+      font-size: clamp(26px, 3.8vw, 42px);
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+
+    .lede {
+      font-size: clamp(15px, 1.8vw, 20px);
+      color: var(--ink-dim);
+      line-height: 1.65;
+      max-width: 42em;
+    }
+
+    .brand-mark {
+      font-size: clamp(48px, 8vw, 88px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      background: var(--signal-dim);
+      color: var(--signal);
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 6px;
+      width: fit-content;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(12px, 2vw, 20px);
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(12px, 2vw, 18px);
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    @media (max-width: 768px) {
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+      .slide { padding: 24px 18px 72px; }
+    }
+
+    .card {
+      background: var(--paper-card);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: clamp(14px, 2vw, 20px);
+      box-shadow: var(--shadow);
+      text-align: start;
+    }
+
+    .card h3 {
+      font-size: clamp(15px, 1.6vw, 18px);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .card p, .card li {
+      font-size: clamp(13px, 1.35vw, 15px);
+      color: var(--ink-dim);
+      line-height: 1.55;
+    }
+
+    .card .num {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--signal);
+      margin-bottom: 8px;
+    }
+
+    .list-clean {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .list-clean li {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      font-size: clamp(14px, 1.5vw, 16px);
+      color: var(--ink-dim);
+      line-height: 1.5;
+    }
+
+    .list-clean .dot {
+      flex-shrink: 0;
+      width: 8px;
+      height: 8px;
+      margin-top: 7px;
+      border-radius: 50%;
+      background: var(--signal);
+    }
+
+    .metric {
+      text-align: center;
+      padding: clamp(16px, 2.5vw, 28px) 12px;
+    }
+
+    .metric .value {
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.1;
+    }
+
+    .metric .label {
+      margin-top: 6px;
+      font-size: 13px;
+      color: var(--ink-dim);
+    }
+
+    .split-bar {
+      display: flex;
+      height: 48px;
+      border-radius: 8px;
+      overflow: hidden;
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .split-bar span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 8px;
+    }
+
+    .split-merchant { background: var(--ink); width: 74%; }
+    .split-creator { background: var(--signal); width: 15%; }
+    .split-platform { background: var(--pulse); width: 11%; }
+
+    .compare-row {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr 1fr;
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    .compare-row .head {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ink-faint);
+      padding: 4px 8px;
+    }
+
+    .compare-row .us {
+      background: #eef6ff;
+      border-color: rgba(31, 111, 235, 0.2);
+    }
+
+    .compare-row .them {
+      background: var(--paper-sunk);
+    }
+
+    .flow {
+      display: flex;
+      align-items: stretch;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .flow-step {
+      flex: 1;
+      min-width: 120px;
+      background: var(--paper-card);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 14px;
+      position: relative;
+    }
+
+    .flow-step .n {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--signal);
+    }
+
+    .flow-step h3 {
+      font-size: 14px;
+      margin: 6px 0 4px;
+    }
+
+    .flow-step p {
+      font-size: 12px;
+      color: var(--ink-dim);
+      line-height: 1.45;
+    }
+
+    .cta-box {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 22px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: var(--ink);
+      color: #fff;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      right: 0;
+      height: 3px;
+      background: var(--signal);
+      transition: width 0.3s;
+      z-index: 1000;
+      transform-origin: right;
+    }
+
+    .nav-controls {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .nav-btn {
+      background: var(--paper-sunk);
+      border: none;
+      color: var(--ink);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 16px;
+      font-family: inherit;
+    }
+
+    .nav-btn:hover { background: var(--signal-dim); color: var(--signal); }
+
+    .slide-counter {
+      color: var(--ink-dim);
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+      min-width: 48px;
+      text-align: center;
+    }
+
+    .animate-fade-up {
+      animation: fadeUp 0.55s ease-out both;
+    }
+
+    .animate-stagger > * {
+      opacity: 0;
+      animation: fadeUp 0.45s ease-out forwards;
+    }
+    .animate-stagger > *:nth-child(1) { animation-delay: 0.05s; }
+    .animate-stagger > *:nth-child(2) { animation-delay: 0.12s; }
+    .animate-stagger > *:nth-child(3) { animation-delay: 0.19s; }
+    .animate-stagger > *:nth-child(4) { animation-delay: 0.26s; }
+    .animate-stagger > *:nth-child(5) { animation-delay: 0.33s; }
+    .animate-stagger > *:nth-child(6) { animation-delay: 0.4s; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .slide.active .animate-fade-up,
+    .slide.active .animate-stagger > * {
+      animation-play-state: running;
+    }
+
+    .footer-note {
+      font-size: 12px;
+      color: var(--ink-faint);
+      margin-top: auto;
+    }
+
+    .two-col-text {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 28px;
+      align-items: center;
+    }
+
+    @media (max-width: 768px) {
+      .two-col-text { grid-template-columns: 1fr; }
+      .compare-row { grid-template-columns: 1fr; }
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pill {
+      padding: 6px 12px;
+      background: var(--paper-card);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--ink-dim);
+    }
+  </style>
+</head>
+<body>
+  <div class="progress-bar" id="progressBar"></div>
+
+  <div class="slide-deck">
+
+    <!-- 1. Title -->
+    <section class="slide active">
+      <div class="slide-content animate-fade-up" style="align-items: flex-start; text-align: start;">
+        <span class="tag">شبكة توزيع أدائي عمانية</span>
+        <p class="brand-mark">Growlab</p>
+        <h1 style="font-size: clamp(20px, 3vw, 32px); font-weight: 600; color: var(--ink-dim); max-width: 22em;">
+          عميلك أفضل مسوّق لك.
+        </h1>
+        <p class="lede">
+          افتح حملة بسقفك. زبون يشتري ويوصّي — وتدفع على زيارة وبيع محصّل فقط. لا إعلان مقدماً ولا وكالة.
+        </p>
+        <p class="footer-note">مشاركة · UGC · قصّ · أداء · دفتر</p>
+      </div>
+    </section>
+
+    <!-- 2. الفكرة -->
+    <section class="slide">
+      <div class="slide-content">
+        <p class="eyebrow animate-fade-up">الفكرة</p>
+        <h2 class="animate-fade-up">مو متجر. مو وكالة. آلة تكاثر زبائن</h2>
+        <p class="lede animate-fade-up">
+          مستوحاة من الكلبينغ: محتوى يُعتمد، يُقصّ، يُوزَّع — والفلوس من أداء حقيقي بسقف يحدده التاجر.
+        </p>
+        <div class="grid-3 animate-stagger" style="margin-top: 8px;">
+          <div class="card">
+            <div class="num">التاجر</div>
+            <h3>يفتح حملة بسقف</h3>
+            <p>يضع المنتج وشروط UGC وأسعار الزيارة/الشراء/المشاهدة. يدفع على نتيجة فقط.</p>
+          </div>
+          <div class="card">
+            <div class="num">المشتري</div>
+            <h3>يشارك ويربح</h3>
+            <p>بعد الشراء: رابط فوراً. ما يحتاج يصوّر — المشاركة تكفي. التصوير اختياري يضاعف الربح.</p>
+          </div>
+          <div class="card">
+            <div class="num">القصّاص</div>
+            <h3>يوسّع الوصول</h3>
+            <p>يقصّ من المكتبة المعتمدة وينشر برابطه — سلسلة توزيع تتغذى من كل بيعة.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. المشكلة -->
+    <section class="slide">
+      <div class="slide-content">
+        <p class="eyebrow animate-fade-up">المشكلة</p>
+        <h2 class="animate-fade-up">تدفع مرتين… وما زلت تسأل: من وين الزباين؟</h2>
+        <p class="lede animate-fade-up">واتساب يرتّب الدردشة. الوكالة تبيع وعوداً. المتجر واجهة فقط. ما في محرّك جلب من البيعة نفسها.</p>
+        <div class="grid-2 animate-stagger" style="margin-top: 4px;">
+          <div class="card">
+            <div class="num">01</div>
+            <h3>تمويل إعلان مقدماً</h3>
+            <p>تدفع كاش قبل ما تعرف إذا الحملة جابت بيعة محصّلة.</p>
+          </div>
+          <div class="card">
+            <div class="num">02</div>
+            <h3>وكالة بلا محاسبة أداء</h3>
+            <p>وصول وتقارير… والطلب ما زال فوضى واتساب.</p>
+          </div>
+          <div class="card">
+            <div class="num">03</div>
+            <h3>«نسوي لك متجر» مستهلك</h3>
+            <p>ما ناقصك واجهة — ناقصك ناس توزّع ودفتر يقفل الفضل.</p>
+          </div>
+          <div class="card">
+            <div class="num">04</div>
+            <h3>المشتري يضيع كقناة</h3>
+            <p>اشترى وراضٍ… وما في مسار يحوّله لموزّع دخل.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. الحل -->
+    <section class="slide">
+      <div class="slide-content">
+        <p class="eyebrow animate-fade-up">الحل</p>
+        <h2 class="animate-fade-up">ادفع على أداء بسقف — لا على وعود</h2>
+        <div class="two-col-text" style="margin-top: 8px;">
+          <div class="animate-fade-up">
+            <p class="lede" style="margin-bottom: 16px;">
+              واتساب يبقى للتواصل. المتجر إن وجد يبقى واجهة. Growlab تضيف <strong style="color: var(--ink);">قناة توزيع أدائي من عملائك أنفسهم</strong>.
+            </p>
+            <ul class="list-clean">
+              <li><span class="dot"></span><span>رابط مشاركة بعد كل شراء محصّل</span></li>
+              <li><span class="dot"></span><span>التصوير اختياري — يضاعف فرصة الربح</span></li>
+              <li><span class="dot"></span><span>موافقة UGC ثم مكتبة للقصّاصين</span></li>
+              <li><span class="dot"></span><span>سقف ميزانية + إيقاف تلقائي</span></li>
+            </ul>
+          </div>
+          <div class="grid-2 animate-stagger" style="grid-template-columns: 1fr;">
+            <div class="card metric">
+              <div class="value">زيارة + شراء</div>
+              <div class="label">أساس الصرف في v1 (تتبع موثوق)</div>
+            </div>
+            <div class="card metric">
+              <div class="value">UGC اختياري</div>
+              <div class="label">المشاركة كافية للدخول في السلسلة</div>
+            </div>
+            <div class="card metric">
+              <div class="value">سقف أنت تضبطه</div>
+              <div class="label">لا فاتورة وكالة مفاجئة</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. محرّك النمو -->
+    <section class="slide">
+      <div class="slide-content">
+        <p class="eyebrow animate-fade-up">محرّك النمو</p>
+        <h2 class="animate-fade-up">سلسلة تتغذى من كل بيعة محصّلة</h2>
+        <p class="lede animate-fade-up">مشاركة → زيارة → شراء → مشارك جديد → محتوى → قصّ → مشاركة أوسع.</p>
+        <div class="flow animate-stagger" style="margin-top: 8px;">
+          <div class="flow-step">
+            <div class="n">١</div>
+            <h3>شراء محصّل</h3>
+            <p>COD يثبت الثقة.</p>
+          </div>
+          <div class="flow-step">
+            <div class="n">٢</div>
+            <h3>رابط مشاركة</h3>
+            <p>يفتح تلقائياً — بلا تصوير.</p>
+          </div>
+          <div class="flow-step">
+            <div class="n">٣</div>
+            <h3>UGC اختياري</h3>
+            <p>موافقة → مكتبة.</p>
+          </div>
+          <div class="flow-step">
+            <div class="n">٤</div>
+            <h3>قصّ وتوزيع</h3>
+            <p>Clippers يوسّعون.</p>
+          </div>
+          <div class="flow-step">
+            <div class="n">٥</div>
+            <h3>مشتري جديد</h3>
+            <p>الدورة تعيد نفسها.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. مسارات الدخل -->
+    <section class="slide">
+      <div class="slide-content">
+        <p class="eyebrow animate-fade-up">مسارات الدخل</p>
+        <h2 class="animate-fade-up">المشاركة للجميع — التصوير يضاعف — القصّ يوسّع</h2>
+        <div class="grid-3 animate-stagger" style="margin-top: 12px;">
+          <div class="card">
+            <div class="num">٠١ مشارك</div>
+            <h3>رابط فقط</h3>
+            <p>بعد الشراء: شارك واتساب/ستوري. تربح من زيارة المتجر والشراء المحصّل من رابطك.</p>
+          </div>
+          <div class="card">
+            <div class="num">٠٢ صانع Origin</div>
+            <h3>UGC معتمد</h3>
+            <p>تصوّر ضمن الشروط، ترفع للمراجعة، وبعد الموافقة أرباح أعلى + حصة من مبيعات القصّاصين.</p>
+          </div>
+          <div class="card">
+            <div class="num">٠٣ قصّاص</div>
+            <h3>إعادة توزيع</h3>
+            <p>تقصّ من المكتبة المعتمدة وتنشر برابطك — فرصة دخل بلا تصوير من الصفر.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. كيف يعمل -->
+    <section class="slide">
+      <div class="slide-content">
+        <p class="eyebrow animate-fade-up">كيف يعمل</p>
+        <h2 class="animate-fade-up">من الطلب إلى أول ربح أدائي</h2>
+        <div class="grid-2 animate-stagger" style="margin-top: 8px;">
+          <div class="card">
+            <div class="num">٠١</div>
+            <h3>التاجر يفتح حملة</h3>
+            <p>منتج + شروط محتوى + تسعير زيارة/شراء/مشاهدة + سقف ميزانية.</p>
+          </div>
+          <div class="card">
+            <div class="num">٠٢</div>
+            <h3>المشتري يطلب ويدفع</h3>
+            <p>ضيف + COD. بعد التحصيل يُفعَّل حق المشاركة فوراً.</p>
+          </div>
+          <div class="card">
+            <div class="num">٠٣</div>
+            <h3>مشاركة أو تصوير</h3>
+            <p>رابط جاهز. زر اختياري: ارفع UGC لزيادة أرباحك → موافقة → مكتبة.</p>
+          </div>
+          <div class="card">
+            <div class="num">٠٤</div>
+            <h3>أداء ثم صرف</h3>
+            <p>زيارة + شراء محصّل (+ مشاهدة مؤهّلة). الصرف من الميزانية والدفتر.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. مميزات التاجر -->
+    <section class="slide">
+      <div class="slide-content">
+        <p class="eyebrow animate-fade-up">مميزات التاجر</p>
+        <h2 class="animate-fade-up">زبائنك يصيرون قناة بيعك — بسقف أنت تضبطه</h2>
+        <div class="grid-2 animate-stagger" style="margin-top: 8px;">
+          <div class="card">
+            <h3>صفر كاش إعلان إجباري</h3>
+            <p>الميزانية تُصرف على زيارة وشراء (ومشاهدة مؤهّلة) — لا تمويل مقدماً.</p>
+          </div>
+          <div class="card">
+            <h3>سقف وإيقاف تلقائي</h3>
+            <p>حدد ميزانية يوم/شهر. الحملة تتوقف عند النفاد.</p>
+          </div>
+          <div class="card">
+            <h3>شروط UGC أنت تكتبها</h3>
+            <p>مدة، إظهار منتج، ممنوعات — ثم موافقة قبل المكتبة.</p>
+          </div>
+          <div class="card">
+            <h3>مكتبة محتوى تتوسع</h3>
+            <p>كل مقطع معتمد مادة للقصّاصين — توزيع بلا وكالة.</p>
+          </div>
+          <div class="card">
+            <h3>لوحة COD + دفتر</h3>
+            <p>تأكيد التحصيل، إسناد الرابط، وأرباح الأداء في سطر واحد.</p>
+          </div>
+          <div class="card">
+            <h3>ما نبيعك متجراً</h3>
+            <p>واتساب ومتجرك إن وجد يبقيان. نحن طبقة التوزيع الأدائي.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. فرص الدخل -->
+    <section class="slide">
+      <div class="slide-content">
+        <p class="eyebrow animate-fade-up">فرص الدخل</p>
+        <h2 class="animate-fade-up">دخل من مشاركة حقيقية — والتصوير مكافأة لا شرط</h2>
+        <div class="grid-2 animate-stagger" style="margin-top: 8px;">
+          <div class="card">
+            <h3>رابط فوراً بعد الشراء</h3>
+            <p>ما تحتاج خبرة تصوير. شارك واربح من الزيارة والبيعة.</p>
+          </div>
+          <div class="card">
+            <h3>UGC يضاعف فرصتك</h3>
+            <p>بعد الموافقة: مكافأة مشاهدة + عمولة شراء أعلى.</p>
+          </div>
+          <div class="card">
+            <h3>قصّ بدون ستوديو</h3>
+            <p>مكتبة معتمدة → قصّ → انشر → اربط رابطك.</p>
+          </div>
+          <div class="card">
+            <h3>أرقام ظاهرة قبل البدء</h3>
+            <p>تسعير الحملة واضح: زيارة، شراء، مشاهدة.</p>
+          </div>
+          <div class="card">
+            <h3>مكافأة مزدوجة للصانع</h3>
+            <p>إذا قصّاص باع من مقطعك — لك نسبة إضافية.</p>
+          </div>
+          <div class="card">
+            <h3>صرف بعد تحقق</h3>
+            <p>شراء بعد التحصيل. مشاهدة بعد تأهيل. بلا تجنيد فارغ.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10. تسعير الأداء -->
+    <section class="slide">
+      <div class="slide-content">
+        <p class="eyebrow animate-fade-up">تسعير الأداء</p>
+        <h2 class="animate-fade-up">التاجر يحدد الأسعار — مثال توضيحي</h2>
+        <p class="lede animate-fade-up">v1 يركّز على زيارة + شراء محصّل. مكافأة المشاهدة تُفعَّل بحذر بعد التحقق.</p>
+        <div class="grid-3 animate-stagger" style="margin-top: 8px;">
+          <div class="card metric">
+            <div class="value" style="font-size: 20px;">مشارك</div>
+            <div class="label">زيارة ≈ ٠٫١٠ ر.ع. · شراء ١٠٪</div>
+          </div>
+          <div class="card metric">
+            <div class="value" style="font-size: 20px;">صانع</div>
+            <div class="label">شراء ١٥٪ · مشاهدة مؤهّلة · +٣٪ من القصّ</div>
+          </div>
+          <div class="card metric">
+            <div class="value" style="font-size: 20px;">قصّاص</div>
+            <div class="label">زيارة + شراء ١٠٪ من رابط القصّة</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11. الحوكمة -->
+    <section class="slide">
+      <div class="slide-content">
+        <p class="eyebrow animate-fade-up">الحوكمة</p>
+        <h2 class="animate-fade-up">أداء حقيقي، محتوى معتمد، ميزانية لا تنفجر</h2>
+        <div class="grid-3 animate-stagger" style="margin-top: 10px;">
+          <div class="card">
+            <h3>موافقة UGC</h3>
+            <p>لا يدخل المكتبة إلا بعد مراجعة الشروط.</p>
+          </div>
+          <div class="card">
+            <h3>سقف ميزانية</h3>
+            <p>إيقاف تلقائي — التاجر ما يُفاجأ بفاتورة.</p>
+          </div>
+          <div class="card">
+            <h3>تتبع الرابط</h3>
+            <p>الزيارة والشراء من رابطك فقط — إسناد مقفول.</p>
+          </div>
+          <div class="card">
+            <h3>مشاهدة مؤهّلة</h3>
+            <p>لا صرف على وهم؛ تحقق قبل التفعيل الكامل.</p>
+          </div>
+          <div class="card">
+            <h3>احتياطي إرجاع</h3>
+            <p>حماية على أرباح الشراء بعد التحصيل.</p>
+          </div>
+          <div class="card">
+            <h3>بلا تجنيد فارغ</h3>
+            <p>الربح من زيارة/شراء/أداء — مو من دعوة للمنصة.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 12. مقارنة -->
+    <section class="slide">
+      <div class="slide-content">
+        <p class="eyebrow animate-fade-up">المقارنة</p>
+        <h2 class="animate-fade-up">Growlab مقابل الخيارات المألوفة</h2>
+        <div class="animate-stagger" style="display: flex; flex-direction: column; gap: 10px; margin-top: 8px;">
+          <div class="compare-row">
+            <div class="head">المعيار</div>
+            <div class="head">مع Growlab</div>
+            <div class="head">بدونها</div>
+          </div>
+          <div class="compare-row">
+            <div class="card" style="box-shadow: none;"><h3 style="font-size: 14px;">جلب الزبائن</h3></div>
+            <div class="card us" style="box-shadow: none;"><p>سلسلة مشاركة + UGC + قصّ</p></div>
+            <div class="card them" style="box-shadow: none;"><p>إعلان كاش أو وكالة مقدماً</p></div>
+          </div>
+          <div class="compare-row">
+            <div class="card" style="box-shadow: none;"><h3 style="font-size: 14px;">ماذا تشتري</h3></div>
+            <div class="card us" style="box-shadow: none;"><p>أداء بسقف ميزانية</p></div>
+            <div class="card them" style="box-shadow: none;"><p>وعود وصول / متجر جديد</p></div>
+          </div>
+          <div class="compare-row">
+            <div class="card" style="box-shadow: none;"><h3 style="font-size: 14px;">دور المشتري</h3></div>
+            <div class="card us" style="box-shadow: none;"><p>قناة دخل بعد الشراء</p></div>
+            <div class="card them" style="box-shadow: none;"><p>ينتهي عند الاستلام</p></div>
+          </div>
+          <div class="compare-row">
+            <div class="card" style="box-shadow: none;"><h3 style="font-size: 14px;">المحتوى</h3></div>
+            <div class="card us" style="box-shadow: none;"><p>مكتبة معتمدة تُقصّ وتُوزَّع</p></div>
+            <div class="card them" style="box-shadow: none;"><p>تصوير مرة ويختفي</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 13. الطريق -->
+    <section class="slide">
+      <div class="slide-content">
+        <p class="eyebrow animate-fade-up">خريطة الطريق</p>
+        <h2 class="animate-fade-up">من الحملة إلى أول سلسلة</h2>
+        <div class="grid-2 animate-stagger" style="margin-top: 10px;">
+          <div class="card">
+            <div class="num">تاجر</div>
+            <ol class="list-clean" style="margin-top: 10px; list-style: none;">
+              <li><span class="dot"></span><span><strong style="color: var(--ink);">١.</strong> سجّل وأضف المنتج</span></li>
+              <li><span class="dot"></span><span><strong style="color: var(--ink);">٢.</strong> افتح حملة: تسعير + سقف + شروط UGC</span></li>
+              <li><span class="dot"></span><span><strong style="color: var(--ink);">٣.</strong> أكّد طلبات COD</span></li>
+              <li><span class="dot"></span><span><strong style="color: var(--ink);">٤.</strong> وافق على المقاطع → المكتبة</span></li>
+              <li><span class="dot"></span><span><strong style="color: var(--ink);">٥.</strong> راقب الزيارات والمبيعات والأرباح</span></li>
+            </ol>
+          </div>
+          <div class="card">
+            <div class="num">الشبكة تعمل لك</div>
+            <ol class="list-clean" style="margin-top: 10px;">
+              <li><span class="dot"></span><span><strong style="color: var(--ink);">١.</strong> زبائنك يشاركون بعد الشراء</span></li>
+              <li><span class="dot"></span><span><strong style="color: var(--ink);">٢.</strong> محتوى UGC معتمد يُقصّ ويُوزَّع</span></li>
+              <li><span class="dot"></span><span><strong style="color: var(--ink);">٣.</strong> كل زيارة وطلب COD يُنسب للحملة</span></li>
+              <li><span class="dot"></span><span><strong style="color: var(--ink);">٤.</strong> أداء يُخصم من سقفك فقط</span></li>
+              <li><span class="dot"></span><span><strong style="color: var(--ink);">٥.</strong> حلقة تتكرر بلا إدارة يدوية</span></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 14. مراحل -->
+    <section class="slide">
+      <div class="slide-content">
+        <p class="eyebrow animate-fade-up">مراحل البناء</p>
+        <h2 class="animate-fade-up">نطلق السلسلة بأمان — ثم نفتح المشاهدات</h2>
+        <div class="grid-3 animate-stagger" style="margin-top: 12px;">
+          <div class="card">
+            <div class="num">v1</div>
+            <h3>المشاركة + الشراء</h3>
+            <p>رابط بعد التحصيل، أرباح زيارة وشراء، موافقة UGC، مكتبة بسيطة، سقف ميزانية.</p>
+          </div>
+          <div class="card">
+            <div class="num">v2</div>
+            <h3>القصّ والمضاعفة</h3>
+            <p>أدوات قصّ، مكافأة Origin من مبيعات Clipper، شرائح أداء.</p>
+          </div>
+          <div class="card">
+            <div class="num">v3</div>
+            <h3>مشاهدة مؤهّلة</h3>
+            <p>تحقق أقوى للمشاهدات، اكتشاف مقاطع عالية أداء، حملات فئات.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 15. المؤسس -->
+    <section class="slide">
+      <div class="slide-content">
+        <p class="eyebrow animate-fade-up">المؤسس</p>
+        <h2 class="animate-fade-up">قصي نادر النبراوي</h2>
+        <p class="lede animate-fade-up">مؤسس Growlab — يبني آلة توزيع أدائي، لا واجهة متجر أخرى.</p>
+        <div class="pill-row animate-fade-up">
+          <span class="pill">طالب أمن سيبراني</span>
+          <span class="pill">٥ سنوات خبرة تسويق</span>
+        </div>
+        <div class="card animate-fade-up" style="margin-top: 8px; max-width: 40em;">
+          <p style="font-size: clamp(15px, 1.7vw, 18px); line-height: 1.7; color: var(--ink-dim);">
+            منصة تدفع على مشاهدات وزيارات ومبيعات تحتاج حماية من الوهم منذ اليوم الأول — ومبنية ليفتح أي مشترٍ فرصة دخل بالمشاركة.
+          </p>
+          <p style="margin-top: 14px; font-weight: 600; font-size: 16px; color: var(--ink);">
+            «الزباين يجيون من السلسلة. والفلوس تتحرك بعد الأداء.»
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 16. CTA -->
+    <section class="slide">
+      <div class="slide-content" style="align-items: flex-start; text-align: start;">
+        <p class="eyebrow animate-fade-up">الخطوة التالية</p>
+        <h2 class="animate-fade-up">جاهز تشغّل أول حملة توزيع أدائي؟</h2>
+        <p class="lede animate-fade-up">
+          افتح حملة بسقف ميزانية — استشارة ١٥ دقيقة بلا التزام.
+        </p>
+        <div class="cta-box animate-fade-up">
+          <a class="btn btn-primary" href="https://wa.me/96897844742?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%20Growlab%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%AD%D8%AC%D8%B2%20%D8%A7%D8%B3%D8%AA%D8%B4%D8%A7%D8%B1%D8%A9%20%D9%85%D8%AC%D8%A7%D9%86%D9%8A%D8%A9%20%D9%84%D9%85%D8%AF%D8%A9%2015%20%D8%AF%D9%82%D9%8A%D9%82%D8%A9." target="_blank" rel="noopener">افتح حملة — واتساب</a>
+          <a class="btn btn-ghost" href="https://wa.me/96897844742" target="_blank" rel="noopener">+968 9784 4742</a>
+        </div>
+        <div class="card metric animate-fade-up" style="margin-top: 16px; width: 100%; max-width: 28em;">
+          <div class="value" style="font-size: 22px;">تاجر</div>
+          <div class="label">حملة + سقف + شروط UGC + دفع على أداء محصّل</div>
+        </div>
+        <p class="footer-note animate-fade-up" style="margin-top: 16px;">Growlab — شبكة توزيع أدائي عمانية</p>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="nav-controls">
+    <button class="nav-btn" type="button" onclick="prevSlide()" aria-label="السابق">→</button>
+    <span class="slide-counter"><span id="current">1</span> / <span id="total">14</span></span>
+    <button class="nav-btn" type="button" onclick="nextSlide()" aria-label="التالي">←</button>
+  </div>
+
+  <script>
+    let current = 1;
+    const total = document.querySelectorAll(".slide").length;
+    document.getElementById("total").textContent = total;
+
+    function showSlide(n) {
+      if (n < 1) n = 1;
+      if (n > total) n = total;
+      current = n;
+      document.querySelectorAll(".slide").forEach((s, i) => {
+        s.classList.toggle("active", i === n - 1);
+      });
+      document.getElementById("current").textContent = n;
+      document.getElementById("progressBar").style.width = (n / total * 100) + "%";
+    }
+
+    function nextSlide() { showSlide(current + 1); }
+    function prevSlide() { showSlide(current - 1); }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft" || e.key === " " || e.key === "PageDown") {
+        e.preventDefault();
+        nextSlide();
+      }
+      if (e.key === "ArrowRight" || e.key === "PageUp") {
+        e.preventDefault();
+        prevSlide();
+      }
+      if (e.key === "Home") { e.preventDefault(); showSlide(1); }
+      if (e.key === "End") { e.preventDefault(); showSlide(total); }
+    });
+
+    let touchStartX = 0;
+    document.addEventListener("touchstart", (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+    document.addEventListener("touchend", (e) => {
+      const dx = e.changedTouches[0].screenX - touchStartX;
+      if (Math.abs(dx) < 50) return;
+      if (dx > 0) nextSlide();
+      else prevSlide();
+    }, { passive: true });
+
+    showSlide(1);
+  </script>
+</body>
+</html>

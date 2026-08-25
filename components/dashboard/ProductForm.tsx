@@ -11,6 +11,8 @@ import {
   isHighMarginProduct,
 } from "@/lib/domain/commission";
 import { createProduct, updateProduct, type ProductFormInput } from "@/app/(dashboard)/dashboard/product-actions";
+import { htmlToPlain, plainToHtml } from "@/lib/merchant-store/plainHtml";
+import ProductMediaPicker, { type PickedMedia } from "@/components/dashboard/ProductMediaPicker";
 
 export interface ProductFormInitial {
   productId?: string;
@@ -18,6 +20,9 @@ export interface ProductFormInitial {
   category: string;
   tags: string; // comma-separated for the input field
   variants: string; // comma-separated for the input field
+  slug?: string;
+  shortDescription?: string;
+  descriptionHtml?: string;
   basePrice: number;
   costPrice: number;
   commissionType: string;
@@ -37,7 +42,10 @@ export default function ProductForm({
   const router = useRouter();
 
   const [title, setTitle] = useState(initial?.title ?? "");
-  const [coverImageUrl, setCoverImageUrl] = useState("");
+  const [shortDescription, setShortDescription] = useState(initial?.shortDescription ?? "");
+  const [descriptionPlain, setDescriptionPlain] = useState(htmlToPlain(initial?.descriptionHtml ?? ""));
+  const [coverImage, setCoverImage] = useState<PickedMedia | null>(null);
+  const [coverVideo, setCoverVideo] = useState<PickedMedia | null>(null);
   const [category, setCategory] = useState(initial?.category ?? "");
   const [tags, setTags] = useState(initial?.tags ?? "");
   const [variants, setVariants] = useState(initial?.variants ?? "");
@@ -87,7 +95,10 @@ export default function ProductForm({
       costPrice: costPriceNum,
       commissionType,
       commissionValue: commissionValueNum,
-      coverImageUrl: coverImageUrl.trim() || undefined,
+      coverImageUrl: coverImage?.kind === "image" ? coverImage.url : undefined,
+      coverVideoUrl: coverVideo?.kind === "video" ? coverVideo.url : undefined,
+      shortDescription,
+      descriptionHtml: plainToHtml(descriptionPlain),
     };
 
     startTransition(async () => {
@@ -112,18 +123,34 @@ export default function ProductForm({
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.3fr_1fr]">
       <div className="space-y-5">
         <Field label={t("titleLabel")}>
-          <input value={title} onChange={(e) => setTitle(e.target.value)} className="w-full border border-white/15 bg-white/[0.03] px-3 py-2 font-mono text-sm" />
+          <input value={title} onChange={(e) => setTitle(e.target.value)} className="w-full border border-white/15 bg-white/[0.03] px-3 py-2 text-sm" />
+        </Field>
+
+        <Field label={t("shortDescLabel")} hint={t("shortDescHint")}>
+          <textarea value={shortDescription} onChange={(e) => setShortDescription(e.target.value)} className="min-h-[72px] w-full border border-white/15 bg-white/[0.03] px-3 py-2 text-sm leading-relaxed" placeholder={t("shortDescPlaceholder")} />
+        </Field>
+
+        <Field label={t("descriptionLabel")} hint={t("descriptionHint")}>
+          <textarea value={descriptionPlain} onChange={(e) => setDescriptionPlain(e.target.value)} className="min-h-[140px] w-full border border-white/15 bg-white/[0.03] px-3 py-2 text-sm leading-relaxed" placeholder={t("descriptionPlaceholder")} />
         </Field>
 
         {!initial?.productId ? (
-          <Field label={t("coverLabel")} hint={t("coverHint")}>
-            <input
-              value={coverImageUrl}
-              onChange={(e) => setCoverImageUrl(e.target.value)}
-              placeholder={t("coverPlaceholder")}
-              className="w-full border border-white/15 bg-white/[0.03] px-3 py-2 font-mono text-sm"
-            />
-          </Field>
+          <div className="space-y-5">
+            <div>
+              <span className="font-west text-[10px] uppercase tracking-[0.24em] text-frost-dim">{t("coverLabel")}</span>
+              <span className="mt-0.5 block font-serif text-[11px] italic text-frost-dim">{t("coverHint")}</span>
+              <div className="mt-1.5">
+                <ProductMediaPicker value={coverImage} onChange={setCoverImage} accept="image" />
+              </div>
+            </div>
+            <div>
+              <span className="font-west text-[10px] uppercase tracking-[0.24em] text-frost-dim">{t("videoLabel")}</span>
+              <span className="mt-0.5 block font-serif text-[11px] italic text-frost-dim">{t("videoHint")}</span>
+              <div className="mt-1.5">
+                <ProductMediaPicker value={coverVideo} onChange={setCoverVideo} accept="video" />
+              </div>
+            </div>
+          </div>
         ) : null}
 
         <Field label={t("categoryLabel")}>

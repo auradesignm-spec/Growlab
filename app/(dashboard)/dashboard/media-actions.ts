@@ -4,8 +4,14 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth/session";
 import { MEDIA_ASSET_TYPES, type MediaAssetType } from "@/lib/domain/enums";
+import { planLimits } from "@/lib/billing/entitlements";
+import {
+  ProductMediaStorageError,
+  saveProductMediaFile,
+  storagePathFromPublicUrl,
+  removeProductMediaFile,
+} from "@/lib/product-media/storage";
 
-const MAX_ASSETS_PER_PRODUCT = 8;
 const MAX_URL_LENGTH = 500;
 const MAX_CAPTION_LENGTH = 140;
 
@@ -46,8 +52,9 @@ export async function addMediaAsset(productId: string, type: string, url: string
   }
 
   const count = await prisma.mediaAsset.count({ where: { productId } });
-  if (count >= MAX_ASSETS_PER_PRODUCT) {
-    throw new Error(`A product can have at most ${MAX_ASSETS_PER_PRODUCT} media assets.`);
+  const maxAssets = planLimits(viewer.merchantProfile).maxMediaPerProduct;
+  if (Number.isFinite(maxAssets) && count >= maxAssets) {
+    throw new Error(`A product can have at most ${maxAssets} media assets on the Free plan. Upgrade to Pro for unlimited media.`);
   }
 
   await prisma.mediaAsset.create({
@@ -75,7 +82,41 @@ export async function removeMediaAsset(assetId: string) {
   }
 
   await prisma.mediaAsset.delete({ where: { id: assetId } });
+  const localPath = storagePathFromPublicUrl(asset.url);
+  if (localPath) await removeProductMediaFile(localPath);
 
   revalidatePath("/dashboard");
   revalidatePath("/dashboard/browse");
+}
+
+/** Upload image/video from device or phone camera — returns a public media URL. */
+export async function uploadProductMedia(formData: FormData): Promise<{ url: string; kind: "image" | "video" }> {
+  const viewer = await getCurrentUser();
+  if (!viewer || viewer.role !== "merchant" || !viewer.merchantProfile) {
+    throw new Error("Only a merchant can upload product media.");
+  }
+  if (viewer.accountStatus === "banned") throw new Error("This account has been suspended.");
+  if (viewer.merchantProfile.verificationStatus !== "verified") {
+    throw new Error("Your business must be verified before you can upload product media.");
+  }
+
+  const file = formData.get("file");
+  if (!(file instanceof File) || file.size === 0) {
+    throw new Error("Choose a photo or video first.");
+  }
+
+  const mimeType = file.type || "image/jpeg";
+  const bytes = Buffer.from(await file.arrayBuffer());
+
+  try {
+    const saved = await saveProductMediaFile({
+      merchantId: viewer.merchantProfile.id,
+      bytes,
+      mimeType,
+    });
+    return { url: saved.publicUrl, kind: saved.kind };
+  } catch (e) {
+    if (e instanceof ProductMediaStorageError) throw e;
+    throw new Error("Upload failed. Try a smaller file.");
+  }
 }

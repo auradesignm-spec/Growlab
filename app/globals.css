@@ -813,6 +813,10 @@
   letter-spacing: -0.02em;
 }
 
+[dir="rtl"] .gl-hero-title {
+  letter-spacing: normal;
+}
+
 .gl-hero-title .gl-word {
   padding-inline-end: 0.16em;
 }
@@ -1222,4 +1226,23 @@
     transform: none;
     opacity: 1;
   }
+}
+
+
+/* Product studio inspector fields (dark dashboard) */
+.studio-field {
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.03);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  color: inherit;
+}
+.studio-field:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.35);
+}
+.studio-field:disabled {
+  opacity: 0.4;
 }

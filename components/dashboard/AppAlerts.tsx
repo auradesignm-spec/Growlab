@@ -76,7 +76,9 @@ export default function AppAlerts({ alerts }: { alerts: AppAlert[] }) {
           {alerts.map((alert) => (
             <li key={alert.id} className="rounded-2xl border border-line bg-night px-4 py-3">
               <p className="text-[12px] text-frost-faint">{t(`kinds.${alert.kind}` as "kinds.new_order")}</p>
-              <p className="mt-1 text-[15px] font-medium text-frost">{alert.productTitle}</p>
+              {alert.productTitle ? (
+                <p className="mt-1 text-[15px] font-medium text-frost">{alert.productTitle}</p>
+              ) : null}
               {alert.creatorUsername ? (
                 <p className="mt-0.5 font-mono text-[12px] text-frost-dim">@{alert.creatorUsername}</p>
               ) : null}

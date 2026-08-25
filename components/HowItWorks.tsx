@@ -39,9 +39,6 @@ export default async function HowItWorks() {
           <Link href={enterHref("merchant")} className="gl-btn-primary">
             {t("startMerchant")}
           </Link>
-          <Link href={enterHref("creator")} className="gl-btn-ghost">
-            {t("startCreator")}
-          </Link>
         </div>
       </div>
     </section>
