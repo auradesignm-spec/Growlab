@@ -45,14 +45,18 @@ export default function GlassBubbleTrack({
       activeRef.current = el;
       clearHot();
       el.classList.add("is-bubble-hot");
-      const nav = track.getBoundingClientRect();
-      const item = el.getBoundingClientRect();
-      setBox({
-        x: item.left - nav.left,
-        y: item.top - nav.top,
-        w: item.width,
-        h: item.height,
-      });
+      const place = () => {
+        const nav = track.getBoundingClientRect();
+        const item = el.getBoundingClientRect();
+        setBox({
+          x: item.left - nav.left,
+          y: item.top - nav.top,
+          w: item.width,
+          h: item.height,
+        });
+      };
+      place();
+      requestAnimationFrame(place);
     },
     [clearHot],
   );
@@ -69,7 +73,7 @@ export default function GlassBubbleTrack({
     const sync = () => {
       setReduceMotion(motion.matches);
       setFinePointer(fine.matches);
-      setEnableBubble(!motion.matches && fine.matches);
+      setEnableBubble(!motion.matches);
     };
     sync();
     motion.addEventListener("change", sync);
@@ -86,7 +90,8 @@ export default function GlassBubbleTrack({
       hide();
       return;
     }
-    const pressed = track.querySelector<HTMLElement>('[data-bubble-item][aria-pressed="true"]');
+    const pressed =
+      track.querySelector<HTMLElement>('[data-bubble-item][aria-pressed="true"]') ?? activeRef.current;
     if (pressed) moveTo(pressed);
     else hide();
   }, [enableBubble, hide, moveTo, persistPressed]);

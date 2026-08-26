@@ -27,19 +27,24 @@ export default function Header() {
 
   useEffect(() => {
     if (!open) return;
+    const html = document.documentElement;
+    const prevHtml = html.style.overflow;
+    const prevBody = document.body.style.overflow;
+    html.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") closeMenu();
     };
-    document.body.style.overflow = "hidden";
     document.addEventListener("keydown", onKey);
     return () => {
-      document.body.style.overflow = "";
+      html.style.overflow = prevHtml;
+      document.body.style.overflow = prevBody;
       document.removeEventListener("keydown", onKey);
     };
   }, [open, closeMenu]);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 px-4 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-6">
+    <header className="fixed left-0 right-0 top-0 z-50 px-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-6">
       <div className="gl-nav-glass mx-auto flex h-14 max-w-wrap items-center justify-between gap-3 rounded-full px-3 sm:px-4">
         <Link
           href="/"
@@ -88,27 +93,28 @@ export default function Header() {
         <>
           <button
             type="button"
-            className="fixed inset-0 z-40 bg-[rgb(17_19_24_/_0.28)] md:hidden"
+            className="fixed bottom-0 left-0 right-0 top-0 z-40 bg-[rgb(17_19_24_/_0.28)] md:hidden"
             aria-label={t("closeMenu")}
             onClick={closeMenu}
           />
           <nav
             id={menuId}
-            className="gl-nav-glass gl-nav-sheet relative z-50 mx-auto mt-2 max-w-wrap rounded-3xl px-4 py-4 md:hidden"
+            className="gl-nav-glass gl-nav-sheet relative z-50 mx-auto mt-2 w-full max-w-wrap rounded-3xl px-4 py-4 md:hidden"
             aria-label={t("mobileNav")}
           >
-            <div className="flex flex-col">
+            <GlassBubbleTrack persistPressed className="flex flex-col">
               {STORY_HREFS.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
-                  className="inline-flex min-h-12 items-center rounded-xl px-3 text-[16px] leading-6 text-frost"
+                  data-bubble-item
+                  className="relative z-[1] inline-flex min-h-12 items-center rounded-full px-3 text-[16px] leading-6 text-frost"
                   onClick={closeMenu}
                 >
                   {t(link.key)}
                 </a>
               ))}
-            </div>
+            </GlassBubbleTrack>
             <HeaderAuth t={t} onNavigate={closeMenu} stacked />
             <div className="mt-3">
               <LocaleSwitcher tone="light" />
