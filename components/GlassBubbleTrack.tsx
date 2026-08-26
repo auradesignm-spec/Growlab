@@ -69,7 +69,7 @@ export default function GlassBubbleTrack({
     const sync = () => {
       setReduceMotion(motion.matches);
       setFinePointer(fine.matches);
-      setEnableBubble(!motion.matches);
+      setEnableBubble(!motion.matches && fine.matches);
     };
     sync();
     motion.addEventListener("change", sync);

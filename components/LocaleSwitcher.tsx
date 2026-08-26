@@ -36,7 +36,7 @@ export default function LocaleSwitcher({
             data-bubble-item
             onClick={() => switchTo(code)}
             aria-pressed={active}
-            className="relative z-[1] rounded-full px-2.5 py-1.5 text-[12px] font-medium text-frost-faint"
+            className="relative z-[1] rounded-full px-3 py-2.5 text-[15px] font-medium text-frost-faint"
           >
             {code === "ar" ? t("localeAr") : t("localeEn")}
           </button>

@@ -1,4 +1,4 @@
-export const PRODUCT_TOUR_KEY = "gl.productTour.v1";
+export const PRODUCT_TOUR_KEY = "gl.productTour.v2";
 export const PRODUCT_TOUR_EVENT = "gl:product-tour";
 
 export type TourStepId = "open-account" | "how" | "proof-paths" | "pricing" | "sign-in";
@@ -10,42 +10,42 @@ export const TOUR_STEPS: {
 }[] = [
   {
     id: "open-account",
-    title: { ar: "هنا تبدأ بعد الجولة", en: "You start here after the tour" },
+    title: { ar: "Growlab للتاجر اللي يبيع نقداً", en: "Growlab is for cash-on-delivery shops" },
     body: {
-      ar: "هذا الزر يفتح حساب التاجر. لا تضغطه الآن — نمرّ على النظام أولاً.",
-      en: "This opens a merchant account. Do not tap it yet — we walk the system first.",
+      ar: "مو منصة مثل سلة. أنت تبيع عطور أو أزياء أو إلكترونيات ويُدفع ثمنها عند الباب. ما نخصم ريال إلا بعد ما الزبون يدفع للمندوب.",
+      en: "Not a Salla-style store builder. You sell goods paid at the door. We take nothing until the buyer pays the courier.",
     },
   },
   {
     id: "how",
-    title: { ar: "كيف تبيع وتُحصّل", en: "How you sell and collect" },
+    title: { ar: "الطلب يمشي كذا", en: "How an order actually moves" },
     body: {
-      ar: "ثلاث خطوات: تثبّت العمولة، الشحن يُدفع الآن والسلعة عند الباب، ثم الزبون يصوّر وينشر رابط التتبع.",
-      en: "Three steps: lock commission, ship now and goods at the door, then the buyer photographs and posts the tracking link.",
+      ar: "الزبون يطلب من صفحة: اسم وجوال وعنوان. يدفع الشحن الحين عشان ما يلغي في الطريق. ثمن السلعة مع المندوب. أنت تؤكد الاستلام من لوحتك.",
+      en: "They order on a page: name, phone, address. Shipping is paid now so the parcel does not leave without a stake. Product price with the courier. You confirm receipt in the dashboard.",
     },
   },
   {
     id: "proof-paths",
-    title: { ar: "مساران لنفس القفل", en: "Two paths, one lock" },
+    title: { ar: "عندك متجر أو لا — نفس الفكرة", en: "Store or no store — same idea" },
     body: {
-      ar: "ما عندك متجر: صفحة طلب عند الباب. عندك سلة أو زد: الحملة فوق متجرك بدون نقل الكتالوج.",
-      en: "No store: a pay-at-the-door order page. Salla or Zid: the campaign sits on your store without moving the catalog.",
+      ar: "ما عندك موقع: نعطيك صفحة طلب باسمك. عندك سلة أو زد: منتجك يبقى هناك والحملة فوقه. ما ننقل كتالوجك ولا نبدّل متجرك.",
+      en: "No site yet: you get an order page under your name. Already on Salla or Zid: the product stays there and the campaign sits on top. We do not move your catalog.",
     },
   },
   {
     id: "pricing",
-    title: { ar: "متى تدفع للمنصة", en: "When you pay the platform" },
+    title: { ar: "متى تطلع الفلوس منك", en: "When money leaves you" },
     body: {
-      ar: "الاشتراك شيء. حد الصرف شيء آخر. العمولة بعد التحصيل عند الباب أو بعد موافقتك على المقطع.",
-      en: "The subscription is one thing. The spend cap is another. Commission after door pay or after you OK a reel.",
+      ar: "الزيارة والنقرة مجاناً. العمولة تخصم بعد بيعة حقيقية عند الباب، أو بعد ما توافق على مقطع الزبون. تقدر تحط سقف يوقف الحملة إذا وصلت حدك.",
+      en: "Visits and clicks are free. Share commission comes off after a real door payment, or after you approve a buyer clip. You can set a cap that stops the campaign.",
     },
   },
   {
     id: "sign-in",
-    title: { ar: "جاهز؟ ابدأ من هنا", en: "Ready? Start here" },
+    title: { ar: "افتح حساب التاجر", en: "Open the merchant account" },
     body: {
-      ar: "اضغط ابدأ لتسجيل الدخول أو إنشاء حساب. بعدها نجهّز متجرك من أسئلتك.",
-      en: "Tap Start to sign in or create an account. Then we prepare your store from your answers.",
+      ar: "اضغط ابدأ وسجّل. بعدها تحط أول منتج وتثبت عمولة المشاركة. اللي يستلم يقدر ينشر رابط التتبع ويجيب الطلب الجاي.",
+      en: "Tap Start and sign in. Then add the first product and set the share rate. Who receives can post the tracking link and bring the next order.",
     },
   },
 ];

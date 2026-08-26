@@ -39,7 +39,7 @@ export default function Header() {
   }, [open, closeMenu]);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 px-4 pt-4 sm:px-6" style={{ touchAction: "manipulation" }}>
+    <header className="fixed inset-x-0 top-0 z-50 px-4 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-6">
       <div className="gl-nav-glass mx-auto flex h-14 max-w-wrap items-center justify-between gap-3 rounded-full px-3 sm:px-4">
         <Link
           href="/"
@@ -84,31 +84,38 @@ export default function Header() {
         </GlassBubbleTrack>
       </div>
 
-      {open && (
-        <nav
-          id={menuId}
-          className="gl-nav-glass gl-nav-sheet mx-auto mt-2 max-w-wrap rounded-3xl px-5 py-6 md:hidden"
-          aria-label={t("mobileNav")}
-        >
-          <GlassBubbleTrack className="flex flex-col gap-1">
-            {STORY_HREFS.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                data-bubble-item
-                className="relative z-[1] rounded-full px-3 py-2 text-xl text-frost"
-                onClick={closeMenu}
-              >
-                {t(link.key)}
-              </a>
-            ))}
-          </GlassBubbleTrack>
-          <HeaderAuth t={t} onNavigate={closeMenu} stacked />
-          <div className="mt-4">
-            <LocaleSwitcher tone="light" />
-          </div>
-        </nav>
-      )}
+      {open ? (
+        <>
+          <button
+            type="button"
+            className="fixed inset-0 z-40 bg-[rgb(17_19_24_/_0.28)] md:hidden"
+            aria-label={t("closeMenu")}
+            onClick={closeMenu}
+          />
+          <nav
+            id={menuId}
+            className="gl-nav-glass gl-nav-sheet relative z-50 mx-auto mt-2 max-w-wrap rounded-3xl px-4 py-4 md:hidden"
+            aria-label={t("mobileNav")}
+          >
+            <div className="flex flex-col">
+              {STORY_HREFS.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="inline-flex min-h-12 items-center rounded-xl px-3 text-[16px] leading-6 text-frost"
+                  onClick={closeMenu}
+                >
+                  {t(link.key)}
+                </a>
+              ))}
+            </div>
+            <HeaderAuth t={t} onNavigate={closeMenu} stacked />
+            <div className="mt-3">
+              <LocaleSwitcher tone="light" />
+            </div>
+          </nav>
+        </>
+      ) : null}
     </header>
   );
 }
@@ -134,7 +141,7 @@ function HeaderAuth({
         track("Sign In Started", { source: "header-mobile" });
         onNavigate?.();
       }}
-      className="relative z-[1] inline-flex h-9 shrink-0 items-center whitespace-nowrap rounded-full px-3 text-[14px] font-medium"
+      className="relative z-[1] inline-flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-full px-3 text-[15px] font-medium"
     >
       {t("signIn")}
     </TourStartLink>
@@ -165,7 +172,7 @@ function HeaderAuth({
           <Link
             href="/dashboard"
             data-bubble-item
-            className="relative z-[1] inline-flex h-9 items-center rounded-full px-3 text-[14px] font-medium"
+            className="relative z-[1] inline-flex min-h-11 items-center rounded-full px-3 text-[15px] font-medium"
             style={{ color: "#111318" }}
           >
             {t("openDashboard")}
