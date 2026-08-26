@@ -15,7 +15,7 @@ export default async function Pricing() {
       <div className="mx-auto max-w-wrap px-5 sm:px-8">
         <Reveal>
           <p className="gl-eyebrow">{t("eyebrow")}</p>
-          <h2 className="gl-heading mt-2 text-display-lg">{t("title")}</h2>
+          <h2 data-guide="pricing" className="gl-heading mt-2 text-display-lg">{t("title")}</h2>
           <p className="gl-lede mt-4">{t("lede")}</p>
         </Reveal>
 
@@ -76,7 +76,6 @@ function PlanCard({
 }) {
   return (
     <article
-      data-guide={highlight ? "pricing" : undefined}
       className={`gl-tile relative flex h-full flex-col p-6 sm:p-8 ${highlight ? "ring-1 ring-signal/30" : ""}`}
     >
       <h3 className="text-xl font-semibold text-frost">{title}</h3>

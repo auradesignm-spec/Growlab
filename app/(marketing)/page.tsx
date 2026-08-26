@@ -28,7 +28,6 @@ export default function MarketingHome() {
       <AuthDock />
       <NeedSurvey />
       <ProductTour />
-      <div className="h-24 md:hidden" aria-hidden="true" />
     </main>
   );
 }

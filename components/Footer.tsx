@@ -26,7 +26,7 @@ export default async function Footer() {
 
   return (
     <footer className="relative mt-8 bg-[#111318] text-white md:mt-4">
-      <div className="mx-auto max-w-wrap px-5 pb-[calc(5.75rem+env(safe-area-inset-bottom))] pt-10 sm:px-8 md:pb-12 md:pt-14">
+      <div className="mx-auto max-w-wrap px-5 pb-10 pt-10 sm:px-8 md:pb-12 md:pt-14">
         <div className="grid grid-cols-2 gap-x-6 gap-y-8 lg:grid-cols-4">
           <div className="col-span-2 lg:col-span-1">
             <Link href="/" className="text-[17px] font-semibold text-white" aria-label={t("homeAria")}>

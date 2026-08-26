@@ -109,9 +109,9 @@
   },
   "marketing": {
     "hero": {
-      "title": "Not one rial until they pay at the door",
+      "title": "Safer pay. Bigger incentive. More sales. More profit.",
       "audience": "For shops that sell cash on delivery: fragrance, fashion, electronics, or any catalog you deliver.",
-      "lede": "Shipping is paid now so the order is not cancelled on the way. Product price at the door if they choose that. Then share commission from the spend cap. Clicks are free.",
+      "lede": "Shipping is paid now so the order is not cancelled on the way. Product price on delivery if they choose that. Then share commission from the spend cap. Clicks are free.",
       "ctaMerchant": "Open your account",
       "ctaConsult": "15-minute consult",
       "ctaDemo": "Try interactive demo",
@@ -121,8 +121,8 @@
       "signIn": "Sign in"
     },
     "survey": {
-      "title": "Two short questions",
-      "result": "This is what you do in Growlab",
+      "title": "Three questions",
+      "result": "In short — this is what we heard",
       "skip": "Skip",
       "back": "Back",
       "next": "Next",
@@ -130,10 +130,11 @@
       "done": "Got it",
       "point": "Here",
       "progress": "{current} of {total}",
-      "q1": "Who are you?",
-      "q2": "What is the biggest problem?",
+      "q1": "Where are you today?",
+      "q2": "How do orders reach you?",
+      "q3": "What costs you the most?",
       "adviceAds": "Ads here do not deduct before cash. Clicks are free. A cap stops spend. Open your account on the marked button.",
-      "adviceNoshow": "Shipping is paid with the order so a parcel does not move without a stake. Goods at the door if they choose. Open the account on the marked button.",
+      "adviceNoshow": "Shipping is paid with the order so a parcel does not move without a stake. Goods on delivery if they choose. Open the account on the marked button.",
       "adviceWhatsapp": "The order closes on a page: name, phone, address. Not a chat. Open the account on the marked button.",
       "adviceStore": "Your store stays. We import the product and run the campaign on top. Read the two marked cards.",
       "adviceRead": "Three steps: commission, ship now, then post the link. Read the marked steps."
@@ -143,7 +144,7 @@
       "next": "Next",
       "back": "Back",
       "skip": "Skip",
-      "start": "Start"
+      "start": "Open account"
     },
     "trust": {
       "eyebrow": "Guarantees",
@@ -153,14 +154,14 @@
       "paths": [
         {
           "title": "No online store yet",
-          "text": "A pay-at-the-door order page. You set the share commission. Who receives it can photograph and post the tracking link. Not a full commerce OS."
+          "text": "A pay-on-delivery order page. You set the share commission. Who receives it can photograph and post the tracking link. Not a full commerce OS."
         },
         {
-          "title": "You already have a store (Salla, Zid, or similar)",
+          "title": "You already have an online store",
           "text": "We import the product as it is. Campaign, commission, and spend cap sit on top of your store. You do not move the catalog."
         }
       ],
-      "served": "For shops that take cash at the door",
+      "served": "For shops that take cash on delivery",
       "marks": ["Fragrance", "Fashion", "Electronics", "Any cash-on-delivery product"],
       "facts": [
         {
@@ -173,7 +174,7 @@
         },
         {
           "title": "Cash to the courier",
-          "text": "Product price at the door. Shipping is paid now so the order is not cancelled on the way."
+          "text": "Product price on delivery. Shipping is paid now so the order is not cancelled on the way."
         },
         {
           "title": "Reels after you say yes",
@@ -232,7 +233,7 @@
     "how": {
       "eyebrow": "How it works",
       "title": "Set the rate. They receive. They post the link.",
-      "lede": "You lock the share commission on the product before the order. Shipping is paid now. Product price at the door if they choose that. Then they photograph and post the tracking link. Clicks are free.",
+      "lede": "You lock the share commission on the product before the order. Shipping is paid now. Product price on delivery if they choose that. Then they photograph and post the tracking link. Clicks are free.",
       "startMerchant": "Open your account",
       "steps": [
         {
@@ -242,7 +243,7 @@
         },
         {
           "n": "02",
-          "title": "Ship now, product at the door",
+          "title": "Ship now, product on delivery",
           "text": "Shipping is paid with the order. Product price with the courier. You confirm in the dashboard. Nothing comes off the cap before you confirm."
         },
         {
@@ -263,13 +264,13 @@
           "them": "You pay for reach before cash arrives"
         },
         {
-          "title": "Pay at the door",
+          "title": "Pay on delivery",
           "us": "Cash to the courier. You confirm.",
           "them": "Reports with no cash in the till"
         },
         {
           "title": "Share commission",
-          "us": "Taken after door pay or after you OK a reel.",
+          "us": "Taken after pay on delivery or after you OK a reel.",
           "them": "A monthly bill even with no cash"
         },
         {
@@ -317,18 +318,18 @@
       "storeTitle": "Product and campaign in one place",
       "storeCaption": "Open a campaign with a spend cap from the catalog. Visits do not take commission.",
       "feedKicker": "Campaign",
-      "feedNote": "Sale after pay at the door. The cap stops the campaign.",
+      "feedNote": "Sale after pay on delivery. The cap stops the campaign.",
       "videoBadge": "Video",
       "priceLabel": "Sale price",
       "budgetCap": "Spend cap",
       "linkTitle": "Who paid shares your link",
-      "linkCaption": "After pay at the door they share. Commission from the spend cap — not before cash.",
+      "linkCaption": "After pay on delivery they share. Commission from the spend cap — not before cash.",
       "ledgerTitle": "See the cash before you raise spend",
-      "ledgerCaption": "Visits, pay at the door, and share commission — one glance.",
+      "ledgerCaption": "Visits, pay on delivery, and share commission — one glance.",
       "todayOrder": "New order",
       "dashLabel": "Campaign dashboard",
       "dashWeek": "This week's movement",
-      "dashNote": "Updates with every door payment.",
+      "dashNote": "Updates with every payment on delivery.",
       "dashKpi": {
         "visits": "Visits",
         "sales": "Sales",
@@ -344,7 +345,7 @@
         "fri": "Fr"
       },
       "dashSplit": {
-        "merchant": "Your cash after door pay",
+        "merchant": "Your cash after pay on delivery",
         "performance": "Share commission"
       },
       "omr": "OMR",
@@ -511,11 +512,11 @@
       "items": [
         {
           "q": "Who is this for?",
-          "a": "Anyone selling pay-at-the-door. No store: an order page. Salla or Zid already: we import the product and run the campaign on top — you do not move the catalog. Same loop after collection. Business papers and owner ID before go-live."
+          "a": "Growlab is for anyone selling pay-on-delivery. No store: an order page. Already have a store: we import the product and run the campaign on top — you do not move the catalog. Same loop after collection. Business papers and owner ID before go-live."
         },
         {
           "q": "When does a rial leave?",
-          "a": "After you confirm pay at the door. Share commission on a sale from the link, and on a reel after you OK it. Clicks are free."
+          "a": "After you confirm pay on delivery. Share commission on a sale from the link, and on a reel after you OK it. Clicks are free."
         },
         {
           "q": "What if nothing sells?",
@@ -548,7 +549,7 @@
       "proSubtitle": "For a company distributing more than one line",
       "proStat": "15 OMR/mo",
       "proStatNote": "Cancel anytime",
-      "performanceNote": "The subscription is one thing. Spend-cap money is another. Share commission after pay at the door or after you OK a reel. Clicks are free.",
+      "performanceNote": "The subscription is one thing. Spend-cap money is another. Share commission after pay on delivery or after you OK a reel. Clicks are free.",
       "freeFeatures": [
         "Up to 3 products",
         "1 active campaign",
@@ -608,7 +609,7 @@
       "startCampaign": "Register your company"
     },
     "footer": {
-      "lede": "Not one rial until they pay at the door.",
+      "lede": "Safer pay. Bigger incentive. More sales. More profit.",
       "colProduct": "Product",
       "colAccount": "Account",
       "colLegal": "Legal",
@@ -639,8 +640,8 @@
     "waText": "{product} — order from: {link}",
     "strictRules": "No pay for link clicks. Earn on merchant-approved reel views + collected sales from your link.",
     "payState": {
-      "pending": "Awaiting door pay. Clicks are free.",
-      "confirmed": "Commission taken — they paid at the door. Share the link.",
+      "pending": "Awaiting pay on delivery. Clicks are free.",
+      "confirmed": "Commission taken — they paid on delivery. Share the link.",
       "void": "Voided. No share commission on this order."
     },
     "reelTitle": "Your buyer reel",
@@ -1020,7 +1021,7 @@
       "campaign": {
         "kicker": "Distribution campaign",
         "title": "Open a campaign with a spend cap",
-        "lede": "Share commission is taken after pay at the door until the spend cap is empty and the campaign stops. Clicks are free.",
+        "lede": "Share commission is taken after pay on delivery until the spend cap is empty and the campaign stops. Clicks are free.",
         "needProduct": "Add an active product first.",
         "product": "Product",
         "budgetCap": "Spend cap (OMR)",
@@ -1137,7 +1138,7 @@
         "shippingRef": "Shipping reference",
         "shippingPlaceholder": "Shipping reference",
         "saveShipping": "Save reference",
-        "commissionPending": "Awaiting door pay",
+        "commissionPending": "Awaiting pay on delivery",
         "commissionConfirmed": "Commission taken",
         "commissionVoid": "Voided",
         "actions": {
@@ -1191,7 +1192,7 @@
         "deliveryDaysLabel": "Max delivery days",
         "deliveryDaysHint": "After prepaid checkout we hold the money for this many days. Default 4. If shipping is late, the buyer can claim a refund.",
         "shippingFeeLabel": "Buyer shipping (paid now)",
-        "shippingFeeHint": "Even if they pay for the product at the door, shipping is collected now so the order is not cancelled. Default 1.5 OMR.",
+        "shippingFeeHint": "Even if they pay for the product on delivery, shipping is collected now so the order is not cancelled. Default 1.5 OMR.",
         "commissionLabel": "Marketer commission",
         "commissionTypePct": "Percent",
         "commissionTypeFixed": "Fixed amount",
@@ -1222,7 +1223,7 @@
         "lede": "Import from your store URL, set price and commission, then publish — Growlab is the performance layer on top.",
         "newProduct": "New product",
         "importTitle": "Already have a store?",
-        "importLede": "Paste the product page link here to start a campaign. We pull title, image, price, sizes, and features from any platform (Shopify, WooCommerce, Salla, Zid…) — you set cost and commission.",
+        "importLede": "Paste the product page link here to start a Growlab campaign. We pull title, image, price, sizes, and features — you set cost and commission.",
         "importCta": "Import",
         "importing": "Importing…",
         "importOk": "Imported via {engine} — review and save.",
@@ -1268,7 +1269,7 @@
         "freePrice": "0 OMR/mo",
         "proPrice": "{amount}/mo",
         "expires": "Expires {date}",
-        "performanceNote": "The subscription is one thing. Spend-cap money is another. Commission after pay at the door.",
+        "performanceNote": "The subscription is one thing. Spend-cap money is another. Commission after pay on delivery.",
         "upgradeCta": "Upgrade to Pro",
         "checkoutPending": "Redirecting…",
         "checkoutFailed": "Could not start checkout.",
@@ -2092,12 +2093,12 @@
     "cartFailed": "Could not update the cart.",
     "size": "Size",
     "adding": "Adding…",
-    "buyCod": "Buy — ship now, product at the door",
+    "buyCod": "Buy — ship now, product on delivery",
     "addToCart": "Add to cart",
     "cartAdded": "Added to cart",
-    "codHint": "Shipping is paid now. Product price at the door if you choose that. Your phone tracks the order.",
+    "codHint": "Shipping is paid now. Product price on delivery if you choose that. Your phone tracks the order.",
     "checkoutTitle": "Checkout",
-    "checkoutLede": "Shipping is prepaid. Product at the door, or pay everything now. Enter your phone carefully.",
+    "checkoutLede": "Shipping is prepaid. Product on delivery, or pay everything now. Enter your phone carefully.",
     "total": "Total",
     "subtotal": "Subtotal",
     "discount": "Discount",
@@ -2109,11 +2110,11 @@
     "placing": "Placing order…",
     "placeOrder": "Place order",
     "payMethod": "How you pay",
-    "payCod": "Product at the door — shipping paid now",
+    "payCod": "Product on delivery — shipping paid now",
     "payCard": "Pay product and shipping now — held until the delivery window",
     "shippingPrepaid": "Shipping (paid now)",
     "payNow": "Pay now",
-    "payAtDoor": "At the door",
+    "payAtDoor": "On delivery",
     "deliveryWindow": "Delivery within {days} days at most. If you prepay the product we hold it until then. Shipping is always paid now.",
     "orderFailed": "Could not place the order. Try again.",
     "emptyCart": "Your cart is empty",
@@ -2144,14 +2145,14 @@
     "waShareText": "{product} — order from: {link}",
     "payEyebrow": "Share commission",
     "payTitle": {
-      "pending": "Awaiting door pay",
+      "pending": "Awaiting pay on delivery",
       "confirmed": "Commission taken",
       "void": "Voided"
     },
     "payLede": {
-      "pending": "Prepare the link now. Commission does not leave the spend cap until you confirm pay at the door.",
-      "confirmed": "Paid at the door. Commission taken. Share on WhatsApp.",
-      "void": "Not paid at the door. No commission."
+      "pending": "Prepare the link now. Commission does not leave the spend cap until you confirm pay on delivery.",
+      "confirmed": "Paid on delivery. Commission taken. Share on WhatsApp.",
+      "void": "Not paid on delivery. No commission."
     },
     "payAmount": "Share cut {amount} {currency}",
     "attributionReceipt": "Attribution receipt",

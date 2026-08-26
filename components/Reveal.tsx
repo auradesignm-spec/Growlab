@@ -6,9 +6,10 @@ interface RevealProps {
   readonly children: ReactNode;
   readonly className?: string;
   readonly delay?: number;
+  readonly stagger?: boolean;
 }
 
-export default function Reveal({ children, className = "", delay = 0 }: RevealProps) {
+export default function Reveal({ children, className = "", delay = 0, stagger = false }: RevealProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [shown, setShown] = useState(false);
 
@@ -47,8 +48,8 @@ export default function Reveal({ children, className = "", delay = 0 }: RevealPr
   return (
     <div
       ref={ref}
-      className={`gl-reveal${shown ? " is-in" : ""}${className ? ` ${className}` : ""}`}
-      style={shown ? { transitionDelay: `${delay}ms` } : undefined}
+      className={`${stagger ? "gl-reveal-stagger" : "gl-reveal"}${shown ? " is-in" : ""}${className ? ` ${className}` : ""}`}
+      style={!stagger && shown ? { transitionDelay: `${delay}ms` } : undefined}
     >
       {children}
     </div>

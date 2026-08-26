@@ -1,7 +1,7 @@
-export const PRODUCT_TOUR_KEY = "gl.productTour.v3";
+export const PRODUCT_TOUR_KEY = "gl.productTour.v4";
 export const PRODUCT_TOUR_EVENT = "gl:product-tour";
 
-export type TourStepId = "open-account" | "how" | "proof-paths" | "pricing" | "sign-in";
+export type TourStepId = "hero" | "how" | "proof-paths" | "pricing" | "open-account";
 
 export const TOUR_STEPS: {
   id: TourStepId;
@@ -9,57 +9,60 @@ export const TOUR_STEPS: {
   body: { ar: string; en: string };
 }[] = [
   {
-    id: "open-account",
-    title: { ar: "Growlab للتاجر اللي يبيع نقداً", en: "Growlab is for cash-on-delivery shops" },
+    id: "hero",
+    title: { ar: "هذا وعد Growlab", en: "This is Growlab’s promise" },
     body: {
-      ar: "مو منصة مثل سلة. أنت تبيع عطور أو أزياء أو إلكترونيات ويُدفع ثمنها عند الباب. ما نخصم ريال إلا بعد ما الزبون يدفع للمندوب.",
-      en: "Not a Salla-style store builder. You sell goods paid at the door. We take nothing until the buyer pays the courier.",
+      ar: "تبيع، والزبون يدفع عند الاستلام. عمولة Growlab ما تخصم إلا بعد ما الفلوس توصل للمندوب. النقرة والزيارة مجاناً.",
+      en: "You sell, the buyer pays on delivery. Growlab takes commission only after cash reaches the courier. Clicks and visits are free.",
     },
   },
   {
     id: "how",
-    title: { ar: "الطلب يمشي كذا", en: "How an order actually moves" },
+    title: { ar: "كيف يمشي الطلب", en: "How an order moves" },
     body: {
-      ar: "الزبون يطلب من صفحة: اسم وجوال وعنوان. يدفع الشحن الحين عشان ما يلغي في الطريق. ثمن السلعة مع المندوب. أنت تؤكد الاستلام من لوحتك.",
-      en: "They order on a page: name, phone, address. Shipping is paid now so the parcel does not leave without a stake. Product price with the courier. You confirm receipt in the dashboard.",
+      ar: "الزبون يكتب اسمه وجواله وعنوانه. يدفع الشحن الحين حتى ما تلغى الشحنة في الطريق. ثمن السلعة يُدفع للمندوب عند الاستلام. أنت تؤكد الاستلام من لوحة Growlab.",
+      en: "The buyer enters name, phone, and address. Shipping is paid now so the parcel does not leave without a stake. Product price is paid to the courier on delivery. You confirm receipt in Growlab.",
     },
   },
   {
     id: "proof-paths",
-    title: { ar: "عندك متجر أو لا — نفس الفكرة", en: "Store or no store — same idea" },
+    title: { ar: "مساران على Growlab", en: "Two paths on Growlab" },
     body: {
-      ar: "ما عندك موقع: نعطيك صفحة طلب باسمك. عندك سلة أو زد: منتجك يبقى هناك والحملة فوقه. ما ننقل كتالوجك ولا نبدّل متجرك.",
-      en: "No site yet: you get an order page under your name. Already on Salla or Zid: the product stays there and the campaign sits on top. We do not move your catalog.",
+      ar: "ما عندك موقع: صفحة طلب باسمك. عندك متجر: منتجك يبقى، والحملة والعمولة فوقه. نفس الحلقة بعد التحصيل.",
+      en: "No site: an order page under your name. Already have a store: the product stays, campaign and commission sit on top. Same loop after collection.",
     },
   },
   {
     id: "pricing",
     title: { ar: "متى تطلع الفلوس منك", en: "When money leaves you" },
     body: {
-      ar: "الزيارة والنقرة مجاناً. العمولة تخصم بعد بيعة حقيقية عند الباب، أو بعد ما توافق على مقطع الزبون. تقدر تحط سقف يوقف الحملة إذا وصلت حدك.",
-      en: "Visits and clicks are free. Share commission comes off after a real door payment, or after you approve a buyer clip. You can set a cap that stops the campaign.",
+      ar: "ما في خصم على الزيارة. العمولة بعد بيعة حقيقية عند الاستلام، أو بعد ما توافق على مقطع. حط سقفاً يوقف الحملة إذا وصلت حدك.",
+      en: "No charge on a visit. Commission after a real sale on delivery, or after you approve a clip. Set a cap so the campaign stops at your limit.",
     },
   },
   {
-    id: "sign-in",
-    title: { ar: "افتح حساب التاجر", en: "Open the merchant account" },
+    id: "open-account",
+    title: { ar: "من هنا تفتح حساب التاجر", en: "Open the merchant account here" },
     body: {
-      ar: "اضغط ابدأ وسجّل. بعدها تحط أول منتج وتثبت عمولة المشاركة. اللي يستلم يقدر ينشر رابط التتبع ويجيب الطلب الجاي.",
-      en: "Tap Start and sign in. Then add the first product and set the share rate. Who receives can post the tracking link and bring the next order.",
+      ar: "هذا الزر يسجّلك في Growlab. بعدها تضيف أول منتج وتثبت عمولة المشاركة. اللي يستلم يقدر ينشر رابط التتبع ويجيب الطلب الجاي.",
+      en: "This button signs you into Growlab. Then add the first product and set the share rate. Who receives can post the tracking link and bring the next order.",
     },
   },
 ];
 
-export function visibleGuideEl(id: string): HTMLElement | null {
+export function findGuideEl(id: string): HTMLElement | null {
   if (typeof document === "undefined") return null;
-  const nodes = [...document.querySelectorAll<HTMLElement>(`[data-guide="${id}"]`)];
+  const nodes = [...document.querySelectorAll<HTMLElement>(`[data-guide="${id}"]`)].filter((node) => {
+    const style = getComputedStyle(node);
+    if (style.display === "none" || style.visibility === "hidden") return false;
+    const rect = node.getBoundingClientRect();
+    return rect.width > 8 && rect.height > 8;
+  });
   return (
     nodes.find((node) => {
       const rect = node.getBoundingClientRect();
-      const style = getComputedStyle(node);
-      if (style.display === "none" || style.visibility === "hidden") return false;
-      return rect.width > 8 && rect.height > 8;
-    }) ?? null
+      return rect.bottom > 80 && rect.top < window.innerHeight - 40;
+    }) ?? nodes[0] ?? null
   );
 }
 

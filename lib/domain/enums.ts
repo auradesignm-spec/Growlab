@@ -58,7 +58,7 @@ export type AttributionSource = (typeof ATTRIBUTION_SOURCES)[number];
 export const ESCROW_STATUSES = ["held", "released", "refunded"] as const;
 export type EscrowStatus = (typeof ESCROW_STATUSES)[number];
 
-/** How the buyer settles. COD is cash at the door — no gateway fee. */
+/** How the buyer settles. COD is cash on delivery — no gateway fee. */
 export const SETTLEMENT_CHANNELS = ["cod", "card"] as const;
 export type SettlementChannel = (typeof SETTLEMENT_CHANNELS)[number];
 

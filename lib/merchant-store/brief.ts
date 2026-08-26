@@ -13,11 +13,11 @@ export const BRIEF_CATEGORIES = [
 ] as const;
 
 export const BRIEF_AUDIENCES = [
-  { id: "families", ar: "عائلات داخل عُمان تريد طلباً عند الباب", en: "Families in Oman who want pay-at-the-door orders" },
+  { id: "families", ar: "عائلات داخل عُمان تريد طلباً عند الاستلام", en: "Families in Oman who want pay-on-delivery orders" },
   { id: "women", ar: "نساء يبحثن عن جودة واضحة قبل الدفع للمندوب", en: "Women who want clear quality before paying the courier" },
   { id: "men", ar: "رجال يطلبون عملياً ويدفعون عند الاستلام", en: "Men who order practical goods and pay on delivery" },
   { id: "youth", ar: "شباب يشاركون الرابط بعد ما يستلمون", en: "Youth who share the link after they receive" },
-  { id: "gifts", ar: "من يشتري هدية ويحتاج تغليف وتوصيل للباب", en: "Gift buyers who need wrapping and door delivery" },
+  { id: "gifts", ar: "من يشتري هدية ويحتاج تغليف وتوصيل للمنزل", en: "Gift buyers who need wrapping and home delivery" },
   { id: "all", ar: "كل من يدفع نقداً عند الاستلام في عُمان", en: "Anyone who pays cash on delivery in Oman" },
 ] as const;
 
@@ -66,12 +66,12 @@ export function storeSeedFromBrief(input: {
   return {
     tagline: slogan.slice(0, 160),
     aboutHtml: ar
-      ? `<p>${escapeHtml(slogan)}</p><p>نستهدف ${escapeHtml(who)}.</p><p>الفئة: ${escapeHtml(catLabel)}. الشحن يُدفع مع الطلب. ثمن السلعة عند الباب إن اختار المشتري ذلك.</p>`
-      : `<p>${escapeHtml(slogan)}</p><p>We serve ${escapeHtml(who)}.</p><p>Category: ${escapeHtml(catLabel)}. Shipping is paid with the order. Goods at the door if the buyer chooses that.</p>`,
+      ? `<p>${escapeHtml(slogan)}</p><p>نستهدف ${escapeHtml(who)}.</p><p>الفئة: ${escapeHtml(catLabel)}. الشحن يُدفع مع الطلب. ثمن السلعة عند الاستلام إن اختار المشتري ذلك.</p>`
+      : `<p>${escapeHtml(slogan)}</p><p>We serve ${escapeHtml(who)}.</p><p>Category: ${escapeHtml(catLabel)}. Shipping is paid with the order. Goods on delivery if the buyer chooses that.</p>`,
     offerHeadline: ar ? "اطلب الآن — شحن مسبقاً" : "Order now — shipping prepaid",
     offerBody: ar
-      ? `${who}. ادفع الشحن الآن والسلعة عند الباب إن اخترت ذلك.`
-      : `${who}. Pay shipping now; goods at the door if you choose that.`,
+      ? `${who}. ادفع الشحن الآن والسلعة عند الاستلام إن اخترت ذلك.`
+      : `${who}. Pay shipping now; goods on delivery if you choose that.`,
     theme: {
       accent: cat.accent,
       heroStyle: "split",

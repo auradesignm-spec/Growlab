@@ -151,7 +151,7 @@ function visionExtras(input: AdAnalyzeInput, overall: number): Pick<
         : "No image or video — analysis is copy-only.",
     platforms: defaultPlatforms(ar, overall),
     market: ar
-      ? `سوق ${cat} في عُمان يعتمد الثقة والدفع عند الاستلام. الإعلان الذي يبيع قبل أن يُظهر المنتج والنقد عند الباب يضيّع التحويل.`
+      ? `سوق ${cat} في عُمان يعتمد الثقة والدفع عند الاستلام. الإعلان الذي يبيع قبل أن يُظهر المنتج والنقد عند الاستلام يضيّع التحويل.`
       : `Oman ${cat} buyers still need trust and COD. Ads that sell before showing the product and doorstep cash lose the click-to-chat.`,
     competitorPatterns: ar
       ? [
@@ -260,10 +260,10 @@ function heuristicAnalyze(input: AdAnalyzeInput): AdAnalysisResult {
   const suggestedHook = ar
     ? input.hook.trim().length > 8
       ? `وقف… ${input.hook.trim().slice(0, 60)}`
-      : `لماذا تدفع أكثر و${product} يصلك والدفع عند الباب؟`
+      : `لماذا تدفع أكثر و${product} يصلك والدفع عند الاستلام؟`
     : input.hook.trim().length > 8
       ? `Wait — ${input.hook.trim().slice(0, 60)}`
-      : `Why overpay when ${product} arrives COD to your door?`;
+      : `Why overpay when ${product} arrives COD on delivery?`;
 
   const suggestedCaption = ar
     ? `${suggestedHook}\n\n${product}${price ? ` — ${price}` : ""}.\nالدفع عند الاستلام. راسلنا على واتساب واكتب: نعم`

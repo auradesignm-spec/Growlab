@@ -32,7 +32,7 @@ export const DELIVERY_HOLD_UNCLAIMED_GRACE_MS = 24 * 60 * 60 * 1000;
  * - window elapsed and buyer filed a refund → refund buyer
  * - window elapsed, 24h grace with no refund claim → release to merchant
  * Inside the window, unpaid-to-merchant stays held (unless fulfilled).
- * COD does not use this clock — cash is at the door.
+ * COD does not use this clock — cash is on delivery.
  */
 export type DeliveryHoldDecision = "hold" | "release_merchant" | "refund_buyer";
 

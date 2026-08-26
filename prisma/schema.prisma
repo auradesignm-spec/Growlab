@@ -432,7 +432,7 @@ model Product {
   commissionValue Float  @default(0.25)
   // Max calendar days after prepaid capture before the buyer may claim a refund.
   deliveryDaysMax Int    @default(4)
-  // Buyer shipping, prepaid at checkout even when the product is pay-at-the-door.
+  // Buyer shipping, prepaid at checkout even when the product is pay-on-delivery.
   shippingFee Float @default(1.5)
   active    Boolean  @default(true)
   createdAt DateTime @default(now())

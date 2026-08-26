@@ -23,8 +23,8 @@ function isCashWord(word: string, locale: string): boolean {
     .replace(/[\u064B-\u065F\u0670]/g, "")
     .replace(/[أإآ]/g, "ا")
     .toLowerCase();
-  if (locale === "ar") return clean === "ريال" || clean === "الباب" || clean === "تخصم";
-  return clean === "rial" || clean === "door" || clean === "pay";
+  if (locale === "ar") return clean === "ارباح" || clean === "أرباح";
+  return clean === "profit";
 }
 
 export default function Hero() {
@@ -34,7 +34,7 @@ export default function Hero() {
   const cashIndex = words.findIndex((word) => isCashWord(word, locale));
 
   return (
-    <section id="manifesto" className="relative overflow-hidden scroll-mt-24 pb-10 pt-[5.5rem] sm:pb-10 sm:pt-28">
+    <section id="manifesto" className="relative overflow-x-clip scroll-mt-24 pb-10 pt-[5.5rem] sm:pb-10 sm:pt-28">
       <div className="relative z-[1] mx-auto max-w-wrap px-5 sm:px-8">
         <div className="relative max-w-4xl overflow-visible px-1 pt-16 sm:px-4 sm:pt-24">
           <h1 key={locale} className="gl-hero-title relative z-[1] text-start font-semibold text-frost">
@@ -47,7 +47,7 @@ export default function Hero() {
                       {BILLS.map((bill, billIndex) => (
                         <span
                           key={billIndex}
-                          className={`gl-bill${billIndex > 4 ? " hidden md:block" : ""}`}
+                          className="gl-bill"
                           style={
                             {
                               "--dx": `${bill.dx * 0.78}px`,
@@ -75,7 +75,10 @@ export default function Hero() {
               );
             })}
           </h1>
-          <p className="gl-enter-2 relative z-[1] mt-5 max-w-xl text-start text-[16px] leading-6 text-[#3d4450] sm:leading-relaxed">
+          <p
+            data-guide="hero"
+            className="gl-enter-2 relative z-[1] mt-5 max-w-xl text-start text-[16px] leading-6 text-[#3d4450] sm:leading-relaxed"
+          >
             {t("lede")}
           </p>
           <div className="relative z-[1] mt-6 flex w-full flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center">

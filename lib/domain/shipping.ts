@@ -1,4 +1,4 @@
-/** Buyer shipping, always prepaid — even when the product itself is pay-at-the-door. */
+/** Buyer shipping, always prepaid — even when the product itself is pay-on-delivery. */
 export const DEFAULT_SHIPPING_FEE = 1.5;
 export const MIN_SHIPPING_FEE = 0.1;
 export const MAX_SHIPPING_FEE = 50;

@@ -3,7 +3,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { SIGN_IN_HREF } from "@/lib/auth/paths";
-import { markTourDone, PRODUCT_TOUR_EVENT, TOUR_STEPS, visibleGuideEl } from "@/lib/productTour";
+import { markSurveyDone } from "@/lib/needSurvey";
+import { findGuideEl, markTourDone, PRODUCT_TOUR_EVENT, TOUR_STEPS } from "@/lib/productTour";
 
 type Spot = { top: number; left: number; width: number; height: number; radius: string };
 
@@ -12,18 +13,32 @@ export default function ProductTour() {
   const ar = useLocale() === "ar";
   const [index, setIndex] = useState<number | null>(null);
   const [spot, setSpot] = useState<Spot | null>(null);
+  const [narrow, setNarrow] = useState(false);
 
   const stop = useCallback(() => {
+    document.documentElement.classList.remove("gl-tour-on");
     document.querySelectorAll("[data-guide].is-guide").forEach((el) => el.classList.remove("is-guide"));
     setIndex(null);
     setSpot(null);
   }, []);
 
   useEffect(() => {
-    const onStart = () => setIndex(0);
+    const onStart = () => {
+      markSurveyDone();
+      setIndex(0);
+    };
     window.addEventListener(PRODUCT_TOUR_EVENT, onStart);
     return () => window.removeEventListener(PRODUCT_TOUR_EVENT, onStart);
   }, []);
+
+  useEffect(() => {
+    if (index == null) {
+      document.documentElement.classList.remove("gl-tour-on");
+      return;
+    }
+    document.documentElement.classList.add("gl-tour-on");
+    return () => document.documentElement.classList.remove("gl-tour-on");
+  }, [index]);
 
   useEffect(() => {
     if (index == null) return;
@@ -32,29 +47,29 @@ export default function ProductTour() {
       stop();
       return;
     }
-    const el = visibleGuideEl(id);
+    const el = findGuideEl(id);
     if (!el) {
-      if (index >= TOUR_STEPS.length - 1) {
-        setSpot({ top: 72, left: 16, width: 132, height: 40, radius: "999px" });
-        return;
-      }
-      setIndex((i) => (i == null ? null : i + 1));
+      if (index >= TOUR_STEPS.length - 1) stop();
+      else setIndex(index + 1);
       return;
     }
     document.querySelectorAll("[data-guide].is-guide").forEach((node) => node.classList.remove("is-guide"));
     el.classList.add("is-guide");
-    el.scrollIntoView({ block: "center", behavior: "smooth" });
+    const header = 88;
+    const y = el.getBoundingClientRect().top + window.scrollY - header;
+    window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
     const place = () => {
       const r = el.getBoundingClientRect();
+      setNarrow(window.innerWidth < 720);
       setSpot({
         top: r.top,
         left: r.left,
         width: r.width,
-        height: r.height,
-        radius: getComputedStyle(el).borderRadius || "999px",
+        height: Math.min(r.height, window.innerHeight * 0.38),
+        radius: getComputedStyle(el).borderRadius || "16px",
       });
     };
-    const t1 = window.setTimeout(place, 380);
+    const t1 = window.setTimeout(place, 480);
     window.addEventListener("resize", place);
     window.addEventListener("scroll", place, true);
     return () => {
@@ -68,10 +83,14 @@ export default function ProductTour() {
   if (index == null || !spot) return null;
   const step = TOUR_STEPS[index];
   const last = index === TOUR_STEPS.length - 1;
-  const tipTop = spot.top + spot.height + 14;
-  const flip = tipTop + 200 > window.innerHeight;
-  const top = flip ? Math.max(12, spot.top - 188) : tipTop;
-  const left = Math.min(Math.max(16, spot.left), window.innerWidth - 304);
+  const tipW = Math.min(320, window.innerWidth - 32);
+  const gap = 14;
+  const spaceBelow = window.innerHeight - (spot.top + spot.height) - 24;
+  const spaceAbove = spot.top - 24;
+  const dockBottom = narrow || (spaceBelow < 140 && spaceAbove < 140);
+  const placeBelow = !dockBottom && spaceBelow >= spaceAbove;
+  const top = placeBelow ? spot.top + spot.height + gap : Math.max(12, spot.top - 210 - gap);
+  const left = Math.min(Math.max(16, spot.left), window.innerWidth - tipW - 16);
 
   function next() {
     if (last) {
@@ -99,7 +118,14 @@ export default function ProductTour() {
         <span className="gl-spot-ring" />
         <span className="gl-spot-ring" />
       </div>
-      <div className="gl-spot-tip" style={{ top, left }}>
+      <div
+        className="gl-spot-tip"
+        style={
+          dockBottom
+            ? { top: "auto", bottom: 16, left: 16, right: 16, width: "auto" }
+            : { top, left, width: tipW }
+        }
+      >
         <p className="gl-survey-kicker">
           {t("progress", { current: index + 1, total: TOUR_STEPS.length })}
         </p>

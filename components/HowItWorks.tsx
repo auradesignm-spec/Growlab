@@ -13,13 +13,13 @@ export default async function HowItWorks() {
       <div className="mx-auto max-w-wrap px-5 sm:px-8">
         <Reveal>
           <p className="gl-eyebrow">{t("eyebrow")}</p>
-          <h2 className="gl-heading mt-2 text-display-lg">{t("title")}</h2>
+          <h2 data-guide="how" className="gl-heading mt-2 text-display-lg">{t("title")}</h2>
           <p className="gl-lede mt-4">{t("lede")}</p>
         </Reveal>
 
         <StageGlow className="mt-10" tone="sun" place="start">
           <div className="gl-stage p-3 sm:p-4">
-          <div data-guide="how" className="grid grid-cols-1 gap-3 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
             {steps.map((step, index) => (
               <Reveal key={step.n} className="h-full" delay={index * 70}>
                 <div className="gl-tile gl-tile-hover flex h-full flex-col p-6 sm:p-8">

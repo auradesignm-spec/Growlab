@@ -140,7 +140,6 @@ function HeaderAuth({
   const guest = compact ? (
     <TourStartLink
       href={SIGN_IN_HREF}
-      guide="sign-in"
       source="header-mobile"
       bubble
       onNavigate={() => {
@@ -155,7 +154,6 @@ function HeaderAuth({
     <div className={stacked ? "mt-4 flex flex-col items-start gap-3" : "contents"}>
       <TourStartLink
         href={SIGN_IN_HREF}
-        guide="sign-in"
         source={stacked ? "header-mobile-menu" : "header"}
         onNavigate={() => {
           track("Sign In Started", { source: stacked ? "header-mobile-menu" : "header" });

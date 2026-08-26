@@ -40,8 +40,8 @@ function templateSuggestion(input: StoreAiInput): StoreAiSuggestion {
       : `${input.businessName} — local quality, cash on delivery`;
 
   const aboutHtml = ar
-    ? `<p>مرحباً بك في <strong>${escapeHtml(input.businessName)}</strong>. نختار منتجاتنا بعناية ونوصّلها لبابك — <strong>الدفع عند الاستلام</strong> بدون تعقيد.</p><p>تصفّح العروض، اختر المقاس، وأكّد طلبك. فريقنا يتابع كل طلب من لوحة Growlab.</p>`
-    : `<p>Welcome to <strong>${escapeHtml(input.businessName)}</strong>. We curate every product and deliver to your door — <strong>cash on delivery</strong>, no hassle.</p><p>Browse offers, pick your size, and confirm your order. Our team tracks every order on Growlab.</p>`;
+    ? `<p>مرحباً بك في <strong>${escapeHtml(input.businessName)}</strong>. نختار منتجاتنا بعناية ونوصّلها لك — <strong>الدفع عند الاستلام</strong> بدون تعقيد.</p><p>تصفّح العروض، اختر المقاس، وأكّد طلبك. فريقنا يتابع كل طلب من لوحة Growlab.</p>`
+    : `<p>Welcome to <strong>${escapeHtml(input.businessName)}</strong>. We curate every product and deliver to you — <strong>cash on delivery</strong>, no hassle.</p><p>Browse offers, pick your size, and confirm your order. Our team tracks every order on Growlab.</p>`;
 
   const offerHeadline = ar ? "عرض افتتاح المتجر" : "Store launch offer";
   const offerBody = ar

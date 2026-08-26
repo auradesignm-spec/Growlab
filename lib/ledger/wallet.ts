@@ -1,7 +1,7 @@
 /**
  * Merchant commission wallet — the cash loop the ledger was missing.
  *
- * COD cash lands with the merchant at the door. Creator commission + the 6%
+ * COD cash lands with the merchant on delivery. Creator commission + the 6%
  * platform fee are pulled from this pre-funded wallet when collection is
  * confirmed (fulfilled). Confirming an order only checks the float; it does
  * not debit. A return after collection credits the wallet back.

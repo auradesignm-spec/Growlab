@@ -4,7 +4,7 @@
  * Pipeline:
  *  1. Normalize URL (https + Arabic path encoding)
  *  2. Fetch HTML with a browser-like UA
- *  3. Detect engine (Shopify / Woo / Salla / Zid / Magento / …)
+ *  3. Detect the storefront engine from the page HTML
  *  4. Merge structured extractors by confidence score
  *  5. Optional OpenAI pass when the page is incomplete/JS-heavy
  */

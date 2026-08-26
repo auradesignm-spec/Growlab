@@ -49,8 +49,8 @@ export default function GlassBubbleTrack({
         const nav = track.getBoundingClientRect();
         const item = el.getBoundingClientRect();
         setBox({
-          x: item.left - nav.left,
-          y: item.top - nav.top,
+          x: Math.max(0, item.left - nav.left),
+          y: Math.max(0, item.top - nav.top),
           w: item.width,
           h: item.height,
         });
