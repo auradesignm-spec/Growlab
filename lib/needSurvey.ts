@@ -1,4 +1,4 @@
-export const NEED_SURVEY_KEY = "gl.needSurvey.v3";
+export const NEED_SURVEY_KEY = "gl.needSurvey.v4";
 
 export const SURVEY_COPY = {
   title: { ar: "سؤالان بسيطان", en: "Two short questions" },

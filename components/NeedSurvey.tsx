@@ -13,7 +13,7 @@ import {
   type SurveyPain,
   type SurveyWho,
 } from "@/lib/needSurvey";
-import { startProductTour } from "@/lib/productTour";
+import { startProductTour, tourIsDone } from "@/lib/productTour";
 
 export default function NeedSurvey() {
   const t = useTranslations("marketing.survey");
@@ -25,24 +25,28 @@ export default function NeedSurvey() {
   const [pain, setPain] = useState<SurveyPain | null>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
 
-  const finish = useCallback(
-    (showGuide: boolean) => {
-      try {
-        localStorage.setItem(NEED_SURVEY_KEY, "done");
-      } catch {
-        /* ignore */
-      }
-      setOpen(false);
-      if (!showGuide || !who) return;
+  const finish = useCallback((showGuide: boolean) => {
+    try {
+      localStorage.setItem(NEED_SURVEY_KEY, "done");
+    } catch {
+      /* ignore */
+    }
+    setOpen(false);
+    if (showGuide && who) {
       track("Need Survey Done", { who, pain: pain ?? "" });
-      startProductTour();
-    },
-    [pain, who],
-  );
+    }
+    window.setTimeout(() => startProductTour(), 320);
+  }, [pain, who]);
 
   useEffect(() => {
     try {
-      if (localStorage.getItem(NEED_SURVEY_KEY) === "done") return;
+      if (localStorage.getItem(NEED_SURVEY_KEY) === "done") {
+        if (!tourIsDone()) {
+          const later = window.setTimeout(() => startProductTour(), 560);
+          return () => window.clearTimeout(later);
+        }
+        return;
+      }
     } catch {
       return;
     }

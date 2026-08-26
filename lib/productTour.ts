@@ -1,4 +1,4 @@
-export const PRODUCT_TOUR_KEY = "gl.productTour.v2";
+export const PRODUCT_TOUR_KEY = "gl.productTour.v3";
 export const PRODUCT_TOUR_EVENT = "gl:product-tour";
 
 export type TourStepId = "open-account" | "how" | "proof-paths" | "pricing" | "sign-in";
