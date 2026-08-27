@@ -87,8 +87,8 @@ function buildSmartFallback(message: string): AssistantChatResponse {
       text: "بالتأكيد! قمت بتجهيز محرر المتاجر الذكي لك بالبلوكات المرئية بدون الحاجة لكتابة كود. يمكنك إضافة البانرات، صور المنتجات، وتفعيل الدفع عند الاستلام فوراً.",
       action: {
         type: "open_store_builder",
-        titleAr: "🎨 فتح محرر المتجر الذكي بالبلوكات",
-        titleEn: "🎨 Open Visual Store Builder",
+        titleAr: "فتح محرر المتجر الذكي بالبلوكات",
+        titleEn: "Open Visual Store Builder",
         descriptionAr:
           "الانتقال الفوري لمحرر المتجر وتخصيص البلوكات بلمسة واحدة",
         descriptionEn: "Instant redirect to visual storefront editor",
@@ -113,8 +113,8 @@ function buildSmartFallback(message: string): AssistantChatResponse {
       text: "تم تفعيل محاكي المبيعات اللحظية بنجاح! سينقلك النظام الآن إلى شاشة تدفق الطلبات الحية واحتساب صافي الأرباح بعد خصم تكلفة البضاعة ومصاريف الإعلانات فوراً.",
       action: {
         type: "trigger_simulation",
-        titleAr: "⚡ تشغيل محاكي المبيعات والطلبات الحية",
-        titleEn: "⚡ Launch Live Sales Simulator",
+        titleAr: "تشغيل محاكي المبيعات والطلبات الحية",
+        titleEn: "Launch Live Sales Simulator",
         descriptionAr: "معاينة تدفق الطلبات واحتساب صافي الربح الحقيقي لحظة بلحظة",
         descriptionEn: "Simulate incoming orders and real-time net margins",
         targetUrl: "/dashboard?tab=simulator",
@@ -145,9 +145,9 @@ function buildSmartFallback(message: string): AssistantChatResponse {
       action: {
         type: "open_kyc",
         titleAr: isCr
-          ? "🛡️ توثيق بالسجل التجاري الرسمي (CR Track)"
-          : "🛡️ توثيق المشاريع المنزلية والعمل الحر (Home Business)",
-        titleEn: "🛡️ Open KYC Verification Center",
+          ? "توثيق بالسجل التجاري الرسمي (CR Track)"
+          : "توثيق المشاريع المنزلية والعمل الحر (Home Business)",
+        titleEn: "Open KYC Verification Center",
         descriptionAr:
           "رفع وثائق الهوية والمسح البيومتري للحصول على الشارة الزرقاء",
         descriptionEn: "Complete verification to unlock verified blue badge",
@@ -172,8 +172,8 @@ function buildSmartFallback(message: string): AssistantChatResponse {
       text: "حاضر فوراً! إليك نموذج احتساب صافي الربح الحقيقي في Growlab: نقوم بطرح (تكلفة البضاعة COGS + تكلفة إعلانات Meta/TikTok لكل طلب + رسوم شحن المرتجع RTO) من سعر البيع الإجمالي.",
       action: {
         type: "calculate_profit",
-        titleAr: "💰 تشغيل حاسبة الأرباح الصافية التفاعلية",
-        titleEn: "💰 Launch Interactive Net Margin Calculator",
+        titleAr: "تشغيل حاسبة الأرباح الصافية التفاعلية",
+        titleEn: "Launch Interactive Net Margin Calculator",
         descriptionAr: "تحديد سعر البيع والتكلفة لرؤية صافي الربح المحصل بالبنك",
         descriptionEn: "Calculate bank-collected profit after ad & delivery costs",
         targetUrl: "/dashboard?tab=command",
@@ -203,8 +203,8 @@ function buildSmartFallback(message: string): AssistantChatResponse {
       text: "بصفتك صانع محتوى أو مسوّق، يمكنك تصفح كتالوج المنتجات وطلب عينات مجانية، وتوليد روابط تتبع وإسناد ذكية لمشاركتها على TikTok وInstagram وكسب عمولات مؤكدة بعد تسليم الطلب.",
       action: {
         type: "open_creator_hub",
-        titleAr: "🎬 تصفح كتالوج العينات وروابط المسوقين",
-        titleEn: "🎬 Browse Affiliate Samples Catalog",
+        titleAr: "تصفح كتالوج العينات وروابط المسوقين",
+        titleEn: "Browse Affiliate Samples Catalog",
         descriptionAr: "طلب عينات مجانية وتوليد روابط التتبع المباشرة",
         descriptionEn: "Request samples and generate custom attribution links",
         targetUrl: "/dashboard/browse",
@@ -228,8 +228,8 @@ function buildSmartFallback(message: string): AssistantChatResponse {
       text: "يمكنك الآن تجربة واجهة متجر المشتري الفعلي (متجر مطرح للعطور) واختبار سرعة تسجيل طلب بالدفع عند الاستلام COD بضغطة زر واحدة ومتابعة تجربة ما بعد الشراء.",
       action: {
         type: "open_storefront",
-        titleAr: "🛍️ فتح واجهة متجر المشتري (تجربة COD)",
-        titleEn: "🛍️ Open Buyer COD Storefront",
+        titleAr: "فتح واجهة متجر المشتري (تجربة COD)",
+        titleEn: "Open Buyer COD Storefront",
         descriptionAr: "معاينة صفحة الشراء السريعة وتجربة الطلب كزبون",
         descriptionEn: "Experience frictionless buyer COD checkout",
         targetUrl: "/m/muttrah-attars",
@@ -248,18 +248,18 @@ function buildSmartFallback(message: string): AssistantChatResponse {
     text: "أهلاً بك! أنا مساعد Growlab الذكي والمنفّذ المباشر لمهامك. يمكنني توجيهك في أي خطوة، أو تنفيذ مهام كاملة نيابة عنك مثل: بناء متجرك بالبلوكات، محاكاة المبيعات الحية، توثيق حسابك، أو احتساب صافي أرباحك.",
     action: {
       type: "navigate",
-      titleAr: "⚡ الانتقال إلى لوحة التحكم الرئيسية",
-      titleEn: "⚡ Go to Main Dashboard Hub",
+      titleAr: "الانتقال إلى لوحة التحكم الرئيسية",
+      titleEn: "Go to Main Dashboard Hub",
       descriptionAr: "استكشاف كافة ميزات المنصة والأرباح والمخزون",
       descriptionEn: "Explore platform features, profits, and inventory",
       targetUrl: "/dashboard?tab=command",
       autoExecute: false,
     },
     suggestions: [
-      "⚡ شغّل محاكي المبيعات اللحظية",
-      "🎨 ابنِ لي متجر عطور بالبلوكات",
-      "🛡️ وجّهني لتوثيق الهوية والشارة الزرقاء",
-      "💰 احسب لي صافي أرباح منتج",
+      "شغّل محاكي المبيعات اللحظية",
+      "ابنِ لي متجر عطور بالبلوكات",
+      "وجّهني لتوثيق الهوية والشارة الزرقاء",
+      "احسب لي صافي أرباح منتج",
     ],
   };
 }

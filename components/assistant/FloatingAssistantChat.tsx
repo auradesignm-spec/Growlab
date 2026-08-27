@@ -47,12 +47,12 @@ const INITIAL_MESSAGES: MessageItem[] = [
       targetTab: "simulator",
     },
     suggestions: [
-      "💰 احسب صافي أرباح منتج جديد",
-      "🛍️ جرّب متجر المشتري والدفع عند الاستلام",
-      "🎬 كتالوج العينات وروابط المسوقين",
-      "⚡ تشغيل محاكي المبيعات اللحظية",
-      "🎨 بناء متجر عطور بالبلوكات",
-      "🛡️ توجيهي لتوثيق الهوية والشارة الزرقاء",
+      "احسب صافي أرباح منتج جديد",
+      "جرّب متجر المشتري والدفع عند الاستلام",
+      "كتالوج العينات وروابط المسوقين",
+      "تشغيل محاكي المبيعات اللحظية",
+      "بناء متجر عطور بالبلوكات",
+      "توجيهي لتوثيق الهوية والشارة الزرقاء",
     ],
     timestamp: "الآن",
   },
@@ -240,7 +240,7 @@ export default function FloatingAssistantChat() {
   return (
     <aside
       aria-label="Growlab AI Copilot"
-      className="fixed bottom-4 left-4 right-4 sm:right-auto sm:left-6 sm:bottom-6 z-50 flex flex-col items-start font-sans pointer-events-none max-w-[calc(100vw-32px)] sm:max-w-none"
+      className="fixed bottom-4 left-4 sm:left-6 sm:bottom-6 z-50 flex flex-col items-start font-sans pointer-events-none max-w-[calc(100vw-32px)] sm:max-w-none"
     >
       <div className="pointer-events-auto flex flex-col items-start w-full sm:w-auto">
         {/* Floating Chat Modal */}
@@ -258,15 +258,14 @@ export default function FloatingAssistantChat() {
             {/* Liquid Glass Header */}
             <div className="relative z-10 flex items-center justify-between border-b border-white/10 bg-white/[0.03] px-3.5 py-3 sm:px-4 backdrop-blur-2xl">
               <div className="flex items-center gap-2.5">
-                <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-white/20 bg-slate-900 shadow-[inset_0_1px_0_rgba(255,255,255,0.25)]">
+                <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-white/20 bg-black shadow-[inset_0_1px_0_rgba(255,255,255,0.25)]">
                   <img
-                    src="/AI.gif"
+                    src="/AIbot.gif"
                     alt="Growlab AI Bot"
                     className="h-full w-full object-cover"
                     referrerPolicy="no-referrer"
                     onError={(e) => {
-                      (e.currentTarget as HTMLImageElement).src =
-                        "https://raw.githubusercontent.com/auradesignm-spec/Growlab/main/webimages/AI.gif";
+                      (e.currentTarget as HTMLImageElement).src = "/AI.gif";
                     }}
                   />
                   <span className="absolute -bottom-0.5 -right-0.5 flex h-3 w-3 items-center justify-center rounded-full bg-emerald-500 ring-2 ring-slate-950">
@@ -579,21 +578,20 @@ export default function FloatingAssistantChat() {
               setIsOpen(!isOpen);
               playChime();
             }}
-            className="relative flex h-13 w-13 sm:h-14 sm:w-14 items-center justify-center overflow-hidden rounded-2xl sm:rounded-[22px] border border-white/20 bg-slate-950/90 text-white shadow-[0_12px_36px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.25)] hover:border-amber-400/50 hover:shadow-[0_12px_40px_rgba(245,158,11,0.25)] active:scale-95 transition-all duration-300 backdrop-blur-2xl"
+            className="relative flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl sm:rounded-[22px] border border-white/20 bg-slate-950/90 text-white shadow-[0_12px_36px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.25)] hover:border-amber-400/50 hover:shadow-[0_12px_40px_rgba(245,158,11,0.25)] active:scale-95 transition-all duration-300 backdrop-blur-2xl"
             aria-label="مساعد Growlab الذكي"
           >
             {isOpen ? (
               <X className="h-6 w-6 text-slate-200" />
             ) : (
-              <div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-xl">
+              <div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-xl bg-black">
                 <img
-                  src="/AI.gif"
+                  src="/AIbot.gif"
                   alt="Growlab AI Bot"
                   className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                   referrerPolicy="no-referrer"
                   onError={(e) => {
-                    (e.currentTarget as HTMLImageElement).src =
-                      "https://raw.githubusercontent.com/auradesignm-spec/Growlab/main/webimages/AI.gif";
+                    (e.currentTarget as HTMLImageElement).src = "/AI.gif";
                   }}
                 />
               </div>

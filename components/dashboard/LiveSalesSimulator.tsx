@@ -375,7 +375,7 @@ export default function LiveSalesSimulator({
                 {isAr ? "محاكي المبيعات الحية المباشر" : "Live Real-Time Sales Simulator"}
               </span>
               <span className="rounded-full bg-white/10 px-2 py-0.5 text-[11px] font-mono text-slate-300">
-                {isPlaying ? (isAr ? "⚡ البث نشط" : "⚡ Stream Active") : (isAr ? "⏸️ متوقف" : "⏸️ Paused")}
+                {isPlaying ? (isAr ? "البث نشط" : "Stream Active") : (isAr ? "متوقف" : "Paused")}
               </span>
             </div>
             <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
