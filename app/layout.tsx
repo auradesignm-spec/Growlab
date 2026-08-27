@@ -5,6 +5,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { dirForLocale, isLocale, type Locale } from "@/i18n/config";
 import PwaRegister from "@/components/PwaRegister";
+import FloatingAssistantChat from "@/components/assistant/FloatingAssistantChat";
 import "./globals.css";
 
 const plexArabic = IBM_Plex_Sans_Arabic({
@@ -59,6 +60,7 @@ export default async function RootLayout({
   const app = (
     <NextIntlClientProvider locale={locale} messages={messages} timeZone="Asia/Muscat">
       {children}
+      <FloatingAssistantChat />
     </NextIntlClientProvider>
   );
 

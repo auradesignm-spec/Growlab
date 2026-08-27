@@ -1804,6 +1804,13 @@
       "submitting": "Uploading…",
       "idGuide": "Fill the frame with the card. No glare, all four corners visible.",
       "faceGuide": "Hold still, even light, no sunglasses or mask.",
+      "stepperTitle": "Biometric Verification & ID Capture Steps",
+      "stepProgress": "Step {current} of {total}",
+      "capturesCount": "{completed} of {total} captured",
+      "remainingCaptures": "{count} captures remaining",
+      "allCapturesDone": "All required captures completed! ✓",
+      "stageIdCard": "1. National ID Card",
+      "stageFaceScan": "2. Face Biometric Liveness",
       "steps": {
         "national_id_front": "ID front",
         "national_id_back": "ID back",

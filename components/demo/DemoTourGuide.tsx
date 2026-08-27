@@ -29,50 +29,60 @@ const TOUR_BRANCHES: Record<string, InteractiveTourStep> = {
     id: "welcome",
     titleAr: "مرحباً بك في جولة Growlab الذكية التفاعلية 🌟",
     titleEn: "Welcome to Growlab Interactive Tour 🌟",
-    explanationAr: "أنت الآن في البيئة الافتراضية الشاملة لمنصة Growlab. ما هو هدفك الرئيسي اليوم لنقوم بتوجيهك إلى المسار الأنسب لطموحك؟",
-    explanationEn: "You are now in the live interactive sandbox of Growlab. What is your primary objective today?",
+    explanationAr:
+      "أنت الآن في البيئة الاستكشافية الشاملة لمنصة Growlab. نوجهك خطوة بخطوة ونوضح لك أين تضغط لتجربة كافة إمكانيات المنصة حتى آخر نقطة:",
+    explanationEn:
+      "You are now in the live interactive sandbox of Growlab. We guide you step-by-step on where to click to test every single feature:",
     badgeAr: "بداية الجولة",
     badgeEn: "Start Tour",
     options: [
       {
-        labelAr: "⚡ محاكي المبيعات اللحظية وإدخال المنتجات المباشر (جديد)",
-        labelEn: "⚡ Live Sales & Product Stream Simulator (Interactive)",
-        descAr: "جرّب بنفسك إضافة منتج ومحاكاة وصول طلبات حية من دول الخليج مع احتساب صافي الأرباح فوراً.",
-        descEn: "Simulate adding products and watch real-time incoming orders with true net margin calculation.",
+        labelAr: "⚡ 1. محاكي المبيعات اللحظية واحتساب صافي الربح الحقيقي",
+        labelEn: "⚡ 1. Live Sales Stream & True Net Profit Simulator",
+        descAr: "اضغط هنا لتجربة إدخال طلبات حية ومحاكاة التحصيل بعد خصم الإعلانات وتكلفة البضاعة.",
+        descEn: "Click here to simulate live orders and see real profit calculation after ads and COGS.",
         actionType: "navigate",
         targetUrl: "/dashboard?tab=simulator",
       },
       {
-        labelAr: "1️⃣ أنا تاجر / صاحب علامة تجارية وأريد زيادة مبيعاتي وأرباحي",
-        labelEn: "1️⃣ I am a Merchant / Brand Owner wanting to scale profit",
-        descAr: "استكشف مركز قيادة Brandstack AI، حماية الأرباح الصافية، وتتبع الحملات الإعلانية اللحظية.",
-        descEn: "Explore Brandstack AI command center, true net profit tracking, and Meta ads optimization.",
-        actionType: "navigate",
-        targetUrl: "/dashboard?tab=simulator",
-      },
-      {
-        labelAr: "2️⃣ أريد بناء متجر إلكتروني ذكي لمنتجاتي وتخصيصه بالبلوكات",
-        labelEn: "2️⃣ I want to build a smart e-commerce storefront with blocks",
-        descAr: "شاهد كيف يبني نظام الذكاء الاصطناعي متجراً متكاملاً من جملة واحدة وصور المنتجات.",
-        descEn: "See how our engine generates a full storefront from a single sentence.",
+        labelAr: "🎨 2. محرر المتجر الذكي — بناء الواجهة بالبلوكات المرئية",
+        labelEn: "🎨 2. Smart Visual Storefront Block Builder",
+        descAr: "اضغط هنا لتجربة تخصيص واجهة متجرك بالبلوكات وصور المنتجات بلمسة واحدة.",
+        descEn: "Click here to test visual block customization and instant AI storefront generation.",
         actionType: "navigate",
         targetUrl: "/dashboard/store/edit?fresh=1",
       },
       {
-        labelAr: "3️⃣ أريد تجربة الشراء كزبون والدفع عند الاستلام (COD) وتجربة التوصيل",
-        labelEn: "3️⃣ I want to experience buying as a Customer via COD",
-        descAr: "شاهد كيف تبدو صفحة الطلب السريعة بدون تعقيد، وتتبع الشحنة وعرض الكاش باك بعد الشراء.",
-        descEn: "Experience the frictionless COD checkout and post-purchase sharing rewards.",
+        labelAr: "🛍️ 3. تجربة الشراء كزبون بالدفع عند الاستلام (COD)",
+        labelEn: "🛍️ 3. Buyer Experience — One-Click COD Checkout",
+        descAr: "اضغط هنا لتجربة صفحة الطلب السريعة بدون تعقيد، ودفع الشحن مسبقاً لمنع الإلغاءات.",
+        descEn: "Click here to experience fast checkout with prepaid shipping to stop cancellations.",
         actionType: "navigate",
         targetUrl: "/m/muttrah-attars",
       },
       {
-        labelAr: "4️⃣ أريد استكشاف كيف يربح المسوّقون وصنّاع المحتوى من ترويج المنتجات",
-        labelEn: "4️⃣ Explore Creator / Marketer affiliate monetization",
-        descAr: "تصفح كتالوج العينات المجانية، توليد روابط الإسناد، ومتابعة العمولات المؤكدة بعد التحصيل.",
-        descEn: "Browse free sample catalog, generate attribution links, and track paid commissions.",
+        labelAr: "🛡️ 4. مسار التوثيق والتحقق (سجل تجاري CR أو مشاريع منزلية)",
+        labelEn: "🛡️ 4. KYC & Verification (CR vs Home Business Track)",
+        descAr: "اضغط هنا لمعاينة متطلبات التوثيق، مسح الهوية والوجه، وشارة التوثيق الزرقاء خلال 24 ساعة.",
+        descEn: "Click here to preview identity verification, face scan, and 24h verified blue badge.",
+        actionType: "navigate",
+        targetUrl: "/dashboard/verification",
+      },
+      {
+        labelAr: "🎬 5. بوابة صناع المحتوى والمسوّقين وروابط الإسناد",
+        labelEn: "🎬 5. Creator Affiliate Hub & Attribution Links",
+        descAr: "اضغط هنا لتصفح كتالوج العينات المجانية وتوليد روابط الإسناد وكسب العمولات.",
+        descEn: "Click here to browse products, request samples, and generate tracked affiliate links.",
         actionType: "navigate",
         targetUrl: "/dashboard/browse",
+      },
+      {
+        labelAr: "💳 6. الضمان المالي والمحفظة والسحب البنكي الفوري",
+        labelEn: "💳 6. Financial Escrow, Wallet & Instant Bank Payout",
+        descAr: "اضغط هنا لفحص دفتر الحسابات، تحصيل المبالغ النقدية، وتحويل الأرباح لحسابك البنكي.",
+        descEn: "Click here to inspect financial escrow ledger, cash collection, and payout.",
+        actionType: "navigate",
+        targetUrl: "/dashboard?tab=command",
       },
     ],
   },
@@ -81,11 +91,21 @@ const TOUR_BRANCHES: Record<string, InteractiveTourStep> = {
     id: "brandstack_tour",
     titleAr: "مركز قيادة الأرباح الصافية — Brandstack AI Hub ⚡",
     titleEn: "True Net Margin Hub — Brandstack AI ⚡",
-    explanationAr: "هنا يرى التاجر صافي أرباحه الحقيقية بعد خصم تكلفة البضاعة (COGS)، مصاريف إعلانات Meta و Google، ورسوم الشحن المرتجع (RTO). كيف تفضل استكمال جولتك؟",
-    explanationEn: "Here merchants see true net bank-collected profits after COGS, ad spend, and RTO losses. Where to next?",
+    explanationAr:
+      "هنا يرى التاجر صافي أرباحه الحقيقية بعد خصم تكلفة البضاعة (COGS)، مصاريف إعلانات Meta و Google، ورسوم الشحن المرتجع (RTO). اضغط على الخيارات أدناه للتنقل:",
+    explanationEn:
+      "Here merchants see true net bank-collected profits after COGS, ad spend, and RTO losses. Click below to navigate:",
     badgeAr: "محرك الربحية",
     badgeEn: "Profit Engine",
     options: [
+      {
+        labelAr: "👉 اضغط هنا لتجربة محاكي المبيعات وتدفق الطلبات الحية",
+        labelEn: "👉 Click here to test Live Order Stream Simulator",
+        descAr: "شاهد كيف يتم تسجيل طلبات جديدة من مدن مختلفة وتحديث الأرباح فوراً.",
+        descEn: "See incoming simulated orders update profit metrics in real-time.",
+        actionType: "tab_switch",
+        targetTab: "simulator",
+      },
       {
         labelAr: "💬 التحدث مع المستشار المالي والتشغيلي الذكي (AI Copilot)",
         labelEn: "💬 Chat with Financial AI Copilot",
@@ -125,11 +145,21 @@ const TOUR_BRANCHES: Record<string, InteractiveTourStep> = {
     id: "store_builder_tour",
     titleAr: "محرر المتجر الذكي — بناء الواجهة بالبلوكات 🎨",
     titleEn: "Smart Store Builder & Block Editor 🎨",
-    explanationAr: "يقوم هذا المحرر بإنشاء متجر كامل متوافق مع الهواتف دون الحاجة لأي كتابة كود. يمكنك تعديل البلوكات، العناوين، وإطلاق الحملة فوراً.",
-    explanationEn: "Build high-converting storefronts with visual blocks. What would you like to explore next?",
+    explanationAr:
+      "يقوم هذا المحرر بإنشاء متجر كامل متوافق مع الهواتف دون الحاجة لأي كتابة كود. يمكنك تعديل البلوكات، العناوين، وإطلاق الحملة فوراً. أين تريد الانتقال بعد ذلك؟",
+    explanationEn:
+      "Build high-converting storefronts with visual blocks. What would you like to explore next?",
     badgeAr: "محرر المتاجر",
     badgeEn: "Store Builder",
     options: [
+      {
+        labelAr: "👉 اضغط هنا لتجربة طلب منتج كعميل (COD Checkout)",
+        labelEn: "👉 Make a Test COD Order as a Buyer",
+        descAr: "قم بوضع طلب تجريبي ولاحظ سرعة تسجيل الطلب وإشعاره في لوحة التاجر.",
+        descEn: "Place a simulated order and watch it reflect live in the portal.",
+        actionType: "navigate",
+        targetUrl: "/m/muttrah-attars",
+      },
       {
         labelAr: "📊 الانتقال إلى لوحة قيادة التاجر الرئيسية",
         labelEn: "📊 Go to Merchant Financial Dashboard",
@@ -139,12 +169,12 @@ const TOUR_BRANCHES: Record<string, InteractiveTourStep> = {
         targetUrl: "/dashboard?tab=command",
       },
       {
-        labelAr: "🛒 تجربة طلب منتج كعميل وتجربة الشراء بالدفع عند الاستلام",
-        labelEn: "🛒 Make a Test COD Order as a Buyer",
-        descAr: "قم بوضع طلب تجريبي ولاحظ سرعة تسجيل الطلب وإشعاره في لوحة التاجر.",
-        descEn: "Place a simulated order and watch it reflect live in the portal.",
+        labelAr: "🛡️ الانتقال إلى مركز التوثيق والشارة الزرقاء",
+        labelEn: "🛡️ Go to Verification & Blue Badge Center",
+        descAr: "اطلع على مسار التوثيق المخصص لمشروعك (بسجل تجاري أو بدونه).",
+        descEn: "Check identity verification tracks tailored for your business.",
         actionType: "navigate",
-        targetUrl: "/m/muttrah-attars",
+        targetUrl: "/dashboard/verification",
       },
     ],
   },
@@ -153,8 +183,10 @@ const TOUR_BRANCHES: Record<string, InteractiveTourStep> = {
     id: "storefront_buyer_tour",
     titleAr: "واجهة متجر المشتري — تسوق سلس بالدفع عند الاستلام 🛍️",
     titleEn: "Buyer Storefront — Frictionless COD Checkout 🛍️",
-    explanationAr: "هذه هي الصفحة التي يراها زبائنك عند الضغط على إعلاناتك. تطلب فقط الاسم، الهاتف، والعنوان دون تعقيد بطاقات الائتمان.",
-    explanationEn: "This is what customers see from your ads. Fast one-click COD checkout with zero friction.",
+    explanationAr:
+      "هذه هي الصفحة السريعة التي يراها زبائنك عند الضغط على إعلاناتك. تطلب فقط الاسم، الهاتف، والعنوان. جرب إتمام طلب الآن ثم اختر خطوتك التالية:",
+    explanationEn:
+      "This is what customers see from your ads. Fast one-click COD checkout with zero friction. Place an order then choose next step:",
     badgeAr: "تجربة المشتري",
     badgeEn: "Buyer Experience",
     options: [
@@ -174,6 +206,52 @@ const TOUR_BRANCHES: Record<string, InteractiveTourStep> = {
         actionType: "navigate",
         targetUrl: "/dashboard/browse",
       },
+      {
+        labelAr: "🛡️ الانتقال إلى مركز توثيق الحساب (KYC)",
+        labelEn: "🛡️ Go to Account KYC Verification",
+        descAr: "شاهد خطوات توثيق الهوية والسجل التجاري أو مسار العمل الحر.",
+        descEn: "See ID & Commercial Register or Freelance verification flow.",
+        actionType: "navigate",
+        targetUrl: "/dashboard/verification",
+      },
+    ],
+  },
+
+  verification_tour: {
+    id: "verification_tour",
+    titleAr: "مركز التوثيق والتحقق الذكي — KYC & Blue Badge 🛡️",
+    titleEn: "Smart KYC & Identity Verification Center 🛡️",
+    explanationAr:
+      "نظام التحقق يمنحك شارة التوثيق الزرقاء خلال 24 ساعة! مخصص لكلا المسارين: (1) مسار الشركات بالسجل التجاري الرسمي، أو (2) مسار المشاريع المنزلية بالبطاقة والوجه وحساب Instagram/TikTok.",
+    explanationEn:
+      "Get your verified blue badge in 24 hours! Tailored for both registered entities (CR) and home/freelance brands.",
+    badgeAr: "التوثيق المعتمد",
+    badgeEn: "KYC Center",
+    options: [
+      {
+        labelAr: "🏢 مسار المنشآت بالسجل التجاري الرسمي (CR)",
+        labelEn: "🏢 Commercial Registration (CR) Track",
+        descAr: "رفع وثيقة السجل التجاري ورقم المنشأة للحصول على اعتماد الشركات.",
+        descEn: "Upload CR certificate for corporate validation and official invoicing.",
+        actionType: "navigate",
+        targetUrl: "/dashboard/verification?tab=cr",
+      },
+      {
+        labelAr: "🎨 مسار المشاريع المنزلية والعمل الحر (بدون سجل تجاري)",
+        labelEn: "🎨 Home Business Track (No CR Needed)",
+        descAr: "رفع البطاقة الشخصية، المسح البيومتري للوجه، وربط حساب Instagram/TikTok.",
+        descEn: "Upload National ID, 3D face scan, and connect Instagram/TikTok profile.",
+        actionType: "navigate",
+        targetUrl: "/dashboard/verification?tab=home_business",
+      },
+      {
+        labelAr: "⚡ العودة لمركز قيادة التاجر ومحاكي المبيعات",
+        labelEn: "⚡ Return to Merchant Dashboard & Simulator",
+        descAr: "استكمال فحص المبيعات والأرباح والمخزون.",
+        descEn: "Continue monitoring sales, inventory, and net margins.",
+        actionType: "navigate",
+        targetUrl: "/dashboard?tab=simulator",
+      },
     ],
   },
 };
@@ -189,7 +267,9 @@ export default function DemoTourGuide({ locale = "ar" }: { locale?: string }) {
 
   // Dynamically detect context to offer smart adaptive advice
   useEffect(() => {
-    if (pathname.includes("/store/edit")) {
+    if (pathname.includes("/verification")) {
+      setCurrentStepId("verification_tour");
+    } else if (pathname.includes("/store/edit")) {
       setCurrentStepId("store_builder_tour");
     } else if (pathname.startsWith("/m/")) {
       setCurrentStepId("storefront_buyer_tour");
@@ -204,10 +284,11 @@ export default function DemoTourGuide({ locale = "ar" }: { locale?: string }) {
     if (opt.actionType === "navigate" && opt.targetUrl) {
       router.push(opt.targetUrl);
     } else if (opt.actionType === "tab_switch") {
-      // Broadcast event for tab switching or trigger hash
       if (typeof window !== "undefined") {
         window.location.hash = `#${opt.targetTab}`;
-        const tabBtn = document.querySelector(`button[data-tour-tab="${opt.targetTab}"]`) as HTMLButtonElement;
+        const tabBtn = document.querySelector(
+          `button[data-tour-tab="${opt.targetTab}"]`
+        ) as HTMLButtonElement;
         if (tabBtn) tabBtn.click();
       }
     }
@@ -277,7 +358,7 @@ export default function DemoTourGuide({ locale = "ar" }: { locale?: string }) {
           {/* Interactive branching choices */}
           <div className="space-y-2 pt-1 max-h-[320px] overflow-y-auto pe-1 scrollbar-thin">
             <p className="text-[11px] font-bold uppercase tracking-wider text-frost-faint">
-              {isAr ? "اختر مسارك التالي:" : "Choose your next path:"}
+              {isAr ? "👇 أين تريد الذهاب والتجربة الآن؟" : "👇 Where would you like to explore next?"}
             </p>
             {step.options.map((opt, idx) => (
               <button
@@ -314,3 +395,4 @@ export default function DemoTourGuide({ locale = "ar" }: { locale?: string }) {
     </aside>
   );
 }
+

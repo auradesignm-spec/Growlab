@@ -13,12 +13,12 @@ export const BRIEF_CATEGORIES = [
 ] as const;
 
 export const BRIEF_AUDIENCES = [
-  { id: "families", ar: "عائلات داخل عُمان تريد طلباً عند الاستلام", en: "Families in Oman who want pay-on-delivery orders" },
-  { id: "women", ar: "نساء يبحثن عن جودة واضحة قبل الدفع للمندوب", en: "Women who want clear quality before paying the courier" },
-  { id: "men", ar: "رجال يطلبون عملياً ويدفعون عند الاستلام", en: "Men who order practical goods and pay on delivery" },
-  { id: "youth", ar: "شباب يشاركون الرابط بعد ما يستلمون", en: "Youth who share the link after they receive" },
-  { id: "gifts", ar: "من يشتري هدية ويحتاج تغليف وتوصيل للمنزل", en: "Gift buyers who need wrapping and home delivery" },
-  { id: "all", ar: "كل من يدفع نقداً عند الاستلام في عُمان", en: "Anyone who pays cash on delivery in Oman" },
+  { id: "all", ar: "عملاء في عُمان ودول الخليج يبحثون عن تسوق موثوق وتوصيل سريع", en: "Shoppers in Oman & GCC seeking reliable fast delivery" },
+  { id: "women", ar: "النساء والمهتمات بمنتجات الجمال، العناية، والأزياء الراقية", en: "Women interested in beauty, self-care & fashion" },
+  { id: "youth", ar: "الشباب ومحبو أحدث صيحات التقنية والترندات الحديثة", en: "Youth & Gen-Z seeking trending gadgets & lifestyle" },
+  { id: "families", ar: "العائلات والمنازل الباحثة عن مستلزمات وأجهزة معيشية", en: "Families & modern households seeking everyday goods" },
+  { id: "gifts", ar: "محبو الهدايا الفاخرة، العطور، والتغليف المميز للمناسبات", en: "Luxury gift shoppers seeking perfume & gift sets" },
+  { id: "men", ar: "الرجال الباحثون عن منتجات عملية، أجهزة وإكسسوارات موثوقة", en: "Men looking for practical gear, tools & accessories" },
 ] as const;
 
 export type BriefCategoryId = (typeof BRIEF_CATEGORIES)[number]["id"];

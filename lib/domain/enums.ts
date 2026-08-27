@@ -17,7 +17,12 @@ export type VerificationStatus = (typeof VERIFICATION_STATUSES)[number];
 export const ACCOUNT_STATUSES = ["active", "suspended", "banned"] as const;
 export type AccountStatus = (typeof ACCOUNT_STATUSES)[number];
 
-export const MERCHANT_KYC_KINDS = ["commercial_register", "owner_id_front", "owner_id_back"] as const;
+export const MERCHANT_KYC_KINDS = [
+  "commercial_register",
+  "owner_id_front",
+  "owner_id_back",
+  "face_scan",
+] as const;
 export type MerchantKycKind = (typeof MERCHANT_KYC_KINDS)[number];
 
 export const CREATOR_KYC_KINDS = [

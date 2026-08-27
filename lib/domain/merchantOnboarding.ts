@@ -62,7 +62,7 @@ export function merchantOnboardingProgress(input: MerchantOnboardingInput): Merc
 export function merchantOnboardingHref(step: MerchantOnboardingStepId | "done"): string {
   switch (step) {
     case "kyc":
-      return "/dashboard";
+      return "/dashboard?kyc=1";
     case "store":
       return "/dashboard/store/edit?fresh=1";
     case "product":

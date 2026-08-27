@@ -12,6 +12,7 @@ import { submitUgcVideo } from "@/app/(dashboard)/dashboard/sample-actions";
 import { computeInstantPayoutFee, MIN_PAYOUT_OMR } from "@/lib/ledger/payouts";
 import WaterfallBreakdown from "@/components/dashboard/WaterfallBreakdown";
 import ShareSheet from "@/components/dashboard/ShareSheet";
+import VerifiedBadge from "@/components/dashboard/VerifiedBadge";
 import { EmptyState, StatusPill, TierPill } from "@/components/dashboard/ui";
 
 type Tab = "storefront" | "deals" | "samples" | "earnings" | "payouts";
@@ -80,9 +81,14 @@ function StorefrontTab({
       <div className="flex flex-wrap items-center justify-between gap-4 border border-white/10 p-5">
         <div>
           <p className="gl-eyebrow">{t("storefront.linkLabel")}</p>
-          <a href={`/creator/${data.creator.username}`} target="_blank" rel="noopener noreferrer" className="mt-2 block font-display text-2xl underline">
-            growlab.om/creator/{data.creator.username}
-          </a>
+          <div className="mt-2 flex items-center gap-2">
+            <a href={`/creator/${data.creator.username}`} target="_blank" rel="noopener noreferrer" className="font-display text-2xl underline">
+              growlab.om/creator/{data.creator.username}
+            </a>
+            {data.creator.verificationStatus === "verified" && (
+              <VerifiedBadge size="md" showLabel label="صانع موثق ✓" />
+            )}
+          </div>
         </div>
         <TierPill tier={data.creator.tier} size="md" />
       </div>

@@ -13,6 +13,10 @@ export interface AdminMerchantRow {
   id: string;
   userId: string;
   businessName: string;
+  businessType?: string;
+  projectDescription?: string;
+  instagramUrl?: string;
+  tiktokUrl?: string;
   commercialRegNo: string;
   ownerFullName: string;
   city: string;
@@ -378,6 +382,10 @@ export async function loadAdminDashboardData(): Promise<AdminDashboardData> {
             id: m.id,
             userId: m.userId,
             businessName: m.businessName,
+            businessType: m.businessType,
+            projectDescription: m.projectDescription,
+            instagramUrl: m.instagramUrl,
+            tiktokUrl: m.tiktokUrl,
             commercialRegNo: m.commercialRegNo,
             ownerFullName: m.ownerFullName,
             city: m.city,

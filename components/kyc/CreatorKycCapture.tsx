@@ -124,25 +124,115 @@ export default function CreatorKycCapture({
         />
       </label>
 
-      <ol className="mt-8 flex flex-wrap gap-2">
-        {CREATOR_KYC_KINDS.map((kind, index) => (
-          <li key={kind}>
-            <button
-              type="button"
-              onClick={() => setStep(kind)}
-              className={`rounded-lg border px-3 py-1.5 text-[12px] ${
-                step === kind
-                  ? "border-white/25 bg-white/[0.06] text-frost"
-                  : captures[kind]
-                    ? "border-ok/40 text-ok"
-                    : "border-white/15 text-frost-dim"
-              }`}
-            >
-              {String(index + 1).padStart(2, "0")} · {t(`steps.${kind}`)}
-            </button>
-          </li>
-        ))}
-      </ol>
+      {/* Visual Progress Stepper Card */}
+      <div className="mt-8 max-w-4xl rounded-2xl border border-line bg-slate-50/80 p-4 sm:p-5 dark:bg-slate-900/70">
+        {/* Stepper Status Header */}
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5">
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-amber-500/20 text-xs font-bold text-amber-500">
+              {stepIndex + 1}
+            </span>
+            <div>
+              <p className="text-xs font-bold text-frost sm:text-sm">
+                {t("stepProgress", { current: stepIndex + 1, total: CREATOR_KYC_KINDS.length })}:{" "}
+                <span className="text-amber-500">{t(`steps.${step}`)}</span>
+              </p>
+              <p className="text-[11px] text-frost-dim">
+                {isFace ? t("stageFaceScan") : t("stageIdCard")}
+              </p>
+            </div>
+          </div>
+
+          {/* Remaining Steps Badge */}
+          <div className="flex items-center gap-2">
+            {CREATOR_KYC_KINDS.length - Object.keys(captures).filter((k) => captures[k as CreatorKycKind]).length === 0 ? (
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/15 px-3 py-1 text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                {t("allCapturesDone")}
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/15 px-3 py-1 text-xs font-bold text-amber-700 dark:text-amber-300">
+                <span className="h-2 w-2 rounded-full bg-amber-500 animate-pulse" />
+                {t("remainingCaptures", {
+                  count:
+                    CREATOR_KYC_KINDS.length -
+                    Object.keys(captures).filter((k) => captures[k as CreatorKycKind]).length,
+                })}
+              </span>
+            )}
+            <span className="rounded-lg bg-black/10 px-2.5 py-1 text-xs font-mono font-bold text-frost-dim dark:bg-white/10">
+              {t("capturesCount", {
+                completed: Object.keys(captures).filter((k) => captures[k as CreatorKycKind]).length,
+                total: CREATOR_KYC_KINDS.length,
+              })}
+            </span>
+          </div>
+        </div>
+
+        {/* Animated Progress Bar */}
+        <div className="mt-3.5 relative">
+          <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800">
+            <div
+              className="h-full rounded-full bg-gradient-to-r from-amber-500 to-emerald-500 transition-all duration-500 ease-out"
+              style={{
+                width: `${Math.round(
+                  (Object.keys(captures).filter((k) => captures[k as CreatorKycKind]).length /
+                    CREATOR_KYC_KINDS.length) *
+                    100
+                )}%`,
+              }}
+            />
+          </div>
+          {/* Step tick markers */}
+          <div className="mt-1 flex justify-between px-0.5 text-[9px] font-mono text-frost-faint">
+            <span>0%</span>
+            <span>33% (الهوية)</span>
+            <span>66% (الوجه)</span>
+            <span>100%</span>
+          </div>
+        </div>
+
+        {/* Visual Interactive Step Nodes */}
+        <ol className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-6">
+          {CREATOR_KYC_KINDS.map((kind, index) => {
+            const isCurrent = step === kind;
+            const isDone = !!captures[kind];
+            return (
+              <li key={kind}>
+                <button
+                  type="button"
+                  onClick={() => setStep(kind)}
+                  className={`flex w-full items-center gap-2 rounded-xl border p-2 text-right transition-all sm:flex-col sm:items-center sm:text-center ${
+                    isCurrent
+                      ? "border-amber-500 bg-amber-500/15 text-frost shadow-xs ring-2 ring-amber-500/30"
+                      : isDone
+                        ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                        : "border-line bg-white/60 text-frost-dim hover:border-slate-300 dark:bg-slate-800/60"
+                  }`}
+                >
+                  <span
+                    className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-lg text-[11px] font-bold ${
+                      isDone
+                        ? "bg-emerald-500 text-white"
+                        : isCurrent
+                          ? "bg-amber-500 text-black font-extrabold"
+                          : "bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-200"
+                    }`}
+                  >
+                    {isDone ? "✓" : String(index + 1)}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-[11px] font-semibold">{t(`steps.${kind}`)}</p>
+                    <p className="text-[9px] opacity-75">
+                      {isDone ? "ملتقطة ✓" : isCurrent ? "الخطوة الحالية" : "قيد الانتظار"}
+                    </p>
+                  </div>
+                </button>
+              </li>
+            );
+          })}
+        </ol>
+      </div>
 
       <div className="mt-6 grid max-w-4xl gap-6 lg:grid-cols-2">
         <div className="overflow-hidden rounded-lg border border-white/10 bg-black">

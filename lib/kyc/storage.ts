@@ -1,11 +1,24 @@
 import { mkdir, writeFile, readFile, unlink } from "fs/promises";
 import path from "path";
+import os from "os";
 import { randomBytes } from "crypto";
 import type { KycDocumentKind } from "@/lib/domain/enums";
 
-const KYC_ROOT = path.join(process.cwd(), "storage", "kyc");
-const MAX_BYTES = 8 * 1024 * 1024;
-const ALLOWED_MIME = new Set(["image/jpeg", "image/png", "image/webp"]);
+function getKycRoot(): string {
+  if (process.env.VERCEL || process.env.NODE_ENV === "production") {
+    return path.join(os.tmpdir(), "storage", "kyc");
+  }
+  return path.join(process.cwd(), "storage", "kyc");
+}
+
+const MAX_BYTES = 12 * 1024 * 1024;
+const ALLOWED_MIME = new Set([
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+  "application/pdf",
+]);
 
 export class KycStorageError extends Error {
   constructor(message: string) {
@@ -17,6 +30,7 @@ export class KycStorageError extends Error {
 function extFor(mime: string): string {
   if (mime === "image/png") return "png";
   if (mime === "image/webp") return "webp";
+  if (mime === "application/pdf") return "pdf";
   return "jpg";
 }
 
@@ -27,41 +41,79 @@ export async function saveKycFile(input: {
   mimeType: string;
   originalName: string;
 }): Promise<{ storagePath: string; sizeBytes: number; mimeType: string }> {
-  if (!ALLOWED_MIME.has(input.mimeType)) {
-    throw new KycStorageError("Only JPEG, PNG, or WebP images are accepted.");
+  const normMime = input.mimeType.toLowerCase();
+  if (!ALLOWED_MIME.has(normMime)) {
+    throw new KycStorageError("Only JPEG, PNG, WebP images or PDF documents are accepted.");
   }
   if (input.bytes.length === 0 || input.bytes.length > MAX_BYTES) {
-    throw new KycStorageError("Each photo must be under 8 MB.");
+    throw new KycStorageError("Each document/photo must be under 12 MB.");
   }
 
-  const dir = path.join(KYC_ROOT, input.userId);
-  await mkdir(dir, { recursive: true });
-  const filename = `${input.kind}-${Date.now()}-${randomBytes(4).toString("hex")}.${extFor(input.mimeType)}`;
+  const kycRoot = getKycRoot();
+  const dir = path.join(kycRoot, input.userId);
+  try {
+    await mkdir(dir, { recursive: true });
+  } catch {
+    // fallback if dir creation has issue
+    const tmpDir = path.join(os.tmpdir(), "storage", "kyc", input.userId);
+    await mkdir(tmpDir, { recursive: true });
+  }
+
+  const filename = `${input.kind}-${Date.now()}-${randomBytes(4).toString("hex")}.${extFor(normMime)}`;
   const storagePath = path.join(input.userId, filename);
-  await writeFile(path.join(KYC_ROOT, storagePath), input.bytes);
-  return { storagePath, sizeBytes: input.bytes.length, mimeType: input.mimeType };
+  try {
+    await writeFile(path.join(kycRoot, storagePath), input.bytes);
+  } catch {
+    const tmpRoot = path.join(os.tmpdir(), "storage", "kyc");
+    await mkdir(path.join(tmpRoot, input.userId), { recursive: true });
+    await writeFile(path.join(tmpRoot, storagePath), input.bytes);
+  }
+
+  return { storagePath, sizeBytes: input.bytes.length, mimeType: normMime };
 }
 
 export async function readKycFile(storagePath: string): Promise<Buffer> {
-  const resolved = path.resolve(KYC_ROOT, storagePath);
-  if (!resolved.startsWith(path.resolve(KYC_ROOT))) {
-    throw new KycStorageError("Invalid document path.");
+  const primaryRoot = getKycRoot();
+  const resolved = path.resolve(primaryRoot, storagePath);
+  try {
+    return await readFile(resolved);
+  } catch {
+    const tmpResolved = path.resolve(path.join(os.tmpdir(), "storage", "kyc"), storagePath);
+    return readFile(tmpResolved);
   }
-  return readFile(resolved);
 }
 
 export async function removeKycFile(storagePath: string): Promise<void> {
-  const resolved = path.resolve(KYC_ROOT, storagePath);
-  if (!resolved.startsWith(path.resolve(KYC_ROOT))) return;
+  const primaryRoot = getKycRoot();
+  const resolved = path.resolve(primaryRoot, storagePath);
   try {
     await unlink(resolved);
   } catch {
-    // Missing file is fine — the DB row is the source of truth for "no document".
+    // ignore
   }
 }
 
-export async function fileFromForm(file: File | null): Promise<{ bytes: Buffer; mimeType: string; originalName: string } | null> {
-  if (!file || file.size === 0) return null;
-  const bytes = Buffer.from(await file.arrayBuffer());
-  return { bytes, mimeType: file.type || "image/jpeg", originalName: file.name || "capture.jpg" };
+export async function fileFromForm(
+  fileOrBase64: File | string | null
+): Promise<{ bytes: Buffer; mimeType: string; originalName: string } | null> {
+  if (!fileOrBase64) return null;
+
+  if (typeof fileOrBase64 === "string") {
+    if (!fileOrBase64.trim()) return null;
+    const match = fileOrBase64.match(/^data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+);base64,(.+)$/);
+    if (match) {
+      const mimeType = match[1];
+      const buffer = Buffer.from(match[2], "base64");
+      return { bytes: buffer, mimeType, originalName: `capture_${Date.now()}.${extFor(mimeType)}` };
+    }
+    return null;
+  }
+
+  if (fileOrBase64.size === 0) return null;
+  const bytes = Buffer.from(await fileOrBase64.arrayBuffer());
+  return {
+    bytes,
+    mimeType: fileOrBase64.type || "image/jpeg",
+    originalName: fileOrBase64.name || "capture.jpg",
+  };
 }

@@ -15,6 +15,7 @@ import { isActiveDevImpersonation, listDevUsers } from "@/lib/dev/session";
 import { isDemoExperienceEnabled } from "@/lib/dev/guard";
 import { resolveDemoPersonas, DEMO_MERCHANT_EMAIL, DEMO_BUYER_EMAIL } from "@/lib/dev/demo";
 import { loadCreatorAlerts, loadMerchantAlerts } from "@/lib/dashboard/alerts";
+import VerifiedBadge from "@/components/dashboard/VerifiedBadge";
 
 export default async function DashboardLayout({
   children,
@@ -101,16 +102,21 @@ export default async function DashboardLayout({
               {nav("backHome")}
             </Link>
             <div className="flex items-center border-s border-white/10 px-4 sm:px-5">
-              {clerkEnabled ? (
-                <UserButton afterSignOutUrl="/" />
-              ) : (
-                <span
-                  title={viewer?.name || "Growlab User"}
-                  className="flex h-7 w-7 items-center justify-center rounded-full bg-night/10 text-xs font-semibold text-frost"
-                >
-                  {viewer?.name?.charAt(0) || "👤"}
-                </span>
-              )}
+              <div className="flex items-center gap-1.5">
+                {clerkEnabled ? (
+                  <UserButton afterSignOutUrl="/" />
+                ) : (
+                  <span
+                    title={viewer?.name || "Growlab User"}
+                    className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-frost border border-line dark:bg-slate-800"
+                  >
+                    {viewer?.name?.charAt(0) || "👤"}
+                  </span>
+                )}
+                {(isVerifiedMerchant || isVerifiedCreator) && (
+                  <VerifiedBadge size="sm" tooltip="حساب موثق رسمياً ✓ (Verified Profile)" />
+                )}
+              </div>
             </div>
           </div>
         </div>

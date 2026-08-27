@@ -30,14 +30,14 @@ export interface MerchantStoreDraft {
   published: boolean;
 }
 
-function assertMerchant() {
+function assertMerchant(requireVerified = false) {
   return getCurrentUser().then((viewer) => {
     if (!viewer || viewer.role !== "merchant" || !viewer.merchantProfile) {
       throw new Error("Only a merchant can manage a store.");
     }
     if (viewer.accountStatus === "banned") throw new Error("This account has been suspended.");
-    if (viewer.merchantProfile.verificationStatus !== "verified") {
-      throw new Error("Your business must be verified before publishing a store.");
+    if (requireVerified && viewer.merchantProfile.verificationStatus !== "verified") {
+      throw new Error("يلزم توثيق السجل التجاري وهوية المالك لنشر المتجر رسمياً واستقبال الطلبات.");
     }
     return viewer.merchantProfile;
   });
@@ -91,7 +91,7 @@ function DEFAULT_FROM_LEGACY(input: MerchantStoreDraft): StorePromo {
 }
 
 export async function saveMerchantStore(input: MerchantStoreDraft) {
-  const merchant = await assertMerchant();
+  const merchant = await assertMerchant(Boolean(input.published));
   const data = sanitizeDraft(input);
 
   const slugTaken = await prisma.merchantStore.findFirst({

@@ -1804,6 +1804,13 @@
       "submitting": "جارٍ الرفع…",
       "idGuide": "املأ الإطار بالبطاقة. بدون لمعان، والأركان الأربعة ظاهرة.",
       "faceGuide": "ثبّت رأسك، إضاءة متساوية، بدون نظارة شمسية أو كمامة.",
+      "stepperTitle": "مراحل التحقق البيومتري والتوثيق",
+      "stepProgress": "الخطوة {current} من {total}",
+      "capturesCount": "{completed} من {total} ملتقطة",
+      "remainingCaptures": "متبقي {count} لقطات لإتمام التوثيق",
+      "allCapturesDone": "اكتملت جميع اللقطات المطلوبة بنجاح ✓",
+      "stageIdCard": "1. بطاقة الهوية الوطنية",
+      "stageFaceScan": "2. الفحص البيومتري للوجه",
       "steps": {
         "national_id_front": "أمام البطاقة",
         "national_id_back": "خلف البطاقة",

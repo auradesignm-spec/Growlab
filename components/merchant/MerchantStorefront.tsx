@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { MerchantStoreData } from "@/lib/merchant-store/load";
 import { enabledBlocks, type StoreBlockType } from "@/lib/merchant-store/layout";
 import { isPromoLive } from "@/lib/merchant-store/promo";
+import VerifiedBadge from "@/components/dashboard/VerifiedBadge";
 
 export default function MerchantStorefront({
   store,
@@ -79,9 +80,14 @@ function BlockSection({
     return (
       <section className={`mx-auto max-w-wrap px-5 py-12 sm:px-8 ${centered ? "text-center" : ""}`}>
         <p className="gl-eyebrow">{store.city || "Growlab"}</p>
-        <h1 className={`mt-2 text-display-lg font-semibold ${centered ? "mx-auto max-w-2xl" : "max-w-3xl"}`}>
-          {store.tagline || store.businessName}
-        </h1>
+        <div className={`mt-2 flex flex-wrap items-center gap-3 ${centered ? "justify-center" : ""}`}>
+          <h1 className={`text-display-lg font-semibold ${centered ? "max-w-2xl" : "max-w-3xl"}`}>
+            {store.tagline || store.businessName}
+          </h1>
+          {store.verificationStatus === "verified" && (
+            <VerifiedBadge size="md" showLabel label="متجر موثق رسمياً ✓" />
+          )}
+        </div>
         {store.aboutHtml ? (
           <div
             className={`prose-store mt-6 text-[16px] leading-relaxed text-frost-dim ${centered ? "mx-auto max-w-xl" : "max-w-2xl"}`}

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import AddToCartForm from "@/components/shop/AddToCartForm";
 import StorefrontChrome from "@/components/shop/StorefrontChrome";
+import VerifiedBadge from "@/components/dashboard/VerifiedBadge";
 
 export interface StorefrontHeroProduct {
   readonly dealId: string;
@@ -54,7 +55,10 @@ export default function CreatorStorefront({
       <div className="mx-auto grid max-w-wrap grid-cols-1 lg:grid-cols-12">
         <aside className="border-b border-line p-6 sm:p-8 lg:col-span-5 lg:border-b-0 lg:border-e">
           <p className="font-mono text-[14px] text-frost-faint">{initial}</p>
-          <h1 className="mt-6 text-display-md font-semibold">{name}</h1>
+          <div className="mt-6 flex flex-wrap items-center gap-2">
+            <h1 className="text-display-md font-semibold">{name}</h1>
+            <VerifiedBadge size="sm" showLabel label="صانع موثق ✓" />
+          </div>
           <p className="mt-2 text-[14px] text-frost-dim">{role}</p>
         </aside>
 

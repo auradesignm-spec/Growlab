@@ -55,35 +55,71 @@ export async function submitMerchantKyc(formData: FormData) {
     throw new Error("This business is already verified.");
   }
 
+  const hasCommercialReg = formData.get("hasCommercialReg") !== "false";
+  const businessType = hasCommercialReg ? "cr" : "freelancer";
   const businessName = String(formData.get("businessName") ?? "").trim().slice(0, 120);
-  const commercialRegNo = String(formData.get("commercialRegNo") ?? "").trim().slice(0, 40);
+  const projectDescription = String(formData.get("projectDescription") ?? "").trim().slice(0, 500);
+  const commercialRegNo = hasCommercialReg
+    ? String(formData.get("commercialRegNo") ?? "").trim().slice(0, 40)
+    : "بدون سجل تجاري (مشروع منزلي/فردي)";
   const taxNumber = String(formData.get("taxNumber") ?? "").trim().slice(0, 40);
   const ownerFullName = String(formData.get("ownerFullName") ?? "").trim().slice(0, 80);
   const city = String(formData.get("city") ?? "").trim().slice(0, 60);
+  const instagramUrl = String(formData.get("instagramUrl") ?? "").trim().slice(0, 180);
+  const tiktokUrl = String(formData.get("tiktokUrl") ?? "").trim().slice(0, 180);
 
-  if (!businessName || !commercialRegNo || !ownerFullName || !city) {
-    throw new Error("Fill every required business identity field.");
+  if (!businessName || !ownerFullName || !city) {
+    throw new Error("يرجى ملء جميع الحقول الإلزامية لهوية النشاط التجاري والمالك.");
   }
-  for (const field of [businessName, commercialRegNo, taxNumber, ownerFullName, city]) {
+  if (hasCommercialReg && !formData.get("commercialRegNo")) {
+    throw new Error("يرجى إدخال رقم السجل التجاري المعتمد.");
+  }
+
+  for (const field of [businessName, projectDescription, commercialRegNo, taxNumber, ownerFullName, city]) {
     if (field && scanForContactLeak(field).flagged) throw new Error(CONTACT_LEAK_WARNING_AR);
   }
 
   const incoming = [];
-  for (const kind of MERCHANT_KYC_KINDS) {
-    const parsed = await fileFromForm(formData.get(kind) as File | null);
-    if (!parsed) throw new Error(`Missing document: ${kind}`);
+  const requiredKinds = hasCommercialReg
+    ? (["commercial_register", "owner_id_front", "owner_id_back"] as const)
+    : (["owner_id_front", "owner_id_back"] as const);
+
+  for (const kind of requiredKinds) {
+    const rawVal = formData.get(kind);
+    const parsed = await fileFromForm(rawVal as File | string | null);
+    if (!parsed) {
+      const labels: Record<string, string> = {
+        commercial_register: "وثيقة السجل التجاري",
+        owner_id_front: "البطاقة الشخصية من الأمام",
+        owner_id_back: "البطاقة الشخصية من الخلف",
+      };
+      throw new Error(`يرجى إرفاق ${labels[kind] || kind}`);
+    }
     incoming.push({ kind, ...parsed });
+  }
+
+  // Biometric Face scan (Liveness / Geometry)
+  const rawFace = formData.get("face_scan");
+  if (rawFace) {
+    const parsedFace = await fileFromForm(rawFace as File | string | null);
+    if (parsedFace) {
+      incoming.push({ kind: "face_scan", ...parsedFace });
+    }
   }
 
   await replaceDocuments(viewer.id, MERCHANT_KYC_KINDS, incoming);
   await prisma.merchantProfile.update({
     where: { id: viewer.merchantProfile.id },
     data: {
+      businessType,
       businessName,
+      projectDescription,
       commercialRegNo,
       taxNumber,
       ownerFullName,
       city,
+      instagramUrl,
+      tiktokUrl,
       verificationStatus: "pending",
       kycSubmittedAt: new Date(),
       kycReviewNote: null,
@@ -92,6 +128,7 @@ export async function submitMerchantKyc(formData: FormData) {
 
   revalidatePath("/dashboard");
   revalidatePath("/dashboard/admin");
+  return { success: true };
 }
 
 export async function submitCreatorKyc(formData: FormData) {

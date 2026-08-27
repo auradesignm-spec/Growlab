@@ -60,6 +60,7 @@ export interface CreatorDashboardData {
     username: string;
     tier: CreatorTierId;
     bio: string | null;
+    verificationStatus: string;
     bankName: string;
     accountName: string;
     accountNumber: string;
@@ -197,6 +198,7 @@ export async function loadCreatorDashboardData(creatorId: string): Promise<Creat
       username: creator.username,
       tier: creator.tier as CreatorTierId,
       bio: creator.bio,
+      verificationStatus: creator.verificationStatus,
       bankName: creator.bankName,
       accountName: creator.accountName,
       accountNumber: creator.accountNumber,

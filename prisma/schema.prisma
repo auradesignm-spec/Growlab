@@ -55,6 +55,11 @@ model MerchantProfile {
   user   User   @relation(fields: [userId], references: [id])
 
   businessName       String
+  // "cr" (Commercial register) | "freelancer" (Home project / No CR)
+  businessType       String   @default("cr")
+  projectDescription String   @default("")
+  instagramUrl       String   @default("")
+  tiktokUrl          String   @default("")
   // Official identity — collected at KYC, never shown to creators.
   commercialRegNo    String   @default("")
   taxNumber          String   @default("")

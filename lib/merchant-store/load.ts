@@ -37,6 +37,7 @@ export interface MerchantStoreData {
   city: string;
   tagline: string;
   aboutHtml: string;
+  verificationStatus?: string;
   theme: MerchantStoreTheme;
   offerHeadline: string;
   offerBody: string;
@@ -130,6 +131,7 @@ export async function getMerchantStoreBySlug(slugRaw: string): Promise<MerchantS
     city: store.merchant.city,
     tagline: store.tagline,
     aboutHtml: store.aboutHtml,
+    verificationStatus: store.merchant.verificationStatus,
     theme: parseThemeJson(store.themeJson),
     offerHeadline: store.offerHeadline,
     offerBody: store.offerBody,

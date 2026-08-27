@@ -1,4 +1,4 @@
-export const NEED_SURVEY_KEY = "gl.needSurvey.v5";
+export const NEED_SURVEY_KEY = "gl.needSurvey.v6";
 
 export function surveyIsDone(): boolean {
   try {
@@ -16,86 +16,271 @@ export function markSurveyDone() {
   }
 }
 
-export const SURVEY_COPY = {
-  title: { ar: "ثلاث أسئلة", en: "Three questions" },
-  result: { ar: "باختصار — هذا اللي فهمناه", en: "In short — this is what we heard" },
-  q1: { ar: "وش وضعك اليوم؟", en: "Where are you today?" },
-  q2: { ar: "الطلب يوصلك من وين؟", en: "How do orders reach you?" },
-  q3: { ar: "وش أكبر خسارة عندك؟", en: "What costs you the most?" },
-} as const;
-
-export type SurveyWho = "no_store" | "has_store" | "browse";
-export type SurveyHow = "whatsapp" | "store" | "not_yet";
-export type SurveyPain = "cancel" | "ads" | "chaos";
-export type GuideTarget = "open-account" | "how" | "proof-paths";
-
-export const SURVEY_WHO = [
-  { id: "no_store" as const, ar: "تاجر أبيع نقد عند الاستلام — ما عندي متجر إلكتروني", en: "Merchant selling cash on delivery — no online store" },
-  { id: "has_store" as const, ar: "تاجر عندي متجر إلكتروني", en: "Merchant with an online store" },
-  { id: "browse" as const, ar: "لست تاجر — أبي أفهم الفكرة قبل أي حساب", en: "Not a merchant — I want to understand first" },
-];
-
-export const SURVEY_HOW = [
-  { id: "whatsapp" as const, ar: "واتساب أو اتصال — الطلب في الشات", en: "WhatsApp or calls — orders live in chat" },
-  { id: "store" as const, ar: "من صفحة المتجر الإلكتروني", en: "From the online store page" },
-  { id: "not_yet" as const, ar: "لسا ما عندي طلبات أونلاين", en: "I do not take online orders yet" },
-];
-
-export const SURVEY_PAINS = [
-  { id: "cancel" as const, ar: "يطلبون بعدين يلغون أو ما يستلمون", en: "They order then cancel or refuse the parcel" },
-  { id: "ads" as const, ar: "أدفع إعلان وما أدري إذا رجع لي نقد", en: "I pay for ads and cannot tell if cash came back" },
-  { id: "chaos" as const, ar: "الطلبات تضيع بين الشات والدفاتر", en: "Orders get lost between chat and notebooks" },
-];
-
-export function surveyAdvice(
-  who: SurveyWho,
-  how: SurveyHow | null,
-  pain: SurveyPain | null,
-): { ar: string; en: string; target: GuideTarget } {
-  const target: GuideTarget = who === "browse" ? "how" : who === "has_store" ? "proof-paths" : "open-account";
-
-  const ar: string[] = [
-    "Growlab للتاجر اللي يبيع، والزبون يدفع عند الاستلام. ما نخصم عمولة إلا بعد ما الزبون يدفع للمندوب.",
-  ];
-  const en: string[] = [
-    "Growlab is for merchants who sell with payment on delivery. We take commission only after the buyer pays the courier.",
-  ];
-
-  if (who === "no_store") {
-    ar.push("من إجابتك: تحتاج صفحة طلب باسمك (اسم وجوال وعنوان)، مو بناء متجر كامل.");
-    en.push("From your answer: you need an order page under your name (name, phone, address), not a full store build.");
-  } else if (who === "has_store") {
-    ar.push("من إجابتك: متجرك يبقى مكانه. نربط المنتج ونسوق فوقه، بدون نقل الكتالوج.");
-    en.push("From your answer: your store stays. We attach the product and market on top, without moving the catalog.");
-  } else {
-    ar.push("من إجابتك: أنت تقرأ الفكرة. الجولة الجاية تمشي على الصفحة: كيف يمشي الطلب، ومتى تطلع الفلوس.");
-    en.push("From your answer: you are learning the idea. The next walkthrough shows how an order moves and when money leaves.");
+export function resetSurvey() {
+  try {
+    localStorage.removeItem(NEED_SURVEY_KEY);
+  } catch {
+    /* ignore */
   }
-
-  if (how === "whatsapp") {
-    ar.push("الطلب عندنا يتقفل في الصفحة، مو في المحادثة، عشان ما يضيع في الشات.");
-    en.push("An order closes on a page, not in chat, so it does not get lost in the thread.");
-  } else if (how === "store") {
-    ar.push("قناة متجرك تبقى؛ نحن نزيد حملة فوقها.");
-    en.push("Your store channel stays; we add a campaign on top.");
-  } else if (how === "not_yet") {
-    ar.push("نبدأ من صفحة الطلب، مو من تجهيز متجر من صفر.");
-    en.push("We start from an order page, not from building a store from scratch.");
-  }
-
-  if (pain === "cancel") {
-    ar.push("الشحن يُدفع مع الطلب حتى ما تطلع شحنة بلا التزام، وهذا يقلل الإلغاء في الطريق.");
-    en.push("Shipping is paid with the order so a parcel does not leave without a stake, which cuts cancellations on the way.");
-  } else if (pain === "ads") {
-    ar.push("النقرة عندنا ما تخصم منك. العمولة بعد بيعة حقيقية عند الاستلام.");
-    en.push("A click here does not debit you. Commission is after a real payment on delivery.");
-  } else if (pain === "chaos") {
-    ar.push("كل طلب له سجل: اسم وعنوان وحالة. مو ورق وشات.");
-    en.push("Every order has a record: name, address, status. Not paper and chat.");
-  }
-
-  ar.push("التالي: جولة قصيرة على هذه الصفحة، مو تسجيل إجباري.");
-  en.push("Next: a short walkthrough of this page. Signing in is not required yet.");
-
-  return { ar: ar.join(" "), en: en.join(" "), target };
 }
+
+export type SurveyMode = "real" | "demo";
+export type SurveyCR = "cr_yes" | "cr_no" | "creator";
+export type SurveyProduct = "physical" | "food_homemade" | "digital_services";
+export type SurveyChannel = "whatsapp_chat" | "existing_store" | "starting_fresh";
+export type SurveyGoal = "stop_returns" | "pay_after_cash" | "launch_fast_store";
+
+export const SURVEY_MODES = [
+  {
+    id: "real" as const,
+    ar: "🚀 تجربة فعلية حية (Real Setup)",
+    en: "🚀 Real Production Mode",
+    descAr: "أريد إعداد متجري الفعلي، إضافة منتجاتي وروابط حساباتي، والبدء في البيع الفعلي واستقبال الطلبات.",
+    descEn: "Setup my live store, add real products & social accounts, and start taking real customer orders.",
+  },
+  {
+    id: "demo" as const,
+    ar: "🎮 تجربة الديمو الاستكشافية (Interactive Sandbox)",
+    en: "🎮 Interactive Demo Sandbox",
+    descAr: "أريد تجربة استكشافية تفاعلية ببيانات محاكاة حية، طلبات وهمية، وتجربة الشراء قبل إدخال بياناتي.",
+    descEn: "Test the platform with simulated live orders, preloaded catalog, and interactive buyer checkout first.",
+  },
+];
+
+export const SURVEY_CR = [
+  {
+    id: "cr_yes" as const,
+    ar: "🏢 منشأة تجارية بسجل تجاري رسمي (CR)",
+    en: "🏢 Registered Business with Commercial Register (CR)",
+    descAr: "لدي سجل تجاري معتمد وشركة قائمة أريد ربطها بالمنصة مع إمكانية إصدار الفواتير الرسمية.",
+    descEn: "I have an officially registered business entity with CR certificate and company bank account.",
+  },
+  {
+    id: "cr_no" as const,
+    ar: "🎨 مشروع منزلي / عمل حر (بدون سجل تجاري)",
+    en: "🎨 Home Business / Freelancer (No CR required)",
+    descAr: "أعمل من المنزل أو بشكل حر، وأريد مسار توثيق مبسط بالبطاقة الشخصية وربط حسابات Instagram / TikTok.",
+    descEn: "Home-based or indie business, using simplified ID verification and Instagram/TikTok accounts.",
+  },
+  {
+    id: "creator" as const,
+    ar: "🎬 صانع محتوى / مسوّق بالعمولة (Creator)",
+    en: "🎬 Creator / Influencer Marketer",
+    descAr: "أريد استكشاف المنتجات، طلب العينات، تسويقها لمتابعيني وكسب عمولات مؤكدة بعد التحصيل.",
+    descEn: "I want to discover products, request samples, promote to my audience, and earn commissions.",
+  },
+];
+
+export const SURVEY_PRODUCTS = [
+  {
+    id: "physical" as const,
+    ar: "📦 منتجات ملموسة (عطور، أزياء، إلكترونيات، كماليات...)",
+    en: "📦 Physical Products (Fragrances, Fashion, Electronics...)",
+    descAr: "منتجات تحتاج شحن وتوصيل، دفع عند الاستلام (COD)، وتتبع دقيق للمندوبين.",
+    descEn: "Physical goods needing shipping, Cash-on-Delivery (COD), and courier tracking.",
+  },
+  {
+    id: "food_homemade" as const,
+    ar: "🍔 أطعمة ومخبوزات ومشروبات ومنتجات أسرية",
+    en: "🍔 Homemade Food, Bakery & Artisanal Products",
+    descAr: "منتجات طازجة تحتاج توصيل محلي سريع وطلب مباشر وسلس من الإنستجرام.",
+    descEn: "Fresh or artisanal items needing quick local delivery and fast social ordering.",
+  },
+  {
+    id: "digital_services" as const,
+    ar: "💻 منتجات رقمية / خدمات واستشارات",
+    en: "💻 Digital Products / Consultations & Services",
+    descAr: "تسليم رقمي فوري، دفع إلكتروني آمن، وتحصيل مباشر.",
+    descEn: "Instant digital delivery, secure online payments, and direct payout.",
+  },
+];
+
+export const SURVEY_CHANNELS = [
+  {
+    id: "whatsapp_chat" as const,
+    ar: "💬 عبر محادثات الواتساب والإنستجرام دايركت (شات)",
+    en: "💬 WhatsApp Chat & Instagram Direct Messages",
+    descAr: "الطلبات الحالية تضيع بين الرسائل والدفاتر وأريد صفحة منظمة تجمع الاسم والعنوان وتؤكد الدفع.",
+    descEn: "Orders currently get buried in chats; I need a streamlined page capturing address & details.",
+  },
+  {
+    id: "existing_store" as const,
+    ar: "🌐 لدي متجر إلكتروني قائم (سلة / زد / شوبيفاي)",
+    en: "🌐 Existing Online Store (Salla / Zid / Shopify...)",
+    descAr: "أريد ربط منتجاتي الحالية بشبكة المسوقين ونظام الدفع الآمن دون نقل الكتالوج.",
+    descEn: "I want to link my current catalog to creators and performance network without rebuilding.",
+  },
+  {
+    id: "starting_fresh" as const,
+    ar: "✨ أبدأ من الصفر تماماً لأول مرة",
+    en: "✨ Starting fresh from scratch",
+    descAr: "أريد إنشاء متجري الأول بالذكاء الاصطناعي وتجهيز كل شيء في دقائق.",
+    descEn: "I want to generate my first online store with AI and launch ready-to-sell in minutes.",
+  },
+];
+
+export const SURVEY_GOALS = [
+  {
+    id: "stop_returns" as const,
+    ar: "🛡️ منع الإلغاءات ورفض الاستلام عند وصول المندوب (RTO)",
+    en: "🛡️ Stop cancellations and refused COD deliveries",
+    descAr: "نظام Growlab يطلب دفع الشحن مقدماً لضمان جدية المشتري وثمن السلعة عند الاستلام.",
+    descEn: "Growlab secures upfront shipping to guarantee buyer commitment, product fee upon delivery.",
+  },
+  {
+    id: "pay_after_cash" as const,
+    ar: "💰 زيادة المبيعات بدون هدر إعلاني (دفع بعد التحصيل فقط)",
+    en: "💰 Scale sales with zero ad waste (pay only after cash)",
+    descAr: "لا تدفع أي عمولة للمسوقين أو المنصة إلا بعد ما يدفع المشتري نقداً للمندوب.",
+    descEn: "Never pay marketing commissions until cash is physically collected in your hands.",
+  },
+  {
+    id: "launch_fast_store" as const,
+    ar: "🎨 متجر فائق السرعة وجذاب للهواتف يزيد معدل التحويل",
+    en: "🎨 Lightning-fast mobile store with high conversion",
+    descAr: "صفحة طلب مخصصة تطلب فقط الاسم والهاتف والعنوان بنقرة واحدة بدون تعقيد.",
+    descEn: "One-click order page asking only name, phone, and address to maximize conversion.",
+  },
+];
+
+export interface SurveySummaryResult {
+  titleAr: string;
+  titleEn: string;
+  badgeAr: string;
+  badgeEn: string;
+  pathDescriptionAr: string;
+  pathDescriptionEn: string;
+  keyStepsAr: string[];
+  keyStepsEn: string[];
+  recommendedAction: "launch_demo" | "start_real_merchant" | "start_creator";
+  actionLabelAr: string;
+  actionLabelEn: string;
+  actionUrl: string;
+}
+
+export function generateDiagnosticResult(answers: {
+  mode: SurveyMode | null;
+  cr: SurveyCR | null;
+  product: SurveyProduct | null;
+  channel: SurveyChannel | null;
+  goal: SurveyGoal | null;
+}): SurveySummaryResult {
+  const isDemo = answers.mode === "demo";
+  const isCR = answers.cr === "cr_yes";
+  const isCreator = answers.cr === "creator";
+
+  if (isCreator) {
+    return {
+      titleAr: "مسار صانع المحتوى والمسوّق المعتمد ✨",
+      titleEn: "Creator & Affiliate Marketer Pathway ✨",
+      badgeAr: "صانع محتوى",
+      badgeEn: "Creator Track",
+      pathDescriptionAr:
+        "بناءً على اختيارك: سنرشدك مباشرة إلى كتالوج العينات المجانية، كيفية اختيار المنتجات الرابحة، وتوليد روابط الإسناد لمشاركتها على TikTok و Instagram مع احتساب العمولات بعد كل عملية تحصيل ناجحة.",
+      pathDescriptionEn:
+        "Based on your profile: we will guide you to free sample catalog, high-converting products, attribution links for TikTok/IG, and automatic commissions upon delivery.",
+      keyStepsAr: [
+        "1. تصفح كتالوج المنتجات وطلب العينات المجانية من التجار",
+        "2. توليد رابط الإسناد الذكي ونشره في البايو أو في مقطع الريلز",
+        "3. استلام إشعار لحظي فور تسليم الطلب وتحويل العمولة لمحفظتك",
+      ],
+      keyStepsEn: [
+        "1. Browse products & request free samples from verified merchants",
+        "2. Generate tracked affiliate links for your TikTok / IG bio & reels",
+        "3. Receive instant notifications and payout upon successful COD delivery",
+      ],
+      recommendedAction: isDemo ? "launch_demo" : "start_creator",
+      actionLabelAr: isDemo ? "🎮 ابدأ جولة الديمو لصناع المحتوى" : "🚀 فتح حساب صانع محتوى",
+      actionLabelEn: isDemo ? "🎮 Launch Creator Demo Tour" : "🚀 Open Creator Account",
+      actionUrl: isDemo ? "/dashboard/browse" : "/enter?role=creator",
+    };
+  }
+
+  if (isDemo) {
+    return {
+      titleAr: "المسار الاستكشافي الشامل — جولة الديمو التفاعلية 🎮",
+      titleEn: "Comprehensive Sandbox Tour — Interactive Demo 🎮",
+      badgeAr: "تجربة ديمو تفاعلية",
+      badgeEn: "Interactive Demo",
+      pathDescriptionAr:
+        "سنأخذك في جولة توضيحية حية خطوة بخطوة: نضيء لك الأزرار ونوضح أين تضغط بالتحديد لتجربة محاكي المبيعات، بناء متجرك بالبلوكات، وتجربة الشراء كزبون مع فحص الأرباح الصافية حتى آخر نقطة في المنصة!",
+      pathDescriptionEn:
+        "We will guide you step-by-step with interactive spotlights and click hints to test live sales simulator, visual store block builder, test customer COD order, and full profit engine!",
+      keyStepsAr: [
+        "1. تجربة محاكي المبيعات اللحظية واحتساب صافي الربح الحقيقي",
+        "2. تجربة محرر وتخصيص المتجر الذكي بالبلوكات",
+        "3. تنفيذ طلب شراء تجريبي كعميل وفحص سرعة استقبال الطلب",
+        "4. استكشاف شبكة المسوقين والتحقق وضمان السيولة المالية",
+      ],
+      keyStepsEn: [
+        "1. Test the live order stream simulator & real net margin hub",
+        "2. Customize storefront with smart visual blocks",
+        "3. Place a simulated COD order and see instant dashboard notification",
+        "4. Explore creator deals, verification, and instant bank payout",
+      ],
+      recommendedAction: "launch_demo",
+      actionLabelAr: "🚀 ابدأ الجولة التوضيحية وتجربة الديمو الآن",
+      actionLabelEn: "🚀 Start Guided Demo Tour Now",
+      actionUrl: "/dashboard?tab=simulator",
+    };
+  }
+
+  // Real Production Merchant Track
+  if (isCR) {
+    return {
+      titleAr: "مسار المنشأة التجارية المعتمدة (سجل تجاري CR) 🏢",
+      titleEn: "Certified Commercial Enterprise Pathway (CR) 🏢",
+      badgeAr: "منشأة تجارية معتمدة",
+      badgeEn: "Commercial Entity",
+      pathDescriptionAr:
+        "خطة مخصصة لشركتك: إعداد متجر رسمي متكامل، تفعيل مسار التحقق للسجلات التجارية مع شارة التوثيق الزرقاء، ربط الحساب البنكي التجاري، وتفعيل حماية الأرباح الصافية وإعلانات Meta.",
+      pathDescriptionEn:
+        "Tailored plan for your registered enterprise: complete store setup, CR verification with Blue Badge, corporate bank link, and Brandstack AI profit protection.",
+      keyStepsAr: [
+        "1. إدخال اسم المنشأة ورفع رقم السجل التجاري للاعتماد السريع",
+        "2. إعداد كتالوج المنتجات وتحديد تكلفة البضاعة وهامش الربح المطلوب",
+        "3. إطلاق الحملة التسويقية وربط حملات Meta والمسوقين",
+        "4. استقبال طلبات COD مؤكدة مع تحصيل المبالغ آلياً لحسابك",
+      ],
+      keyStepsEn: [
+        "1. Submit business details & CR number for fast SLA verification",
+        "2. Setup product catalog, COGS, and targeted profit margin",
+        "3. Launch marketing campaigns with Meta Ads Guard and creators",
+        "4. Fulfill verified COD orders with automatic settlement",
+      ],
+      recommendedAction: "start_real_merchant",
+      actionLabelAr: "🚀 ابدأ إعداد متجرك التجاري الفعلي",
+      actionLabelEn: "🚀 Start Live Merchant Setup",
+      actionUrl: "/enter?role=merchant",
+    };
+  }
+
+  // Real Home Business / Freelancer Track (No CR)
+  return {
+    titleAr: "مسار المشاريع المنزلية والعمل الحر (بدون سجل تجاري) 🎨",
+    titleEn: "Home Business & Indie Brand Pathway (No CR) 🎨",
+    badgeAr: "مشروع منزلي / عمل حر",
+    badgeEn: "Home Business Track",
+    pathDescriptionAr:
+      "مسار فوري وسهل مصمم خصيصاً لمشروعك: لا تحتاج سجل تجاري معقد! سنوثق حسابك بالبطاقة الشخصية ومسح الوجه، ونربط حسابات Instagram و TikTok لتجهيز صفحة طلبات احترافية تمنع الإلغاءات.",
+    pathDescriptionEn:
+      "Fast & streamlined path for home brands: no CR needed! Verify with national ID and face scan, connect Instagram/TikTok, and launch a frictionless order page.",
+    keyStepsAr: [
+      "1. توثيق الهوية السريع (بطاقة شخصية + مسح بيومتري + رابط Instagram)",
+      "2. إعداد صفحة طلب سريعة بالذكاء الاصطناعي باسم مشروعك",
+      "3. تحويل زبائن الواتساب والإنستجرام إلى طلبات مؤكدة مع دفع الشحن مسبقاً",
+      "4. تحصيل أرباحك الصافية فور تسليم الطلبات للمشترين",
+    ],
+    keyStepsEn: [
+      "1. Fast ID verification (ID Card + biometric scan + Instagram/TikTok link)",
+      "2. Generate AI-powered instant order page under your project name",
+      "3. Convert Instagram & WhatsApp chats into committed orders with prepaid shipping",
+      "4. Collect net profits directly as soon as orders are delivered",
+    ],
+    recommendedAction: "start_real_merchant",
+    actionLabelAr: "🚀 ابدأ إعداد متجرك المنزلي الفوري",
+    actionLabelEn: "🚀 Launch Your Home Store Now",
+    actionUrl: "/enter?role=merchant",
+  };
+}
+

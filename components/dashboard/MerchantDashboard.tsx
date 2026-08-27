@@ -21,6 +21,7 @@ import LiveSalesSimulator from "@/components/dashboard/LiveSalesSimulator";
 import StockAlertToast from "@/components/dashboard/StockAlertToast";
 import StockSalesAnalyticsChart from "@/components/dashboard/StockSalesAnalyticsChart";
 import AdChannelDemandRadar from "@/components/dashboard/AdChannelDemandRadar";
+import VerifiedBadge from "@/components/dashboard/VerifiedBadge";
 import { EmptyState, StatusPill, TableShell, TierPill } from "@/components/dashboard/ui";
 import { merchantOnboardingHref } from "@/lib/domain/merchantOnboarding";
 
@@ -58,7 +59,6 @@ export default function MerchantDashboard({
   }, [initialTab]);
 
   const primaryTabs: Array<{ id: Tab; label: string }> = [
-    { id: "ad_radar", label: locale === "en" ? "🎯 AI Ad Channel Radar" : "🎯 رادار المنصة الأنسب للإعلان" },
     { id: "analytics", label: locale === "en" ? "📊 Sales vs Stock Radar" : "📊 رادار المبيعات والمخزون" },
     { id: "simulator", label: locale === "en" ? "⚡ Live Sales Stream" : "⚡ محاكي المبيعات الحية" },
     { id: "store", label: t("tabs.store") },
@@ -88,10 +88,66 @@ export default function MerchantDashboard({
 
       <div className="relative z-[1] mx-auto max-w-wrap px-4 pb-16 pt-6 sm:px-8 sm:pt-8">
         <header className="mb-6">
-          <p className="gl-eyebrow">{t("home.kicker")}</p>
-          <h1 className="mt-1 text-display-md font-semibold text-frost">{data.merchant.businessName}</h1>
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500/20 to-sky-500/20 text-2xl font-bold border border-line">
+                🏪
+              </span>
+              {data.merchant.verificationStatus === "verified" && (
+                <div className="absolute -bottom-1 -right-1">
+                  <VerifiedBadge size="sm" />
+                </div>
+              )}
+            </div>
+            <div>
+              <p className="gl-eyebrow">{t("home.kicker")}</p>
+              <div className="mt-0.5 flex flex-wrap items-center gap-2">
+                <h1 className="text-display-md font-semibold text-frost">{data.merchant.businessName}</h1>
+                {data.merchant.verificationStatus === "verified" && (
+                  <VerifiedBadge size="md" showLabel label="حساب موثق رسمي ✓" />
+                )}
+              </div>
+            </div>
+          </div>
           <p className="mt-2 max-w-xl text-[14px] leading-relaxed text-frost-dim">{t("home.lede")}</p>
         </header>
+
+        {data.merchant.verificationStatus !== "verified" && (
+          <div className="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4 text-amber-950 dark:text-amber-200">
+            <div className="flex items-start gap-3">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-500/20 text-lg">
+                🛡️
+              </span>
+              <div>
+                <p className="text-sm font-bold">
+                  {data.merchant.verificationStatus === "pending"
+                    ? "مستندات التوثيق قيد المراجعة والتدقيق"
+                    : "حسابك في وضع الاستكشاف التجريبي (Explore Mode)"}
+                </p>
+                <p className="mt-0.5 text-xs opacity-90">
+                  {data.merchant.verificationStatus === "pending"
+                    ? "يمكنك الاستمرار في تجهيز المنتجات وضبط متجرك، وسنعتمد حسابك فور انتهاء التدقيق."
+                    : "يمكنك الآن إضافة منتجاتك وتصميم متجرك وتجربة المنصة. لنشر المتجر رسمياً واستقبال أرباح المسوقين، يلزم توثيق السجل التجاري والبطاقة."}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => changeTab("products")}
+                className="inline-flex min-h-10 items-center justify-center rounded-xl border border-amber-500/40 bg-white/80 px-3.5 text-xs font-semibold text-amber-900 shadow-xs hover:bg-white dark:bg-slate-900 dark:text-amber-200"
+              >
+                ✨ أضف أول منتج الآن
+              </button>
+              <Link
+                href="/dashboard?kyc=1"
+                className="inline-flex min-h-10 items-center justify-center rounded-xl bg-amber-600 px-4 text-xs font-bold text-white shadow-xs hover:bg-amber-700"
+              >
+                {data.merchant.verificationStatus === "pending" ? "عرض حالة التوثيق" : "توثيق الحساب الآن"}
+              </Link>
+            </div>
+          </div>
+        )}
 
         <OnboardingProgressBar progress={data.onboarding} />
 
@@ -109,15 +165,6 @@ export default function MerchantDashboard({
         <div className="mt-6 overflow-hidden rounded-[1.75rem] border border-line bg-white shadow-[var(--shadow-card)]">
           <TabBar tabs={primaryTabs} moreTabs={moreTabs} active={tab} onChange={changeTab} />
           <div className="border-t border-line">
-            {tab === "ad_radar" && (
-              <div className="p-4 sm:p-6 bg-slate-50/50 dark:bg-slate-950/40">
-                <AdChannelDemandRadar
-                  products={data.products}
-                  locale={locale}
-                  onNavigateTab={changeTab}
-                />
-              </div>
-            )}
             {tab === "analytics" && (
               <div className="p-4 sm:p-6 bg-slate-50/50 dark:bg-slate-950/40">
                 <StockSalesAnalyticsChart
@@ -274,13 +321,6 @@ export default function MerchantDashboard({
       onClick?: () => void;
       badge?: string | number;
     }> = [
-      {
-        id: "ad_radar",
-        label: locale === "en" ? "Ad Radar 🎯" : "رادار الإعلانات 🎯",
-        hint: locale === "en" ? "AI cross-platform demand & search analysis" : "تحليل البحث والطلب عبر منصات التواصل وجوجل",
-        onClick: () => onTab("ad_radar"),
-        badge: "AI API",
-      },
       {
         id: "analytics",
         label: locale === "en" ? "Stock Radar 📊" : "رادار المخزون 📊",

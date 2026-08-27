@@ -28,7 +28,7 @@ export const dynamic = "force-dynamic";
 export default async function DashboardPage({
   searchParams,
 }: {
-  searchParams: { role?: string; tab?: string };
+  searchParams: { role?: string; tab?: string; skip_kyc?: string; kyc?: string };
 }) {
   const tApp = await getTranslations("dashboardApp");
   const tKyc = await getTranslations("kyc");
@@ -73,7 +73,13 @@ export default async function DashboardPage({
       ) : viewer.role === "unassigned" ? (
         <RoleOnboarding initialRole={requestedRole} />
       ) : viewer.role === "merchant" && viewer.merchantProfile ? (
-        <MerchantGate merchant={viewer.merchantProfile} locale={locale} initialTab={searchParams.tab} />
+        <MerchantGate
+          merchant={viewer.merchantProfile}
+          locale={locale}
+          initialTab={searchParams.tab}
+          skipKyc={searchParams.skip_kyc === "1"}
+          forceKyc={searchParams.kyc === "1"}
+        />
       ) : viewer.role === "creator" && viewer.creatorProfile ? (
         <CreatorGate creator={viewer.creatorProfile} locale={locale} initialTab={searchParams.tab} />
       ) : (
@@ -91,10 +97,14 @@ async function MerchantGate({
   merchant,
   locale,
   initialTab,
+  skipKyc,
+  forceKyc,
 }: {
   merchant: NonNullable<NonNullable<Awaited<ReturnType<typeof getCurrentUser>>>["merchantProfile"]>;
   locale: string;
   initialTab?: string;
+  skipKyc?: boolean;
+  forceKyc?: boolean;
 }) {
   const tKyc = await getTranslations("kyc");
   const store = await prisma.merchantStore.findUnique({
@@ -104,7 +114,9 @@ async function MerchantGate({
   if (!store?.tagline.trim()) {
     return <StoreBriefSurvey initialName={merchant.businessName} />;
   }
-  if (merchant.verificationStatus === "unsubmitted" || merchant.verificationStatus === "rejected") {
+
+  // If user requested KYC form explicitly
+  if (forceKyc) {
     return (
       <MerchantKycForm
         initial={{
@@ -115,11 +127,28 @@ async function MerchantGate({
           city: merchant.city,
         }}
         reviewNote={merchant.kycReviewNote}
+        canSkip={true}
       />
     );
   }
-  if (merchant.verificationStatus === "pending") {
-    return <KycPending title={tKyc("pending.title")} lede={tKyc("pending.merchant")} />;
+
+  // If unsubmitted or rejected, allow exploring if skipped or navigating tabs
+  if (merchant.verificationStatus === "unsubmitted" || merchant.verificationStatus === "rejected") {
+    if (!skipKyc && !initialTab) {
+      return (
+        <MerchantKycForm
+          initial={{
+            businessName: merchant.businessName,
+            commercialRegNo: merchant.commercialRegNo,
+            taxNumber: merchant.taxNumber,
+            ownerFullName: merchant.ownerFullName,
+            city: merchant.city,
+          }}
+          reviewNote={merchant.kycReviewNote}
+          canSkip={true}
+        />
+      );
+    }
   }
 
   const data = await loadMerchantDashboardData(merchant.id);
