@@ -17,6 +17,7 @@ const STORY_HREFS = [
   { href: "/#proof", key: "proof" },
   { href: "/#pricing", key: "pricing" },
   { href: "/#faq", key: "faq" },
+  { href: "/demo", key: "demo" },
 ] as const;
 
 export default function Header() {
@@ -45,7 +46,7 @@ export default function Header() {
 
   return (
     <header className="fixed left-0 right-0 top-0 z-50 px-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-6">
-      <div className="gl-nav-glass mx-auto flex h-14 max-w-wrap items-center justify-between gap-3 rounded-full px-3 sm:px-4">
+      <div className="gl-nav-glass mx-auto flex h-14 max-w-wrap items-center justify-between gap-3 rounded-full ps-4 pe-2 sm:ps-6 sm:pe-2.5">
         <Link
           href="/"
           className="shrink-0 px-2 text-[15px] font-semibold"
@@ -63,7 +64,7 @@ export default function Header() {
           ))}
         </GlassBubbleTrack>
 
-        <div className="hidden items-center gap-1 md:flex">
+        <div className="hidden items-center gap-2 md:flex">
           <LocaleSwitcher compact tone="light" />
           <HeaderAuth t={t} />
         </div>
@@ -159,7 +160,7 @@ function HeaderAuth({
           track("Sign In Started", { source: stacked ? "header-mobile-menu" : "header" });
           onNavigate?.();
         }}
-        className="gl-btn-primary"
+        className="gl-btn-primary min-h-10 !py-2 !px-4 !text-[14px]"
       >
         {t("signIn")}
       </TourStartLink>

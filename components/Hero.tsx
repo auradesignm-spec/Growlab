@@ -91,11 +91,12 @@ export default function Hero() {
               {t("ctaMerchant")}
             </TourStartLink>
             <a
-              href="/#contact"
-              className="gl-btn-ghost min-h-12 w-full justify-center sm:w-auto"
-              onClick={() => track("Consult Clicked", { source: "hero-consult" })}
+              href="/demo"
+              className="gl-btn-ghost min-h-12 w-full justify-center sm:w-auto border border-[#111318]/20 bg-white/80 backdrop-blur font-semibold shadow-sm hover:bg-white hover:border-[#111318]/40 transition-all text-[#111318] flex items-center gap-2"
+              onClick={() => track("Demo Clicked", { source: "hero-demo" })}
             >
-              {t("ctaConsult")}
+              <span className="size-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              {locale === "en" ? "Try Demo" : "تجربة ديمو"}
             </a>
           </div>
           <p className="relative z-[1] mt-4 text-start text-[15px] leading-6 text-[#3d4450]">

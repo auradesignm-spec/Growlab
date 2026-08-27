@@ -15,6 +15,7 @@
     "roadmap": "Your path",
     "pricing": "Pricing",
     "faq": "FAQ",
+    "demo": "Try Demo",
     "splits": "Revenue split",
     "dashboard": "Dashboard",
     "signIn": "Sign in",
@@ -50,11 +51,11 @@
   },
   "demo": {
     "eyebrow": "Interactive demo",
-    "title": "Build your store — Odoo-style",
+    "title": "Build your store step by step",
     "lede": "Enter as merchant to open Start Now → configurator → building → blocks editor. Or try the post-purchase buyer path.",
     "merchantKicker": "Merchant",
     "merchantTitle": "Create your online store",
-    "merchantLede": "Opens Start Now, then sentence config, collage, and the blocks editor — the Odoo flow we built.",
+    "merchantLede": "Opens Start Now, then sentence config, collage, and the smart blocks editor built for your brand.",
     "merchantCta": "Start now",
     "buyerKicker": "Buyer",
     "buyerTitle": "Customer who bought",
@@ -103,7 +104,22 @@
         "new_order": "New order",
         "commission": "Commission hit the ledger",
         "new_application": "A marketer applied",
-        "low_wallet": "Wallet low — top up before activating a campaign"
+        "low_wallet": "Wallet low — top up before activating a campaign",
+        "out_of_stock": "Alert: Out of stock product — restock needed",
+        "dead_stock": "Alert: Dead stock — clearance or campaign needed"
+      },
+      "stockToast": {
+        "title": "Stock Alert Since Last Visit",
+        "kicker": "Smart Inventory Monitor",
+        "outOfStock": "Out of Stock",
+        "deadStock": "Dead Stock",
+        "outOfStockDesc": "This product is paused or zero inventory. Restock to accept new orders.",
+        "deadStockDesc": "No active orders recorded lately. Launch a creator campaign to liquidate and unlock capital.",
+        "manageProducts": "Manage Products",
+        "launchCampaign": "Launch Campaign",
+        "dismiss": "Dismiss",
+        "snooze": "Acknowledge",
+        "multipleItems": "and {count} other affected products"
       }
     }
   },
@@ -1868,7 +1884,7 @@
   "merchantStoreEditor": {
     "kicker": "Your store",
     "title": "Build your store step by step",
-    "lede": "Odoo-style setup: pick your business, we build the store, then you edit and publish.",
+    "lede": "Smart setup: pick your business, we build the store, then you edit and publish.",
     "backToPortal": "Back to portal",
     "noProducts": "Add one product first — then we open the store editor.",
     "addProduct": "Add product",

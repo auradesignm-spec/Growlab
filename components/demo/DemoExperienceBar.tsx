@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { startDemoExperience, clearDemoExperience } from "@/lib/dev/actions";
+import DemoTourGuide from "@/components/demo/DemoTourGuide";
 
 export interface DemoBarProps {
   role: "merchant" | "buyer" | "other";
@@ -83,6 +84,9 @@ export default function DemoExperienceBar({
           </button>
         </div>
       </div>
+
+      {/* Floating Interactive Branching Tour Guide */}
+      <DemoTourGuide />
     </div>
   );
 }

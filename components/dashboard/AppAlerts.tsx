@@ -75,7 +75,19 @@ export default function AppAlerts({ alerts }: { alerts: AppAlert[] }) {
         <ul className="mx-auto max-w-wrap space-y-2 px-4 pb-4 sm:px-8">
           {alerts.map((alert) => (
             <li key={alert.id} className="rounded-2xl border border-line bg-night px-4 py-3">
-              <p className="text-[12px] text-frost-faint">{t(`kinds.${alert.kind}` as "kinds.new_order")}</p>
+              <div className="flex items-center gap-2">
+                {alert.kind === "out_of_stock" && (
+                  <span className="rounded bg-rose-500/20 px-1.5 py-0.2 text-[10px] font-bold text-rose-400">
+                    🔴 نفاد مخزون
+                  </span>
+                )}
+                {alert.kind === "dead_stock" && (
+                  <span className="rounded bg-amber-500/20 px-1.5 py-0.2 text-[10px] font-bold text-amber-400">
+                    ⏳ مخزون راكد
+                  </span>
+                )}
+                <p className="text-[12px] text-frost-faint">{t(`kinds.${alert.kind}` as "kinds.new_order")}</p>
+              </div>
               {alert.productTitle ? (
                 <p className="mt-1 text-[15px] font-medium text-frost">{alert.productTitle}</p>
               ) : null}

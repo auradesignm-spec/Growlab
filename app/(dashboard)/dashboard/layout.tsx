@@ -54,6 +54,8 @@ export default async function DashboardLayout({
         ? ("buyer" as const)
         : ("other" as const);
 
+  const clerkEnabled = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
+
   return (
     <AppShell>
       {demoEnabled && demoPersonas ? (
@@ -99,7 +101,16 @@ export default async function DashboardLayout({
               {nav("backHome")}
             </Link>
             <div className="flex items-center border-s border-white/10 px-4 sm:px-5">
-              <UserButton afterSignOutUrl="/" />
+              {clerkEnabled ? (
+                <UserButton afterSignOutUrl="/" />
+              ) : (
+                <span
+                  title={viewer?.name || "Growlab User"}
+                  className="flex h-7 w-7 items-center justify-center rounded-full bg-night/10 text-xs font-semibold text-frost"
+                >
+                  {viewer?.name?.charAt(0) || "👤"}
+                </span>
+              )}
             </div>
           </div>
         </div>

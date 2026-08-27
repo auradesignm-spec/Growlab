@@ -17,13 +17,17 @@ import PerformanceCampaignPanel from "@/components/dashboard/PerformanceCampaign
 import WalletTopupPanel from "@/components/dashboard/WalletTopupPanel";
 import MerchantBillingPanel from "@/components/dashboard/MerchantBillingPanel";
 import AcceptQueue from "@/components/dashboard/AcceptQueue";
+import LiveSalesSimulator from "@/components/dashboard/LiveSalesSimulator";
+import StockAlertToast from "@/components/dashboard/StockAlertToast";
+import StockSalesAnalyticsChart from "@/components/dashboard/StockSalesAnalyticsChart";
+import AdChannelDemandRadar from "@/components/dashboard/AdChannelDemandRadar";
 import { EmptyState, StatusPill, TableShell, TierPill } from "@/components/dashboard/ui";
 import { merchantOnboardingHref } from "@/lib/domain/merchantOnboarding";
 
-type Tab = "queue" | "products" | "store" | "campaign" | "wallet" | "billing" | "creators" | "orders" | "samples";
+type Tab = "queue" | "products" | "store" | "campaign" | "wallet" | "billing" | "creators" | "orders" | "samples" | "simulator" | "analytics" | "ad_radar";
 
 /** MVP-visible tabs (deep links to queue/creators/samples still render if forced in code). */
-const MERCHANT_TABS: Tab[] = ["products", "store", "campaign", "wallet", "billing", "orders"];
+const MERCHANT_TABS: Tab[] = ["ad_radar", "analytics", "simulator", "products", "store", "campaign", "wallet", "billing", "orders"];
 
 function isMerchantTab(value: string | undefined): value is Tab {
   return Boolean(value && MERCHANT_TABS.includes(value as Tab));
@@ -54,6 +58,9 @@ export default function MerchantDashboard({
   }, [initialTab]);
 
   const primaryTabs: Array<{ id: Tab; label: string }> = [
+    { id: "ad_radar", label: locale === "en" ? "🎯 AI Ad Channel Radar" : "🎯 رادار المنصة الأنسب للإعلان" },
+    { id: "analytics", label: locale === "en" ? "📊 Sales vs Stock Radar" : "📊 رادار المبيعات والمخزون" },
+    { id: "simulator", label: locale === "en" ? "⚡ Live Sales Stream" : "⚡ محاكي المبيعات الحية" },
     { id: "store", label: t("tabs.store") },
     { id: "products", label: t("tabs.products") },
     { id: "campaign", label: t("tabs.campaign") },
@@ -76,6 +83,8 @@ export default function MerchantDashboard({
         <span className="gl-mesh-orb gl-mesh-lime" />
         <span className="gl-mesh-orb gl-mesh-sun" />
       </div>
+
+      <StockAlertToast products={data.products} locale={locale} onNavigateTab={changeTab} />
 
       <div className="relative z-[1] mx-auto max-w-wrap px-4 pb-16 pt-6 sm:px-8 sm:pt-8">
         <header className="mb-6">
@@ -100,6 +109,26 @@ export default function MerchantDashboard({
         <div className="mt-6 overflow-hidden rounded-[1.75rem] border border-line bg-white shadow-[var(--shadow-card)]">
           <TabBar tabs={primaryTabs} moreTabs={moreTabs} active={tab} onChange={changeTab} />
           <div className="border-t border-line">
+            {tab === "ad_radar" && (
+              <div className="p-4 sm:p-6 bg-slate-50/50 dark:bg-slate-950/40">
+                <AdChannelDemandRadar
+                  products={data.products}
+                  locale={locale}
+                  onNavigateTab={changeTab}
+                />
+              </div>
+            )}
+            {tab === "analytics" && (
+              <div className="p-4 sm:p-6 bg-slate-50/50 dark:bg-slate-950/40">
+                <StockSalesAnalyticsChart
+                  products={data.products}
+                  ordersLedger={data.ordersLedger}
+                  locale={locale}
+                  onNavigateTab={changeTab}
+                />
+              </div>
+            )}
+            {tab === "simulator" && <LiveSalesSimulator locale={locale} onOpenStore={() => changeTab("store")} />}
             {tab === "queue" && <AcceptQueue applications={data.pendingApplications} />}
             {tab === "products" && <ProductsTab data={data} />}
             {tab === "store" && <StoreTab store={data.store} />}
@@ -243,8 +272,29 @@ export default function MerchantDashboard({
       hint: string;
       href?: string;
       onClick?: () => void;
-      badge?: number;
+      badge?: string | number;
     }> = [
+      {
+        id: "ad_radar",
+        label: locale === "en" ? "Ad Radar 🎯" : "رادار الإعلانات 🎯",
+        hint: locale === "en" ? "AI cross-platform demand & search analysis" : "تحليل البحث والطلب عبر منصات التواصل وجوجل",
+        onClick: () => onTab("ad_radar"),
+        badge: "AI API",
+      },
+      {
+        id: "analytics",
+        label: locale === "en" ? "Stock Radar 📊" : "رادار المخزون 📊",
+        hint: locale === "en" ? "Daily sales vs dead stock analysis" : "تحليل المبيعات والمخزون الراكد",
+        onClick: () => onTab("analytics"),
+        badge: "Recharts",
+      },
+      {
+        id: "simulator",
+        label: locale === "en" ? "Live Stream ⚡" : "محاكي المبيعات ⚡",
+        hint: locale === "en" ? "Test real-time orders & margins" : "تجربة تدفق المبيعات والأرباح حياً",
+        onClick: () => onTab("simulator"),
+        badge: "LIVE",
+      },
       {
         id: "store",
         label: t("home.shortcuts.store"),

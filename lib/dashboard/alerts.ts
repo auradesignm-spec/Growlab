@@ -9,7 +9,9 @@ export type AppAlertKind =
   | "new_order"
   | "commission"
   | "new_application"
-  | "low_wallet";
+  | "low_wallet"
+  | "out_of_stock"
+  | "dead_stock";
 
 export interface AppAlert {
   id: string;
@@ -113,7 +115,24 @@ export async function loadCreatorAlerts(creatorId: string): Promise<AppAlert[]> 
 export async function loadMerchantAlerts(merchantId: string): Promise<AppAlert[]> {
   const products = await prisma.product.findMany({
     where: { merchantId },
-    select: { id: true },
+    select: {
+      id: true,
+      title: true,
+      active: true,
+      basePrice: true,
+      createdAt: true,
+      attributesJson: true,
+      deals: {
+        select: {
+          id: true,
+          status: true,
+          orders: {
+            where: { status: { not: "cancelled" } },
+            select: { id: true, createdAt: true },
+          },
+        },
+      },
+    },
   });
   const productIds = products.map((p) => p.id);
 
@@ -154,6 +173,35 @@ export async function loadMerchantAlerts(merchantId: string): Promise<AppAlert[]
     });
   }
 
+  // Stock alerts: Out of stock or Dead stock
+  for (const prod of products) {
+    if (!prod.active) {
+      alerts.push({
+        id: `stock:out:${prod.id}`,
+        kind: "out_of_stock",
+        productTitle: prod.title,
+        href: "/dashboard?tab=products",
+        createdAt: prod.createdAt.toISOString(),
+        amount: prod.basePrice,
+      });
+    } else {
+      // Check for dead stock (no orders across deals or no active deals and older than 1 day)
+      const totalOrders = prod.deals.reduce((sum, d) => sum + d.orders.length, 0);
+      const activeDeals = prod.deals.filter((d) => d.status === "active").length;
+      const isOlderThanDay = now - prod.createdAt.getTime() > 24 * 60 * 60 * 1000;
+      if (isOlderThanDay && (totalOrders === 0 || activeDeals === 0)) {
+        alerts.push({
+          id: `stock:dead:${prod.id}`,
+          kind: "dead_stock",
+          productTitle: prod.title,
+          href: "/dashboard?tab=campaign",
+          createdAt: prod.createdAt.toISOString(),
+          amount: prod.basePrice,
+        });
+      }
+    }
+  }
+
   for (const deal of pendingDeals) {
     alerts.push({
       id: `apply:${deal.id}`,
@@ -185,5 +233,5 @@ export async function loadMerchantAlerts(merchantId: string): Promise<AppAlert[]
     });
   }
 
-  return alerts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 12);
+  return alerts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 16);
 }

@@ -12,6 +12,7 @@ export default async function Footer() {
     { href: "/#proof", label: t("proof") },
     { href: "/#pricing", label: t("pricing") },
     { href: "/#faq", label: t("faq") },
+    { href: "/demo", label: t("demo") },
   ];
   const account = [
     { href: enterHref("merchant"), label: t("startEarning") },

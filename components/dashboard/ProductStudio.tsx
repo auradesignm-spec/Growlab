@@ -289,9 +289,23 @@ export default function ProductStudio({ products }: { products: MerchantProductR
           <h2 className="mt-1 font-display text-display-md">{t("title")}</h2>
           <p className="mt-2 max-w-xl text-[14px] text-frost-dim">{t("lede")}</p>
         </div>
-        <button type="button" onClick={openNew} className="gl-btn-primary">
-          {t("newProduct")}
-        </button>
+        <div className="flex flex-wrap items-center gap-2">
+          <Link
+            href="/dashboard?tab=ad_radar"
+            className="gl-btn-ghost text-[13px] border border-amber-200 bg-amber-50/50 text-amber-900 hover:bg-amber-100 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-300 font-semibold"
+          >
+            🎯 {locale === "en" ? "AI Ad Channel Radar" : "رادار المنصة الأنسب للإعلان"}
+          </Link>
+          <Link
+            href="/dashboard?tab=analytics"
+            className="gl-btn-ghost text-[13px] border border-indigo-200 bg-indigo-50/50 text-indigo-700 hover:bg-indigo-100 dark:border-indigo-900/50 dark:bg-indigo-950/40 dark:text-indigo-300"
+          >
+            📊 {locale === "en" ? "Sales vs Stock Radar" : "رادار المخزون"}
+          </Link>
+          <button type="button" onClick={openNew} className="gl-btn-primary">
+            {t("newProduct")}
+          </button>
+        </div>
       </div>
 
       <div className="mb-6 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
@@ -342,13 +356,29 @@ export default function ProductStudio({ products }: { products: MerchantProductR
                   )}
                 </div>
                 <div className="p-3">
+                  <div className="flex items-center gap-1.5 flex-wrap mb-1">
+                    {!p.active ? (
+                      <span className="rounded bg-rose-500/15 px-1.5 py-0.5 text-[10px] font-bold text-rose-700 dark:text-rose-300">
+                        🔴 {locale === "en" ? "Out of Stock" : "نفاد مخزون"}
+                      </span>
+                    ) : p.visitCount === 0 && p.activeDealsCount === 0 ? (
+                      <span className="rounded bg-amber-500/15 px-1.5 py-0.5 text-[10px] font-bold text-amber-700 dark:text-amber-300">
+                        ⏳ {locale === "en" ? "Dead Stock" : "مخزون راكد"}
+                      </span>
+                    ) : (
+                      <span className="rounded bg-emerald-500/15 px-1.5 py-0.5 text-[10px] font-medium text-emerald-700 dark:text-emerald-300">
+                        🟢 {locale === "en" ? "Active" : "نشط"}
+                      </span>
+                    )}
+                    {p.promo?.active && (
+                      <span className="rounded bg-violet-500/15 px-1.5 py-0.5 text-[10px] font-medium text-violet-700 dark:text-violet-300">
+                        ⚡ {t("hasPromo")}
+                      </span>
+                    )}
+                  </div>
                   <p className="line-clamp-2 text-[14px] font-medium text-frost">{p.title}</p>
                   <p className="mt-1 font-mono text-[12px] text-frost-dim">
                     {formatMoney(p.basePrice, p.currency)}
-                  </p>
-                  <p className="mt-1 text-[11px] text-frost-faint">
-                    {p.active ? t("statusOn") : t("statusOff")}
-                    {p.promo?.active ? ` · ${t("hasPromo")}` : ""}
                   </p>
                 </div>
               </button>

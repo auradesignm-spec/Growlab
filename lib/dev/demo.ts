@@ -39,6 +39,6 @@ export async function resolveDemoPersonas(): Promise<DemoPersonas> {
 }
 
 export function demoHomeForRole(role: "merchant" | "buyer"): string {
-  // Merchant demo opens the Odoo-style store wizard, not the dashboard home.
+  // Merchant demo opens the store wizard, not the dashboard home.
   return role === "merchant" ? "/dashboard/store/edit?fresh=1" : "/dashboard/browse";
 }

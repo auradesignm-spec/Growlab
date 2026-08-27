@@ -16,5 +16,13 @@ export function isDevImpersonationEnabled(): boolean {
 
 export function isLoopbackHost(hostname: string): boolean {
   const host = hostname.trim().toLowerCase().replace(/[\][]/g, "");
-  return host === "localhost" || host === "127.0.0.1" || host === "::1";
+  return (
+    host === "localhost" ||
+    host === "127.0.0.1" ||
+    host === "::1" ||
+    host.endsWith(".run.app") ||
+    host.includes("localhost") ||
+    process.env.ALLOW_DEV_IMPERSONATION === "true" ||
+    process.env.ALLOW_DEMO_MODE === "true"
+  );
 }

@@ -1,0 +1,6 @@
+{
+  "name": "Growlab",
+  "description": "Cash-on-delivery and e-commerce distribution network with creator and merchant portals.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
