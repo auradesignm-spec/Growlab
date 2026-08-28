@@ -9,6 +9,7 @@ import GlassBubbleTrack from "@/components/GlassBubbleTrack";
 import { SIGN_IN_HREF } from "@/lib/auth/paths";
 import { track } from "@/lib/analytics";
 import TourStartLink from "@/components/TourStartLink";
+import GrowlabBrand from "@/components/brand/GrowlabBrand";
 
 const CLERK_ENABLED = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
 
@@ -47,14 +48,7 @@ export default function Header() {
   return (
     <header className="fixed left-0 right-0 top-0 z-50 px-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-6">
       <div className="gl-nav-glass mx-auto flex h-14 max-w-wrap items-center justify-between gap-3 rounded-full ps-4 pe-2 sm:ps-6 sm:pe-2.5">
-        <Link
-          href="/"
-          className="shrink-0 px-2 text-[15px] font-semibold"
-          style={{ color: "#111318" }}
-          aria-label={t("homeAria")}
-        >
-          {t("brand")}
-        </Link>
+        <GrowlabBrand ariaLabel={t("homeAria")} />
 
         <GlassBubbleTrack className="hidden items-center md:flex" aria-label={t("mainNav")}>
           {STORY_HREFS.map((link) => (

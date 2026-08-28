@@ -37,8 +37,11 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
   manifest: "/manifest.webmanifest",
   icons: {
-    icon: "/icon.svg",
-    apple: "/icon.svg",
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/logo-header.png", type: "image/png" },
+    ],
+    apple: "/logo-header.png",
   },
   appleWebApp: {
     capable: true,

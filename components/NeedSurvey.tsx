@@ -127,12 +127,9 @@ function NeedSurveyDialog() {
         >
           {/* Progress Indicators */}
           <div className="flex items-center justify-between gap-2 border-b border-line/60 pb-3">
-            <div className="flex items-center gap-1.5">
-              <span className="flex size-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-[11px] font-bold tracking-wider text-emerald-800 uppercase bg-emerald-50 px-2 py-0.5 rounded-full">
-                {isAr ? "استبيان التوجيه الذكي والتنبؤ بالمسار" : "Smart Diagnostic Survey"}
-              </span>
-            </div>
+            <h2 className="text-sm font-semibold text-frost">
+              {isAr ? "استبيان التوجيه الذكي" : "Diagnostic Survey"}
+            </h2>
             <div className="flex items-center gap-1">
               {Array.from({ length: TOTAL_STEPS }, (_, index) => (
                 <span

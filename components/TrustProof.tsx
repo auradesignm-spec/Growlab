@@ -18,9 +18,9 @@ export default async function TrustProof() {
 
         <p className="mt-8 text-[13px] font-semibold text-frost">{t("pathsEyebrow")}</p>
         <Reveal stagger className="mt-3">
-          <ul data-guide="proof-paths" className="grid max-w-3xl grid-cols-1 gap-3 sm:grid-cols-2 sm:auto-rows-fr">
+          <ul data-guide="proof-paths" className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 sm:auto-rows-fr">
             {(t.raw("paths") as readonly { title: string; text: string }[]).map((path) => (
-              <li key={path.title} className="gl-tile flex h-full flex-col rounded-2xl px-5 py-5">
+              <li key={path.title} className="gl-tile gl-tile-hover flex h-full flex-col rounded-2xl p-5 sm:p-6">
                 <h3 className="text-[15px] font-semibold leading-snug text-frost">{path.title}</h3>
                 <p className="mt-2 text-[14px] leading-relaxed text-frost-dim">{path.text}</p>
               </li>
@@ -28,12 +28,12 @@ export default async function TrustProof() {
           </ul>
         </Reveal>
 
-        <Reveal stagger className="mt-3">
-          <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:auto-rows-fr">
+        <Reveal stagger className="mt-4">
+          <ul className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 sm:auto-rows-fr">
             {facts.map((fact, index) => (
               <li
                 key={fact.title}
-                className={`gl-tile flex h-full flex-col rounded-2xl px-5 py-5${index === facts.length - 1 && facts.length % 2 === 1 ? " sm:col-span-2" : ""}`}
+                className={`gl-tile gl-tile-hover flex h-full flex-col rounded-2xl p-5 sm:p-6${index === facts.length - 1 && facts.length % 2 === 1 ? " sm:col-span-2" : ""}`}
               >
                 <p className="text-[15px] font-semibold leading-snug text-frost">{fact.title}</p>
                 <p className="mt-2 text-[14px] leading-relaxed text-frost-dim">{fact.text}</p>

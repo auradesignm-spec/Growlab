@@ -90,21 +90,15 @@ export default function MerchantDashboard({
         <header className="mb-6">
           <div className="flex items-center gap-3">
             <div className="relative">
-              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500/20 to-sky-500/20 text-lg font-bold border border-line text-frost">
+              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-lg font-bold border border-line text-frost">
                 {data.merchant.businessName.slice(0, 2).toUpperCase()}
               </span>
-              {data.merchant.verificationStatus === "verified" && (
-                <div className="absolute -bottom-1 -right-1">
-                  <VerifiedBadge size="sm" />
-                </div>
-              )}
             </div>
             <div>
-              <p className="gl-eyebrow">{t("home.kicker")}</p>
-              <div className="mt-0.5 flex flex-wrap items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <h1 className="text-display-md font-semibold text-frost">{data.merchant.businessName}</h1>
                 {data.merchant.verificationStatus === "verified" && (
-                  <VerifiedBadge size="md" showLabel label="حساب موثق رسمي ✓" />
+                  <VerifiedBadge size="sm" showLabel label="موثق ✓" />
                 )}
               </div>
             </div>

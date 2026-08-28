@@ -34,24 +34,36 @@ export async function POST(req: NextRequest) {
             processedIds.push(act.id);
           }
         } else if (act.actionType === "SAVE_STORE_CONFIG") {
-          const merchantId = viewer?.merchantProfile?.id;
-          if (merchantId) {
+          const merchant = viewer?.merchantProfile;
+          if (merchant) {
             const tagline = String(act.payload.tagline ?? "");
-            const description = String(act.payload.description ?? "");
-            await prisma.merchantStore.upsert({
-              where: { merchantId },
-              create: {
-                merchantId,
-                tagline,
-                description,
-                themeAccent: String(act.payload.accent ?? "#111318"),
-              },
-              update: {
-                tagline,
-                description,
-                themeAccent: String(act.payload.accent ?? "#111318"),
-              },
-            });
+            const aboutHtml = String(act.payload.description ?? act.payload.aboutHtml ?? "");
+            const accent = String(act.payload.accent ?? "#111318");
+            const existing = await prisma.merchantStore.findUnique({ where: { merchantId: merchant.id } });
+            if (existing) {
+              await prisma.merchantStore.update({
+                where: { merchantId: merchant.id },
+                data: {
+                  tagline,
+                  aboutHtml,
+                  themeJson: JSON.stringify({ accentColor: accent }),
+                },
+              });
+            } else {
+              const rawSlug = String(act.payload.slug || merchant.businessName || "store")
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, "-")
+                .replace(/^-+|-+$/g, "") || `store-${merchant.id.slice(-6)}`;
+              await prisma.merchantStore.create({
+                data: {
+                  merchantId: merchant.id,
+                  slug: `${rawSlug}-${merchant.id.slice(-4)}`,
+                  tagline,
+                  aboutHtml,
+                  themeJson: JSON.stringify({ accentColor: accent }),
+                },
+              });
+            }
             processedIds.push(act.id);
           }
         } else if (act.actionType === "UPDATE_SHIPPING_REF") {

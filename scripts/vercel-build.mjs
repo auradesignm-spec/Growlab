@@ -8,6 +8,7 @@ const isPostgres = /^postgres(ql)?:\/\//i.test(databaseUrl);
 const env = {
   ...process.env,
   DATABASE_URL: databaseUrl,
+  NODE_OPTIONS: `${process.env.NODE_OPTIONS || ""} --max-old-space-size=2048`.trim(),
 };
 
 function run(command, args) {
@@ -31,4 +32,4 @@ if (isPostgres) {
   run("npx", ["prisma", "db", "push"]);
 }
 
-run("npx", ["next", "build"]);
+run("next", ["build"]);

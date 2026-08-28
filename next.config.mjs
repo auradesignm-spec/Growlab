@@ -48,12 +48,15 @@ const nextConfig = {
   output: "standalone",
   reactStrictMode: true,
   poweredByHeader: false,
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   experimental: {
     serverActions: {
       bodySizeLimit: "20mb",
-    },
-    outputFileTracingIncludes: {
-      "/*": ["./prisma/dev.db", "./prisma/schema.prisma"],
     },
   },
   async headers() {

@@ -29,10 +29,7 @@ export default function DemoEnterGate({ storeSlug }: { storeSlug: string }) {
 
   return (
     <div className="w-full max-w-2xl">
-      <div className="flex items-center gap-2">
-        <span className="flex size-2.5 rounded-full bg-emerald-500 animate-ping" />
-        <p className="gl-eyebrow text-emerald-700 font-semibold">محاكاة تفاعلية فورية — بدون تسجيل مسبق</p>
-      </div>
+      <p className="text-sm font-semibold text-emerald-700">محاكاة تفاعلية فورية — بدون تسجيل مسبق</p>
 
       <h1 className="mt-3 text-display-md font-semibold text-frost">
         جرب منصة Growlab الحقيقية وتعلّم كيف تعمل

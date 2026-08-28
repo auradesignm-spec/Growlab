@@ -28,8 +28,8 @@ export default function VerifiedBadge({
 
   const badgeIcon = (
     <span
-      className={`relative inline-flex shrink-0 items-center justify-center ${current.class}`}
-      style={{ width: `${current.px}px`, height: `${current.px}px` }}
+      className={`relative inline-flex shrink-0 items-center justify-center overflow-hidden ${current.class}`}
+      style={{ width: `${current.px}px`, height: `${current.px}px`, maxWidth: `${current.px}px`, maxHeight: `${current.px}px` }}
       title={tooltip}
       aria-label="Verified Account Badge"
     >
@@ -40,8 +40,8 @@ export default function VerifiedBadge({
         viewBox="0 0 24 24"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="block shrink-0"
-        style={{ width: `${current.px}px`, height: `${current.px}px` }}
+        className="block shrink-0 w-full h-full max-w-full max-h-full overflow-hidden object-contain"
+        style={{ width: `${current.px}px`, height: `${current.px}px`, maxWidth: `${current.px}px`, maxHeight: `${current.px}px` }}
       >
         <path
           d="M12 2L14.7 4.2C15.2 4.6 15.8 4.8 16.4 4.7L19.8 4.2L20.4 7.6C20.5 8.2 20.8 8.8 21.3 9.2L23.7 11.5L22 14.5C21.7 15.1 21.6 15.7 21.8 16.3L22.6 19.6L19.3 20.4C18.7 20.5 18.2 20.9 17.8 21.4L15.6 24L12.5 22.5C12 22.3 11.4 22.3 10.9 22.5L7.8 24L5.6 21.4C5.2 20.9 4.7 20.5 4.1 20.4L0.8 19.6L1.6 16.3C1.8 15.7 1.7 15.1 1.4 14.5L-0.3 11.5L2.1 9.2C2.6 8.8 2.9 8.2 3 7.6L3.6 4.2L7 4.7C7.6 4.8 8.2 4.6 8.7 4.2L12 2Z"

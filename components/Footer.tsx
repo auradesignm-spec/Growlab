@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { enterHref, SIGN_IN_HREF } from "@/lib/auth/paths";
 
@@ -30,8 +31,17 @@ export default async function Footer() {
       <div className="mx-auto max-w-wrap px-5 pb-10 pt-10 sm:px-8 md:pb-12 md:pt-14">
         <div className="grid grid-cols-2 gap-x-6 gap-y-8 lg:grid-cols-4">
           <div className="col-span-2 lg:col-span-1">
-            <Link href="/" className="text-[17px] font-semibold text-white" aria-label={t("homeAria")}>
-              Growlab
+            <Link href="/" className="inline-flex items-center gap-2.5 text-[17px] font-semibold text-white transition-opacity hover:opacity-85" aria-label={t("homeAria")}>
+              <div className="flex shrink-0 items-center justify-center">
+                <Image
+                  src="/logo-footer.png"
+                  alt="Growlab"
+                  width={32}
+                  height={32}
+                  className="h-8 w-8 shrink-0 object-contain"
+                />
+              </div>
+              <span>Growlab</span>
             </Link>
             <p className="mt-3 max-w-sm text-[15px] leading-6 text-white/75">{footer("lede")}</p>
           </div>
