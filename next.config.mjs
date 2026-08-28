@@ -2,10 +2,6 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
-if (process.env.ALLOW_DEV_IMPERSONATION === "true" && process.env.NODE_ENV === "production") {
-  throw new Error("ALLOW_DEV_IMPERSONATION cannot be enabled when NODE_ENV=production.");
-}
-
 const isDev = process.env.NODE_ENV === "development";
 
 const clerkCsp = [

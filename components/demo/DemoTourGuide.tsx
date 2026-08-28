@@ -301,7 +301,7 @@ export default function DemoTourGuide({ locale = "ar" }: { locale?: string }) {
         className="fixed bottom-5 end-5 z-50 flex items-center gap-2 rounded-full bg-[#111318] px-4 py-2.5 text-xs font-semibold text-white shadow-2xl transition-all hover:scale-105 border border-white/20 active:scale-95"
       >
         <span className="flex size-2 rounded-full bg-emerald-400 animate-ping" />
-        <span>{isAr ? "🧭 المساعد الذكي للجولة" : "🧭 Smart Tour Guide"}</span>
+        <span>{isAr ? "المساعد الذكي للجولة" : "Smart Tour Guide"}</span>
       </button>
     );
   }
@@ -358,7 +358,7 @@ export default function DemoTourGuide({ locale = "ar" }: { locale?: string }) {
           {/* Interactive branching choices */}
           <div className="space-y-2 pt-1 max-h-[320px] overflow-y-auto pe-1 scrollbar-thin">
             <p className="text-[11px] font-bold uppercase tracking-wider text-frost-faint">
-              {isAr ? "👇 أين تريد الذهاب والتجربة الآن؟" : "👇 Where would you like to explore next?"}
+              {isAr ? "أين تريد الذهاب والتجربة الآن؟" : "Where would you like to explore next?"}
             </p>
             {step.options.map((opt, idx) => (
               <button

@@ -232,7 +232,7 @@ export default function MerchantKycForm({
   useEffect(() => {
     if (activeCameraTarget === "face") {
       setFaceScanProgress(0);
-      setFaceInstruction("انظر مباشرة إلى الكاميرا بثبات 🎯");
+      setFaceInstruction("انظر مباشرة إلى الكاميرا بثبات");
 
       let current = 0;
       livenessTimerRef.current = setInterval(() => {
@@ -241,10 +241,10 @@ export default function MerchantKycForm({
 
         if (current === 30) {
           playHapticSound("beep");
-          setFaceInstruction("ارمِش بعينيك ببطء 👀");
+          setFaceInstruction("ارمِش بعينيك ببطء");
         } else if (current === 65) {
           playHapticSound("beep");
-          setFaceInstruction("ابتسم قليلاً 🙂 وثبّت وضعك");
+          setFaceInstruction("ابتسم قليلاً وثبّت وضعك");
         } else if (current >= 100) {
           if (livenessTimerRef.current) clearInterval(livenessTimerRef.current);
           setFaceInstruction("تم الفحص البيومتري بنجاح! ✓");
@@ -451,9 +451,6 @@ export default function MerchantKycForm({
       {canSkip && (
         <div className="mb-4 flex flex-wrap items-center justify-between gap-2.5 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-3.5 text-emerald-950 dark:text-emerald-200 sm:p-4">
           <div className="flex items-center gap-2.5">
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-500/20 text-base font-bold">
-              💡
-            </span>
             <div>
               <p className="text-[13px] font-semibold">هل ترغب بتجربة المنصة أولاً؟</p>
               <p className="text-[11px] opacity-80 sm:text-[12px]">
@@ -508,9 +505,6 @@ export default function MerchantKycForm({
                 : "border-line bg-white hover:border-slate-300 dark:bg-slate-900"
             }`}
           >
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-500/20 text-lg">
-              🏢
-            </span>
             <div>
               <p className="text-xs sm:text-sm font-bold text-frost">منشأة تجارية بسجل تجاري (CR)</p>
               <p className="mt-0.5 text-[11px] text-frost-dim">
@@ -531,9 +525,6 @@ export default function MerchantKycForm({
                 : "border-line bg-white hover:border-slate-300 dark:bg-slate-900"
             }`}
           >
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-500/20 text-lg">
-              🎨
-            </span>
             <div>
               <p className="text-xs sm:text-sm font-bold text-frost">لا أملك سجل تجاري (مشروع منزلي / فردي)</p>
               <p className="mt-0.5 text-[11px] text-frost-dim">
@@ -665,28 +656,28 @@ export default function MerchantKycForm({
               <span className="flex h-2.5 w-2.5 rounded-full bg-amber-400 animate-pulse" />
               <p className="text-xs font-bold sm:text-sm">
                 {activeCameraTarget === "id_front"
-                  ? "📷 تصوير الوجه الأمامي للهوية"
+                  ? "تصوير الوجه الأمامي للهوية"
                   : activeCameraTarget === "id_back"
-                    ? "📷 تصوير الوجه الخلفي للهوية"
-                    : "👤 الفحص البيومتري ومطابقة ملامح الوجه"}
+                    ? "تصوير الوجه الخلفي للهوية"
+                    : "الفحص البيومتري ومطابقة ملامح الوجه"}
               </p>
             </div>
             <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={switchCamera}
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-white/20 text-sm hover:bg-white/30 active:scale-95"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-white/20 text-xs font-bold hover:bg-white/30 active:scale-95"
                 title="تبديل الكاميرا"
               >
-                🔄
+                تبديل
               </button>
               <button
                 type="button"
                 onClick={stopCamera}
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-white/20 text-sm hover:bg-white/30 active:scale-95"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-white/20 text-xs font-bold hover:bg-white/30 active:scale-95"
                 title="إغلاق"
               >
-                ✕
+                إلغاء
               </button>
             </div>
           </div>
@@ -721,7 +712,7 @@ export default function MerchantKycForm({
                   </div>
                 </div>
                 <div className="mt-4 flex items-center gap-2 rounded-full bg-black/70 px-4 py-1.5 text-[11px] text-slate-300 backdrop-blur-md">
-                  <span>💡 تأكد من وضوح الاسم والرقم المدني وعدم وجود انعكاسات</span>
+                  <span>تأكد من وضوح الاسم والرقم المدني وعدم وجود انعكاسات</span>
                 </div>
               </div>
             )}
@@ -755,7 +746,7 @@ export default function MerchantKycForm({
 
                   {/* Center Crosshair */}
                   <div className="pointer-events-none flex flex-col items-center gap-1 opacity-60">
-                    <span className="text-3xl">👤</span>
+                    <span className="text-xs font-mono text-amber-400 font-bold">Face Liveness Scan</span>
                   </div>
                 </div>
 
@@ -780,7 +771,7 @@ export default function MerchantKycForm({
                 onClick={() => capturePhoto("face")}
                 className="inline-flex min-h-12 items-center justify-center rounded-full bg-amber-400 px-8 text-xs font-bold text-black shadow-lg hover:bg-amber-300 active:scale-95"
               >
-                📸 التقاط يدوي فوري
+                التقاط يدوي فوري
               </button>
             ) : (
               <button
@@ -824,7 +815,6 @@ export default function MerchantKycForm({
               <div className="rounded-2xl border border-sky-500/30 bg-sky-500/10 p-3.5 dark:border-sky-500/40 dark:bg-sky-950/40">
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
-                    <span className="text-lg">🏛️</span>
                     <div>
                       <p className="text-xs font-bold text-sky-950 dark:text-sky-200">
                         التحقق التلقائي (منصة عُمان للأعمال - MoCIIP)
@@ -861,9 +851,9 @@ export default function MerchantKycForm({
                     className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-xl bg-sky-600 px-4 text-xs font-bold text-white shadow-xs hover:bg-sky-700 disabled:opacity-50 active:scale-95"
                   >
                     {crLookupLoading ? (
-                      <span className="animate-spin">🔄</span>
+                      <span className="animate-spin">◌</span>
                     ) : (
-                      <span>⚡ استعلام فوري</span>
+                      <span>استعلام فوري</span>
                     )}
                   </button>
                 </div>
@@ -950,7 +940,7 @@ export default function MerchantKycForm({
               {/* Social Media Links (Instagram & TikTok) */}
               <div className="rounded-2xl border border-line bg-slate-50/50 p-3.5 dark:bg-slate-900/40">
                 <p className="text-xs font-bold text-frost flex items-center gap-1.5 mb-2">
-                  <span>📱</span> روابط حسابات التواصل الاجتماعي للمشروع
+                  روابط حسابات التواصل الاجتماعي للمشروع
                 </p>
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div>
@@ -958,15 +948,12 @@ export default function MerchantKycForm({
                       رابط حساب الإنستجرام (Instagram) *
                     </label>
                     <div className="relative mt-1">
-                      <span className="absolute inset-y-0 right-3 flex items-center text-xs text-rose-500 font-bold">
-                        📸
-                      </span>
                       <input
                         type="url"
                         value={instagramUrl}
                         onChange={(e) => setInstagramUrl(e.target.value)}
                         placeholder="https://instagram.com/your_store"
-                        className="gl-input pr-8 text-xs font-mono"
+                        className="gl-input text-xs font-mono"
                       />
                     </div>
                   </div>
@@ -976,15 +963,12 @@ export default function MerchantKycForm({
                       رابط حساب التيك توك (TikTok - إن وجد)
                     </label>
                     <div className="relative mt-1">
-                      <span className="absolute inset-y-0 right-3 flex items-center text-xs text-slate-700 font-bold">
-                        🎵
-                      </span>
                       <input
                         type="url"
                         value={tiktokUrl}
                         onChange={(e) => setTiktokUrl(e.target.value)}
                         placeholder="https://tiktok.com/@your_store"
-                        className="gl-input pr-8 text-xs font-mono"
+                        className="gl-input text-xs font-mono"
                       />
                     </div>
                   </div>
@@ -1050,9 +1034,6 @@ export default function MerchantKycForm({
             <div className="rounded-2xl border-2 border-dashed border-line p-5 text-center hover:border-amber-500/50 transition">
               {crDoc ? (
                 <div className="flex flex-col items-center gap-3">
-                  <span className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-2xl text-emerald-600 dark:bg-emerald-950">
-                    📄
-                  </span>
                   <div>
                     <p className="text-xs sm:text-sm font-bold text-frost">{crDoc.name}</p>
                     <p className="text-[11px] text-frost-dim">
@@ -1074,14 +1055,11 @@ export default function MerchantKycForm({
                 </div>
               ) : (
                 <label className="flex cursor-pointer flex-col items-center gap-2.5 py-3">
-                  <span className="flex h-12 w-12 items-center justify-center rounded-full bg-amber-500/15 text-2xl text-amber-600">
-                    📁
-                  </span>
                   <div>
                     <p className="text-xs sm:text-sm font-bold text-frost">اضغط لاختيار ملف السجل التجاري</p>
                     <p className="text-[11px] text-frost-dim">يدعم PDF أو صور حتى 12 MB</p>
                   </div>
-                  <span className="rounded-xl bg-frost px-4 py-2 text-xs font-semibold text-white shadow-xs">
+                  <span className="gl-btn-secondary !min-h-9 !py-1.5 !px-4 !text-xs">
                     اختيار من الجهاز
                   </span>
                   <input
@@ -1176,7 +1154,7 @@ export default function MerchantKycForm({
                         }}
                         className="inline-flex items-center gap-1 rounded-xl bg-amber-500 px-3 py-1.5 text-xs font-bold text-black shadow-xs hover:bg-amber-400 active:scale-95"
                       >
-                        <span>📷</span> فتح الكاميرا
+                        فتح الكاميرا
                       </button>
                       <label className="cursor-pointer rounded-xl border border-line px-3 py-1.5 text-xs font-semibold text-frost hover:bg-slate-50 dark:hover:bg-slate-800">
                         رفع صورة
@@ -1229,7 +1207,7 @@ export default function MerchantKycForm({
                         }}
                         className="inline-flex items-center gap-1 rounded-xl bg-amber-500 px-3 py-1.5 text-xs font-bold text-black shadow-xs hover:bg-amber-400 active:scale-95"
                       >
-                        <span>📷</span> فتح الكاميرا
+                        فتح الكاميرا
                       </button>
                       <label className="cursor-pointer rounded-xl border border-line px-3 py-1.5 text-xs font-semibold text-frost hover:bg-slate-50 dark:hover:bg-slate-800">
                         رفع صورة
@@ -1315,9 +1293,6 @@ export default function MerchantKycForm({
                 </div>
               ) : (
                 <div className="flex flex-col items-center gap-3 max-w-sm">
-                  <div className="flex h-20 w-20 items-center justify-center rounded-full border-2 border-dashed border-amber-400 bg-amber-400/10 text-3xl">
-                    👤
-                  </div>
                   <div>
                     <p className="text-sm font-bold text-frost">فحص ومطابقة الوجه الحي (3D Liveness)</p>
                     <p className="text-xs text-frost-dim mt-1">
@@ -1333,7 +1308,7 @@ export default function MerchantKycForm({
                     }}
                     className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-amber-500 px-6 text-xs font-bold text-black shadow-md hover:bg-amber-400 active:scale-95"
                   >
-                    <span>📷</span> بدء الفحص البيومتري الحي
+                    بدء الفحص البيومتري الحي
                   </button>
                 </div>
               )}
@@ -1419,27 +1394,27 @@ export default function MerchantKycForm({
               <p className="font-bold text-frost mb-2">قائمة التحقق من الوثائق والمطابقة:</p>
               {businessType === "cr" && (
                 <div className="flex items-center justify-between text-frost-dim">
-                  <span>📄 وثيقة السجل التجاري:</span>
+                  <span>وثيقة السجل التجاري:</span>
                   <span className="font-semibold text-emerald-600">✓ جاهزة ({crDoc?.name})</span>
                 </div>
               )}
               <div className="flex items-center justify-between text-frost-dim">
-                <span>💳 البطاقة الشخصية (الوجه الأمامي):</span>
+                <span>البطاقة الشخصية (الوجه الأمامي):</span>
                 <span className="font-semibold text-emerald-600">✓ تم الالتقاط</span>
               </div>
               <div className="flex items-center justify-between text-frost-dim">
-                <span>💳 البطاقة الشخصية (الوجه الخلفي):</span>
+                <span>البطاقة الشخصية (الوجه الخلفي):</span>
                 <span className="font-semibold text-emerald-600">✓ تم الالتقاط</span>
               </div>
               <div className="flex items-center justify-between text-frost-dim">
-                <span>👤 الفحص البيومتري للوجه:</span>
+                <span>الفحص البيومتري للوجه:</span>
                 <span className="font-semibold text-emerald-600">
                   {faceScanDoc ? "✓ تم الفحص الحي (Liveness Verified)" : "— اختياري"}
                 </span>
               </div>
               {instagramUrl && (
                 <div className="flex items-center justify-between text-frost-dim">
-                  <span>📸 حساب الإنستجرام:</span>
+                  <span>حساب الإنستجرام:</span>
                   <span className="font-semibold text-emerald-600">✓ تم الربط</span>
                 </div>
               )}
@@ -1465,7 +1440,7 @@ export default function MerchantKycForm({
                 onClick={handleSubmit}
                 className="gl-btn-primary min-h-12 px-8 text-xs sm:text-sm font-bold shadow-md disabled:opacity-50"
               >
-                {pending ? "جارٍ إرسال الوثائق والاعتماد…" : "🚀 إرسال الوثائق لفريق التدقيق والدعم"}
+                {pending ? "جارٍ إرسال الوثائق والاعتماد…" : "إرسال الوثائق لفريق التدقيق والدعم"}
               </button>
             </div>
           </div>

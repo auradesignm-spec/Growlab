@@ -55,13 +55,52 @@ export default function CreatorDashboard({
   }
 
   return (
-    <div>
-      <TabBar tabs={tabs} active={tab} onChange={(id) => changeTab(id as Tab)} />
-      {tab === "storefront" && <StorefrontTab data={data} t={t} tStatus={tStatus} />}
-      {tab === "deals" && <DealsTab data={data} t={t} tStatus={tStatus} locale={locale} />}
-      {tab === "samples" && <SamplesTab data={data} t={t} tStatus={tStatus} locale={locale} />}
-      {tab === "earnings" && <EarningsTab data={data} t={t} tStatus={tStatus} locale={locale} />}
-      {tab === "payouts" && <PayoutsTab data={data} t={t} tStatus={tStatus} locale={locale} />}
+    <div className="relative min-h-dvh overflow-hidden bg-[var(--paper)]">
+      <div className="gl-mesh pointer-events-none absolute inset-0 opacity-70" aria-hidden>
+        <span className="gl-mesh-orb gl-mesh-cyan" />
+        <span className="gl-mesh-orb gl-mesh-lime" />
+        <span className="gl-mesh-orb gl-mesh-sun" />
+      </div>
+
+      <div className="relative z-[1] mx-auto max-w-wrap px-4 pb-16 pt-6 sm:px-8 sm:pt-8">
+        <header className="mb-6">
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500/20 to-sky-500/20 text-lg font-bold border border-line text-frost">
+                {data.creator.username.slice(0, 2).toUpperCase()}
+              </span>
+              {data.creator.verificationStatus === "verified" && (
+                <div className="absolute -bottom-1 -right-1">
+                  <VerifiedBadge size="sm" />
+                </div>
+              )}
+            </div>
+            <div>
+              <p className="gl-eyebrow">بوابة صانع المحتوى والمسوّق بالعمولة</p>
+              <div className="mt-0.5 flex flex-wrap items-center gap-2">
+                <h1 className="text-display-md font-semibold text-frost">@{data.creator.username}</h1>
+                {data.creator.verificationStatus === "verified" && (
+                  <VerifiedBadge size="md" showLabel label="صانع موثق رسمي ✓" />
+                )}
+              </div>
+            </div>
+          </div>
+          <p className="mt-2 max-w-xl text-[14px] leading-relaxed text-frost-dim">
+            شارك منتجات المتاجر بروابطك الخاصة واكسب عمولات فورية موثوقة عند تأكيد تحصيل الطلبات.
+          </p>
+        </header>
+
+        <div className="overflow-hidden rounded-[1.75rem] border border-line bg-white shadow-[var(--shadow-card)]">
+          <TabBar tabs={tabs} active={tab} onChange={(id) => changeTab(id as Tab)} />
+          <div className="border-t border-line">
+            {tab === "storefront" && <StorefrontTab data={data} t={t} tStatus={tStatus} />}
+            {tab === "deals" && <DealsTab data={data} t={t} tStatus={tStatus} locale={locale} />}
+            {tab === "samples" && <SamplesTab data={data} t={t} tStatus={tStatus} locale={locale} />}
+            {tab === "earnings" && <EarningsTab data={data} t={t} tStatus={tStatus} locale={locale} />}
+            {tab === "payouts" && <PayoutsTab data={data} t={t} tStatus={tStatus} locale={locale} />}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -77,12 +116,17 @@ function StorefrontTab({
 }) {
   const progress = data.tierProgress;
   return (
-    <section className="px-5 py-10 sm:px-8">
-      <div className="flex flex-wrap items-center justify-between gap-4 border border-white/10 p-5">
+    <section className="p-5 sm:p-8">
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-line bg-[#fbfcfd] p-5">
         <div>
           <p className="gl-eyebrow">{t("storefront.linkLabel")}</p>
           <div className="mt-2 flex items-center gap-2">
-            <a href={`/creator/${data.creator.username}`} target="_blank" rel="noopener noreferrer" className="font-display text-2xl underline">
+            <a
+              href={`/creator/${data.creator.username}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-lg font-bold text-frost hover:underline"
+            >
               growlab.om/creator/{data.creator.username}
             </a>
             {data.creator.verificationStatus === "verified" && (
@@ -93,20 +137,20 @@ function StorefrontTab({
         <TierPill tier={data.creator.tier} size="md" />
       </div>
 
-      <div className="mt-8 border border-white/10 p-5">
+      <div className="mt-6 rounded-2xl border border-line bg-white p-5 shadow-xs">
         <div className="flex flex-wrap items-baseline justify-between gap-3">
-          <p className="font-west text-[10px] uppercase tracking-[0.24em] text-frost-dim">
+          <p className="text-xs font-bold uppercase tracking-wider text-frost-dim">
             {t("storefront.tierProgress")}
           </p>
-          <p className="font-mono text-sm">{formatMoney(data.totalNetSales)}</p>
+          <p className="font-mono text-sm font-bold text-frost">{formatMoney(data.totalNetSales)}</p>
         </div>
-        <div className="mt-3 h-2 w-full border border-white/15">
+        <div className="mt-3 h-2.5 w-full overflow-hidden rounded-full bg-slate-100">
           <div
-            className="h-full bg-pulse"
+            className="h-full rounded-full bg-emerald-600 transition-all duration-500"
             style={{ width: `${Math.round(progress.progressPct * 100)}%` }}
           />
         </div>
-        <p className="mt-3 font-serif text-sm italic text-frost-dim">
+        <p className="mt-3 text-xs text-frost-dim">
           {progress.next
             ? t("storefront.nextTier", {
                 tier: progress.next.id,
@@ -114,15 +158,17 @@ function StorefrontTab({
               })
             : t("storefront.maxTier")}
         </p>
-        <p className="mt-1 font-mono text-xs text-frost-dim">
-          {t("storefront.returnRate", { pct: formatPct(data.returnRatePct) })}
-        </p>
-        <p className="mt-1 font-mono text-xs text-frost-dim">
-          {t("storefront.visits", { count: data.visitCount })}
-        </p>
+        <div className="mt-4 flex flex-wrap gap-6 border-t border-line pt-3 text-xs text-frost-dim">
+          <p>
+            {t("storefront.returnRate", { pct: formatPct(data.returnRatePct) })}
+          </p>
+          <p>
+            {t("storefront.visits", { count: data.visitCount })}
+          </p>
+        </div>
       </div>
 
-      <div className="mt-8 flex flex-wrap gap-3">
+      <div className="mt-6 flex flex-wrap gap-3">
         <Link href="/dashboard/storefront/edit" className="gl-btn-primary">
           {t("storefront.editCta")}
         </Link>
@@ -139,8 +185,7 @@ function StorefrontTab({
         </Link>
       </div>
 
-      <p className="mt-8 font-serif text-sm italic text-frost-dim">{t("storefront.hint")}</p>
-      <p className="mt-1 font-serif text-xs italic text-frost/50">{tStatus("tierNote")}</p>
+      <p className="mt-6 text-xs text-frost-faint">{t("storefront.hint")}</p>
     </section>
   );
 }
@@ -158,7 +203,7 @@ function DealsTab({
 }) {
   if (data.deals.length === 0) {
     return (
-      <section className="px-5 py-10 sm:px-8">
+      <section className="p-5 sm:p-8">
         <EmptyState text={t("deals.empty")} />
         <Link href="/dashboard/browse" className="gl-btn-primary mt-6 inline-flex">
           {t("storefront.browseCta")}
@@ -168,7 +213,7 @@ function DealsTab({
   }
 
   return (
-    <section className="px-5 py-10 sm:px-8">
+    <section className="p-5 sm:p-8">
       <div className="grid gap-4 sm:grid-cols-2">
         {data.deals.map((deal) => (
           <DealCard key={deal.dealId} deal={deal} t={t} tStatus={tStatus} locale={locale} />
@@ -195,20 +240,20 @@ function DealCard({
   if (left) return null;
 
   return (
-    <div className="border border-white/10 p-4">
+    <div className="rounded-2xl border border-line bg-white p-5 shadow-xs transition hover:border-frost/20">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="font-display text-lg leading-tight">{deal.productTitle}</p>
-          <p className="font-serif text-xs italic text-frost-dim">{deal.merchantBusinessName}</p>
+          <p className="text-base font-bold text-frost leading-tight">{deal.productTitle}</p>
+          <p className="text-xs text-frost-dim mt-0.5">{deal.merchantBusinessName}</p>
         </div>
         {deal.featured && (
-          <span className="border border-pulse/50 px-2 py-0.5 font-west text-[9px] uppercase tracking-[0.18em] text-pulse">
+          <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-[10px] font-bold text-emerald-800">
             {t("deals.featured")}
           </span>
         )}
       </div>
 
-      <dl className="mt-4 space-y-1.5 border-t border-white/10 pt-3">
+      <dl className="mt-4 space-y-1.5 border-t border-line pt-3 text-xs">
         <Row label={t("deals.lockedPrice")} value={formatMoney(deal.lockedUnitPrice)} />
         <Row label={t("deals.commissionPct")} value={formatPct(deal.lockedCommissionPct)} />
         <Row label={t("deals.cogsPct")} value={formatPct(deal.lockedCogsPct)} />
@@ -219,10 +264,10 @@ function DealCard({
         <Row label={t("deals.commissionEarned")} value={formatMoney(deal.commissionEarned)} />
       </dl>
 
-      <div className="mt-3 flex items-center gap-2">
+      <div className="mt-4 flex items-center gap-2">
         <StatusPill ok={deal.status === "active"}>{tStatus(`deal.${deal.status}` as "deal.active")}</StatusPill>
         {deal.merchantVerificationStatus !== "verified" && (
-          <span className="font-serif text-xs italic text-danger">{t("deals.merchantNotVerified")}</span>
+          <span className="text-xs text-danger font-medium">{t("deals.merchantNotVerified")}</span>
         )}
       </div>
 
@@ -231,25 +276,25 @@ function DealCard({
       )}
 
       {deal.status === "active" && (
-        <>
+        <div className="mt-4 border-t border-line pt-4">
           <ShareSheet
             productTitle={deal.productTitle}
             sharePath={`/creator/${deal.username}/${deal.slug}`}
           />
           <button
-          type="button"
-          disabled={pending}
-          onClick={() =>
-            startTransition(async () => {
-              await leaveDeal(deal.dealId);
-              setLeft(true);
-            })
-          }
-          className="gl-btn-ghost mt-4 w-full disabled:opacity-40"
-        >
-          {t("deals.leaveCta")}
-        </button>
-        </>
+            type="button"
+            disabled={pending}
+            onClick={() =>
+              startTransition(async () => {
+                await leaveDeal(deal.dealId);
+                setLeft(true);
+              })
+            }
+            className="gl-btn-ghost mt-3 w-full text-xs text-danger hover:bg-rose-50 disabled:opacity-40"
+          >
+            {t("deals.leaveCta")}
+          </button>
+        </div>
       )}
     </div>
   );
@@ -268,7 +313,7 @@ function SamplesTab({
 }) {
   if (data.sampleRequests.length === 0) {
     return (
-      <section className="px-5 py-10 sm:px-8">
+      <section className="p-5 sm:p-8">
         <EmptyState text={t("samples.empty")} />
         <Link href="/dashboard/browse" className="gl-btn-primary mt-6 inline-flex">
           {t("storefront.browseCta")}
@@ -278,21 +323,21 @@ function SamplesTab({
   }
 
   return (
-    <section className="px-5 py-10 sm:px-8">
-      <p className="mb-6 max-w-lg font-serif text-sm italic text-frost-dim">{t("samples.trustNote")}</p>
+    <section className="p-5 sm:p-8">
+      <p className="mb-6 max-w-lg text-xs text-frost-dim leading-relaxed">{t("samples.trustNote")}</p>
 
-      <ul className="space-y-2">
+      <ul className="space-y-3">
         {data.sampleRequests.map((s) => (
-          <li key={s.id} className="border border-white/10 px-4 py-3">
+          <li key={s.id} className="rounded-2xl border border-line bg-white p-5 shadow-xs">
             <div className="flex flex-wrap items-baseline justify-between gap-3">
               <div>
-                <p className="font-display text-base">{s.productTitle}</p>
-                <p className="font-serif text-xs italic text-frost-dim">
+                <p className="text-base font-bold text-frost">{s.productTitle}</p>
+                <p className="text-xs text-frost-dim mt-0.5">
                   {s.merchantBusinessName} · {formatDate(s.createdAt, locale)}
                 </p>
                 {s.status === "shipped" && s.shippingRef && (
                   <p className="mt-1 font-mono text-xs text-frost-dim">
-                    {t("samples.shippingRef")}: <span className="text-frost">{s.shippingRef}</span>
+                    {t("samples.shippingRef")}: <span className="text-frost font-bold">{s.shippingRef}</span>
                   </p>
                 )}
               </div>
@@ -347,19 +392,19 @@ function UgcPanel({
   const canSubmit = sample.status === "shipped" && sample.ugcStatus === "pending";
 
   return (
-    <div className="mt-3 border-t border-white/10 pt-3">
+    <div className="mt-4 border-t border-line pt-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="font-mono text-xs text-frost-dim">
           {t("samples.depositLabel")}:{" "}
-          <span className="text-frost">{formatMoney(sample.depositAmount ?? 0, sample.depositCurrency ?? "OMR")}</span>
+          <span className="text-frost font-bold">{formatMoney(sample.depositAmount ?? 0, sample.depositCurrency ?? "OMR")}</span>
         </p>
         <span
-          className={`border px-2.5 py-1 font-west text-[10px] uppercase tracking-[0.2em] ${
+          className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${
             sample.ugcStatus === "approved"
-              ? "border-white/10 bg-white/10 text-frost"
+              ? "bg-emerald-100 text-emerald-800"
               : sample.ugcStatus === "forfeited"
-                ? "border-danger/60 bg-danger/10 text-danger"
-                : "border-white/15 text-frost-dim"
+                ? "bg-rose-100 text-rose-800"
+                : "bg-slate-100 text-slate-700"
           }`}
         >
           {tStatus(`ugc.${sample.ugcStatus}` as "ugc.pending")}
@@ -377,39 +422,25 @@ function UgcPanel({
         </p>
       )}
 
-      {sample.ugcStatus === "approved" && (
-        <p className="mt-2 font-serif text-xs italic text-frost-dim">{t("samples.ugcApprovedNote")}</p>
-      )}
-      {sample.ugcStatus === "forfeited" && (
-        <p className="mt-2 font-serif text-xs italic text-danger">{t("samples.ugcForfeitedNote")}</p>
-      )}
-
-      {sample.ugcStatus === "submitted" && (
-        <p className="mt-2 font-serif text-xs italic text-frost-dim">{t("samples.ugcSubmittedNote")}</p>
-      )}
-
       {canSubmit && (
         <div className="mt-3 flex flex-wrap items-center gap-2">
-          {sample.ugcSubmittedAt !== null && (
-            <p className="w-full font-serif text-xs italic text-frost-dim">{t("samples.ugcRejectedHint")}</p>
-          )}
           <input
             value={videoUrl}
             onChange={(e) => setVideoUrl(e.target.value)}
             placeholder={t("samples.ugcVideoPlaceholder")}
-            className="min-w-[16rem] flex-1 border border-white/15 bg-white/[0.03] px-3 py-2 font-mono text-xs"
+            className="min-w-[16rem] flex-1 rounded-xl border border-line bg-[#f8f9fa] px-3 py-2 text-xs focus:bg-white focus:outline-none"
           />
           <button
             type="button"
             disabled={pending || !videoUrl.trim()}
             onClick={handleSubmit}
-            className="gl-btn-ghost disabled:opacity-40"
+            className="gl-btn-primary text-xs disabled:opacity-40"
           >
             {t("samples.ugcSubmitCta")}
           </button>
         </div>
       )}
-      {error && <p className="mt-1.5 font-mono text-xs text-danger">{error}</p>}
+      {error && <p className="mt-1.5 text-xs text-danger">{error}</p>}
     </div>
   );
 }
@@ -429,25 +460,25 @@ function EarningsTab({
 
   if (data.ordersLedger.length === 0) {
     return (
-      <section className="px-5 py-10 sm:px-8">
+      <section className="p-5 sm:p-8">
         <EmptyState text={t("earnings.empty")} />
       </section>
     );
   }
 
   return (
-    <section className="px-5 py-10 sm:px-8">
+    <section className="p-5 sm:p-8">
       <ul className="space-y-3">
         {data.ordersLedger.map((o) => (
-          <li key={o.orderId} className="border border-white/10">
+          <li key={o.orderId} className="rounded-2xl border border-line bg-white p-4 shadow-xs">
             <button
               type="button"
               onClick={() => setExpanded(expanded === o.orderId ? null : o.orderId)}
-              className="flex w-full flex-wrap items-center justify-between gap-3 px-4 py-3 text-start"
+              className="flex w-full flex-wrap items-center justify-between gap-3 text-start"
             >
               <div>
-                <p className="font-display text-base">{o.productTitle}</p>
-                <p className="font-serif text-xs italic text-frost-dim">{formatDate(o.createdAt, locale)}</p>
+                <p className="text-sm font-bold text-frost">{o.productTitle}</p>
+                <p className="text-xs text-frost-dim">{formatDate(o.createdAt, locale)}</p>
               </div>
               <div className="flex items-center gap-3">
                 <StatusPill ok={o.status === "fulfilled" || o.status === "confirmed"}>
@@ -458,13 +489,13 @@ function EarningsTab({
                     {tStatus(`escrow.${o.escrowStatus}` as "escrow.held")}
                   </StatusPill>
                 )}
-                <span className="font-mono text-sm font-bold">
+                <span className="font-mono text-sm font-bold text-emerald-700">
                   {o.ledger ? formatMoney(o.ledger.creatorShare, o.currency) : "—"}
                 </span>
               </div>
             </button>
             {expanded === o.orderId && (
-              <div className="border-t border-white/10 p-4">
+              <div className="mt-4 border-t border-line pt-4">
                 <WaterfallBreakdown row={o} />
               </div>
             )}
@@ -524,23 +555,23 @@ function PayoutsTab({
   }
 
   return (
-    <section className="px-5 py-10 sm:px-8">
+    <section className="p-5 sm:p-8 space-y-6">
       <div className="grid gap-4 sm:grid-cols-2">
-        <div className="border border-white/10 p-5">
-          <p className="font-west text-[10px] uppercase tracking-[0.24em] text-frost-dim">{t("payouts.available")}</p>
-          <p className="mt-2 font-mono text-3xl font-bold">{formatMoney(data.balances.availableBalance)}</p>
-          <p className="mt-1 font-serif text-xs italic text-frost-dim">{t("payouts.availableHint")}</p>
+        <div className="rounded-2xl border border-line bg-[#fbfcfd] p-5">
+          <p className="text-xs font-bold uppercase tracking-wider text-frost-dim">{t("payouts.available")}</p>
+          <p className="mt-2 font-mono text-3xl font-bold text-emerald-700">{formatMoney(data.balances.availableBalance)}</p>
+          <p className="mt-1 text-xs text-frost-dim">{t("payouts.availableHint")}</p>
         </div>
-        <div className="border border-white/15 p-5">
-          <p className="font-west text-[10px] uppercase tracking-[0.24em] text-frost-dim">{t("payouts.held")}</p>
+        <div className="rounded-2xl border border-line bg-[#fbfcfd] p-5">
+          <p className="text-xs font-bold uppercase tracking-wider text-frost-dim">{t("payouts.held")}</p>
           <p className="mt-2 font-mono text-3xl font-bold text-frost-dim">{formatMoney(data.balances.heldBalance)}</p>
-          <p className="mt-1 font-serif text-xs italic text-frost-dim">{t("payouts.heldHint")}</p>
+          <p className="mt-1 text-xs text-frost-dim">{t("payouts.heldHint")}</p>
         </div>
       </div>
 
-      <div className="mt-8 border border-white/10 p-5">
+      <div className="rounded-2xl border border-line bg-white p-5 shadow-xs">
         <p className="gl-eyebrow">{t("payouts.accountTitle")}</p>
-        <p className="mt-2 max-w-lg text-[14px] leading-relaxed text-frost-dim">{t("payouts.accountLede")}</p>
+        <p className="mt-1 max-w-lg text-[13px] text-frost-dim">{t("payouts.accountLede")}</p>
         <form
           className="mt-4 grid gap-3 sm:grid-cols-3"
           onSubmit={(event) => {
@@ -555,43 +586,41 @@ function PayoutsTab({
             });
           }}
         >
-          <label className="block">
-            <span className="font-west text-[10px] uppercase tracking-[0.2em] text-frost-dim">{t("payouts.bankName")}</span>
+          <div>
+            <label className="block text-xs font-medium text-frost-dim">{t("payouts.bankName")}</label>
             <input
               value={bankName}
               onChange={(e) => setBankName(e.target.value)}
-              className="mt-1 w-full border border-white/15 bg-white/[0.03] px-3 py-2 font-mono text-sm"
+              className="mt-1 w-full rounded-xl border border-line bg-[#f8f9fa] px-3 py-2 text-xs focus:bg-white focus:outline-none"
             />
-          </label>
-          <label className="block">
-            <span className="font-west text-[10px] uppercase tracking-[0.2em] text-frost-dim">{t("payouts.accountName")}</span>
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-frost-dim">{t("payouts.accountName")}</label>
             <input
               value={accountName}
               onChange={(e) => setAccountName(e.target.value)}
-              className="mt-1 w-full border border-white/15 bg-white/[0.03] px-3 py-2 text-sm"
+              className="mt-1 w-full rounded-xl border border-line bg-[#f8f9fa] px-3 py-2 text-xs focus:bg-white focus:outline-none"
             />
-          </label>
-          <label className="block">
-            <span className="font-west text-[10px] uppercase tracking-[0.2em] text-frost-dim">{t("payouts.accountNumber")}</span>
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-frost-dim">{t("payouts.accountNumber")}</label>
             <input
               value={accountNumber}
               onChange={(e) => setAccountNumber(e.target.value)}
-              className="mt-1 w-full border border-white/15 bg-white/[0.03] px-3 py-2 font-mono text-sm"
+              className="mt-1 w-full rounded-xl border border-line bg-[#f8f9fa] px-3 py-2 text-xs font-mono focus:bg-white focus:outline-none"
             />
-          </label>
-          <button type="submit" disabled={pending} className="gl-btn-ghost sm:col-span-3 disabled:opacity-40">
+          </div>
+          <button type="submit" disabled={pending} className="gl-btn-ghost text-xs sm:col-span-3 disabled:opacity-40">
             {t("payouts.saveAccount")}
           </button>
         </form>
       </div>
 
-      <div className="mt-8 border border-white/10 p-5">
-        <p className="gl-eyebrow">{t("payouts.localPathTitle")}</p>
-        <p className="mt-2 max-w-lg text-[14px] leading-relaxed text-frost-dim">{t("payouts.localPathLede")}</p>
-        <p className="gl-eyebrow mt-6">{t("payouts.requestTitle")}</p>
+      <div className="rounded-2xl border border-line bg-white p-5 shadow-xs">
+        <p className="gl-eyebrow">{t("payouts.requestTitle")}</p>
         <div className="mt-4 flex flex-wrap items-end gap-3">
           <div>
-            <label className="block font-west text-[10px] uppercase tracking-[0.2em] text-frost-dim">
+            <label className="block text-xs font-medium text-frost-dim">
               {t("payouts.amountLabel")}
             </label>
             <input
@@ -600,7 +629,7 @@ function PayoutsTab({
               step={0.01}
               value={amountInput}
               onChange={(e) => setAmountInput(e.target.value)}
-              className="mt-1 w-40 border border-white/15 bg-white/[0.03] px-3 py-2 font-mono text-sm"
+              className="mt-1 w-44 rounded-xl border border-line bg-[#f8f9fa] px-3 py-2 font-mono text-sm focus:bg-white focus:outline-none"
               placeholder="0.000"
             />
           </div>
@@ -608,7 +637,7 @@ function PayoutsTab({
             type="button"
             disabled={!canRequest || pending}
             onClick={() => submit("instant")}
-            className="gl-btn-primary disabled:opacity-40"
+            className="gl-btn-primary text-xs disabled:opacity-40"
           >
             {t("payouts.requestInstant")}
           </button>
@@ -616,44 +645,33 @@ function PayoutsTab({
             type="button"
             disabled={!canRequest || pending}
             onClick={() => submit("scheduled")}
-            className="gl-btn-ghost disabled:opacity-40"
+            className="gl-btn-ghost text-xs disabled:opacity-40"
           >
             {t("payouts.requestScheduled")}
           </button>
         </div>
         {amount > 0 && (
-          <p className="mt-3 font-serif text-sm italic text-danger">
+          <p className="mt-2 text-xs text-rose-600 font-medium">
             {t("payouts.feePreview", { fee: formatMoney(fee) })}
           </p>
         )}
-        {belowMinimum && (
-          <p className="mt-2 font-mono text-xs text-danger">
-            {t("payouts.belowMinimum", { min: formatMoney(MIN_PAYOUT_OMR) })}
-          </p>
-        )}
-        {!data.creator.hasPayoutAccount && (
-          <p className="mt-2 font-mono text-xs text-danger">{t("payouts.accountRequired")}</p>
-        )}
-        {amount > data.balances.availableBalance && (
-          <p className="mt-2 font-mono text-xs text-danger">{t("payouts.exceedsAvailable")}</p>
-        )}
-        {error && <p className="mt-2 font-mono text-xs text-danger">{error}</p>}
+        {error && <p className="mt-2 text-xs text-danger">{error}</p>}
       </div>
 
-      <div className="mt-8">
+      <div>
         <p className="gl-eyebrow">{t("payouts.historyTitle")}</p>
         {data.payoutRequests.length === 0 ? (
           <EmptyState text={t("payouts.historyEmpty")} />
         ) : (
-          <ul className="mt-4 space-y-2">
+          <ul className="mt-3 space-y-2">
             {data.payoutRequests.map((p) => (
-              <li key={p.id} className="flex flex-wrap items-baseline justify-between gap-3 border-b border-white/10 py-2">
-                <span className="font-west text-[10px] uppercase tracking-[0.2em] text-frost-dim">
+              <li key={p.id} className="flex flex-wrap items-baseline justify-between gap-3 rounded-xl border border-line bg-white px-4 py-3 text-xs">
+                <span className="font-bold text-frost">
                   {t(`payouts.type.${p.type}` as "payouts.type.instant")}
                 </span>
-                <span className="font-mono text-sm">{formatMoney(p.amount)}</span>
+                <span className="font-mono font-bold text-frost">{formatMoney(p.amount)}</span>
                 {p.feeAmount > 0 && (
-                  <span className="font-mono text-xs text-danger">−{formatMoney(p.feeAmount)}</span>
+                  <span className="font-mono text-danger">−{formatMoney(p.feeAmount)}</span>
                 )}
                 <StatusPill ok={p.status === "paid" || p.status === "approved"}>
                   {tStatus(`payout.${p.status}` as "payout.requested")}
@@ -677,13 +695,17 @@ function TabBar({
   onChange: (id: string) => void;
 }) {
   return (
-    <div className="gl-tabs">
+    <div className="flex gap-1 overflow-x-auto p-3 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
       {tabs.map((tabItem) => (
         <button
           key={tabItem.id}
           type="button"
           onClick={() => onChange(tabItem.id)}
-          className={`gl-tab ${active === tabItem.id ? "is-on" : ""}`}
+          className={`min-h-10 shrink-0 rounded-full px-4 text-xs font-semibold transition-colors duration-150 ${
+            active === tabItem.id
+              ? "bg-frost text-white"
+              : "bg-[var(--paper)] text-frost-dim hover:text-frost"
+          }`}
         >
           {tabItem.label}
         </button>
@@ -694,9 +716,10 @@ function TabBar({
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-baseline justify-between gap-3">
-      <span className="font-west text-[10px] uppercase tracking-[0.16em] text-frost-dim">{label}</span>
-      <span className="font-mono text-sm">{value}</span>
+    <div className="flex items-baseline justify-between gap-3 py-1">
+      <span className="text-xs text-frost-dim">{label}</span>
+      <span className="font-mono text-xs font-semibold text-frost">{value}</span>
     </div>
   );
 }
+

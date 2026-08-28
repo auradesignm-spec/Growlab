@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { startDemoExperience } from "@/lib/dev/actions";
 import { signInHref, signUpHref } from "@/lib/auth/paths";
@@ -9,62 +9,158 @@ import { signInHref, signUpHref } from "@/lib/auth/paths";
 export default function DemoEnterGate({ storeSlug }: { storeSlug: string }) {
   const t = useTranslations("demo");
   const tEnter = useTranslations("enter");
+  const [email, setEmail] = useState("");
+  const [selectedRole, setSelectedRole] = useState<"merchant" | "buyer">("merchant");
   const [pending, startTransition] = useTransition();
 
-  function launch(role: "merchant" | "buyer") {
+  function launchWithRole(role: "merchant" | "buyer") {
     startTransition(async () => {
       const fd = new FormData();
       fd.set("role", role);
+      fd.set("email", email.trim() || "demo@growlab.om");
       await startDemoExperience(fd);
     });
   }
 
+  function handleQuickStart(e: React.FormEvent) {
+    e.preventDefault();
+    launchWithRole(selectedRole);
+  }
+
   return (
-    <div className="max-w-2xl">
-      <p className="gl-eyebrow">{t("eyebrow")}</p>
-      <h1 className="mt-3 text-display-lg font-semibold text-frost">{t("title")}</h1>
-      <p className="gl-lede mt-4">{t("lede")}</p>
-
-      <div className="mt-10 grid gap-4 sm:grid-cols-2">
-        <button
-          type="button"
-          disabled={pending}
-          onClick={() => launch("merchant")}
-          className="gl-tile group p-6 text-start transition hover:border-signal/40 disabled:opacity-50"
-        >
-          <p className="font-west text-[10px] uppercase tracking-[0.22em] text-frost-dim">{t("merchantKicker")}</p>
-          <h2 className="mt-2 text-xl font-semibold text-frost">{t("merchantTitle")}</h2>
-          <p className="mt-2 text-[14px] leading-relaxed text-frost-dim">{t("merchantLede")}</p>
-          <span className="mt-4 inline-flex text-[13px] font-medium text-signal">{t("merchantCta")} →</span>
-        </button>
-
-        <button
-          type="button"
-          disabled={pending}
-          onClick={() => launch("buyer")}
-          className="gl-tile group p-6 text-start transition hover:border-signal/40 disabled:opacity-50"
-        >
-          <p className="font-west text-[10px] uppercase tracking-[0.22em] text-frost-dim">{t("buyerKicker")}</p>
-          <h2 className="mt-2 text-xl font-semibold text-frost">{t("buyerTitle")}</h2>
-          <p className="mt-2 text-[14px] leading-relaxed text-frost-dim">{t("buyerLede")}</p>
-          <span className="mt-4 inline-flex text-[13px] font-medium text-signal">{t("buyerCta")} →</span>
-        </button>
+    <div className="w-full max-w-2xl">
+      <div className="flex items-center gap-2">
+        <span className="flex size-2.5 rounded-full bg-emerald-500 animate-ping" />
+        <p className="gl-eyebrow text-emerald-700 font-semibold">محاكاة تفاعلية فورية — بدون تسجيل مسبق</p>
       </div>
 
-      <p className="mt-6 text-[13px] text-frost-faint">
-        {t("storeHint")}{" "}
-        <Link href={`/m/${storeSlug}`} className="text-frost-dim underline-offset-2 hover:underline">
-          /m/{storeSlug}
-        </Link>
+      <h1 className="mt-3 text-display-md font-semibold text-frost">
+        جرب منصة Growlab الحقيقية وتعلّم كيف تعمل
+      </h1>
+      <p className="gl-lede mt-2 text-[15px] text-frost-dim">
+        أدخل بريدك الإلكتروني فقط للبدء في بيئة تفاعلية حية كاملة الميزات — استكشف إعداد المنتجات، محفظة العمولات، محاكي المبيعات، ومسار التوثيق بدون أي كلمات مرور أو تعقيد.
       </p>
 
-      <div className="mt-10 border-t border-line pt-8">
-        <p className="text-[14px] text-frost-dim">{tEnter("signInPrompt")}</p>
-        <div className="mt-3 flex flex-wrap gap-3">
-          <Link href={signInHref("merchant")} className="gl-btn-ghost">
+      {/* Email Entry Card */}
+      <form onSubmit={handleQuickStart} className="mt-8 rounded-3xl border border-line bg-white p-6 shadow-sm sm:p-8">
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="demo-email" className="block text-sm font-semibold text-frost">
+              البريد الإلكتروني للبدء:
+            </label>
+            <div className="mt-2 flex flex-col gap-2 sm:flex-row">
+              <input
+                id="demo-email"
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="name@company.com أو بريدك الشخصي"
+                className="flex-1 rounded-xl border border-line bg-[#f8f9fa] px-4 py-3 text-sm text-frost placeholder:text-frost-faint focus:border-frost focus:bg-white focus:outline-none"
+              />
+              <button
+                type="button"
+                onClick={() => setEmail("demo.partner@growlab.om")}
+                className="gl-btn-secondary !min-h-9 !py-1.5 !px-3 !text-xs whitespace-nowrap"
+              >
+                استخدام بريد تجريبي
+              </button>
+            </div>
+            <p className="mt-1.5 text-xs text-frost-faint">
+              لن نطلب منك أي كلمة مرور أو بطاقة بنكية — الدخول فوري بنقرة واحدة.
+            </p>
+          </div>
+
+          {/* Role selector */}
+          <div className="pt-2">
+            <p className="text-xs font-bold uppercase tracking-wider text-frost-faint mb-3">
+              اختر دورك الافتراضي في المحاكاة:
+            </p>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <button
+                type="button"
+                onClick={() => setSelectedRole("merchant")}
+                className={`relative flex flex-col items-start rounded-2xl border p-4 text-start transition-all ${
+                  selectedRole === "merchant"
+                    ? "border-emerald-600 bg-emerald-50/50 shadow-sm"
+                    : "border-line bg-[#fbfcfd] hover:border-slate-300"
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-frost text-sm">تاجر / صاحب متجر</span>
+                </div>
+                <p className="mt-2 text-xs text-frost-dim leading-relaxed">
+                  تجربة إضافة المنتجات، شحن محفظة العمولات، ومحاكاة طلبات COD اللحظية.
+                </p>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setSelectedRole("buyer")}
+                className={`relative flex flex-col items-start rounded-2xl border p-4 text-start transition-all ${
+                  selectedRole === "buyer"
+                    ? "border-emerald-600 bg-emerald-50/50 shadow-sm"
+                    : "border-line bg-[#fbfcfd] hover:border-slate-300"
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-frost text-sm">مسوّق / صانع محتوى</span>
+                </div>
+                <p className="mt-2 text-xs text-frost-dim leading-relaxed">
+                  تصفح المنتجات، إنشاء روابط التتبع، وتجربة كسب العمولات عند التسليم.
+                </p>
+              </button>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            disabled={pending}
+            className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#111318] py-3.5 text-sm font-semibold text-white shadow-lg transition-all hover:bg-black active:scale-[0.99] disabled:opacity-50"
+          >
+            {pending ? (
+              <span className="flex items-center gap-2">
+                <span className="size-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                جاري إطلاق البيئة الافتراضية...
+              </span>
+            ) : (
+              <span>دخول المحاكاة التفاعلية الآن ←</span>
+            )}
+          </button>
+        </div>
+      </form>
+
+      {/* Learning roadmap highlight */}
+      <div className="mt-8 rounded-3xl border border-line bg-slate-50/80 p-6">
+        <h2 className="text-xs font-bold uppercase tracking-wider text-frost-dim">
+          ماذا ستتعلم داخل المحاكاة الافتراضية؟
+        </h2>
+        <div className="mt-4 grid gap-3 sm:grid-cols-3 text-xs text-frost-dim">
+          <div className="rounded-2xl border border-line bg-white p-3.5">
+            <p className="font-bold text-frost">1. حماية الميزانية</p>
+            <p className="mt-1 text-frost-faint">كيف يمنع سقف المحفظة الهدر الإعلاني ويضمن الصرف على المبيعات المحصّلة فقط.</p>
+          </div>
+          <div className="rounded-2xl border border-line bg-white p-3.5">
+            <p className="font-bold text-frost">2. شحن مسبق الدفع</p>
+            <p className="mt-1 text-frost-faint">كيف يقلل دفع رسوم التوصيل مسبقاً نسبة الإلغاءات والمرتجعات إلى أدنى مستوى.</p>
+          </div>
+          <div className="rounded-2xl border border-line bg-white p-3.5">
+            <p className="font-bold text-frost">3. تسوية فورية للعمولات</p>
+            <p className="mt-1 text-frost-faint">توزيع الأرباح ودفتر الحسابات المشفر عند استلام الزبون للطلب.</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-6 flex items-center justify-between text-xs text-frost-faint">
+        <Link href={`/m/${storeSlug}`} className="text-frost-dim underline-offset-2 hover:underline">
+          معاينة متجر تجريبي مباشر: /m/{storeSlug}
+        </Link>
+        <div className="flex gap-3">
+          <Link href={signInHref("merchant")} className="hover:text-frost">
             {tEnter("signIn")}
           </Link>
-          <Link href={signUpHref("merchant")} className="gl-btn-ghost">
+          <span>·</span>
+          <Link href={signUpHref("merchant")} className="hover:text-frost">
             {tEnter("continue")}
           </Link>
         </div>
@@ -72,3 +168,4 @@ export default function DemoEnterGate({ storeSlug }: { storeSlug: string }) {
     </div>
   );
 }
+

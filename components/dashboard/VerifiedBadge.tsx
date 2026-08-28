@@ -17,47 +17,31 @@ export default function VerifiedBadge({
   className = "",
   tooltip = "حساب موثق ومطابق رسمياً في منصة Growlab",
 }: VerifiedBadgeProps) {
-  const sizeMap = {
-    sm: {
-      icon: "h-3.5 w-3.5",
-      text: "text-[10px]",
-      gap: "gap-1",
-      container: "py-0.5 px-1.5",
-    },
-    md: {
-      icon: "h-4.5 w-4.5",
-      text: "text-xs",
-      gap: "gap-1.5",
-      container: "py-1 px-2.5",
-    },
-    lg: {
-      icon: "h-5 w-5",
-      text: "text-sm",
-      gap: "gap-2",
-      container: "py-1.5 px-3",
-    },
-    xl: {
-      icon: "h-6 w-6",
-      text: "text-base",
-      gap: "gap-2.5",
-      container: "py-2 px-3.5",
-    },
+  const pixelMap = {
+    sm: { px: 14, class: "w-[14px] h-[14px] min-w-[14px] min-h-[14px] max-w-[14px] max-h-[14px]", text: "text-[10px]", pad: "py-0.5 px-1.5" },
+    md: { px: 16, class: "w-[16px] h-[16px] min-w-[16px] min-h-[16px] max-w-[16px] max-h-[16px]", text: "text-[11px]", pad: "py-0.5 px-2" },
+    lg: { px: 20, class: "w-[20px] h-[20px] min-w-[20px] min-h-[20px] max-w-[20px] max-h-[20px]", text: "text-xs", pad: "py-1 px-2.5" },
+    xl: { px: 24, class: "w-[24px] h-[24px] min-w-[24px] min-h-[24px] max-w-[24px] max-h-[24px]", text: "text-sm", pad: "py-1.5 px-3" },
   };
 
-  const current = sizeMap[size] || sizeMap.md;
+  const current = pixelMap[size] || pixelMap.md;
 
   const badgeIcon = (
     <span
-      className={`relative inline-flex shrink-0 items-center justify-center ${current.icon}`}
+      className={`relative inline-flex shrink-0 items-center justify-center ${current.class}`}
+      style={{ width: `${current.px}px`, height: `${current.px}px` }}
       title={tooltip}
       aria-label="Verified Account Badge"
     >
       {/* 8-pointed star / scalloped blue rosette */}
       <svg
+        width={current.px}
+        height={current.px}
         viewBox="0 0 24 24"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="h-full w-full text-sky-500 drop-shadow-[0_1px_4px_rgba(14,165,233,0.45)]"
+        className="block shrink-0"
+        style={{ width: `${current.px}px`, height: `${current.px}px` }}
       >
         <path
           d="M12 2L14.7 4.2C15.2 4.6 15.8 4.8 16.4 4.7L19.8 4.2L20.4 7.6C20.5 8.2 20.8 8.8 21.3 9.2L23.7 11.5L22 14.5C21.7 15.1 21.6 15.7 21.8 16.3L22.6 19.6L19.3 20.4C18.7 20.5 18.2 20.9 17.8 21.4L15.6 24L12.5 22.5C12 22.3 11.4 22.3 10.9 22.5L7.8 24L5.6 21.4C5.2 20.9 4.7 20.5 4.1 20.4L0.8 19.6L1.6 16.3C1.8 15.7 1.7 15.1 1.4 14.5L-0.3 11.5L2.1 9.2C2.6 8.8 2.9 8.2 3 7.6L3.6 4.2L7 4.7C7.6 4.8 8.2 4.6 8.7 4.2L12 2Z"
@@ -80,12 +64,12 @@ export default function VerifiedBadge({
   );
 
   if (!showLabel) {
-    return <span className={`inline-flex items-center ${className}`}>{badgeIcon}</span>;
+    return <span className={`inline-flex shrink-0 items-center justify-center ${className}`}>{badgeIcon}</span>;
   }
 
   return (
     <span
-      className={`inline-flex items-center ${current.gap} rounded-full border border-sky-500/30 bg-sky-500/10 ${current.container} font-semibold text-sky-700 dark:text-sky-300 shadow-xs ${className}`}
+      className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border border-sky-500/30 bg-sky-500/10 ${current.pad} font-semibold text-sky-700 dark:text-sky-300 shadow-xs ${className}`}
       title={tooltip}
     >
       {badgeIcon}

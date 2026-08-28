@@ -31,7 +31,7 @@ export default function ProductPricingEditor({ product }: { product: MerchantPro
 
         <div className="flex flex-wrap items-center gap-4 font-mono text-[11px] text-frost-dim">
           <span>
-            🔒 {t("costPriceLabel")}: <span className="text-frost">{formatMoney(product.costPrice, product.currency)}</span>
+            {t("costPriceLabel")}: <span className="text-frost">{formatMoney(product.costPrice, product.currency)}</span>
           </span>
           <span>
             {t("commissionLabel")}: <span className="text-frost">{commissionLabel}</span>

@@ -93,7 +93,7 @@ export function KycQueueTab({ data }: { data: AdminDashboardData }) {
                 : "border border-line bg-white/60 text-frost-dim hover:bg-white dark:bg-slate-800/60"
             }`}
           >
-            🏢 سجلات تجارية CR ({crMerchants.length})
+            سجلات تجارية CR ({crMerchants.length})
           </button>
           <button
             type="button"
@@ -104,7 +104,7 @@ export function KycQueueTab({ data }: { data: AdminDashboardData }) {
                 : "border border-line bg-white/60 text-frost-dim hover:bg-white dark:bg-slate-800/60"
             }`}
           >
-            🎨 مشاريع منزلية / حرة ({freelancerMerchants.length})
+            مشاريع منزلية / حرة ({freelancerMerchants.length})
           </button>
           <button
             type="button"
@@ -115,7 +115,7 @@ export function KycQueueTab({ data }: { data: AdminDashboardData }) {
                 : "border border-line bg-white/60 text-frost-dim hover:bg-white dark:bg-slate-800/60"
             }`}
           >
-            🎬 صناع المحتوى ({pendingCreators.length})
+            صناع المحتوى ({pendingCreators.length})
           </button>
         </div>
       </div>
@@ -123,8 +123,7 @@ export function KycQueueTab({ data }: { data: AdminDashboardData }) {
       {/* Empty State */}
       {filteredMerchants.length === 0 && filteredCreators.length === 0 ? (
         <div className="rounded-3xl border border-line bg-slate-50/50 p-12 text-center dark:bg-slate-900/50">
-          <span className="text-4xl">🎉</span>
-          <h3 className="mt-3 text-base font-bold text-frost">لا توجد طلبات تدقيق معلقة في هذا القسم</h3>
+          <h3 className="text-base font-bold text-frost">لا توجد طلبات تدقيق معلقة في هذا القسم</h3>
           <p className="mt-1 text-xs text-frost-dim">
             تمت مراجعة وتدقيق جميع طلبات التوثيق وفق أعلى معايير الأمان (24h SLA Clean).
           </p>
@@ -245,11 +244,11 @@ function MerchantAuditCard({
                   : "bg-sky-500/10 text-sky-700 dark:text-sky-300 border border-sky-500/30"
               }`}
             >
-              {isFreelancer ? "🎨 مشروع منزلي / فردي (بدون CR)" : "🏢 منشأة تجارية معتمدة (سجل CR)"}
+              {isFreelancer ? "مشروع منزلي / فردي (بدون CR)" : "منشأة تجارية معتمدة (سجل CR)"}
             </span>
             {merchant.kycSubmittedAt && (
               <span className="text-[11px] text-amber-600 dark:text-amber-400 font-mono">
-                ⏱️ تم التقديم: {new Date(merchant.kycSubmittedAt).toLocaleDateString()}
+                تم التقديم: {new Date(merchant.kycSubmittedAt).toLocaleDateString()}
               </span>
             )}
           </div>
@@ -265,9 +264,9 @@ function MerchantAuditCard({
             type="button"
             disabled={pending}
             onClick={() => run(onApprove)}
-            className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-xl bg-sky-600 px-4 text-xs font-bold text-white shadow-xs hover:bg-sky-700 disabled:opacity-40 active:scale-95"
+            className="gl-btn-primary !min-h-10 !px-4 !text-xs font-bold shadow-xs disabled:opacity-40"
           >
-            <span>✓</span> اعتماد ومنح الشارة الزرقاء
+            اعتماد ومنح الشارة
           </button>
           <button
             type="button"
@@ -305,7 +304,7 @@ function MerchantAuditCard({
               rel="noopener noreferrer"
               className="mt-0.5 block font-bold text-rose-500 hover:underline truncate"
             >
-              📸 {merchant.instagramUrl} ↗
+              {merchant.instagramUrl} ↗
             </a>
           ) : (
             <p className="mt-0.5 text-frost-dim">— غير مضاف</p>
@@ -321,7 +320,7 @@ function MerchantAuditCard({
               rel="noopener noreferrer"
               className="mt-0.5 block font-bold text-slate-800 dark:text-slate-200 hover:underline truncate"
             >
-              🎵 {merchant.tiktokUrl} ↗
+              {merchant.tiktokUrl} ↗
             </a>
           ) : (
             <p className="mt-0.5 text-frost-dim">— غير مضاف</p>
@@ -342,10 +341,10 @@ function MerchantAuditCard({
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-4">
           {merchant.documents.map((doc) => {
             const kindLabels: Record<string, string> = {
-              commercial_register: "📄 وثيقة السجل التجاري",
-              owner_id_front: "💳 الهوية (الأمام)",
-              owner_id_back: "💳 الهوية (الخلف)",
-              face_scan: "👤 الفحص الحي للوجه",
+              commercial_register: "وثيقة السجل التجاري",
+              owner_id_front: "الهوية (الأمام)",
+              owner_id_back: "الهوية (الخلف)",
+              face_scan: "الفحص الحي للوجه",
             };
             return (
               <div
@@ -363,7 +362,7 @@ function MerchantAuditCard({
                   <p className="text-[11px] font-bold text-frost truncate">
                     {kindLabels[doc.kind] || doc.kind}
                   </p>
-                  <span className="text-[10px] text-sky-600 dark:text-sky-400">تكبير للمعاينة 🔍</span>
+                  <span className="text-[10px] text-sky-600 dark:text-sky-400">تكبير للمعاينة</span>
                 </div>
               </div>
             );
@@ -433,7 +432,7 @@ function CreatorAuditCard({
       <div className="flex flex-wrap items-start justify-between gap-3 border-b border-line pb-4">
         <div>
           <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-bold text-emerald-700 dark:text-emerald-300">
-            🎬 صانع محتوى / مؤثر
+            صانع محتوى / مؤثر
           </span>
           <h3 className="mt-1.5 text-lg font-bold text-frost sm:text-xl">@{creator.username}</h3>
           <p className="text-xs text-frost-dim">
@@ -479,7 +478,7 @@ function CreatorAuditCard({
               />
               <div className="p-2 text-center bg-white/90 dark:bg-slate-900/90">
                 <p className="text-[11px] font-bold text-frost truncate">{doc.kind}</p>
-                <span className="text-[10px] text-sky-600 dark:text-sky-400">معاينة 🔍</span>
+                <span className="text-[10px] text-sky-600 dark:text-sky-400">معاينة</span>
               </div>
             </div>
           ))}

@@ -168,7 +168,7 @@ export default function StockAlertToast({
           title={t("title")}
         >
           <span className="flex h-2 w-2 rounded-full bg-amber-500 animate-ping" />
-          <span className="font-semibold">⚠️ {t("kicker")}</span>
+          <span className="font-semibold">{t("kicker")}</span>
           <span className="rounded-full bg-amber-200 px-1.5 py-0.2 font-mono text-[11px] text-amber-900 dark:bg-amber-900 dark:text-amber-100">
             {activeIssues.length}
           </span>
@@ -191,9 +191,6 @@ export default function StockAlertToast({
         {/* Toast Header */}
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400">
-              ⚠️
-            </span>
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400">
@@ -260,7 +257,7 @@ export default function StockAlertToast({
                           : "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-200"
                       }`}
                     >
-                      {primaryItem.type === "out_of_stock" ? `🔴 ${t("outOfStock")}` : `⏳ ${t("deadStock")}`}
+                      {primaryItem.type === "out_of_stock" ? t("outOfStock") : t("deadStock")}
                     </span>
                     <h4 className="mt-1 text-[13px] font-semibold text-frost">
                       {primaryItem.title}
@@ -325,9 +322,9 @@ export default function StockAlertToast({
                       onNavigateTab("ad_radar");
                       handleDismiss();
                     }}
-                    className="rounded-xl bg-amber-500 px-3 py-1.5 text-[12px] font-bold text-slate-950 shadow-sm hover:bg-amber-400"
+                    className="gl-btn-secondary !min-h-9 !py-1.5 !px-3.5 !text-xs font-semibold"
                   >
-                    🎯 {isAr ? "رادار المنصة الأنسب" : "Ad Radar"}
+                    {isAr ? "رادار المنصة الأنسب" : "Ad Radar"}
                   </button>
                 )}
                 {onNavigateTab && (
@@ -337,9 +334,9 @@ export default function StockAlertToast({
                       onNavigateTab("analytics");
                       handleDismiss();
                     }}
-                    className="rounded-xl bg-indigo-600 px-3 py-1.5 text-[12px] font-semibold text-white shadow-sm hover:bg-indigo-700"
+                    className="gl-btn-secondary !min-h-9 !py-1.5 !px-3.5 !text-xs font-semibold"
                   >
-                    📊 {isAr ? "رادار المخزون والرسوم" : "Stock Radar"}
+                    {isAr ? "رادار المخزون" : "Stock Radar"}
                   </button>
                 )}
                 {outOfStockCount > 0 && onNavigateTab && (
@@ -349,9 +346,9 @@ export default function StockAlertToast({
                       onNavigateTab("products");
                       handleDismiss();
                     }}
-                    className="rounded-xl bg-frost px-3 py-1.5 text-[12px] font-semibold text-white shadow-sm hover:opacity-90"
+                    className="gl-btn-primary !min-h-9 !py-1.5 !px-3.5 !text-xs"
                   >
-                    📦 {t("manageProducts")}
+                    {t("manageProducts")}
                   </button>
                 )}
                 {deadStockCount > 0 && onNavigateTab && (
@@ -361,9 +358,9 @@ export default function StockAlertToast({
                       onNavigateTab("campaign");
                       handleDismiss();
                     }}
-                    className="rounded-xl border border-frost/20 bg-white px-3 py-1.5 text-[12px] font-semibold text-frost hover:bg-black/5 dark:bg-slate-800"
+                    className="gl-btn-secondary !min-h-9 !py-1.5 !px-3.5 !text-xs"
                   >
-                    🚀 {t("launchCampaign")}
+                    {t("launchCampaign")}
                   </button>
                 )}
               </div>

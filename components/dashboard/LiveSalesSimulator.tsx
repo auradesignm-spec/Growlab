@@ -237,8 +237,8 @@ export default function LiveSalesSimulator({
       setOrders((prev) => [newOrder, ...prev.slice(0, 49)]); // Keep latest 50
 
       const notifMsg = isAr
-        ? `🎉 طلب جديد بقيمة ${formatMoney(price)} من ${cust.name} (${cust.city})!`
-        : `🎉 New order for ${formatMoney(price)} from ${cust.name} (${cust.city})!`;
+        ? `طلب جديد بقيمة ${formatMoney(price)} من ${cust.name} (${cust.city})!`
+        : `New order for ${formatMoney(price)} from ${cust.name} (${cust.city})!`;
       setLastNotification(notifMsg);
       playChime();
 
@@ -400,14 +400,14 @@ export default function LiveSalesSimulator({
                   : "bg-emerald-500 text-slate-950 hover:bg-emerald-400"
               }`}
             >
-              <span>{isPlaying ? "⏸️ إيقاف مؤقت" : "▶️ تشغيل التدفق"}</span>
+              <span>{isPlaying ? (isAr ? "إيقاف مؤقت" : "Pause") : (isAr ? "تشغيل التدفق" : "Play Stream")}</span>
             </button>
 
             <button
               onClick={() => triggerNewSimulatedOrder()}
               className="flex items-center gap-1.5 rounded-xl bg-white/10 px-3.5 py-2.5 text-xs font-bold text-white border border-white/15 hover:bg-white/20 active:scale-95 transition-all"
             >
-              <span>⚡ طلب تجريبي الآن</span>
+              <span>{isAr ? "طلب تجريبي الآن" : "Trigger Test Order"}</span>
             </button>
 
             {/* Speed Selector */}
@@ -425,14 +425,14 @@ export default function LiveSalesSimulator({
             {/* Sound Toggle */}
             <button
               onClick={() => setSoundEnabled(!soundEnabled)}
-              className={`flex size-9 items-center justify-center rounded-xl border text-xs transition-all ${
+              className={`flex size-9 items-center justify-center rounded-xl border text-[11px] font-bold transition-all ${
                 soundEnabled
                   ? "border-emerald-500/40 bg-emerald-500/20 text-emerald-300"
                   : "border-white/10 bg-white/5 text-slate-400"
               }`}
               title={soundEnabled ? "Mute sounds" : "Enable order chime"}
             >
-              {soundEnabled ? "🔔" : "🔕"}
+              {soundEnabled ? "صوت" : "صامت"}
             </button>
           </div>
         </div>
@@ -441,7 +441,7 @@ export default function LiveSalesSimulator({
         {lastNotification && (
           <div className="mt-4 flex items-center justify-between rounded-2xl bg-emerald-500/20 border border-emerald-400/40 px-4 py-2.5 text-xs font-semibold text-emerald-200 animate-bounce">
             <span className="flex items-center gap-2">
-              <span className="text-sm">🔔</span>
+              <span className="flex size-2 rounded-full bg-emerald-400 animate-ping" />
               <span>{lastNotification}</span>
             </span>
             <span className="text-[10px] font-mono text-emerald-300 opacity-80">
@@ -772,11 +772,11 @@ export default function LiveSalesSimulator({
                   };
 
                   const statusLabels = {
-                    new: isAr ? "🟡 طلب جديد (COD)" : "🟡 New COD Order",
-                    confirmed: isAr ? "🔵 تم التأكيد هاتفياً" : "🔵 Confirmed",
-                    out_for_delivery: isAr ? "🟣 مع مندوب الشحن" : "🟣 Out for Delivery",
-                    delivered: isAr ? "🟢 تم التحصيل نقداً (+أرباح)" : "🟢 Collected & Paid",
-                    returned: isAr ? "🔴 مرتجع RTO" : "🔴 Returned RTO",
+                    new: isAr ? "طلب جديد (COD)" : "New COD Order",
+                    confirmed: isAr ? "تم التأكيد هاتفياً" : "Confirmed",
+                    out_for_delivery: isAr ? "مع مندوب الشحن" : "Out for Delivery",
+                    delivered: isAr ? "تم التحصيل نقداً (+أرباح)" : "Collected & Paid",
+                    returned: isAr ? "مرتجع RTO" : "Returned RTO",
                   };
 
                   return (

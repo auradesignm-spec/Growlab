@@ -244,17 +244,14 @@ export default function StockSalesAnalyticsChart({
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
           <div className="flex items-center gap-2">
-            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-500/10 text-[15px] text-indigo-600 dark:text-indigo-400">
-              📊
-            </span>
             <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
               {isAr ? "رادار رصد المخزون والمبيعات" : "Recharts Sales vs Stock Radar"}
             </span>
             {deadStockProducts.length > 0 && (
-              <span className="rounded-full bg-rose-500/15 px-2.5 py-0.5 text-[11px] font-bold text-rose-700 dark:text-rose-300 animate-pulse">
+              <span className="rounded-full bg-rose-500/15 px-2.5 py-0.5 text-[11px] font-bold text-rose-700 dark:text-rose-300">
                 {isAr
-                  ? `⚠️ تم رصد ${deadStockProducts.length} منتجات راكدة`
-                  : `⚠️ ${deadStockProducts.length} Dead Stock Risk`}
+                  ? `تم رصد ${deadStockProducts.length} منتجات راكدة`
+                  : `${deadStockProducts.length} Dead Stock Risk`}
               </span>
             )}
           </div>
@@ -283,7 +280,7 @@ export default function StockSalesAnalyticsChart({
                   : "text-frost-dim hover:text-frost"
               }`}
             >
-              📅 {isAr ? "المسار اليومي" : "Daily Timeline"}
+              {isAr ? "المسار اليومي" : "Daily Timeline"}
             </button>
             <button
               type="button"
@@ -294,7 +291,7 @@ export default function StockSalesAnalyticsChart({
                   : "text-frost-dim hover:text-frost"
               }`}
             >
-              🏷️ {isAr ? "مقارنة المنتجات" : "By Product"}
+              {isAr ? "مقارنة المنتجات" : "By Product"}
             </button>
             <button
               type="button"
@@ -305,7 +302,7 @@ export default function StockSalesAnalyticsChart({
                   : "text-frost-dim hover:text-frost"
               }`}
             >
-              💰 {isAr ? "السيولة المجمدة" : "Trapped Capital"}
+              {isAr ? "السيولة المجمدة" : "Trapped Capital"}
             </button>
           </div>
 
@@ -335,7 +332,7 @@ export default function StockSalesAnalyticsChart({
             onChange={(e) => setSelectedProductId(e.target.value)}
             className="rounded-xl border border-line bg-white px-3 py-1.5 text-[12px] font-medium text-frost shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800"
           >
-            <option value="all">{isAr ? "📦 كامل الكتالوج (الكل)" : "📦 All Catalog Products"}</option>
+            <option value="all">{isAr ? "كامل الكتالوج (الكل)" : "All Catalog Products"}</option>
             {products.map((p) => (
               <option key={p.id} value={p.id}>
                 {p.title.slice(0, 28)}
@@ -353,7 +350,6 @@ export default function StockSalesAnalyticsChart({
             <span className="text-[12px] font-medium text-frost-dim">
               {isAr ? "مؤشر صحة المخزون" : "Inventory Health"}
             </span>
-            <span className="text-[14px]">🎯</span>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
             <span className="text-2xl font-bold font-mono text-frost">{healthScore}%</span>
@@ -385,7 +381,6 @@ export default function StockSalesAnalyticsChart({
             <span className="text-[12px] font-medium text-rose-800 dark:text-rose-300">
               {isAr ? "سيولة مجمدة بالركود" : "Trapped Dead Capital"}
             </span>
-            <span className="text-[14px]">⚠️</span>
           </div>
           <div className="mt-2 flex items-baseline gap-1">
             <span className="text-2xl font-bold font-mono text-rose-700 dark:text-rose-300">
@@ -409,7 +404,6 @@ export default function StockSalesAnalyticsChart({
             <span className="text-[12px] font-medium text-frost-dim">
               {isAr ? "إجمالي المخزون الحالي" : "Total Stock On Hand"}
             </span>
-            <span className="text-[14px]">📦</span>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
             <span className="text-2xl font-bold font-mono text-frost">{totalStockOnHand}</span>
@@ -428,7 +422,6 @@ export default function StockSalesAnalyticsChart({
             <span className="text-[12px] font-medium text-frost-dim">
               {isAr ? "متوسط المبيعات اليومية" : "Avg Daily Sales"}
             </span>
-            <span className="text-[14px]">⚡</span>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
             <span className="text-2xl font-bold font-mono text-frost">{avgDailyRunRate}</span>
@@ -613,10 +606,10 @@ export default function StockSalesAnalyticsChart({
                               }`}
                             >
                               {item.healthStatus === "dead_stock"
-                                ? `🔴 ${isAr ? "مخزون راكد" : "Dead Stock"}`
+                                ? (isAr ? "مخزون راكد" : "Dead Stock")
                                 : item.healthStatus === "slow_moving"
-                                  ? `🟡 ${isAr ? "تصريف بطيء" : "Slow Moving"}`
-                                  : `🟢 ${isAr ? "صحي" : "Healthy Turnover"}`}
+                                  ? (isAr ? "تصريف بطيء" : "Slow Moving")
+                                  : (isAr ? "صحي" : "Healthy Turnover")}
                             </span>
                             <p className="mt-1 font-semibold text-frost line-clamp-1">{item.title}</p>
                           </div>
@@ -736,9 +729,6 @@ export default function StockSalesAnalyticsChart({
         <div className="rounded-2xl border border-rose-200 bg-rose-50/40 p-4 sm:p-5 dark:border-rose-900/40 dark:bg-rose-950/20">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-start gap-3">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-rose-500/20 text-rose-600 text-lg">
-                🚀
-              </span>
               <div>
                 <h3 className="text-[14px] font-bold text-rose-900 dark:text-rose-200">
                   {isAr
@@ -759,16 +749,16 @@ export default function StockSalesAnalyticsChart({
                   <button
                     type="button"
                     onClick={() => onNavigateTab("campaign")}
-                    className="rounded-xl bg-rose-600 px-4 py-2 text-[12px] font-bold text-white shadow-sm hover:bg-rose-700 transition-all"
+                    className="gl-btn-primary !min-h-10 !py-2 !px-4 !text-xs"
                   >
-                    🔥 {isAr ? "إطلاق حملة تصفية فورية" : "Launch Clearance Campaign"}
+                    {isAr ? "إطلاق حملة تصفية" : "Launch Clearance Campaign"}
                   </button>
                   <button
                     type="button"
                     onClick={() => onNavigateTab("simulator")}
-                    className="rounded-xl border border-rose-300 bg-white px-3 py-2 text-[12px] font-semibold text-rose-800 hover:bg-rose-50 dark:border-rose-800 dark:bg-slate-800 dark:text-rose-200"
+                    className="gl-btn-secondary !min-h-10 !py-2 !px-4 !text-xs"
                   >
-                    ⚡ {isAr ? "اختبار الطلب في المحاكي" : "Test in Simulator"}
+                    {isAr ? "اختبار الطلب في المحاكي" : "Test in Simulator"}
                   </button>
                 </>
               )}

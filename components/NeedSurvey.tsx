@@ -405,7 +405,7 @@ function NeedSurveyDialog() {
               {/* Step by step tour preview */}
               <div className="space-y-2.5">
                 <p className="text-xs font-bold text-slate-800 uppercase tracking-wider">
-                  {isAr ? "📍 المحطات التي سنرشدك لتجربتها خطوة بخطوة:" : "📍 Key stops you will explore:"}
+                  {isAr ? "المحطات التي سنرشدك لتجربتها خطوة بخطوة:" : "Key stops you will explore:"}
                 </p>
                 <div className="space-y-2">
                   {(isAr ? result.keyStepsAr : result.keyStepsEn).map((st, i) => (
@@ -460,16 +460,15 @@ function NeedSurveyDialog() {
                   <button
                     type="button"
                     onClick={() => finish("tour")}
-                    className="rounded-full bg-emerald-600 px-5 py-2.5 text-xs font-bold text-white shadow-md hover:bg-emerald-700 active:scale-95 transition-all flex items-center gap-1.5"
+                    className="gl-btn-primary !min-h-10 !py-2 !px-5 !text-xs"
                   >
-                    <span>🧭</span>
                     <span>{isAr ? "بدء الجولة التوضيحية الفورية" : "Launch Interactive Tour"}</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => finish("navigate", result.actionUrl)}
-                    className="rounded-full bg-slate-900 px-5 py-2.5 text-xs font-bold text-white shadow-md hover:bg-black active:scale-95 transition-all flex items-center gap-1.5"
+                    className="gl-btn-secondary !min-h-10 !py-2 !px-5 !text-xs"
                   >
                     <span>{isAr ? result.actionLabelAr : result.actionLabelEn}</span>
                   </button>

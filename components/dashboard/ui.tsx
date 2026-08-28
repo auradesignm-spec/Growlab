@@ -3,18 +3,18 @@
  */
 export function TableShell({ head, children }: { head: string[]; children: React.ReactNode }) {
   return (
-    <div className="mt-4 overflow-x-auto rounded-2xl border border-line bg-white">
+    <div className="mt-4 overflow-x-auto rounded-2xl border border-line bg-white shadow-sm">
       <table className="w-full min-w-[640px] text-start">
         <thead>
-          <tr className="border-b border-white/10 bg-white/[0.04]">
+          <tr className="border-b border-line bg-[#fbfcfd]">
             {head.map((h) => (
-              <th key={h} className="px-4 py-3 text-start text-[12px] text-frost-dim">
+              <th key={h} className="px-4 py-3 text-start text-[12px] font-semibold text-frost-dim">
                 {h}
               </th>
             ))}
           </tr>
         </thead>
-        <tbody>{children}</tbody>
+        <tbody className="divide-y divide-line">{children}</tbody>
       </table>
     </div>
   );

@@ -110,7 +110,7 @@ export default async function DashboardLayout({
                     title={viewer?.name || "Growlab User"}
                     className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-frost border border-line dark:bg-slate-800"
                   >
-                    {viewer?.name?.charAt(0) || "👤"}
+                    {viewer?.name?.charAt(0)?.toUpperCase() || "G"}
                   </span>
                 )}
                 {(isVerifiedMerchant || isVerifiedCreator) && (

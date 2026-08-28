@@ -59,8 +59,8 @@ export default function MerchantDashboard({
   }, [initialTab]);
 
   const primaryTabs: Array<{ id: Tab; label: string }> = [
-    { id: "analytics", label: locale === "en" ? "📊 Sales vs Stock Radar" : "📊 رادار المبيعات والمخزون" },
-    { id: "simulator", label: locale === "en" ? "⚡ Live Sales Stream" : "⚡ محاكي المبيعات الحية" },
+    { id: "analytics", label: locale === "en" ? "Sales & Stock Radar" : "رادار المبيعات والمخزون" },
+    { id: "simulator", label: locale === "en" ? "Live Sales Simulator" : "محاكي المبيعات الحية" },
     { id: "store", label: t("tabs.store") },
     { id: "products", label: t("tabs.products") },
     { id: "campaign", label: t("tabs.campaign") },
@@ -90,8 +90,8 @@ export default function MerchantDashboard({
         <header className="mb-6">
           <div className="flex items-center gap-3">
             <div className="relative">
-              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500/20 to-sky-500/20 text-2xl font-bold border border-line">
-                🏪
+              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500/20 to-sky-500/20 text-lg font-bold border border-line text-frost">
+                {data.merchant.businessName.slice(0, 2).toUpperCase()}
               </span>
               {data.merchant.verificationStatus === "verified" && (
                 <div className="absolute -bottom-1 -right-1">
@@ -115,9 +115,6 @@ export default function MerchantDashboard({
         {data.merchant.verificationStatus !== "verified" && (
           <div className="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4 text-amber-950 dark:text-amber-200">
             <div className="flex items-start gap-3">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-500/20 text-lg">
-                🛡️
-              </span>
               <div>
                 <p className="text-sm font-bold">
                   {data.merchant.verificationStatus === "pending"
@@ -135,13 +132,13 @@ export default function MerchantDashboard({
               <button
                 type="button"
                 onClick={() => changeTab("products")}
-                className="inline-flex min-h-10 items-center justify-center rounded-xl border border-amber-500/40 bg-white/80 px-3.5 text-xs font-semibold text-amber-900 shadow-xs hover:bg-white dark:bg-slate-900 dark:text-amber-200"
+                className="gl-btn-secondary !min-h-10 !py-2 !px-3.5 !text-xs"
               >
-                ✨ أضف أول منتج الآن
+                أضف أول منتج الآن
               </button>
               <Link
                 href="/dashboard?kyc=1"
-                className="inline-flex min-h-10 items-center justify-center rounded-xl bg-amber-600 px-4 text-xs font-bold text-white shadow-xs hover:bg-amber-700"
+                className="gl-btn-primary !min-h-10 !py-2 !px-4 !text-xs"
               >
                 {data.merchant.verificationStatus === "pending" ? "عرض حالة التوثيق" : "توثيق الحساب الآن"}
               </Link>
@@ -323,14 +320,14 @@ export default function MerchantDashboard({
     }> = [
       {
         id: "analytics",
-        label: locale === "en" ? "Stock Radar 📊" : "رادار المخزون 📊",
+        label: locale === "en" ? "Stock Radar" : "رادار المخزون",
         hint: locale === "en" ? "Daily sales vs dead stock analysis" : "تحليل المبيعات والمخزون الراكد",
         onClick: () => onTab("analytics"),
         badge: "Recharts",
       },
       {
         id: "simulator",
-        label: locale === "en" ? "Live Stream ⚡" : "محاكي المبيعات ⚡",
+        label: locale === "en" ? "Live Simulator" : "محاكي المبيعات",
         hint: locale === "en" ? "Test real-time orders & margins" : "تجربة تدفق المبيعات والأرباح حياً",
         onClick: () => onTab("simulator"),
         badge: "LIVE",
