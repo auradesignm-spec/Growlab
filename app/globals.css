@@ -832,6 +832,66 @@
 }
 
 /* Product motion: opacity + transform only. No loop, no scale, no glow. */
+/* Growlab Exact Video Logo Reveal Animation:
+   Text slides out to the left from behind the bag icon */
+@keyframes gl-brand-reveal-left {
+  0% {
+    max-width: 0px;
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    max-width: 160px;
+    opacity: 1;
+    transform: translateX(0%);
+  }
+}
+
+.gl-logo-reveal-mask-left {
+  display: inline-flex;
+  align-items: center;
+  overflow: hidden;
+  animation: gl-brand-reveal-left 850ms cubic-bezier(0.16, 1, 0.3, 1) 150ms both;
+  will-change: max-width, transform, opacity;
+}
+
+.gl-brand-reveal-track {
+  white-space: nowrap;
+}
+
+/* Hover tilt, lift, and soft natural return */
+.gl-logo-interactive {
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.35s ease;
+  will-change: transform;
+}
+
+.group:hover .gl-logo-interactive {
+  transform: translateY(-3.5px) rotate(-6deg) scale(1.06);
+}
+
+.group:active .gl-logo-interactive {
+  transform: translateY(0) rotate(0deg) scale(0.96);
+}
+
+/* Soft natural shadow underneath with no colored glow */
+.gl-logo-shadow-pill {
+  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform, opacity;
+}
+
+.group:hover .gl-logo-shadow-pill {
+  opacity: 0.85;
+  transform: translateX(-50%) translateY(3px) scale(1.2);
+}
+
+.group:active .gl-logo-shadow-pill {
+  opacity: 0.2;
+  transform: translateX(-50%) translateY(0) scale(0.9);
+}
+
 @keyframes gl-enter {
   from {
     opacity: 0;

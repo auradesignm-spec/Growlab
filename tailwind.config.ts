@@ -66,6 +66,7 @@ const config: Config = {
         west: ["var(--font-plex-arabic)", "sans-serif"],
         serif: ["var(--font-plex-arabic)", "sans-serif"],
         mono: ["var(--font-plex-mono)", "monospace"],
+        brand: ["var(--font-brand)", "system-ui", "sans-serif"],
       },
       fontSize: {
         "display-xl": ["clamp(1.75rem,4.2vw,3.5rem)", { lineHeight: "1.1", letterSpacing: "-0.02em" }],

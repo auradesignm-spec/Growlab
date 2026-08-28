@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3000",
+    "dev": "next dev -p 3000 -H 0.0.0.0",
     "build": "node scripts/vercel-build.mjs",
     "start": "next start -p 3000",
     "lint": "next lint",
@@ -25,6 +25,7 @@
     "@clerk/nextjs": "^6.39.6",
     "@google/genai": "^2.19.0",
     "@prisma/client": "^5.22.0",
+    "framer-motion": "^13.1.1",
     "lucide-react": "^0.469.0",
     "next": "14.2.35",
     "next-intl": "^3.26.5",

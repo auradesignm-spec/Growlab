@@ -2,7 +2,7 @@ const CACHE = "growlab-shell-v1";
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE).then((cache) => cache.addAll(["/manifest.webmanifest", "/icon.svg"])).then(() => self.skipWaiting())
+    caches.open(CACHE).then((cache) => cache.addAll(["/manifest.webmanifest", "/logo-header.png", "/logo-footer.png", "/logo-header.svg", "/logo-footer.svg"])).then(() => self.skipWaiting())
   );
 });
 

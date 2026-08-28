@@ -1,6 +1,6 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata, Viewport } from "next";
-import { IBM_Plex_Sans_Arabic, IBM_Plex_Mono } from "next/font/google";
+import { IBM_Plex_Sans_Arabic, IBM_Plex_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { dirForLocale, isLocale, type Locale } from "@/i18n/config";
@@ -23,6 +23,13 @@ const plexMono = IBM_Plex_Mono({
   display: "swap",
 });
 
+const plusJakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-brand",
+  display: "swap",
+});
+
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
@@ -38,9 +45,10 @@ export const metadata: Metadata = {
   manifest: "/manifest.webmanifest",
   icons: {
     icon: [
-      { url: "/icon.svg", type: "image/svg+xml" },
       { url: "/logo-header.png", type: "image/png" },
+      { url: "/logo-header.svg", type: "image/svg+xml" },
     ],
+    shortcut: "/logo-header.png",
     apple: "/logo-header.png",
   },
   appleWebApp: {
@@ -70,7 +78,7 @@ export default async function RootLayout({
   );
 
   return (
-    <html lang={locale} dir={dir} className={`${plexArabic.variable} ${plexMono.variable}`}>
+    <html lang={locale} dir={dir} className={`${plexArabic.variable} ${plexMono.variable} ${plusJakarta.variable}`}>
       <body className="font-body antialiased">
         <PwaRegister />
         {clerkPublishableKey ? (
