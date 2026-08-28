@@ -45,10 +45,10 @@ export const metadata: Metadata = {
   manifest: "/manifest.webmanifest",
   icons: {
     icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
       { url: "/logo-header.png", type: "image/png" },
-      { url: "/logo-header.svg", type: "image/svg+xml" },
     ],
-    shortcut: "/logo-header.png",
+    shortcut: "/icon.svg",
     apple: "/logo-header.png",
   },
   appleWebApp: {
