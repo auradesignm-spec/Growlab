@@ -2,9 +2,11 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import type { CSSProperties } from "react";
+import { ArrowRight, ArrowLeft, Play, Sparkles } from "lucide-react";
 import { enterHref, SIGN_IN_HREF } from "@/lib/auth/paths";
 import { track } from "@/lib/analytics";
 import TourStartLink from "@/components/TourStartLink";
+
 
 const BILLS = [
   { src: 1, dx: -120, dy: -48, fall: 72, sway: 14, w: 32, delay: 0, spin: -14, dur: 2.6 },
@@ -34,19 +36,9 @@ export default function Hero() {
   const cashIndex = words.findIndex((word) => isCashWord(word, locale));
 
   return (
-    <section id="manifesto" className="relative overflow-x-clip scroll-mt-24 pb-10 pt-[5.5rem] sm:pb-10 sm:pt-28">
+    <section id="manifesto" className="relative overflow-x-clip scroll-mt-24 pb-12 pt-32 sm:pb-16 sm:pt-36">
       <div className="relative z-[1] mx-auto max-w-wrap px-5 sm:px-8">
-        <div className="relative max-w-4xl overflow-visible px-1 pt-16 sm:px-4 sm:pt-24">
-          {/* Brandstack Financial Intelligence Manifesto Banner */}
-          <div className="relative z-[1] mb-4 inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-amber-500/10 px-3.5 py-1.5 text-xs font-bold text-amber-900 dark:text-amber-300 shadow-sm backdrop-blur-sm">
-            <span className="flex h-2 w-2 rounded-full bg-amber-500 animate-ping" />
-            <span>
-              {locale === "en"
-                ? "Brandstack Engine: Gross is vanity. Net is the truth."
-                : "محرك الربح الصافي: إجمالي المبيعات مظهر خادع.. وصافي الربح هو الحقيقة."}
-            </span>
-          </div>
-
+        <div className="relative max-w-3xl overflow-visible px-1 sm:px-2">
           <h1 key={locale} className="gl-hero-title relative z-[1] text-start font-semibold text-frost">
             {words.map((word, index) => {
               const cashWord = index === cashIndex;
@@ -86,68 +78,58 @@ export default function Hero() {
             })}
           </h1>
 
-          {/* Punchy Fragmentation Callout */}
-          <div className="gl-enter-2 relative z-[1] mt-4 rounded-2xl border border-line bg-white/70 p-4 shadow-sm backdrop-blur-sm dark:bg-slate-900/60">
-            <p className="text-sm font-bold text-frost">
-              {locale === "en"
-                ? "Your sales are in Shopify. Your spend is in Meta. Your returns are in a spreadsheet. And none of them agree."
-                : "مبيعاتك في شوبيفاي وسلة، إنفاقك الإعلاني في ميتا وجوجل، ومرتجعاتك في جدول إكسيل.. ولا أحد منها يتطابق مع رصيدك البنكي."}
-            </p>
-            <p className="mt-1 text-xs text-frost-dim leading-relaxed">
-              {locale === "en"
-                ? "Growlab unifies multi-channel sales, live ad spend attribution, courier COD settlements, and return losses into one single source of True Net Profit."
-                : "جروولاب يوحّد بيانات مبيعاتك، الإنفاق الإعلاني الحقيقي، تحصيلات شركات الشحن، وخسائر المرتجعات في شاشة واحدة تركز على الكاش الحقيقي في جيبك."}
-            </p>
-          </div>
+          <p className="gl-enter-2 relative z-[1] mt-5 max-w-2xl text-[17px] sm:text-[19px] leading-relaxed text-frost-dim">
+            {t("lede")}
+          </p>
 
-          {/* Key Value Points */}
-          <div className="relative z-[1] mt-4 grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs text-frost-dim font-medium">
-            <div className="flex items-center gap-2 rounded-xl bg-black/5 dark:bg-white/5 px-3 py-2">
-              <span className="text-emerald-500 font-bold">✓</span>
-              <span>{locale === "en" ? "Live Cross-Platform Sync" : "مزامنة لحظية للمتاجر والإعلانات"}</span>
-            </div>
-            <div className="flex items-center gap-2 rounded-xl bg-black/5 dark:bg-white/5 px-3 py-2">
-              <span className="text-emerald-500 font-bold">✓</span>
-              <span>{locale === "en" ? "SKU-Level Profitability" : "حساب هامش الربح الصافي لكل SKU"}</span>
-            </div>
-            <div className="flex items-center gap-2 rounded-xl bg-black/5 dark:bg-white/5 px-3 py-2">
-              <span className="text-emerald-500 font-bold">✓</span>
-              <span>{locale === "en" ? "Automated Courier & RTO Audit" : "تدقيق بوليصات الشحن والمرتجعات"}</span>
-            </div>
-          </div>
-
-          <div className="relative z-[1] mt-6 flex w-full flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+          <div className="gl-enter-3 relative z-[1] mt-8 flex w-full flex-col items-stretch gap-3.5 sm:flex-row sm:flex-wrap sm:items-center">
+            {/* Primary Action */}
             <TourStartLink
               href={enterHref("merchant")}
               guide="open-account"
               source="hero-merchant"
-              className="gl-btn-primary min-h-12 w-full justify-center sm:w-auto"
+              className="gl-iridescent-secondary-btn group min-h-12 w-full sm:w-auto px-7 rounded-full inline-flex items-center justify-center gap-2 font-semibold text-frost text-[15px] !border-frost/25 !bg-white/95"
             >
-              {t("ctaMerchant")}
+              <span>{t("ctaMerchant")}</span>
+              {locale === "ar" ? (
+                <ArrowLeft className="size-4 transition-transform duration-200 group-hover:-translate-x-1" />
+              ) : (
+                <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-1" />
+              )}
             </TourStartLink>
-            <a
-              href="/onboarding/survey"
-              className="gl-btn-secondary min-h-12 w-full justify-center sm:w-auto border border-amber-500/40 bg-amber-500/10 text-amber-900 dark:text-amber-300 hover:bg-amber-500/20 font-bold shadow-sm transition-all flex items-center gap-2"
-            >
-              <span>{locale === "en" ? "Take AI Profit Leak Audit" : "فحص التسريبات المالية مجاناً"}</span>
-            </a>
+
+            {/* Interactive Demo */}
             <a
               href="/demo"
-              className="gl-btn-ghost min-h-12 w-full justify-center sm:w-auto border border-[#111318]/20 bg-white/80 backdrop-blur font-semibold shadow-sm hover:bg-white hover:border-[#111318]/40 transition-all text-[#111318] flex items-center gap-2"
+              className="gl-iridescent-secondary-btn group min-h-12 w-full sm:w-auto px-6 rounded-full inline-flex items-center justify-center gap-2.5 font-medium text-frost text-[15px]"
               onClick={() => track("Demo Clicked", { source: "hero-demo" })}
             >
-              <span className="size-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              {locale === "en" ? "Try Demo" : "تجربة ديمو"}
+              <Play className="size-3.5 fill-frost/80 text-frost/80 transition-transform duration-200 group-hover:scale-110" />
+              <span>{locale === "en" ? "Interactive Demo" : "تجربة ديمو تفاعلية"}</span>
+            </a>
+
+            {/* AI Profit Leak Audit */}
+            <a
+              href="/onboarding/survey"
+              className="gl-iridescent-secondary-btn group min-h-12 w-full sm:w-auto px-6 rounded-full inline-flex items-center justify-center gap-2 font-medium text-frost text-[14px]"
+            >
+              <Sparkles className="size-4 text-amber-500 transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110" />
+              <span>{locale === "en" ? "AI Profit Leak Audit" : "فحص التسريبات المالية"}</span>
             </a>
           </div>
-          <p className="relative z-[1] mt-3 text-start text-[13px] text-frost-dim flex items-center gap-2">
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500" />
-            <span>{locale === "en" ? "No credit card required • Instant setup" : "بدون بطاقة ائتمان • إعداد فوري خلال دقيقة"}</span>
-            <span>•</span>
+
+          <div className="relative z-[1] mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-frost-dim">
+            <span className="flex items-center gap-1.5">
+              <span className="size-1.5 rounded-full bg-emerald-500" />
+              {locale === "en" ? "No credit card required" : "بدون بطاقة ائتمان"}
+            </span>
+            <span className="text-frost-faint">•</span>
+            <span>{locale === "en" ? "Instant setup" : "إعداد فوري"}</span>
+            <span className="text-frost-faint">•</span>
             <a href={SIGN_IN_HREF} className="font-medium text-frost underline-offset-2 hover:underline">
               {t("signIn")}
             </a>
-          </p>
+          </div>
         </div>
       </div>
     </section>

@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { activateProFromStripe, deactivateProFromStripe } from "@/app/(dashboard)/dashboard/billing-actions";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 async function stripeGet(path: string) {
   const secret = process.env.STRIPE_SECRET_KEY;

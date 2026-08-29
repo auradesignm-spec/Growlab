@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenAI } from "@google/genai";
 import { sanitizePlainText } from "@/lib/security/inputSanitizer";
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 interface ChatMessage {
   role: "user" | "model" | "assistant";
   content: string;

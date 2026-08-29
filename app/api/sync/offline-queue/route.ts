@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth/session";
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 interface QueuedAction {
   id: string;
   actionType: string;

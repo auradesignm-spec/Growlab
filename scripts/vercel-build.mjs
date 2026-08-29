@@ -12,7 +12,7 @@ const env = {
 };
 
 function run(command, args) {
-  const result = spawnSync(command, args, { stdio: "inherit", env, shell: true });
+  const result = spawnSync(command, args, { stdio: "inherit", env, shell: true, cwd: process.cwd() });
   if (result.status !== 0) process.exit(result.status ?? 1);
 }
 
@@ -29,7 +29,7 @@ if (isPostgres) {
   run("npx", ["prisma", "migrate", "deploy", "--schema", "prisma/postgres/schema.prisma"]);
 } else {
   run("npx", ["prisma", "generate"]);
-  run("npx", ["prisma", "db", "push"]);
+  run("npx", ["prisma", "db", "push", "--accept-data-loss"]);
 }
 
 run("next", ["build"]);

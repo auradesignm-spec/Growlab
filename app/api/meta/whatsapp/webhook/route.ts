@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { ingestWhatsAppWebhookPayload } from "@/lib/meta/whatsapp";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 /** Meta webhook verification challenge. */
 export async function GET(req: Request) {

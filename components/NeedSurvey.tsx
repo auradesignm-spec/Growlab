@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { useLocale } from "next-intl";
 import { useUser } from "@clerk/nextjs";
+import { motion, AnimatePresence } from "framer-motion";
 import { track } from "@/lib/analytics";
 import {
   markSurveyDone,
@@ -39,14 +40,20 @@ function NeedSurveyWhenGuest() {
 
 function NeedSurveyDialog() {
   const currentLocale = useLocale();
-  const isAr = currentLocale !== "en";
+  const [activeLocale, setActiveLocale] = useState<"ar" | "en">(currentLocale === "en" ? "en" : "ar");
+  const isAr = activeLocale !== "en";
   const router = useRouter();
   const titleId = useId();
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<number>(0);
 
+  useEffect(() => {
+    setActiveLocale(currentLocale === "en" ? "en" : "ar");
+  }, [currentLocale]);
+
   // Survey answers
-  const [selectedLang, setSelectedLang] = useState<"ar" | "en">(isAr ? "ar" : "en");
+  const [selectedLang, setSelectedLang] = useState<"ar" | "en" | null>(null);
+  const [hoveredLang, setHoveredLang] = useState<"ar" | "en" | null>(null);
   const [mode, setMode] = useState<SurveyMode | null>(null);
   const [cr, setCr] = useState<SurveyCR | null>(null);
   const [product, setProduct] = useState<SurveyProduct | null>(null);
@@ -59,8 +66,15 @@ function NeedSurveyDialog() {
 
   const handleLanguageSelect = (next: "ar" | "en") => {
     setSelectedLang(next);
-    document.cookie = `${LOCALE_COOKIE}=${next}; path=/; max-age=31536000; samesite=lax`;
-    router.refresh();
+  };
+
+  const handleNext = () => {
+    if (step === 0 && selectedLang) {
+      setActiveLocale(selectedLang);
+      document.cookie = `${LOCALE_COOKIE}=${selectedLang}; path=/; max-age=31536000; samesite=lax`;
+      router.refresh();
+    }
+    setStep((s) => s + 1);
   };
 
   const finish = useCallback(
@@ -136,12 +150,23 @@ function NeedSurveyDialog() {
           aria-modal="true"
           aria-labelledby={titleId}
           tabIndex={-1}
+          dir={isAr ? "rtl" : "ltr"}
           className="gl-survey-card !max-h-[92vh] !p-6 sm:!p-8 overflow-y-auto"
         >
-          {/* Header Bar: Replaced h2 with exact LocaleSwitcher (ع / EN) */}
-          <div className="flex items-center justify-between gap-2 border-b border-line/60 pb-3">
+          {/* Header Bar: LocaleSwitcher (ع / EN) shown starting from Step 2 */}
+          <div className="flex items-center justify-between gap-2 border-b border-line/60 pb-3 min-h-[44px]">
             <div className="flex items-center">
-              <LocaleSwitcher compact />
+              {step >= 1 ? (
+                <LocaleSwitcher
+                  compact
+                  onLocaleChange={(loc) => {
+                    setSelectedLang(loc);
+                    setActiveLocale(loc);
+                  }}
+                />
+              ) : (
+                <div className="h-9" aria-hidden="true" />
+              )}
             </div>
             <div className="flex items-center gap-1">
               {Array.from({ length: TOTAL_STEPS }, (_, index) => (
@@ -169,76 +194,91 @@ function NeedSurveyDialog() {
           {step === 0 && (
             <div className="mt-2 space-y-4">
               <div>
-                <h2 id={titleId} className="text-xl sm:text-2xl font-bold text-frost leading-snug">
-                  {isAr ? "ما هي لغة العرض المفضلة لديك؟" : "What is your preferred language?"}
+                <h2 id={titleId} className="space-y-1.5">
+                  <span className="block text-xl sm:text-2xl font-bold text-frost leading-tight" dir="rtl">
+                    ما هي لغة العرض المفضلة لديك؟
+                  </span>
+                  <span className="block text-base sm:text-lg font-medium text-frost/70 leading-normal" dir="ltr">
+                    What is your preferred language?
+                  </span>
                 </h2>
-                <p className="mt-1 text-sm text-frost-dim">
-                  {isAr
-                    ? "اختر لغة الواجهة لاستكمال الاستبيان وتصفح المنصة (يمكنك التبديل لاحقاً في أي وقت)."
-                    : "Select your interface language to proceed with the survey and explore the platform."}
-                </p>
               </div>
 
-              <div className="grid gap-3 pt-2">
-                <button
+              <div 
+                className="relative grid grid-cols-2 gap-3 pt-2"
+                onMouseLeave={() => setHoveredLang(null)}
+              >
+                <motion.button
                   type="button"
+                  whileTap={{ scale: 0.98 }}
+                  onMouseEnter={() => setHoveredLang("ar")}
+                  onFocus={() => setHoveredLang("ar")}
                   onClick={() => handleLanguageSelect("ar")}
-                  className={`w-full rounded-2xl p-4 text-start transition-all border ${
-                    selectedLang === "ar"
-                      ? "border-slate-900 bg-slate-900 text-white shadow-lg scale-[1.01]"
-                      : "border-line bg-white/70 hover:bg-white hover:border-slate-300 text-frost"
+                  className={`relative z-10 w-full rounded-2xl px-4 py-4 text-center font-bold text-[15px] transition-colors duration-200 border border-slate-200/80 bg-white/75 overflow-hidden ${
+                    (hoveredLang === "ar" || (!hoveredLang && selectedLang === "ar"))
+                      ? "text-white"
+                      : "text-gray-600 hover:text-white"
                   }`}
                 >
-                  <div className="flex items-center justify-between">
-                    <p className="font-bold text-[15px]">العربية (Arabic)</p>
-                    <span
-                      className={`text-xs px-2.5 py-1 rounded-full font-bold ${
-                        selectedLang === "ar"
-                          ? "bg-white/20 text-white"
-                          : "bg-emerald-500/10 text-emerald-700"
-                      }`}
-                    >
-                      ع
-                    </span>
-                  </div>
-                  <p
-                    className={`mt-1 text-xs leading-relaxed ${
-                      selectedLang === "ar" ? "text-slate-300" : "text-frost-dim"
-                    }`}
-                  >
-                    تصفح واستخدام منصة Growlab باللغة العربية مع دعم كامل لاتجاه RTL
-                  </p>
-                </button>
+                  <AnimatePresence>
+                    {(hoveredLang === "ar" || (!hoveredLang && selectedLang === "ar")) && (
+                      <motion.div
+                        layoutId="ios26-lang-bubble"
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        className="absolute inset-0 z-[-1] bg-black shadow-[0_10px_25px_-5px_rgba(0,0,0,0.35),0_4px_10px_rgba(0,0,0,0.2)] rounded-2xl"
+                        transition={{
+                          type: "spring",
+                          stiffness: 450,
+                          damping: 30,
+                          mass: 0.7,
+                        }}
+                      >
+                        {/* iOS dynamic fluid sheen */}
+                        <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-transparent to-white/5 pointer-events-none rounded-2xl" />
+                        <div className="absolute -top-6 -left-6 size-24 bg-white/10 rounded-full blur-xl pointer-events-none" />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                  <span className="relative z-10 block">العربية (Arabic)</span>
+                </motion.button>
 
-                <button
+                <motion.button
                   type="button"
+                  whileTap={{ scale: 0.98 }}
+                  onMouseEnter={() => setHoveredLang("en")}
+                  onFocus={() => setHoveredLang("en")}
                   onClick={() => handleLanguageSelect("en")}
-                  className={`w-full rounded-2xl p-4 text-start transition-all border ${
-                    selectedLang === "en"
-                      ? "border-slate-900 bg-slate-900 text-white shadow-lg scale-[1.01]"
-                      : "border-line bg-white/70 hover:bg-white hover:border-slate-300 text-frost"
+                  className={`relative z-10 w-full rounded-2xl px-4 py-4 text-center font-bold text-[15px] transition-colors duration-200 border border-slate-200/80 bg-white/75 overflow-hidden ${
+                    (hoveredLang === "en" || (!hoveredLang && selectedLang === "en"))
+                      ? "text-white"
+                      : "text-gray-600 hover:text-white"
                   }`}
                 >
-                  <div className="flex items-center justify-between">
-                    <p className="font-bold text-[15px]">English</p>
-                    <span
-                      className={`text-xs px-2.5 py-1 rounded-full font-bold ${
-                        selectedLang === "en"
-                          ? "bg-white/20 text-white"
-                          : "bg-blue-500/10 text-blue-700"
-                      }`}
-                    >
-                      EN
-                    </span>
-                  </div>
-                  <p
-                    className={`mt-1 text-xs leading-relaxed ${
-                      selectedLang === "en" ? "text-slate-300" : "text-frost-dim"
-                    }`}
-                  >
-                    Browse and use Growlab in English with full dashboard support
-                  </p>
-                </button>
+                  <AnimatePresence>
+                    {(hoveredLang === "en" || (!hoveredLang && selectedLang === "en")) && (
+                      <motion.div
+                        layoutId="ios26-lang-bubble"
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        className="absolute inset-0 z-[-1] bg-black shadow-[0_10px_25px_-5px_rgba(0,0,0,0.35),0_4px_10px_rgba(0,0,0,0.2)] rounded-2xl"
+                        transition={{
+                          type: "spring",
+                          stiffness: 450,
+                          damping: 30,
+                          mass: 0.7,
+                        }}
+                      >
+                        {/* iOS dynamic fluid sheen */}
+                        <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-transparent to-white/5 pointer-events-none rounded-2xl" />
+                        <div className="absolute -top-6 -left-6 size-24 bg-white/10 rounded-full blur-xl pointer-events-none" />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                  <span className="relative z-10 block">English</span>
+                </motion.button>
               </div>
             </div>
           )}
@@ -538,7 +578,7 @@ function NeedSurveyDialog() {
                 <button
                   type="button"
                   disabled={!canNext}
-                  onClick={() => setStep((s) => s + 1)}
+                  onClick={handleNext}
                   className="gl-survey-btn-ink font-bold px-6 text-sm disabled:opacity-40"
                 >
                   {isAr ? "متابعة ←" : "Next →"}

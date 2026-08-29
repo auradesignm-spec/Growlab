@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { processShopifyWebhook, verifyShopifyWebhook, type ShopifyWebhookOrder } from "@/services/shopify";
 import { sanitizeObject } from "@/lib/security/inputSanitizer";
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 export async function POST(req: NextRequest) {
   try {
     const rawBody = await req.text();

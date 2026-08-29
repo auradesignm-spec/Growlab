@@ -7,9 +7,11 @@ import GlassBubbleTrack from "@/components/GlassBubbleTrack";
 
 export default function LocaleSwitcher({
   compact = false,
+  onLocaleChange,
 }: {
   compact?: boolean;
   tone?: "light" | "dark";
+  onLocaleChange?: (locale: Locale) => void;
 }) {
   const locale = useLocale() as Locale;
   const router = useRouter();
@@ -17,6 +19,7 @@ export default function LocaleSwitcher({
 
   function switchTo(next: Locale) {
     document.cookie = `${LOCALE_COOKIE}=${next}; path=/; max-age=31536000; samesite=lax`;
+    onLocaleChange?.(next);
     router.refresh();
   }
 

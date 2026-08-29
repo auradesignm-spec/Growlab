@@ -210,9 +210,37 @@ function HeaderAuth({
         track("Sign In Started", { source: "header-mobile" });
         onNavigate?.();
       }}
-      className="relative z-[1] inline-flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-full px-3 text-[15px] font-medium"
+      className="group relative z-[1] inline-flex min-h-11 shrink-0 items-center justify-center whitespace-nowrap rounded-full px-4 text-[15px] font-medium min-w-[100px] overflow-hidden"
     >
-      {t("signIn")}
+      {/* Normal Text */}
+      <span className="transition-all duration-300 ease-out group-hover:opacity-0 group-hover:scale-75 group-hover:-translate-y-1">
+        {t("signIn")}
+      </span>
+
+      {/* Hover Login Icon matching AI(9).png */}
+      <span
+        className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 scale-50 transition-all duration-300 ease-out group-hover:opacity-100 group-hover:scale-100"
+        aria-hidden="true"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="size-5"
+        >
+          {/* Rounded portal door outline */}
+          <path d="M9 3.5h7.5A3 3 0 0 1 19.5 6.5v11a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3v-1.5" />
+          <path d="M6 8V6.5A3 3 0 0 1 9 3.5" />
+          {/* Arrow entering portal with double bounce */}
+          <g className="group-hover-login-arrow">
+            <path d="M2.5 12h11" />
+            <path d="M9.5 8l4 4-4 4" />
+          </g>
+        </svg>
+      </span>
     </TourStartLink>
   ) : (
     <div className={stacked ? "mt-4 flex flex-col items-start gap-3" : "contents"}>
@@ -223,9 +251,37 @@ function HeaderAuth({
           track("Sign In Started", { source: stacked ? "header-mobile-menu" : "header" });
           onNavigate?.();
         }}
-        className="gl-btn-primary min-h-10 !py-2 !px-4 !text-[14px]"
+        className="group relative gl-btn-primary min-h-10 !py-2 !px-5 !text-[14px] min-w-[124px] overflow-hidden inline-flex items-center justify-center"
       >
-        {t("signIn")}
+        {/* Normal Text: Fades and scales down smoothly on hover */}
+        <span className="transition-all duration-300 ease-out group-hover:opacity-0 group-hover:scale-75 group-hover:-translate-y-1 inline-block">
+          {t("signIn")}
+        </span>
+
+        {/* Hover Login Icon: Appears in center and arrow bounces twice */}
+        <span
+          className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 scale-50 transition-all duration-300 ease-out group-hover:opacity-100 group-hover:scale-100 text-white"
+          aria-hidden="true"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="size-5"
+          >
+            {/* Rounded portal door outline from image */}
+            <path d="M9 3.5h7.5A3 3 0 0 1 19.5 6.5v11a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3v-1.5" />
+            <path d="M6 8V6.5A3 3 0 0 1 9 3.5" />
+            {/* Arrow entering with double bounce */}
+            <g className="group-hover-login-arrow">
+              <path d="M2.5 12h11" />
+              <path d="M9.5 8l4 4-4 4" />
+            </g>
+          </svg>
+        </span>
       </TourStartLink>
     </div>
   );
