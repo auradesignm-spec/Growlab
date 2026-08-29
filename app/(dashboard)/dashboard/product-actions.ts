@@ -9,6 +9,7 @@ import { clampDeliveryDays, DEFAULT_DELIVERY_DAYS_MAX } from "@/lib/domain/deliv
 import { clampShippingFee, DEFAULT_SHIPPING_FEE } from "@/lib/domain/shipping";
 import { assertPublishableProduct } from "@/lib/domain/commission";
 import { CONTACT_LEAK_WARNING_AR, scanForContactLeak } from "@/lib/security/antiLeak";
+import { sanitizeSafeHtml, sanitizePlainText, sanitizeUrl } from "@/lib/security/inputSanitizer";
 import { slugifyProductTitle } from "@/lib/merchant-store/slugs";
 import { canAddProduct, PRODUCT_LIMIT_AR } from "@/lib/billing/entitlements";
 
@@ -49,8 +50,8 @@ export interface ProductFormInput {
 }
 
 function sanitizeAndValidate(input: ProductFormInput) {
-  const title = input.title.trim().slice(0, MAX_TITLE_LENGTH);
-  const category = input.category.trim().slice(0, MAX_CATEGORY_LENGTH);
+  const title = sanitizePlainText(input.title, MAX_TITLE_LENGTH);
+  const category = sanitizePlainText(input.category, MAX_CATEGORY_LENGTH);
   if (!title) throw new Error("Title is required.");
   if (!category) throw new Error("Category is required.");
 
@@ -89,11 +90,11 @@ function sanitizeAndValidate(input: ProductFormInput) {
   return {
     title,
     category,
-    tags: serializeList(input.tags.slice(0, MAX_TAG_COUNT)),
-    variants: serializeList(input.variants.slice(0, MAX_VARIANT_COUNT)),
+    tags: serializeList(input.tags.map((t) => sanitizePlainText(t, 40)).slice(0, MAX_TAG_COUNT)),
+    variants: serializeList(input.variants.map((v) => sanitizePlainText(v, 40)).slice(0, MAX_VARIANT_COUNT)),
     slug: (input.slug?.trim() || slugifyProductTitle(title)).slice(0, 64),
-    shortDescription: (input.shortDescription ?? "").trim().slice(0, MAX_SHORT_DESC),
-    descriptionHtml: (input.descriptionHtml ?? "").trim().slice(0, MAX_DESC_HTML),
+    shortDescription: sanitizePlainText(input.shortDescription ?? "", MAX_SHORT_DESC),
+    descriptionHtml: sanitizeSafeHtml(input.descriptionHtml ?? "", MAX_DESC_HTML),
     basePrice,
     costPrice,
     // The waterfall engine (lib/ledger/waterfall.ts) consumes cogsPct, never

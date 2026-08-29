@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenAI } from "@google/genai";
+import { sanitizePlainText } from "@/lib/security/inputSanitizer";
 
 interface ChatMessage {
   role: "user" | "model" | "assistant";
@@ -267,11 +268,20 @@ function buildSmartFallback(message: string): AssistantChatResponse {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { message, history } = body;
+    const rawMessage = body.message;
+    const history = body.history;
 
-    if (!message || typeof message !== "string") {
+    if (!rawMessage || typeof rawMessage !== "string") {
       return NextResponse.json(
         { error: "Message is required" },
+        { status: 400 }
+      );
+    }
+
+    const message = sanitizePlainText(rawMessage, 1000);
+    if (!message) {
+      return NextResponse.json(
+        { error: "Invalid message content" },
         { status: 400 }
       );
     }

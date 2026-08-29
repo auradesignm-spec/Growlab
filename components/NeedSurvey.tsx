@@ -21,6 +21,8 @@ import {
 } from "@/lib/needSurvey";
 import { startProductTour, tourIsDone, PRODUCT_TOUR_EVENT } from "@/lib/productTour";
 import { useRouter } from "next/navigation";
+import { LOCALE_COOKIE, type Locale } from "@/i18n/config";
+import LocaleSwitcher from "@/components/LocaleSwitcher";
 
 const CLERK_ENABLED = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
 
@@ -36,13 +38,15 @@ function NeedSurveyWhenGuest() {
 }
 
 function NeedSurveyDialog() {
-  const isAr = useLocale() !== "en";
+  const currentLocale = useLocale();
+  const isAr = currentLocale !== "en";
   const router = useRouter();
   const titleId = useId();
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<number>(0);
 
   // Survey answers
+  const [selectedLang, setSelectedLang] = useState<"ar" | "en">(isAr ? "ar" : "en");
   const [mode, setMode] = useState<SurveyMode | null>(null);
   const [cr, setCr] = useState<SurveyCR | null>(null);
   const [product, setProduct] = useState<SurveyProduct | null>(null);
@@ -51,13 +55,20 @@ function NeedSurveyDialog() {
 
   const dialogRef = useRef<HTMLDivElement>(null);
 
-  const TOTAL_STEPS = 6; // 5 questions + 1 diagnostic summary
+  const TOTAL_STEPS = 7; // 1 language question + 5 domain questions + 1 diagnostic summary
+
+  const handleLanguageSelect = (next: "ar" | "en") => {
+    setSelectedLang(next);
+    document.cookie = `${LOCALE_COOKIE}=${next}; path=/; max-age=31536000; samesite=lax`;
+    router.refresh();
+  };
 
   const finish = useCallback(
     (actionType: "tour" | "navigate" | "skip", targetUrl?: string) => {
       markSurveyDone();
       setOpen(false);
       track("Need Survey Completed", {
+        language: selectedLang,
         mode: mode ?? "none",
         cr: cr ?? "none",
         product: product ?? "none",
@@ -72,12 +83,13 @@ function NeedSurveyDialog() {
         router.push(targetUrl);
       }
     },
-    [channel, cr, goal, mode, product, router],
+    [channel, cr, goal, mode, product, router, selectedLang],
   );
 
   useEffect(() => {
-    if (surveyIsDone() || tourIsDone()) return;
-    const id = window.setTimeout(() => setOpen(true), 600);
+    // Show survey every visit for unauthenticated users (unless tour is active)
+    if (tourIsDone()) return;
+    const id = window.setTimeout(() => setOpen(true), 400);
     return () => window.clearTimeout(id);
   }, []);
 
@@ -103,12 +115,13 @@ function NeedSurveyDialog() {
   }, [finish, open]);
 
   const canNext =
-    (step === 0 && mode != null) ||
-    (step === 1 && cr != null) ||
-    (step === 2 && product != null) ||
-    (step === 3 && channel != null) ||
-    (step === 4 && goal != null) ||
-    step === 5;
+    (step === 0 && selectedLang != null) ||
+    (step === 1 && mode != null) ||
+    (step === 2 && cr != null) ||
+    (step === 3 && product != null) ||
+    (step === 4 && channel != null) ||
+    (step === 5 && goal != null) ||
+    step === 6;
 
   const result = generateDiagnosticResult({ mode, cr, product, channel, goal });
 
@@ -125,11 +138,11 @@ function NeedSurveyDialog() {
           tabIndex={-1}
           className="gl-survey-card !max-h-[92vh] !p-6 sm:!p-8 overflow-y-auto"
         >
-          {/* Progress Indicators */}
+          {/* Header Bar: Replaced h2 with exact LocaleSwitcher (ع / EN) */}
           <div className="flex items-center justify-between gap-2 border-b border-line/60 pb-3">
-            <h2 className="text-sm font-semibold text-frost">
-              {isAr ? "استبيان التوجيه الذكي" : "Diagnostic Survey"}
-            </h2>
+            <div className="flex items-center">
+              <LocaleSwitcher compact />
+            </div>
             <div className="flex items-center gap-1">
               {Array.from({ length: TOTAL_STEPS }, (_, index) => (
                 <span
@@ -152,8 +165,86 @@ function NeedSurveyDialog() {
               : `Step ${step + 1} of ${TOTAL_STEPS}`}
           </p>
 
-          {/* Question 0: Mode Preference */}
+          {/* Question 0: Language Selection */}
           {step === 0 && (
+            <div className="mt-2 space-y-4">
+              <div>
+                <h2 id={titleId} className="text-xl sm:text-2xl font-bold text-frost leading-snug">
+                  {isAr ? "ما هي لغة العرض المفضلة لديك؟" : "What is your preferred language?"}
+                </h2>
+                <p className="mt-1 text-sm text-frost-dim">
+                  {isAr
+                    ? "اختر لغة الواجهة لاستكمال الاستبيان وتصفح المنصة (يمكنك التبديل لاحقاً في أي وقت)."
+                    : "Select your interface language to proceed with the survey and explore the platform."}
+                </p>
+              </div>
+
+              <div className="grid gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => handleLanguageSelect("ar")}
+                  className={`w-full rounded-2xl p-4 text-start transition-all border ${
+                    selectedLang === "ar"
+                      ? "border-slate-900 bg-slate-900 text-white shadow-lg scale-[1.01]"
+                      : "border-line bg-white/70 hover:bg-white hover:border-slate-300 text-frost"
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <p className="font-bold text-[15px]">العربية (Arabic)</p>
+                    <span
+                      className={`text-xs px-2.5 py-1 rounded-full font-bold ${
+                        selectedLang === "ar"
+                          ? "bg-white/20 text-white"
+                          : "bg-emerald-500/10 text-emerald-700"
+                      }`}
+                    >
+                      ع
+                    </span>
+                  </div>
+                  <p
+                    className={`mt-1 text-xs leading-relaxed ${
+                      selectedLang === "ar" ? "text-slate-300" : "text-frost-dim"
+                    }`}
+                  >
+                    تصفح واستخدام منصة Growlab باللغة العربية مع دعم كامل لاتجاه RTL
+                  </p>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleLanguageSelect("en")}
+                  className={`w-full rounded-2xl p-4 text-start transition-all border ${
+                    selectedLang === "en"
+                      ? "border-slate-900 bg-slate-900 text-white shadow-lg scale-[1.01]"
+                      : "border-line bg-white/70 hover:bg-white hover:border-slate-300 text-frost"
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <p className="font-bold text-[15px]">English</p>
+                    <span
+                      className={`text-xs px-2.5 py-1 rounded-full font-bold ${
+                        selectedLang === "en"
+                          ? "bg-white/20 text-white"
+                          : "bg-blue-500/10 text-blue-700"
+                      }`}
+                    >
+                      EN
+                    </span>
+                  </div>
+                  <p
+                    className={`mt-1 text-xs leading-relaxed ${
+                      selectedLang === "en" ? "text-slate-300" : "text-frost-dim"
+                    }`}
+                  >
+                    Browse and use Growlab in English with full dashboard support
+                  </p>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Question 1: Mode Preference */}
+          {step === 1 && (
             <div className="mt-2 space-y-4">
               <div>
                 <h2 id={titleId} className="text-xl sm:text-2xl font-bold text-frost leading-snug">
@@ -197,8 +288,8 @@ function NeedSurveyDialog() {
             </div>
           )}
 
-          {/* Question 1: Commercial Registration (CR vs Home / Freelancer vs Creator) */}
-          {step === 1 && (
+          {/* Question 2: Commercial Registration (CR vs Home / Freelancer vs Creator) */}
+          {step === 2 && (
             <div className="mt-2 space-y-4">
               <div>
                 <h2 id={titleId} className="text-xl sm:text-2xl font-bold text-frost leading-snug">
@@ -242,8 +333,8 @@ function NeedSurveyDialog() {
             </div>
           )}
 
-          {/* Question 2: Product Type */}
-          {step === 2 && (
+          {/* Question 3: Product Type */}
+          {step === 3 && (
             <div className="mt-2 space-y-4">
               <div>
                 <h2 id={titleId} className="text-xl sm:text-2xl font-bold text-frost leading-snug">
@@ -287,8 +378,8 @@ function NeedSurveyDialog() {
             </div>
           )}
 
-          {/* Question 3: Sales Channels */}
-          {step === 3 && (
+          {/* Question 4: Sales Channels */}
+          {step === 4 && (
             <div className="mt-2 space-y-4">
               <div>
                 <h2 id={titleId} className="text-xl sm:text-2xl font-bold text-frost leading-snug">
@@ -332,8 +423,8 @@ function NeedSurveyDialog() {
             </div>
           )}
 
-          {/* Question 4: Primary Goal / Pain Point */}
-          {step === 4 && (
+          {/* Question 5: Primary Goal / Pain Point */}
+          {step === 5 && (
             <div className="mt-2 space-y-4">
               <div>
                 <h2 id={titleId} className="text-xl sm:text-2xl font-bold text-frost leading-snug">
@@ -377,8 +468,8 @@ function NeedSurveyDialog() {
             </div>
           )}
 
-          {/* Step 5: Smart Diagnostic Forecast & Actionable Roadmap */}
-          {step === 5 && (
+          {/* Step 6: Smart Diagnostic Forecast & Actionable Roadmap */}
+          {step === 6 && (
             <div className="mt-2 space-y-5">
               <div className="rounded-2xl bg-gradient-to-br from-emerald-50 via-slate-50 to-teal-50/50 p-5 border border-emerald-200/60">
                 <div className="flex items-center gap-2">
@@ -428,9 +519,9 @@ function NeedSurveyDialog() {
                 <button
                   type="button"
                   onClick={() => setStep((s) => s - 1)}
-                  className="gl-survey-btn-ghost text-xs"
+                  className="gl-survey-btn-ghost text-xs flex items-center gap-1.5"
                 >
-                  {isAr ? "← السابق" : "← Back"}
+                  {isAr ? "السابق →" : "← Back"}
                 </button>
               )}
               <button
@@ -443,7 +534,7 @@ function NeedSurveyDialog() {
             </div>
 
             <div className="flex items-center gap-2">
-              {step < 5 ? (
+              {step < 6 ? (
                 <button
                   type="button"
                   disabled={!canNext}
@@ -478,4 +569,5 @@ function NeedSurveyDialog() {
     </div>
   );
 }
+
 

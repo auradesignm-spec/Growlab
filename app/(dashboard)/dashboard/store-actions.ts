@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth/session";
 import { CONTACT_LEAK_WARNING_AR, scanForContactLeak } from "@/lib/security/antiLeak";
+import { sanitizeSafeHtml, sanitizePlainText } from "@/lib/security/inputSanitizer";
 import { parseThemeJson, serializeTheme, type MerchantStoreTheme } from "@/lib/merchant-store/theme";
 import { isReservedStoreSlug, slugifyStoreName, uniqueProductSlug } from "@/lib/merchant-store/slugs";
 import { generateStoreSuggestion } from "@/lib/merchant-store/ai";
@@ -69,11 +70,11 @@ function sanitizeDraft(input: MerchantStoreDraft) {
 
   return {
     slug,
-    tagline: input.tagline.trim().slice(0, 160),
-    aboutHtml: input.aboutHtml.trim().slice(0, 12000),
+    tagline: sanitizePlainText(input.tagline, 160),
+    aboutHtml: sanitizeSafeHtml(input.aboutHtml, 12000),
     themeJson: serializeTheme(parseThemeJson(JSON.stringify(input.theme))),
-    offerHeadline: nextPromo.headline,
-    offerBody: nextPromo.body,
+    offerHeadline: sanitizePlainText(nextPromo.headline, 120),
+    offerBody: sanitizePlainText(nextPromo.body, 500),
     offerActive: Boolean(nextPromo.active),
     promoJson: serializePromo(nextPromo),
     offerEndsAt,

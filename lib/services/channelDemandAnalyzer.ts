@@ -135,7 +135,7 @@ function getFallbackAnalysis(params: AnalyzeChannelDemandParams): ChannelRadarAn
       id: "snapchat",
       name: "Snapchat",
       nameAr: "سناب شات",
-      logoIcon: "👻",
+      logoIcon: "SC",
       badgeColor: "bg-yellow-400 text-slate-900 border-yellow-500",
       score: snapchatScore,
       growth: 72,
@@ -161,7 +161,7 @@ function getFallbackAnalysis(params: AnalyzeChannelDemandParams): ChannelRadarAn
       id: "tiktok",
       name: "TikTok",
       nameAr: "تيك توك",
-      logoIcon: "🎵",
+      logoIcon: "TT",
       badgeColor: "bg-slate-900 text-white border-pink-500",
       score: tiktokScore,
       growth: 86,
@@ -187,7 +187,7 @@ function getFallbackAnalysis(params: AnalyzeChannelDemandParams): ChannelRadarAn
       id: "google_search",
       name: "Google Search & Shopping",
       nameAr: "بحث وتسوق جوجل",
-      logoIcon: "🔍",
+      logoIcon: "G",
       badgeColor: "bg-blue-600 text-white border-blue-400",
       score: googleScore,
       growth: 45,
@@ -213,7 +213,7 @@ function getFallbackAnalysis(params: AnalyzeChannelDemandParams): ChannelRadarAn
       id: "instagram",
       name: "Instagram",
       nameAr: "إنستغرام",
-      logoIcon: "📸",
+      logoIcon: "IG",
       badgeColor: "bg-gradient-to-r from-purple-500 to-pink-500 text-white border-pink-400",
       score: instaScore,
       growth: 38,
@@ -475,18 +475,18 @@ Also determine the overall Winner Platform and provide actionable executive advi
 
     // Format & map to strongly typed result
     const iconMap: Record<string, { icon: string; badge: string }> = {
-      snapchat: { icon: "👻", badge: "bg-yellow-400 text-slate-900 border-yellow-500" },
-      tiktok: { icon: "🎵", badge: "bg-slate-900 text-white border-pink-500" },
-      instagram: { icon: "📸", badge: "bg-gradient-to-r from-purple-500 to-pink-500 text-white border-pink-400" },
-      google_search: { icon: "🔍", badge: "bg-blue-600 text-white border-blue-400" },
-      youtube: { icon: "▶️", badge: "bg-red-600 text-white border-red-500" },
-      x: { icon: "𝕏", badge: "bg-slate-800 text-white border-slate-600" },
+      snapchat: { icon: "SC", badge: "bg-yellow-400 text-slate-900 border-yellow-500" },
+      tiktok: { icon: "TT", badge: "bg-slate-900 text-white border-pink-500" },
+      instagram: { icon: "IG", badge: "bg-gradient-to-r from-purple-500 to-pink-500 text-white border-pink-400" },
+      google_search: { icon: "G", badge: "bg-blue-600 text-white border-blue-400" },
+      youtube: { icon: "YT", badge: "bg-red-600 text-white border-red-500" },
+      x: { icon: "X", badge: "bg-slate-800 text-white border-slate-600" },
     };
 
     const parsedPlatforms: PlatformDemandMetric[] = (parsed.platforms || [])
       .map((p: any, idx: number) => {
         const idKey = (p.id || "").toLowerCase().replace(/[\s-]/g, "_") as PlatformDemandMetric["id"];
-        const styling = iconMap[idKey] || { icon: "📱", badge: "bg-indigo-600 text-white border-indigo-400" };
+        const styling = iconMap[idKey] || { icon: "CH", badge: "bg-indigo-600 text-white border-indigo-400" };
 
         return {
           id: (["tiktok", "snapchat", "instagram", "google_search", "youtube", "x"].includes(idKey)

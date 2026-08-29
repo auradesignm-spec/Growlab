@@ -104,40 +104,42 @@ export default function CreatorKycCapture({
   const isFace = FACE_STEPS.includes(step);
 
   return (
-    <section className="px-5 py-10 sm:px-8">
-      <p className="gl-eyebrow">{t("kicker")}</p>
-      <h2 className="mt-3 max-w-xl font-display text-display-md text-frost">{t("title")}</h2>
-      <p className="gl-lede mt-3">{t("lede")}</p>
+    <section className="px-5 py-10 sm:px-8 text-white">
+      <p className="inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-[11px] font-bold text-amber-400">
+        {t("kicker")}
+      </p>
+      <h2 className="mt-3 max-w-xl text-2xl font-bold tracking-tight text-white sm:text-3xl">{t("title")}</h2>
+      <p className="mt-2 text-sm text-slate-400 max-w-2xl">{t("lede")}</p>
       {reviewNote && (
-        <p className="mt-4 max-w-xl border border-danger/40 bg-danger/10 px-4 py-3 font-serif text-sm italic text-danger">
+        <p className="mt-4 max-w-xl rounded-xl border border-rose-500/40 bg-rose-950/40 px-4 py-3 text-sm text-rose-300">
           {t("rejectedNote", { note: reviewNote })}
         </p>
       )}
 
-      <label className="mt-8 block max-w-xl">
-        <span className="font-west text-[10px] uppercase tracking-[0.24em] text-frost-dim">{t("legalName")}</span>
+      <label className="mt-6 block max-w-xl">
+        <span className="text-xs font-semibold text-slate-300">{t("legalName")}</span>
         <input
           value={legalName}
           onChange={(e) => setLegalName(e.target.value)}
-          className="gl-input mt-1.5"
+          className="mt-1.5 w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-2.5 text-sm text-white placeholder:text-slate-500 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
           placeholder={t("legalNamePlaceholder")}
         />
       </label>
 
       {/* Visual Progress Stepper Card */}
-      <div className="mt-8 max-w-4xl rounded-2xl border border-line bg-slate-50/80 p-4 sm:p-5 dark:bg-slate-900/70">
+      <div className="mt-8 max-w-4xl rounded-2xl border border-slate-800 bg-slate-900/90 p-4 sm:p-5 shadow-xl">
         {/* Stepper Status Header */}
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
-            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-amber-500/20 text-xs font-bold text-amber-500">
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-amber-500/20 text-xs font-bold text-amber-400 border border-amber-500/30">
               {stepIndex + 1}
             </span>
             <div>
-              <p className="text-xs font-bold text-frost sm:text-sm">
+              <p className="text-xs font-bold text-white sm:text-sm">
                 {t("stepProgress", { current: stepIndex + 1, total: CREATOR_KYC_KINDS.length })}:{" "}
-                <span className="text-amber-500">{t(`steps.${step}`)}</span>
+                <span className="text-amber-400">{t(`steps.${step}`)}</span>
               </p>
-              <p className="text-[11px] text-frost-dim">
+              <p className="text-[11px] text-slate-400">
                 {isFace ? t("stageFaceScan") : t("stageIdCard")}
               </p>
             </div>
@@ -146,13 +148,13 @@ export default function CreatorKycCapture({
           {/* Remaining Steps Badge */}
           <div className="flex items-center gap-2">
             {CREATOR_KYC_KINDS.length - Object.keys(captures).filter((k) => captures[k as CreatorKycKind]).length === 0 ? (
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/15 px-3 py-1 text-xs font-bold text-emerald-600 dark:text-emerald-400">
-                <span className="h-2 w-2 rounded-full bg-emerald-500" />
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/15 px-3 py-1 text-xs font-bold text-emerald-400">
+                <span className="h-2 w-2 rounded-full bg-emerald-400" />
                 {t("allCapturesDone")}
               </span>
             ) : (
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/15 px-3 py-1 text-xs font-bold text-amber-700 dark:text-amber-300">
-                <span className="h-2 w-2 rounded-full bg-amber-500 animate-pulse" />
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/15 px-3 py-1 text-xs font-bold text-amber-400">
+                <span className="h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
                 {t("remainingCaptures", {
                   count:
                     CREATOR_KYC_KINDS.length -
@@ -160,7 +162,7 @@ export default function CreatorKycCapture({
                 })}
               </span>
             )}
-            <span className="rounded-lg bg-black/10 px-2.5 py-1 text-xs font-mono font-bold text-frost-dim dark:bg-white/10">
+            <span className="rounded-lg bg-slate-800 border border-slate-700 px-2.5 py-1 text-xs font-mono font-bold text-slate-300">
               {t("capturesCount", {
                 completed: Object.keys(captures).filter((k) => captures[k as CreatorKycKind]).length,
                 total: CREATOR_KYC_KINDS.length,
@@ -171,7 +173,7 @@ export default function CreatorKycCapture({
 
         {/* Animated Progress Bar */}
         <div className="mt-3.5 relative">
-          <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800">
+          <div className="h-2 w-full overflow-hidden rounded-full bg-slate-800">
             <div
               className="h-full rounded-full bg-gradient-to-r from-amber-500 to-emerald-500 transition-all duration-500 ease-out"
               style={{
@@ -184,7 +186,7 @@ export default function CreatorKycCapture({
             />
           </div>
           {/* Step tick markers */}
-          <div className="mt-1 flex justify-between px-0.5 text-[9px] font-mono text-frost-faint">
+          <div className="mt-1 flex justify-between px-0.5 text-[9px] font-mono text-slate-400">
             <span>0%</span>
             <span>33% (الهوية)</span>
             <span>66% (الوجه)</span>
@@ -204,10 +206,10 @@ export default function CreatorKycCapture({
                   onClick={() => setStep(kind)}
                   className={`flex w-full items-center gap-2 rounded-xl border p-2 text-right transition-all sm:flex-col sm:items-center sm:text-center ${
                     isCurrent
-                      ? "border-amber-500 bg-amber-500/15 text-frost shadow-xs ring-2 ring-amber-500/30"
+                      ? "border-amber-500 bg-amber-500/20 text-white shadow-xs ring-2 ring-amber-500/40 font-bold"
                       : isDone
-                        ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                        : "border-line bg-white/60 text-frost-dim hover:border-slate-300 dark:bg-slate-800/60"
+                        ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-400"
+                        : "border-slate-800 bg-slate-950/50 text-slate-400 hover:bg-slate-800 hover:text-slate-200"
                   }`}
                 >
                   <span
@@ -216,14 +218,16 @@ export default function CreatorKycCapture({
                         ? "bg-emerald-500 text-white"
                         : isCurrent
                           ? "bg-amber-500 text-black font-extrabold"
-                          : "bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-200"
+                          : "bg-slate-800 text-slate-300 border border-slate-700"
                     }`}
                   >
                     {isDone ? "✓" : String(index + 1)}
                   </span>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-[11px] font-semibold">{t(`steps.${kind}`)}</p>
-                    <p className="text-[9px] opacity-75">
+                    <p className={`truncate text-[11px] font-semibold ${isCurrent ? "text-amber-300" : isDone ? "text-emerald-300" : "text-slate-200"}`}>
+                      {t(`steps.${kind}`)}
+                    </p>
+                    <p className="text-[9px] text-slate-400">
                       {isDone ? "ملتقطة ✓" : isCurrent ? "الخطوة الحالية" : "قيد الانتظار"}
                     </p>
                   </div>
@@ -235,37 +239,46 @@ export default function CreatorKycCapture({
       </div>
 
       <div className="mt-6 grid max-w-4xl gap-6 lg:grid-cols-2">
-        <div className="overflow-hidden rounded-lg border border-white/10 bg-black">
+        <div className="overflow-hidden rounded-2xl border border-slate-800 bg-black">
           <video ref={videoRef} playsInline muted autoPlay className="aspect-[4/3] w-full object-cover" />
-          <p className="px-4 py-3 font-serif text-sm italic text-frost-dim">{t(`hints.${step}`)}</p>
+          <p className="px-4 py-3 text-xs text-slate-400 bg-slate-900 border-t border-slate-800">{t(`hints.${step}`)}</p>
         </div>
-        <div className="flex flex-col justify-between rounded-lg border border-white/10 p-5">
+        <div className="flex flex-col justify-between rounded-2xl border border-slate-800 bg-slate-900/90 p-5">
           <div>
-            <p className="text-[12px] text-frost-faint">
+            <p className="text-xs text-slate-400">
               {isFace ? t("faceGuide") : t("idGuide")}
             </p>
-            <p className="mt-2 font-display text-xl text-frost">{t(`steps.${step}`)}</p>
+            <p className="mt-2 text-lg font-bold text-white">{t(`steps.${step}`)}</p>
             {currentBlob && (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={URL.createObjectURL(currentBlob)}
                 alt=""
-                className="mt-4 aspect-[4/3] w-full rounded-2xl object-cover"
+                className="mt-4 aspect-[4/3] w-full rounded-2xl object-cover border border-slate-700"
               />
             )}
           </div>
           <div className="mt-4 flex flex-wrap gap-2">
-            <button type="button" onClick={capture} className="gl-btn-primary">
+            <button
+              type="button"
+              onClick={capture}
+              className="inline-flex min-h-10 items-center justify-center rounded-xl bg-amber-500 px-5 text-xs font-bold text-slate-950 shadow-md hover:bg-amber-400 active:scale-95 transition"
+            >
               {currentBlob ? t("retake") : t("capture")}
             </button>
-            <button type="button" onClick={goPrev} disabled={stepIndex === 0} className="gl-btn-ghost disabled:opacity-40">
+            <button
+              type="button"
+              onClick={goPrev}
+              disabled={stepIndex === 0}
+              className="inline-flex min-h-10 items-center justify-center rounded-xl border border-slate-700 bg-slate-800 px-4 text-xs font-semibold text-slate-300 hover:bg-slate-700 disabled:opacity-40 transition"
+            >
               {t("back")}
             </button>
             <button
               type="button"
               onClick={goNext}
               disabled={!currentBlob || stepIndex === CREATOR_KYC_KINDS.length - 1}
-              className="gl-btn-ghost disabled:opacity-40"
+              className="inline-flex min-h-10 items-center justify-center rounded-xl border border-slate-700 bg-slate-800 px-4 text-xs font-semibold text-slate-300 hover:bg-slate-700 disabled:opacity-40 transition"
             >
               {t("next")}
             </button>
@@ -273,14 +286,14 @@ export default function CreatorKycCapture({
         </div>
       </div>
 
-      {camError && <p className="mt-4 font-mono text-xs text-danger">{camError}</p>}
-      {error && <p className="mt-4 font-mono text-xs text-danger">{error}</p>}
+      {camError && <p className="mt-4 text-xs text-rose-400 font-medium">{camError}</p>}
+      {error && <p className="mt-4 text-xs text-rose-400 font-medium">{error}</p>}
 
       <button
         type="button"
         disabled={pending || !legalName.trim() || !allReady}
         onClick={submit}
-        className="gl-btn-primary mt-8 disabled:opacity-40"
+        className="mt-8 inline-flex min-h-12 items-center justify-center rounded-xl bg-amber-500 px-8 text-xs sm:text-sm font-bold text-slate-950 shadow-lg shadow-amber-500/25 hover:bg-amber-400 disabled:opacity-40 transition active:scale-95"
       >
         {pending ? t("submitting") : t("submit")}
       </button>

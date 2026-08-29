@@ -16,6 +16,7 @@ import { isDemoExperienceEnabled } from "@/lib/dev/guard";
 import { resolveDemoPersonas, DEMO_MERCHANT_EMAIL, DEMO_BUYER_EMAIL } from "@/lib/dev/demo";
 import { loadCreatorAlerts, loadMerchantAlerts } from "@/lib/dashboard/alerts";
 import VerifiedBadge from "@/components/dashboard/VerifiedBadge";
+import HeaderUserMenu from "@/components/HeaderUserMenu";
 
 export default async function DashboardLayout({
   children,
@@ -103,7 +104,36 @@ export default async function DashboardLayout({
             </Link>
             <div className="flex items-center border-s border-white/10 px-4 sm:px-5">
               <div className="flex items-center gap-1.5">
-                {clerkEnabled ? (
+                {viewer ? (
+                  <HeaderUserMenu
+                    initialUser={{
+                      id: viewer.id,
+                      name: viewer.name,
+                      firstName: viewer.firstName,
+                      lastName: viewer.lastName,
+                      email: viewer.email,
+                      phone: viewer.phone,
+                      role: viewer.role,
+                      locale: viewer.locale,
+                      merchantProfile: viewer.merchantProfile
+                        ? {
+                            id: viewer.merchantProfile.id,
+                            businessName: viewer.merchantProfile.businessName,
+                            plan: viewer.merchantProfile.plan,
+                            verificationStatus: viewer.merchantProfile.verificationStatus,
+                            city: viewer.merchantProfile.city,
+                          }
+                        : null,
+                      creatorProfile: viewer.creatorProfile
+                        ? {
+                            id: viewer.creatorProfile.id,
+                            username: viewer.creatorProfile.username,
+                            verificationStatus: viewer.creatorProfile.verificationStatus,
+                          }
+                        : null,
+                    }}
+                  />
+                ) : clerkEnabled ? (
                   <UserButton afterSignOutUrl="/" />
                 ) : (
                   <span

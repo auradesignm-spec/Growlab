@@ -446,14 +446,14 @@ export default function MerchantKycForm({
   }
 
   return (
-    <section className="relative mx-auto max-w-3xl px-3 py-4 sm:px-6 sm:py-8">
+    <section className="relative mx-auto max-w-3xl px-3 py-4 sm:px-6 sm:py-8 text-white">
       {/* Top Banner with Skip Button */}
       {canSkip && (
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-2.5 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-3.5 text-emerald-950 dark:text-emerald-200 sm:p-4">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-2.5 rounded-2xl border border-emerald-500/30 bg-emerald-950/40 p-3.5 text-emerald-200 backdrop-blur-sm sm:p-4">
           <div className="flex items-center gap-2.5">
             <div>
-              <p className="text-[13px] font-semibold">هل ترغب بتجربة المنصة أولاً؟</p>
-              <p className="text-[11px] opacity-80 sm:text-[12px]">
+              <p className="text-[13px] font-bold text-emerald-300">هل ترغب بتجربة المنصة أولاً؟</p>
+              <p className="text-[11px] text-emerald-200/80 sm:text-[12px]">
                 يمكنك تخطي التوثيق الآن لإضافة المنتجات واستكشاف المتجر، ونطلب التوثيق لاحقاً عند النشر الرسمي واستقبال الأموال.
               </p>
             </div>
@@ -461,7 +461,7 @@ export default function MerchantKycForm({
           <button
             type="button"
             onClick={skipToDashboard}
-            className="inline-flex min-h-10 items-center justify-center rounded-xl bg-emerald-600 px-3.5 py-1.5 text-xs font-bold text-white shadow-xs transition hover:bg-emerald-700 active:scale-95 sm:px-4 sm:py-2"
+            className="inline-flex min-h-10 items-center justify-center rounded-xl bg-emerald-600 px-3.5 py-1.5 text-xs font-bold text-white shadow-xs transition hover:bg-emerald-500 active:scale-95 sm:px-4 sm:py-2"
           >
             تخطي واستكشاف الداشبورد ➔
           </button>
@@ -470,28 +470,28 @@ export default function MerchantKycForm({
 
       {/* Binance KYC Header */}
       <div className="mb-5">
-        <div className="inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-[11px] font-bold text-amber-700 dark:text-amber-300">
-          <span className="h-2 w-2 rounded-full bg-amber-500 animate-ping" />
+        <div className="inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-[11px] font-bold text-amber-400">
+          <span className="h-2 w-2 rounded-full bg-amber-400 animate-ping" />
           <span>توثيق الهوية والنشاط التجاري (Binance-Grade Verification)</span>
         </div>
-        <h1 className="mt-2 text-xl font-bold tracking-tight text-frost sm:text-2xl">
+        <h1 className="mt-2 text-xl font-bold tracking-tight text-white sm:text-2xl">
           التحقق المالي والأمني لحساب التاجر
         </h1>
-        <p className="mt-1 text-xs text-frost-dim sm:text-sm">
+        <p className="mt-1 text-xs text-slate-400 sm:text-sm">
           تدقيق شامل من فريق الدعم خلال 24 ساعة مع منح شارة التوثيق الزرقاء الرسمية ✓.
         </p>
       </div>
 
       {reviewNote && (
-        <div className="mb-5 rounded-2xl border border-danger/40 bg-danger/10 p-3.5 text-xs text-danger">
-          <p className="font-bold">ملاحظة المراجعة السابقة من فريق التدقيق:</p>
+        <div className="mb-5 rounded-2xl border border-rose-500/40 bg-rose-950/30 p-3.5 text-xs text-rose-300">
+          <p className="font-bold text-rose-200">ملاحظة المراجعة السابقة من فريق التدقيق:</p>
           <p className="mt-0.5">{reviewNote}</p>
         </div>
       )}
 
       {/* Choice: Has CR vs No CR (Home Project / Freelancer) */}
-      <div className="mb-6 rounded-2xl border border-line bg-slate-50/70 p-3 dark:bg-slate-900/60 sm:p-4">
-        <p className="text-xs font-bold text-frost mb-2.5">اختر نوع التسجيل والنشاط التجاري:</p>
+      <div className="mb-6 rounded-2xl border border-slate-800 bg-slate-900/90 p-3.5 sm:p-4 shadow-lg">
+        <p className="text-xs font-bold text-slate-200 mb-2.5">اختر نوع التسجيل والنشاط التجاري:</p>
         <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
           <button
             type="button"
@@ -501,13 +501,15 @@ export default function MerchantKycForm({
             }}
             className={`flex items-start gap-3 rounded-xl border p-3.5 text-right transition-all ${
               businessType === "cr"
-                ? "border-amber-500 bg-amber-500/10 text-frost shadow-xs"
-                : "border-line bg-white hover:border-slate-300 dark:bg-slate-900"
+                ? "border-amber-500 bg-amber-500/15 text-white shadow-xs ring-1 ring-amber-500/40"
+                : "border-slate-800 bg-slate-950/60 text-slate-300 hover:border-slate-700 hover:bg-slate-950"
             }`}
           >
             <div>
-              <p className="text-xs sm:text-sm font-bold text-frost">منشأة تجارية بسجل تجاري (CR)</p>
-              <p className="mt-0.5 text-[11px] text-frost-dim">
+              <p className={`text-xs sm:text-sm font-bold ${businessType === "cr" ? "text-amber-400" : "text-white"}`}>
+                منشأة تجارية بسجل تجاري (CR)
+              </p>
+              <p className="mt-0.5 text-[11px] text-slate-400 leading-relaxed">
                 للشركات والمؤسسات المسجلة في وزارة التجارة والصناعة (MoCIIP).
               </p>
             </div>
@@ -521,13 +523,15 @@ export default function MerchantKycForm({
             }}
             className={`flex items-start gap-3 rounded-xl border p-3.5 text-right transition-all ${
               businessType === "freelancer"
-                ? "border-amber-500 bg-amber-500/10 text-frost shadow-xs"
-                : "border-line bg-white hover:border-slate-300 dark:bg-slate-900"
+                ? "border-amber-500 bg-amber-500/15 text-white shadow-xs ring-1 ring-amber-500/40"
+                : "border-slate-800 bg-slate-950/60 text-slate-300 hover:border-slate-700 hover:bg-slate-950"
             }`}
           >
             <div>
-              <p className="text-xs sm:text-sm font-bold text-frost">لا أملك سجل تجاري (مشروع منزلي / فردي)</p>
-              <p className="mt-0.5 text-[11px] text-frost-dim">
+              <p className={`text-xs sm:text-sm font-bold ${businessType === "freelancer" ? "text-amber-400" : "text-white"}`}>
+                لا أملك سجل تجاري (مشروع منزلي / فردي)
+              </p>
+              <p className="mt-0.5 text-[11px] text-slate-400 leading-relaxed">
                 لأصحاب المشاريع المنزلية والحرفية والأعمال الفردية (بطاقة شخصية + وجه بيومتري + إنستجرام).
               </p>
             </div>
@@ -536,21 +540,21 @@ export default function MerchantKycForm({
       </div>
 
       {/* Visual Progress Stepper & Milestone Tracker */}
-      <div className="mb-6 rounded-2xl border border-line bg-white p-4 shadow-xs dark:bg-slate-900 sm:p-5">
+      <div className="mb-6 rounded-2xl border border-slate-800 bg-slate-900/90 p-4 shadow-lg sm:p-5">
         {/* Stepper Status Header */}
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-amber-500/20 text-sm font-bold text-amber-500">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-amber-500/20 text-sm font-bold text-amber-400 border border-amber-500/30">
               {step}
             </span>
             <div>
-              <p className="text-xs font-bold text-frost sm:text-sm">
+              <p className="text-xs font-bold text-white sm:text-sm">
                 الخطوة {step} من {maxSteps}:{" "}
-                <span className="text-amber-500">
+                <span className="text-amber-400">
                   {stepsList.find((s) => s.num === step)?.title}
                 </span>
               </p>
-              <p className="text-[11px] text-frost-dim">
+              <p className="text-[11px] text-slate-400">
                 {businessType === "cr"
                   ? "مسار المنشآت المسجلة رسمياً بالسجل التجاري (CR)"
                   : "مسار المشاريع المنزلية والعمل الحر (بدون سجل تجاري)"}
@@ -561,13 +565,13 @@ export default function MerchantKycForm({
           {/* Remaining Steps Badge */}
           <div className="flex items-center gap-2">
             {maxSteps - step === 0 ? (
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/15 px-3 py-1 text-xs font-bold text-emerald-600 dark:text-emerald-400">
-                <span className="h-2 w-2 rounded-full bg-emerald-500" />
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/15 px-3 py-1 text-xs font-bold text-emerald-400">
+                <span className="h-2 w-2 rounded-full bg-emerald-400" />
                 الخطوة الأخيرة — جاهز للإرسال والاعتماد
               </span>
             ) : (
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/15 px-3 py-1 text-xs font-bold text-amber-700 dark:text-amber-300">
-                <span className="h-2 w-2 rounded-full bg-amber-500 animate-pulse" />
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/15 px-3 py-1 text-xs font-bold text-amber-400">
+                <span className="h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
                 متبقي {maxSteps - step}{" "}
                 {maxSteps - step === 1
                   ? "خطوة واحدة"
@@ -577,7 +581,7 @@ export default function MerchantKycForm({
                 للإرسال
               </span>
             )}
-            <span className="rounded-lg bg-black/10 px-2.5 py-1 text-xs font-mono font-bold text-frost-dim dark:bg-white/10">
+            <span className="rounded-lg bg-slate-800 border border-slate-700 px-2.5 py-1 text-xs font-mono font-bold text-slate-300">
               {Math.round((step / maxSteps) * 100)}% مكتمل
             </span>
           </div>
@@ -585,7 +589,7 @@ export default function MerchantKycForm({
 
         {/* Animated Progress Bar with Connected Step Segments */}
         <div className="mt-3.5 relative">
-          <div className="h-2.5 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800">
+          <div className="h-2.5 w-full overflow-hidden rounded-full bg-slate-800">
             <div
               className="h-full rounded-full bg-gradient-to-r from-amber-500 via-amber-400 to-emerald-500 transition-all duration-500 ease-out"
               style={{
@@ -594,7 +598,7 @@ export default function MerchantKycForm({
             />
           </div>
           {/* Milestones label track */}
-          <div className="mt-1.5 flex justify-between text-[10px] font-mono text-frost-faint">
+          <div className="mt-1.5 flex justify-between text-[10px] font-mono text-slate-400">
             <span>البداية (0%)</span>
             <span>{businessType === "cr" ? "السجل التجاري (40%)" : "الهوية (50%)"}</span>
             <span>الفحص البيومتري ({businessType === "cr" ? "80%" : "75%"})</span>
@@ -618,10 +622,10 @@ export default function MerchantKycForm({
                 onClick={() => setStep(s.num)}
                 className={`flex items-center gap-2 rounded-xl border p-2.5 text-right transition-all sm:flex-col sm:items-center sm:text-center ${
                   active
-                    ? "border-amber-500 bg-amber-500/15 text-frost shadow-xs ring-2 ring-amber-500/30 font-bold"
+                    ? "border-amber-500 bg-amber-500/20 text-white shadow-xs ring-2 ring-amber-500/40 font-bold"
                     : completed
-                      ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                      : "border-line bg-slate-50/70 text-frost-dim hover:bg-slate-100 dark:bg-slate-800/60 dark:hover:bg-slate-800"
+                      ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-400"
+                      : "border-slate-800 bg-slate-950/50 text-slate-400 hover:bg-slate-800 hover:text-slate-200"
                 }`}
               >
                 <span
@@ -630,14 +634,16 @@ export default function MerchantKycForm({
                       ? "bg-emerald-500 text-white"
                       : active
                         ? "bg-amber-500 text-black font-extrabold"
-                        : "bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-200"
+                        : "bg-slate-800 text-slate-300 border border-slate-700"
                   }`}
                 >
                   {completed ? "✓" : s.num}
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-xs font-semibold">{s.title}</p>
-                  <p className="text-[10px] opacity-75">
+                  <p className={`truncate text-xs font-semibold ${active ? "text-amber-300" : completed ? "text-emerald-300" : "text-slate-200"}`}>
+                    {s.title}
+                  </p>
+                  <p className="text-[10px] text-slate-400">
                     {completed ? "مكتملة ✓" : active ? "الخطوة الحالية" : "قادمة"}
                   </p>
                 </div>
@@ -793,17 +799,17 @@ export default function MerchantKycForm({
       )}
 
       {/* Step Content Container */}
-      <div className="rounded-3xl border border-line bg-white p-4 shadow-sm dark:bg-slate-900 sm:p-7">
+      <div className="rounded-3xl border border-slate-800 bg-slate-900/90 p-5 shadow-2xl sm:p-7">
         {/* STEP 1: بيانات المنشأة / المشروع وروابط التواصل الاجتماعي */}
         {step === 1 && (
-          <div className="space-y-4">
-            <div className="border-b border-line pb-3">
-              <h2 className="text-base font-bold text-frost sm:text-lg">
+          <div className="space-y-5">
+            <div className="border-b border-slate-800 pb-3.5">
+              <h2 className="text-base font-bold text-white sm:text-lg">
                 {businessType === "cr"
                   ? "الخطوة 1: استعلام وبيانات السجل التجاري والمالك"
                   : "الخطوة 1: معلومات المشروع المنزلي وروابط التواصل"}
               </h2>
-              <p className="text-xs text-frost-dim">
+              <p className="text-xs text-slate-400 mt-1">
                 {businessType === "cr"
                   ? "استعلم عن سجلك التجاري عبر منصة عُمان للأعمال أو أدخل بيانات المنشأة."
                   : "أدخل معلومات مشروعك المنزلي / الفردي وروابط حساباتك للتحقق من نشاطك."}
@@ -812,14 +818,14 @@ export default function MerchantKycForm({
 
             {/* CR Lookup Box only for CR mode */}
             {businessType === "cr" && (
-              <div className="rounded-2xl border border-sky-500/30 bg-sky-500/10 p-3.5 dark:border-sky-500/40 dark:bg-sky-950/40">
+              <div className="rounded-2xl border border-sky-500/40 bg-sky-950/40 p-4">
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
                     <div>
-                      <p className="text-xs font-bold text-sky-950 dark:text-sky-200">
+                      <p className="text-xs font-bold text-sky-200">
                         التحقق التلقائي (منصة عُمان للأعمال - MoCIIP)
                       </p>
-                      <p className="text-[11px] text-sky-900/80 dark:text-sky-300/80">
+                      <p className="text-[11px] text-sky-300/80">
                         مطابقة آلية للبيانات والسجلات المعتمدة بسلطنة عُمان
                       </p>
                     </div>
@@ -828,7 +834,7 @@ export default function MerchantKycForm({
                     href="https://business.gov.om"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="hidden text-[11px] font-semibold text-sky-700 underline hover:text-sky-800 dark:text-sky-300 sm:inline"
+                    className="hidden text-[11px] font-semibold text-sky-300 underline hover:text-sky-200 sm:inline"
                   >
                     بوابة عُمان للأعمال ↗
                   </a>
@@ -841,14 +847,14 @@ export default function MerchantKycForm({
                       value={commercialRegNo}
                       onChange={(e) => setCommercialRegNo(e.target.value)}
                       placeholder="أدخل رقم السجل التجاري (مثال: 1234567)"
-                      className="gl-input font-mono text-xs sm:text-sm"
+                      className="w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-2.5 font-mono text-xs text-white placeholder:text-slate-500 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 sm:text-sm"
                     />
                   </div>
                   <button
                     type="button"
                     disabled={crLookupLoading || !commercialRegNo.trim()}
                     onClick={performOmanCrLookup}
-                    className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-xl bg-sky-600 px-4 text-xs font-bold text-white shadow-xs hover:bg-sky-700 disabled:opacity-50 active:scale-95"
+                    className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-xl bg-sky-600 px-4 text-xs font-bold text-white shadow-md hover:bg-sky-500 disabled:opacity-50 active:scale-95 transition"
                   >
                     {crLookupLoading ? (
                       <span className="animate-spin">◌</span>
@@ -859,29 +865,29 @@ export default function MerchantKycForm({
                 </div>
 
                 {crLookupResult && (
-                  <div className="mt-3 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3 text-xs text-emerald-950 dark:text-emerald-200">
+                  <div className="mt-3 rounded-xl border border-emerald-500/40 bg-emerald-950/40 p-3.5 text-xs text-emerald-200">
                     <div className="flex items-center justify-between">
-                      <span className="font-bold flex items-center gap-1">
+                      <span className="font-bold flex items-center gap-1 text-emerald-300">
                         <span>✓</span> سجل تجاري موثق بسلطنة عُمان
                       </span>
-                      <span className="rounded-full bg-emerald-600 px-2 py-0.5 text-[10px] font-bold text-white">
+                      <span className="rounded-full bg-emerald-600 px-2.5 py-0.5 text-[10px] font-bold text-white">
                         {crLookupResult.status}
                       </span>
                     </div>
                     <div className="mt-2 grid gap-1.5 text-[11px] opacity-90 sm:grid-cols-2">
-                      <div>الاسم التجاري: <strong>{crLookupResult.businessName}</strong></div>
-                      <div>المفوض بالتوقيع: <strong>{crLookupResult.ownerFullName}</strong></div>
-                      <div>الشكل القانوني: <strong>{crLookupResult.legalForm}</strong></div>
-                      <div>المحافظة / المدينة: <strong>{crLookupResult.city}</strong></div>
+                      <div>الاسم التجاري: <strong className="text-white">{crLookupResult.businessName}</strong></div>
+                      <div>المفوض بالتوقيع: <strong className="text-white">{crLookupResult.ownerFullName}</strong></div>
+                      <div>الشكل القانوني: <strong className="text-white">{crLookupResult.legalForm}</strong></div>
+                      <div>المحافظة / المدينة: <strong className="text-white">{crLookupResult.city}</strong></div>
                     </div>
                   </div>
                 )}
               </div>
             )}
 
-            <div className="space-y-3.5 pt-1">
+            <div className="space-y-4 pt-1">
               <div>
-                <label className="block text-xs font-semibold text-frost">
+                <label className="block text-xs font-semibold text-slate-200">
                   {businessType === "cr" ? "اسم النشاط أو المتجر التجاري *" : "اسم المشروع أو البراند التجاري *"}
                 </label>
                 <input
@@ -890,13 +896,13 @@ export default function MerchantKycForm({
                   value={businessName}
                   onChange={(e) => setBusinessName(e.target.value)}
                   placeholder={businessType === "cr" ? "مثال: مؤسسة مطرح للعطور" : "مثال: لمسة حرير للأزياء العُمانية"}
-                  className="gl-input mt-1"
+                  className="mt-1.5 w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-2.5 text-sm text-white placeholder:text-slate-500 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
                 />
               </div>
 
               {businessType === "freelancer" && (
                 <div>
-                  <label className="block text-xs font-semibold text-frost">
+                  <label className="block text-xs font-semibold text-slate-200">
                     وصف مختصر لنشاط ومنتجات المشروع *
                   </label>
                   <textarea
@@ -904,14 +910,14 @@ export default function MerchantKycForm({
                     value={projectDescription}
                     onChange={(e) => setProjectDescription(e.target.value)}
                     placeholder="مثال: مشروع منزلي لإنتاج البخور واللبان الحوجري والعطور الشرقية يدوياً والتوصيل لكافة ولايات السلطنة."
-                    className="gl-input mt-1 text-xs"
+                    className="mt-1.5 w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-2.5 text-xs text-white placeholder:text-slate-500 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
                   />
                 </div>
               )}
 
               <div className="grid gap-3.5 sm:grid-cols-2">
                 <div>
-                  <label className="block text-xs font-semibold text-frost">
+                  <label className="block text-xs font-semibold text-slate-200">
                     اسم المالك الكامل (مطابق للبطاقة الشخصية) *
                   </label>
                   <input
@@ -920,55 +926,55 @@ export default function MerchantKycForm({
                     value={ownerFullName}
                     onChange={(e) => setOwnerFullName(e.target.value)}
                     placeholder="الاسم الرباعي والقبيلة"
-                    className="gl-input mt-1"
+                    className="mt-1.5 w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-2.5 text-sm text-white placeholder:text-slate-500 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-frost">المدينة / المحافظة *</label>
+                  <label className="block text-xs font-semibold text-slate-200">المدينة / المحافظة *</label>
                   <input
                     type="text"
                     required
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
                     placeholder="مثال: مسقط - السيب"
-                    className="gl-input mt-1"
+                    className="mt-1.5 w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-2.5 text-sm text-white placeholder:text-slate-500 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
                   />
                 </div>
               </div>
 
               {/* Social Media Links (Instagram & TikTok) */}
-              <div className="rounded-2xl border border-line bg-slate-50/50 p-3.5 dark:bg-slate-900/40">
-                <p className="text-xs font-bold text-frost flex items-center gap-1.5 mb-2">
+              <div className="rounded-2xl border border-slate-800 bg-slate-950/60 p-4">
+                <p className="text-xs font-bold text-slate-200 flex items-center gap-1.5 mb-2.5">
                   روابط حسابات التواصل الاجتماعي للمشروع
                 </p>
-                <div className="grid gap-3 sm:grid-cols-2">
+                <div className="grid gap-3.5 sm:grid-cols-2">
                   <div>
-                    <label className="block text-[11px] font-semibold text-frost-dim">
+                    <label className="block text-[11px] font-semibold text-slate-300">
                       رابط حساب الإنستجرام (Instagram) *
                     </label>
-                    <div className="relative mt-1">
+                    <div className="relative mt-1.5">
                       <input
                         type="url"
                         value={instagramUrl}
                         onChange={(e) => setInstagramUrl(e.target.value)}
                         placeholder="https://instagram.com/your_store"
-                        className="gl-input text-xs font-mono"
+                        className="w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-2.5 text-xs font-mono text-white placeholder:text-slate-500 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-semibold text-frost-dim">
+                    <label className="block text-[11px] font-semibold text-slate-300">
                       رابط حساب التيك توك (TikTok - إن وجد)
                     </label>
-                    <div className="relative mt-1">
+                    <div className="relative mt-1.5">
                       <input
                         type="url"
                         value={tiktokUrl}
                         onChange={(e) => setTiktokUrl(e.target.value)}
                         placeholder="https://tiktok.com/@your_store"
-                        className="gl-input text-xs font-mono"
+                        className="w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-2.5 text-xs font-mono text-white placeholder:text-slate-500 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
                       />
                     </div>
                   </div>
@@ -977,26 +983,26 @@ export default function MerchantKycForm({
 
               {businessType === "cr" && (
                 <div>
-                  <label className="block text-xs font-semibold text-frost">الرقم الضريبي (اختياري)</label>
+                  <label className="block text-xs font-semibold text-slate-200">الرقم الضريبي (اختياري)</label>
                   <input
                     type="text"
                     value={taxNumber}
                     onChange={(e) => setTaxNumber(e.target.value)}
                     placeholder="مثال: OM123456789"
-                    className="gl-input mt-1"
+                    className="mt-1.5 w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-2.5 text-sm text-white placeholder:text-slate-500 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
                   />
                 </div>
               )}
             </div>
 
             {error && (
-              <div className="rounded-xl border border-danger/40 bg-danger/10 p-3 text-xs text-danger">
+              <div className="rounded-xl border border-rose-500/40 bg-rose-950/30 p-3.5 text-xs text-rose-300">
                 {error}
               </div>
             )}
 
-            <div className="flex items-center justify-between pt-3">
-              <button type="button" onClick={skipToDashboard} className="text-xs text-frost-dim hover:underline">
+            <div className="flex items-center justify-between pt-4 border-t border-slate-800">
+              <button type="button" onClick={skipToDashboard} className="text-xs text-slate-400 hover:text-white hover:underline transition">
                 تخطي واستكشاف الداشبورد ➔
               </button>
               <button
@@ -1013,7 +1019,7 @@ export default function MerchantKycForm({
                   setError(null);
                   setStep(2);
                 }}
-                className="gl-btn-primary min-h-11 px-6 text-xs sm:text-sm font-bold"
+                className="inline-flex min-h-11 items-center justify-center rounded-xl bg-amber-500 px-6 text-xs sm:text-sm font-bold text-slate-950 shadow-lg shadow-amber-500/20 hover:bg-amber-400 active:scale-95 transition"
               >
                 {businessType === "cr" ? "متابعة لوثيقة السجل التجاري ➔" : "متابعة لتصوير البطاقة الشخصية ➔"}
               </button>
@@ -1023,27 +1029,27 @@ export default function MerchantKycForm({
 
         {/* STEP 2 for CR: وثيقة السجل التجاري */}
         {businessType === "cr" && step === 2 && (
-          <div className="space-y-4">
-            <div className="border-b border-line pb-3">
-              <h2 className="text-base font-bold text-frost sm:text-lg">الخطوة 2: وثيقة السجل التجاري (CR)</h2>
-              <p className="text-xs text-frost-dim">
+          <div className="space-y-5">
+            <div className="border-b border-slate-800 pb-3.5">
+              <h2 className="text-base font-bold text-white sm:text-lg">الخطوة 2: وثيقة السجل التجاري (CR)</h2>
+              <p className="text-xs text-slate-400 mt-1">
                 ارفع نسخة واضحة من شهادة السجل التجاري أو الترخيص بصيغة (PDF أو صورة JPG/PNG).
               </p>
             </div>
 
-            <div className="rounded-2xl border-2 border-dashed border-line p-5 text-center hover:border-amber-500/50 transition">
+            <div className="rounded-2xl border-2 border-dashed border-slate-700 bg-slate-950/60 p-6 text-center hover:border-amber-500/60 transition">
               {crDoc ? (
                 <div className="flex flex-col items-center gap-3">
                   <div>
-                    <p className="text-xs sm:text-sm font-bold text-frost">{crDoc.name}</p>
-                    <p className="text-[11px] text-frost-dim">
+                    <p className="text-xs sm:text-sm font-bold text-white">{crDoc.name}</p>
+                    <p className="text-[11px] text-slate-400">
                       {(crDoc.size / (1024 * 1024)).toFixed(2)} MB · تم الاختيار بنجاح
                     </p>
                   </div>
                   {crPreview && crPreview !== "pdf" && (
-                    <img src={crPreview} alt="معاينة السجل" className="max-h-40 rounded-xl object-contain border" />
+                    <img src={crPreview} alt="معاينة السجل" className="max-h-44 rounded-xl object-contain border border-slate-700" />
                   )}
-                  <label className="cursor-pointer rounded-xl border border-line bg-slate-50 px-3.5 py-1.5 text-xs font-semibold text-frost hover:bg-slate-100 dark:bg-slate-800">
+                  <label className="cursor-pointer rounded-xl border border-slate-700 bg-slate-800 px-4 py-2 text-xs font-semibold text-white hover:bg-slate-700 transition">
                     تبديل الملف
                     <input
                       type="file"
@@ -1054,12 +1060,12 @@ export default function MerchantKycForm({
                   </label>
                 </div>
               ) : (
-                <label className="flex cursor-pointer flex-col items-center gap-2.5 py-3">
+                <label className="flex cursor-pointer flex-col items-center gap-3 py-4">
                   <div>
-                    <p className="text-xs sm:text-sm font-bold text-frost">اضغط لاختيار ملف السجل التجاري</p>
-                    <p className="text-[11px] text-frost-dim">يدعم PDF أو صور حتى 12 MB</p>
+                    <p className="text-xs sm:text-sm font-bold text-white">اضغط لاختيار ملف السجل التجاري</p>
+                    <p className="text-[11px] text-slate-400 mt-0.5">يدعم PDF أو صور حتى 12 MB</p>
                   </div>
-                  <span className="gl-btn-secondary !min-h-9 !py-1.5 !px-4 !text-xs">
+                  <span className="inline-flex min-h-9 items-center justify-center rounded-xl bg-slate-800 border border-slate-700 px-5 py-2 text-xs font-bold text-white hover:bg-slate-700 transition">
                     اختيار من الجهاز
                   </span>
                   <input
@@ -1073,16 +1079,16 @@ export default function MerchantKycForm({
             </div>
 
             {error && (
-              <div className="rounded-xl border border-danger/40 bg-danger/10 p-3 text-xs text-danger">
+              <div className="rounded-xl border border-rose-500/40 bg-rose-950/30 p-3.5 text-xs text-rose-300">
                 {error}
               </div>
             )}
 
-            <div className="flex items-center justify-between pt-2">
+            <div className="flex items-center justify-between pt-4 border-t border-slate-800">
               <button
                 type="button"
                 onClick={() => setStep(1)}
-                className="gl-btn-ghost min-h-11 text-xs"
+                className="text-xs font-semibold text-slate-400 hover:text-white transition"
               >
                 الرجوع للخلف
               </button>
@@ -1096,7 +1102,7 @@ export default function MerchantKycForm({
                   setError(null);
                   setStep(3);
                 }}
-                className="gl-btn-primary min-h-11 px-6 text-xs sm:text-sm font-bold"
+                className="inline-flex min-h-11 items-center justify-center rounded-xl bg-amber-500 px-6 text-xs sm:text-sm font-bold text-slate-950 shadow-lg shadow-amber-500/20 hover:bg-amber-400 active:scale-95 transition"
               >
                 متابعة لتصوير الهوية ➔
               </button>
@@ -1106,45 +1112,45 @@ export default function MerchantKycForm({
 
         {/* STEP for ID CARD: (Step 3 if CR, Step 2 if freelancer) */}
         {((businessType === "cr" && step === 3) || (businessType === "freelancer" && step === 2)) && (
-          <div className="space-y-4">
-            <div className="border-b border-line pb-3">
-              <h2 className="text-base font-bold text-frost sm:text-lg">
+          <div className="space-y-5">
+            <div className="border-b border-slate-800 pb-3.5">
+              <h2 className="text-base font-bold text-white sm:text-lg">
                 {businessType === "cr" ? "الخطوة 3: البطاقة الشخصية (الوجهين)" : "الخطوة 2: البطاقة الشخصية (الوجهين)"}
               </h2>
-              <p className="text-xs text-frost-dim">
-                التقط صورة واضحة للوجهين الأمامي والخلفي للهوية باستخدام كاميرا الهاتف بتقنية Binance أو ارفع صورتين.
+              <p className="text-xs text-slate-400 mt-1">
+                التقط صورة واضحة للوجهين الأمامي والخلفي للهوية باستخدام كاميرا الهاتف أو ارفع صورتين.
               </p>
             </div>
 
-            <div className="grid gap-3.5 sm:grid-cols-2">
+            <div className="grid gap-4 sm:grid-cols-2">
               {/* Front ID Card */}
-              <div className="rounded-2xl border border-line bg-slate-50/50 p-3.5 dark:bg-slate-900/50">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-xs font-bold text-frost">1. الوجه الأمامي للهوية *</p>
-                  {idFrontDoc && <span className="text-[10px] font-bold text-emerald-600">✓ جاهز</span>}
+              <div className="rounded-2xl border border-slate-800 bg-slate-950/60 p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-xs font-bold text-white">1. الوجه الأمامي للهوية *</p>
+                  {idFrontDoc && <span className="text-xs font-bold text-emerald-400">✓ جاهز</span>}
                 </div>
 
                 {idFrontPreview ? (
-                  <div className="relative aspect-[1.58/1] overflow-hidden rounded-xl border bg-black">
+                  <div className="relative aspect-[1.58/1] overflow-hidden rounded-xl border border-slate-700 bg-black">
                     <img src={idFrontPreview} alt="الوجه الأمامي" className="h-full w-full object-cover" />
-                    <div className="absolute inset-0 flex items-end justify-between bg-gradient-to-t from-black/70 to-transparent p-2 text-white">
-                      <span className="text-[10px] font-semibold text-amber-300">✓ تم الالتقاط</span>
+                    <div className="absolute inset-0 flex items-end justify-between bg-gradient-to-t from-black/80 to-transparent p-3 text-white">
+                      <span className="text-xs font-semibold text-amber-400">✓ تم الالتقاط</span>
                       <button
                         type="button"
                         onClick={() => {
                           setIdFrontDoc(null);
                           setIdFrontPreview(null);
                         }}
-                        className="rounded-lg bg-rose-600/90 px-2 py-0.5 text-[10px] font-semibold"
+                        className="rounded-lg bg-rose-600 px-2.5 py-1 text-[11px] font-semibold text-white hover:bg-rose-500 transition"
                       >
                         إعادة التصوير
                       </button>
                     </div>
                   </div>
                 ) : (
-                  <div className="flex aspect-[1.58/1] flex-col items-center justify-center rounded-xl border-2 border-dashed border-amber-400/40 bg-white p-3 text-center dark:bg-slate-950">
-                    <p className="text-xs font-bold text-frost">الوجه الأمامي للبطاقة</p>
-                    <div className="mt-2.5 flex flex-wrap gap-2 justify-center">
+                  <div className="flex aspect-[1.58/1] flex-col items-center justify-center rounded-xl border-2 border-dashed border-amber-500/40 bg-slate-900 p-4 text-center">
+                    <p className="text-xs sm:text-sm font-bold text-slate-200">الوجه الأمامي للبطاقة</p>
+                    <div className="mt-3 flex flex-wrap gap-2.5 justify-center">
                       <button
                         type="button"
                         onClick={() => {
@@ -1152,11 +1158,11 @@ export default function MerchantKycForm({
                           setFacingMode("environment");
                           void startCamera("environment");
                         }}
-                        className="inline-flex items-center gap-1 rounded-xl bg-amber-500 px-3 py-1.5 text-xs font-bold text-black shadow-xs hover:bg-amber-400 active:scale-95"
+                        className="inline-flex items-center gap-1 rounded-xl bg-amber-500 px-3.5 py-1.5 text-xs font-bold text-slate-950 shadow-md hover:bg-amber-400 active:scale-95 transition"
                       >
                         فتح الكاميرا
                       </button>
-                      <label className="cursor-pointer rounded-xl border border-line px-3 py-1.5 text-xs font-semibold text-frost hover:bg-slate-50 dark:hover:bg-slate-800">
+                      <label className="cursor-pointer rounded-xl border border-slate-700 bg-slate-800 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-slate-700 transition">
                         رفع صورة
                         <input
                           type="file"
@@ -1171,33 +1177,33 @@ export default function MerchantKycForm({
               </div>
 
               {/* Back ID Card */}
-              <div className="rounded-2xl border border-line bg-slate-50/50 p-3.5 dark:bg-slate-900/50">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-xs font-bold text-frost">2. الوجه الخلفي للهوية *</p>
-                  {idBackDoc && <span className="text-[10px] font-bold text-emerald-600">✓ جاهز</span>}
+              <div className="rounded-2xl border border-slate-800 bg-slate-950/60 p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-xs font-bold text-white">2. الوجه الخلفي للهوية *</p>
+                  {idBackDoc && <span className="text-xs font-bold text-emerald-400">✓ جاهز</span>}
                 </div>
 
                 {idBackPreview ? (
-                  <div className="relative aspect-[1.58/1] overflow-hidden rounded-xl border bg-black">
+                  <div className="relative aspect-[1.58/1] overflow-hidden rounded-xl border border-slate-700 bg-black">
                     <img src={idBackPreview} alt="الوجه الخلفي" className="h-full w-full object-cover" />
-                    <div className="absolute inset-0 flex items-end justify-between bg-gradient-to-t from-black/70 to-transparent p-2 text-white">
-                      <span className="text-[10px] font-semibold text-amber-300">✓ تم الالتقاط</span>
+                    <div className="absolute inset-0 flex items-end justify-between bg-gradient-to-t from-black/80 to-transparent p-3 text-white">
+                      <span className="text-xs font-semibold text-amber-400">✓ تم الالتقاط</span>
                       <button
                         type="button"
                         onClick={() => {
                           setIdBackDoc(null);
                           setIdBackPreview(null);
                         }}
-                        className="rounded-lg bg-rose-600/90 px-2 py-0.5 text-[10px] font-semibold"
+                        className="rounded-lg bg-rose-600 px-2.5 py-1 text-[11px] font-semibold text-white hover:bg-rose-500 transition"
                       >
                         إعادة التصوير
                       </button>
                     </div>
                   </div>
                 ) : (
-                  <div className="flex aspect-[1.58/1] flex-col items-center justify-center rounded-xl border-2 border-dashed border-amber-400/40 bg-white p-3 text-center dark:bg-slate-950">
-                    <p className="text-xs font-bold text-frost">الوجه الخلفي للبطاقة</p>
-                    <div className="mt-2.5 flex flex-wrap gap-2 justify-center">
+                  <div className="flex aspect-[1.58/1] flex-col items-center justify-center rounded-xl border-2 border-dashed border-amber-500/40 bg-slate-900 p-4 text-center">
+                    <p className="text-xs sm:text-sm font-bold text-slate-200">الوجه الخلفي للبطاقة</p>
+                    <div className="mt-3 flex flex-wrap gap-2.5 justify-center">
                       <button
                         type="button"
                         onClick={() => {
@@ -1205,11 +1211,11 @@ export default function MerchantKycForm({
                           setFacingMode("environment");
                           void startCamera("environment");
                         }}
-                        className="inline-flex items-center gap-1 rounded-xl bg-amber-500 px-3 py-1.5 text-xs font-bold text-black shadow-xs hover:bg-amber-400 active:scale-95"
+                        className="inline-flex items-center gap-1 rounded-xl bg-amber-500 px-3.5 py-1.5 text-xs font-bold text-slate-950 shadow-md hover:bg-amber-400 active:scale-95 transition"
                       >
                         فتح الكاميرا
                       </button>
-                      <label className="cursor-pointer rounded-xl border border-line px-3 py-1.5 text-xs font-semibold text-frost hover:bg-slate-50 dark:hover:bg-slate-800">
+                      <label className="cursor-pointer rounded-xl border border-slate-700 bg-slate-800 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-slate-700 transition">
                         رفع صورة
                         <input
                           type="file"
@@ -1225,16 +1231,16 @@ export default function MerchantKycForm({
             </div>
 
             {error && (
-              <div className="rounded-xl border border-danger/40 bg-danger/10 p-3 text-xs text-danger">
+              <div className="rounded-xl border border-rose-500/40 bg-rose-950/30 p-3.5 text-xs text-rose-300">
                 {error}
               </div>
             )}
 
-            <div className="flex items-center justify-between pt-2">
+            <div className="flex items-center justify-between pt-4 border-t border-slate-800">
               <button
                 type="button"
                 onClick={() => setStep(businessType === "cr" ? 2 : 1)}
-                className="gl-btn-ghost min-h-11 text-xs"
+                className="text-xs font-semibold text-slate-400 hover:text-white transition"
               >
                 الرجوع للخلف
               </button>
@@ -1248,7 +1254,7 @@ export default function MerchantKycForm({
                   setError(null);
                   setStep(businessType === "cr" ? 4 : 3);
                 }}
-                className="gl-btn-primary min-h-11 px-6 text-xs sm:text-sm font-bold"
+                className="inline-flex min-h-11 items-center justify-center rounded-xl bg-amber-500 px-6 text-xs sm:text-sm font-bold text-slate-950 shadow-lg shadow-amber-500/20 hover:bg-amber-400 active:scale-95 transition"
               >
                 متابعة للفحص الحي للوجه ➔
               </button>
@@ -1258,25 +1264,25 @@ export default function MerchantKycForm({
 
         {/* STEP for FACE LIVENESS: (Step 4 if CR, Step 3 if freelancer) */}
         {((businessType === "cr" && step === 4) || (businessType === "freelancer" && step === 3)) && (
-          <div className="space-y-4">
-            <div className="border-b border-line pb-3">
-              <h2 className="text-base font-bold text-frost sm:text-lg">
+          <div className="space-y-5">
+            <div className="border-b border-slate-800 pb-3.5">
+              <h2 className="text-base font-bold text-white sm:text-lg">
                 {businessType === "cr"
                   ? "الخطوة 4: التحقق الحي للوجه (Face Liveness Geometry)"
                   : "الخطوة 3: التحقق الحي للوجه (Face Liveness Geometry)"}
               </h2>
-              <p className="text-xs text-frost-dim">
+              <p className="text-xs text-slate-400 mt-1">
                 مثل منصة Binance، يضمن الفحص البيومتري مطابقة ملامح الوجه مع الهوية المرفوعة ومنع انتحال الشخصية.
               </p>
             </div>
 
-            <div className="flex flex-col items-center justify-center rounded-2xl border border-line bg-slate-50/50 p-6 text-center dark:bg-slate-900/50">
+            <div className="flex flex-col items-center justify-center rounded-2xl border border-slate-800 bg-slate-950/60 p-6 text-center">
               {faceScanDoc ? (
                 <div className="flex flex-col items-center gap-3">
-                  <div className="relative h-36 w-36 overflow-hidden rounded-full border-4 border-amber-400 shadow-md">
+                  <div className="relative h-36 w-36 overflow-hidden rounded-full border-4 border-amber-400 shadow-xl">
                     <img src={faceScanDoc} alt="صورة الوجه" className="h-full w-full object-cover" />
                   </div>
-                  <p className="text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                  <p className="text-xs font-bold text-emerald-400">
                     ✓ تم اجتياز الفحص البيومتري بنجاح
                   </p>
                   <button
@@ -1286,7 +1292,7 @@ export default function MerchantKycForm({
                       setFacingMode("user");
                       void startCamera("user");
                     }}
-                    className="rounded-xl border border-line bg-white px-4 py-1.5 text-xs font-semibold text-frost hover:bg-slate-100 dark:bg-slate-800"
+                    className="rounded-xl border border-slate-700 bg-slate-800 px-4 py-2 text-xs font-semibold text-white hover:bg-slate-700 transition"
                   >
                     إعادة الفحص البيومتري
                   </button>
@@ -1294,8 +1300,8 @@ export default function MerchantKycForm({
               ) : (
                 <div className="flex flex-col items-center gap-3 max-w-sm">
                   <div>
-                    <p className="text-sm font-bold text-frost">فحص ومطابقة الوجه الحي (3D Liveness)</p>
-                    <p className="text-xs text-frost-dim mt-1">
+                    <p className="text-sm font-bold text-white">فحص ومطابقة الوجه الحي (3D Liveness)</p>
+                    <p className="text-xs text-slate-400 mt-1 leading-relaxed">
                       سيتم فتح الكاميرا الأمامية للتحقق من الملامح الحية (الرمش والابتسامة) ومطابقتها هندسياً.
                     </p>
                   </div>
@@ -1306,7 +1312,7 @@ export default function MerchantKycForm({
                       setFacingMode("user");
                       void startCamera("user");
                     }}
-                    className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-amber-500 px-6 text-xs font-bold text-black shadow-md hover:bg-amber-400 active:scale-95"
+                    className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-amber-500 px-6 text-xs font-bold text-slate-950 shadow-lg shadow-amber-500/25 hover:bg-amber-400 active:scale-95 transition"
                   >
                     بدء الفحص البيومتري الحي
                   </button>
@@ -1314,11 +1320,11 @@ export default function MerchantKycForm({
               )}
             </div>
 
-            <div className="flex items-center justify-between pt-2">
+            <div className="flex items-center justify-between pt-4 border-t border-slate-800">
               <button
                 type="button"
                 onClick={() => setStep(businessType === "cr" ? 3 : 2)}
-                className="gl-btn-ghost min-h-11 text-xs"
+                className="text-xs font-semibold text-slate-400 hover:text-white transition"
               >
                 الرجوع للهوية
               </button>
@@ -1328,7 +1334,7 @@ export default function MerchantKycForm({
                   setError(null);
                   setStep(businessType === "cr" ? 5 : 4);
                 }}
-                className="gl-btn-primary min-h-11 px-6 text-xs sm:text-sm font-bold"
+                className="inline-flex min-h-11 items-center justify-center rounded-xl bg-amber-500 px-6 text-xs sm:text-sm font-bold text-slate-950 shadow-lg shadow-amber-500/20 hover:bg-amber-400 active:scale-95 transition"
               >
                 متابعة للمراجعة النهائية ➔
               </button>
@@ -1338,99 +1344,99 @@ export default function MerchantKycForm({
 
         {/* STEP for REVIEW & SUBMIT: (Step 5 if CR, Step 4 if freelancer) */}
         {((businessType === "cr" && step === 5) || (businessType === "freelancer" && step === 4)) && (
-          <div className="space-y-4">
-            <div className="border-b border-line pb-3">
-              <h2 className="text-base font-bold text-frost sm:text-lg">
+          <div className="space-y-5">
+            <div className="border-b border-slate-800 pb-3.5">
+              <h2 className="text-base font-bold text-white sm:text-lg">
                 {businessType === "cr" ? "الخطوة 5: مراجعة الوثائق والتأكيد" : "الخطوة 4: مراجعة البيانات والتأكيد"}
               </h2>
-              <p className="text-xs text-frost-dim">
+              <p className="text-xs text-slate-400 mt-1">
                 راجع ملخص البيانات والوثائق المرفوعة قبل إرسالها لمركز التدقيق والدعم الأمني للاعتماد خلال 24 ساعة.
               </p>
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-2">
-              <div className="rounded-2xl border border-line bg-slate-50/50 p-3.5 dark:bg-slate-900/50">
-                <p className="text-[11px] font-semibold text-frost-faint">نوع النشاط</p>
-                <p className="font-bold text-frost text-sm">
+            <div className="grid gap-3.5 sm:grid-cols-2">
+              <div className="rounded-2xl border border-slate-800 bg-slate-950/60 p-4">
+                <p className="text-[11px] font-semibold text-slate-400">نوع النشاط</p>
+                <p className="font-bold text-white text-sm mt-0.5">
                   {businessType === "cr" ? "منشأة تجارية بسجل تجاري" : "مشروع منزلي / عمل حر"}
                 </p>
-                <p className="mt-2 text-[11px] font-semibold text-frost-faint">اسم النشاط / المتجر</p>
-                <p className="font-bold text-frost text-sm">{businessName}</p>
+                <p className="mt-2.5 text-[11px] font-semibold text-slate-400">اسم النشاط / المتجر</p>
+                <p className="font-bold text-white text-sm mt-0.5">{businessName}</p>
                 {businessType === "cr" && (
                   <>
-                    <p className="mt-2 text-[11px] font-semibold text-frost-faint">رقم السجل التجاري</p>
-                    <p className="font-mono text-xs font-bold text-frost">{commercialRegNo}</p>
+                    <p className="mt-2.5 text-[11px] font-semibold text-slate-400">رقم السجل التجاري</p>
+                    <p className="font-mono text-xs font-bold text-amber-400 mt-0.5">{commercialRegNo}</p>
                   </>
                 )}
                 {businessType === "freelancer" && projectDescription && (
                   <>
-                    <p className="mt-2 text-[11px] font-semibold text-frost-faint">نشاط المشروع</p>
-                    <p className="text-xs text-frost-dim">{projectDescription}</p>
+                    <p className="mt-2.5 text-[11px] font-semibold text-slate-400">نشاط المشروع</p>
+                    <p className="text-xs text-slate-300 mt-0.5 leading-relaxed">{projectDescription}</p>
                   </>
                 )}
               </div>
 
-              <div className="rounded-2xl border border-line bg-slate-50/50 p-3.5 dark:bg-slate-900/50">
-                <p className="text-[11px] font-semibold text-frost-faint">اسم المالك الكامل</p>
-                <p className="font-bold text-frost text-sm">{ownerFullName}</p>
-                <p className="mt-2 text-[11px] font-semibold text-frost-faint">المدينة / المحافظة</p>
-                <p className="font-bold text-frost text-sm">{city}</p>
+              <div className="rounded-2xl border border-slate-800 bg-slate-950/60 p-4">
+                <p className="text-[11px] font-semibold text-slate-400">اسم المالك الكامل</p>
+                <p className="font-bold text-white text-sm mt-0.5">{ownerFullName}</p>
+                <p className="mt-2.5 text-[11px] font-semibold text-slate-400">المدينة / المحافظة</p>
+                <p className="font-bold text-white text-sm mt-0.5">{city}</p>
                 {instagramUrl && (
                   <>
-                    <p className="mt-2 text-[11px] font-semibold text-frost-faint">حساب الإنستجرام</p>
-                    <p className="font-mono text-xs text-rose-500 truncate">{instagramUrl}</p>
+                    <p className="mt-2.5 text-[11px] font-semibold text-slate-400">حساب الإنستجرام</p>
+                    <p className="font-mono text-xs text-pink-400 truncate mt-0.5">{instagramUrl}</p>
                   </>
                 )}
                 {tiktokUrl && (
                   <>
-                    <p className="mt-2 text-[11px] font-semibold text-frost-faint">حساب التيك توك</p>
-                    <p className="font-mono text-xs text-slate-700 dark:text-slate-300 truncate">{tiktokUrl}</p>
+                    <p className="mt-2.5 text-[11px] font-semibold text-slate-400">حساب التيك توك</p>
+                    <p className="font-mono text-xs text-slate-300 truncate mt-0.5">{tiktokUrl}</p>
                   </>
                 )}
               </div>
             </div>
 
-            <div className="space-y-2 rounded-2xl border border-line p-3.5 text-xs">
-              <p className="font-bold text-frost mb-2">قائمة التحقق من الوثائق والمطابقة:</p>
+            <div className="space-y-2.5 rounded-2xl border border-slate-800 bg-slate-950/60 p-4 text-xs">
+              <p className="font-bold text-white mb-2">قائمة التحقق من الوثائق والمطابقة:</p>
               {businessType === "cr" && (
-                <div className="flex items-center justify-between text-frost-dim">
+                <div className="flex items-center justify-between text-slate-300">
                   <span>وثيقة السجل التجاري:</span>
-                  <span className="font-semibold text-emerald-600">✓ جاهزة ({crDoc?.name})</span>
+                  <span className="font-semibold text-emerald-400">✓ جاهزة ({crDoc?.name})</span>
                 </div>
               )}
-              <div className="flex items-center justify-between text-frost-dim">
+              <div className="flex items-center justify-between text-slate-300">
                 <span>البطاقة الشخصية (الوجه الأمامي):</span>
-                <span className="font-semibold text-emerald-600">✓ تم الالتقاط</span>
+                <span className="font-semibold text-emerald-400">✓ تم الالتقاط</span>
               </div>
-              <div className="flex items-center justify-between text-frost-dim">
+              <div className="flex items-center justify-between text-slate-300">
                 <span>البطاقة الشخصية (الوجه الخلفي):</span>
-                <span className="font-semibold text-emerald-600">✓ تم الالتقاط</span>
+                <span className="font-semibold text-emerald-400">✓ تم الالتقاط</span>
               </div>
-              <div className="flex items-center justify-between text-frost-dim">
+              <div className="flex items-center justify-between text-slate-300">
                 <span>الفحص البيومتري للوجه:</span>
-                <span className="font-semibold text-emerald-600">
+                <span className="font-semibold text-emerald-400">
                   {faceScanDoc ? "✓ تم الفحص الحي (Liveness Verified)" : "— اختياري"}
                 </span>
               </div>
               {instagramUrl && (
-                <div className="flex items-center justify-between text-frost-dim">
+                <div className="flex items-center justify-between text-slate-300">
                   <span>حساب الإنستجرام:</span>
-                  <span className="font-semibold text-emerald-600">✓ تم الربط</span>
+                  <span className="font-semibold text-emerald-400">✓ تم الربط</span>
                 </div>
               )}
             </div>
 
             {error && (
-              <div className="rounded-xl border border-danger/40 bg-danger/10 p-3 text-xs text-danger">
+              <div className="rounded-xl border border-rose-500/40 bg-rose-950/30 p-3.5 text-xs text-rose-300">
                 {error}
               </div>
             )}
 
-            <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-slate-800">
               <button
                 type="button"
                 onClick={() => setStep(businessType === "cr" ? 4 : 3)}
-                className="gl-btn-ghost min-h-11 text-xs"
+                className="text-xs font-semibold text-slate-400 hover:text-white transition"
               >
                 الرجوع للخلف
               </button>
@@ -1438,7 +1444,7 @@ export default function MerchantKycForm({
                 type="button"
                 disabled={pending}
                 onClick={handleSubmit}
-                className="gl-btn-primary min-h-12 px-8 text-xs sm:text-sm font-bold shadow-md disabled:opacity-50"
+                className="inline-flex min-h-12 items-center justify-center rounded-xl bg-amber-500 px-8 text-xs sm:text-sm font-bold text-slate-950 shadow-lg shadow-amber-500/25 hover:bg-amber-400 disabled:opacity-50 transition active:scale-95"
               >
                 {pending ? "جارٍ إرسال الوثائق والاعتماد…" : "إرسال الوثائق لفريق التدقيق والدعم"}
               </button>

@@ -13,9 +13,11 @@ import {
   ReferenceLine,
   Cell,
 } from "recharts";
+import { Sliders, Sparkles, TrendingUp, Calculator } from "lucide-react";
 import { formatMoney } from "@/lib/format";
 import type { MerchantProductRow } from "@/lib/dashboard/merchant";
 import type { OrderLedgerRow } from "@/lib/dashboard/types";
+import WhatIfProfitabilityOverlay from "@/components/dashboard/WhatIfProfitabilityOverlay";
 
 interface StockSalesAnalyticsChartProps {
   products: MerchantProductRow[];
@@ -64,6 +66,7 @@ export default function StockSalesAnalyticsChart({
   const [selectedProductId, setSelectedProductId] = useState<string>("all");
   const [viewMode, setViewMode] = useState<ViewMode>("daily_trend");
   const [highlightDeadStockOnly, setHighlightDeadStockOnly] = useState<boolean>(false);
+  const [isWhatIfOverlayOpen, setIsWhatIfOverlayOpen] = useState<boolean>(false);
 
   // 1. Calculate Product-Level Inventory & Velocity Health Metrics
   const productHealthData = useMemo<ProductHealthPoint[]>(() => {
@@ -269,6 +272,19 @@ export default function StockSalesAnalyticsChart({
 
         {/* Action Controls & Filters */}
         <div className="flex flex-wrap items-center gap-2">
+          {/* What-If Profitability Calculator Trigger Button */}
+          <button
+            type="button"
+            onClick={() => setIsWhatIfOverlayOpen(true)}
+            className="flex items-center gap-1.5 rounded-xl border border-indigo-500/40 bg-gradient-to-r from-indigo-600 to-indigo-700 px-3.5 py-1.5 text-[12px] font-bold text-white shadow-sm hover:brightness-110 active:scale-95 transition-all"
+          >
+            <Sliders className="h-3.5 w-3.5" />
+            <span>{isAr ? "حاسبة التوقعات (What-If)" : "What-If Calculator"}</span>
+            <span className="rounded-full bg-white/20 px-1.5 py-0.2 text-[9px] font-extrabold tracking-wide">
+              {isAr ? "محاكاة" : "Simulate"}
+            </span>
+          </button>
+
           {/* View Mode Buttons */}
           <div className="flex rounded-xl border border-line bg-night/5 p-1 dark:bg-night/40">
             <button
@@ -786,6 +802,53 @@ export default function StockSalesAnalyticsChart({
           </div>
         </div>
       )}
+
+      {/* 5. What-If Profitability Simulation Banner */}
+      <div className="relative overflow-hidden rounded-2xl border border-indigo-200/80 bg-gradient-to-br from-indigo-500/10 via-indigo-500/5 to-transparent p-4 sm:p-5 dark:border-indigo-800/60 dark:bg-indigo-950/20">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-start gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-sm">
+              <Sliders className="h-5 w-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-sm sm:text-base font-bold text-frost">
+                  {isAr
+                    ? "محاكاة سيناريوهات الأرباح وحساب نقطة التعادل (What-If Calculator)"
+                    : "What-If Profitability & Break-Even Simulator"}
+                </h3>
+                <span className="rounded-full bg-indigo-600/15 px-2 py-0.5 text-[10px] font-bold text-indigo-600 dark:text-indigo-400">
+                  {isAr ? "أداة ذكية" : "Smart Tool"}
+                </span>
+              </div>
+              <p className="mt-0.5 text-xs text-frost-dim max-w-2xl leading-relaxed">
+                {isAr
+                  ? "تحكّم في متغيرات ميزانية الإعلانات (Ad Spend)، ونسب استرجاع الشحن (Return Rate RTO)، وحجم المبيعات لترى الأثر المالي اللحظي على صافي أرباحك وتتجنب الخسائر."
+                  : "Simulate and toggle ad spend budgets, COD return rates (RTO), and monthly order volumes to instantly project bottom-line net profit."}
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setIsWhatIfOverlayOpen(true)}
+            className="gl-btn-primary !min-h-10 !py-2.5 !px-5 !text-xs shrink-0 flex items-center justify-center gap-2 shadow-sm"
+          >
+            <Sparkles className="h-3.5 w-3.5" />
+            <span>{isAr ? "فتح حاسبة التوقعات الآن" : "Launch What-If Calculator"}</span>
+          </button>
+        </div>
+      </div>
+
+      {/* 6. What-If Profitability Overlay Modal */}
+      <WhatIfProfitabilityOverlay
+        isOpen={isWhatIfOverlayOpen}
+        onClose={() => setIsWhatIfOverlayOpen(false)}
+        products={products}
+        ordersLedger={ordersLedger}
+        locale={locale}
+        onNavigateTab={onNavigateTab}
+      />
     </section>
   );
 }

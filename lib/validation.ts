@@ -1,8 +1,14 @@
 import type { ContactFieldErrors, ContactFormData } from "@/lib/types";
-
-const HTML_ENTITY_PATTERN = /[<>"'&]/g;
-const CONTROL_CHAR_PATTERN = /[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g;
-const MULTI_SPACE_PATTERN = /\s{2,}/g;
+import {
+  sanitizePlainText,
+  sanitizePhone,
+  sanitizeEmail,
+  sanitizeSafeHtml,
+  sanitizeUrl,
+  sanitizeSlug,
+  sanitizeObject,
+  hasSqlInjectionPattern,
+} from "@/lib/security/inputSanitizer";
 
 const FIELD_LIMITS = {
   name: 100,
@@ -12,27 +18,19 @@ const FIELD_LIMITS = {
 } as const satisfies Record<keyof ContactFormData, number>;
 
 export function sanitizeTextInput(value: string, maxLength: number): string {
-  return value
-    .replace(CONTROL_CHAR_PATTERN, "")
-    .replace(HTML_ENTITY_PATTERN, "")
-    .replace(MULTI_SPACE_PATTERN, " ")
-    .trim()
-    .slice(0, maxLength);
+  return sanitizePlainText(value, maxLength);
 }
 
 export function sanitizePhoneInput(value: string): string {
-  return value
-    .replace(/[^\d+\s\-()]/g, "")
-    .trim()
-    .slice(0, FIELD_LIMITS.phone);
+  return sanitizePhone(value, FIELD_LIMITS.phone);
 }
 
 export function isValidName(value: string): boolean {
-  return value.length >= 2 && value.length <= FIELD_LIMITS.name;
+  return value.length >= 2 && value.length <= FIELD_LIMITS.name && !hasSqlInjectionPattern(value);
 }
 
 export function isValidBusinessName(value: string): boolean {
-  return value.length >= 2 && value.length <= FIELD_LIMITS.biz;
+  return value.length >= 2 && value.length <= FIELD_LIMITS.biz && !hasSqlInjectionPattern(value);
 }
 
 export function isValidPhone(value: string): boolean {
@@ -41,15 +39,15 @@ export function isValidPhone(value: string): boolean {
 }
 
 export function sanitizeEmailInput(value: string): string {
-  return value.replace(CONTROL_CHAR_PATTERN, "").trim().toLowerCase().slice(0, 120);
+  return sanitizeEmail(value, 120);
 }
 
 export function isValidEmail(value: string): boolean {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) && value.length <= 120;
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) && value.length <= 120 && !hasSqlInjectionPattern(value);
 }
 
 export function isValidMessage(value: string): boolean {
-  return value.length <= FIELD_LIMITS.msg;
+  return value.length <= FIELD_LIMITS.msg && !hasSqlInjectionPattern(value);
 }
 
 export function validateContactForm(raw: ContactFormData): {
@@ -79,7 +77,7 @@ export function validateContactForm(raw: ContactFormData): {
   }
 
   if (!isValidMessage(sanitized.msg)) {
-    errors.msg = "الرسالة طويلة جدًا.";
+    errors.msg = "الرسالة طويلة جدًا أو تحتوي على مدخلات غير مقبولة.";
   }
 
   return {
@@ -89,4 +87,12 @@ export function validateContactForm(raw: ContactFormData): {
   };
 }
 
-export { FIELD_LIMITS };
+export {
+  FIELD_LIMITS,
+  sanitizeSafeHtml,
+  sanitizeUrl,
+  sanitizeSlug,
+  sanitizeObject,
+  hasSqlInjectionPattern,
+};
+

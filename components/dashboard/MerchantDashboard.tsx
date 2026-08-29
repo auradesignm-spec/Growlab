@@ -21,14 +21,16 @@ import LiveSalesSimulator from "@/components/dashboard/LiveSalesSimulator";
 import StockAlertToast from "@/components/dashboard/StockAlertToast";
 import StockSalesAnalyticsChart from "@/components/dashboard/StockSalesAnalyticsChart";
 import AdChannelDemandRadar from "@/components/dashboard/AdChannelDemandRadar";
+import FinancialAnalyticsDashboard from "@/components/dashboard/FinancialAnalyticsDashboard";
+import IntegrationsHub from "@/components/dashboard/IntegrationsHub";
 import VerifiedBadge from "@/components/dashboard/VerifiedBadge";
 import { EmptyState, StatusPill, TableShell, TierPill } from "@/components/dashboard/ui";
 import { merchantOnboardingHref } from "@/lib/domain/merchantOnboarding";
 
-type Tab = "queue" | "products" | "store" | "campaign" | "wallet" | "billing" | "creators" | "orders" | "samples" | "simulator" | "analytics" | "ad_radar";
+type Tab = "queue" | "products" | "store" | "campaign" | "wallet" | "billing" | "creators" | "orders" | "samples" | "simulator" | "analytics" | "ad_radar" | "financial_analytics" | "integrations";
 
 /** MVP-visible tabs (deep links to queue/creators/samples still render if forced in code). */
-const MERCHANT_TABS: Tab[] = ["ad_radar", "analytics", "simulator", "products", "store", "campaign", "wallet", "billing", "orders"];
+const MERCHANT_TABS: Tab[] = ["financial_analytics", "integrations", "ad_radar", "analytics", "simulator", "products", "store", "campaign", "wallet", "billing", "orders"];
 
 function isMerchantTab(value: string | undefined): value is Tab {
   return Boolean(value && MERCHANT_TABS.includes(value as Tab));
@@ -59,6 +61,9 @@ export default function MerchantDashboard({
   }, [initialTab]);
 
   const primaryTabs: Array<{ id: Tab; label: string }> = [
+    { id: "financial_analytics", label: locale === "en" ? "True Net Profit & Reconciliation" : "تدقيق الأرباح والمطابقة المالية" },
+    { id: "integrations", label: locale === "en" ? "Integrations Hub" : "مركز الربط والبيانات" },
+    { id: "ad_radar", label: locale === "en" ? "Ad Channels AI Radar" : "رادار القنوات الإعلانية" },
     { id: "analytics", label: locale === "en" ? "Sales & Stock Radar" : "رادار المبيعات والمخزون" },
     { id: "simulator", label: locale === "en" ? "Live Sales Simulator" : "محاكي المبيعات الحية" },
     { id: "store", label: t("tabs.store") },
@@ -156,6 +161,25 @@ export default function MerchantDashboard({
         <div className="mt-6 overflow-hidden rounded-[1.75rem] border border-line bg-white shadow-[var(--shadow-card)]">
           <TabBar tabs={primaryTabs} moreTabs={moreTabs} active={tab} onChange={changeTab} />
           <div className="border-t border-line">
+            {tab === "financial_analytics" && (
+              <div className="p-4 sm:p-6 bg-slate-950">
+                <FinancialAnalyticsDashboard locale={locale} />
+              </div>
+            )}
+            {tab === "integrations" && (
+              <div className="p-4 sm:p-6 bg-slate-950">
+                <IntegrationsHub locale={locale} />
+              </div>
+            )}
+            {tab === "ad_radar" && (
+              <div className="p-4 sm:p-6 bg-slate-50/50 dark:bg-slate-950/40">
+                <AdChannelDemandRadar
+                  products={data.products}
+                  locale={locale}
+                  onNavigateTab={changeTab}
+                />
+              </div>
+            )}
             {tab === "analytics" && (
               <div className="p-4 sm:p-6 bg-slate-50/50 dark:bg-slate-950/40">
                 <StockSalesAnalyticsChart

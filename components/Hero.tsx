@@ -37,6 +37,16 @@ export default function Hero() {
     <section id="manifesto" className="relative overflow-x-clip scroll-mt-24 pb-10 pt-[5.5rem] sm:pb-10 sm:pt-28">
       <div className="relative z-[1] mx-auto max-w-wrap px-5 sm:px-8">
         <div className="relative max-w-4xl overflow-visible px-1 pt-16 sm:px-4 sm:pt-24">
+          {/* Brandstack Financial Intelligence Manifesto Banner */}
+          <div className="relative z-[1] mb-4 inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-amber-500/10 px-3.5 py-1.5 text-xs font-bold text-amber-900 dark:text-amber-300 shadow-sm backdrop-blur-sm">
+            <span className="flex h-2 w-2 rounded-full bg-amber-500 animate-ping" />
+            <span>
+              {locale === "en"
+                ? "Brandstack Engine: Gross is vanity. Net is the truth."
+                : "محرك الربح الصافي: إجمالي المبيعات مظهر خادع.. وصافي الربح هو الحقيقة."}
+            </span>
+          </div>
+
           <h1 key={locale} className="gl-hero-title relative z-[1] text-start font-semibold text-frost">
             {words.map((word, index) => {
               const cashWord = index === cashIndex;
@@ -75,12 +85,37 @@ export default function Hero() {
               );
             })}
           </h1>
-          <p
-            data-guide="hero"
-            className="gl-enter-2 relative z-[1] mt-5 max-w-xl text-start text-[16px] leading-6 text-[#3d4450] sm:leading-relaxed"
-          >
-            {t("lede")}
-          </p>
+
+          {/* Punchy Fragmentation Callout */}
+          <div className="gl-enter-2 relative z-[1] mt-4 rounded-2xl border border-line bg-white/70 p-4 shadow-sm backdrop-blur-sm dark:bg-slate-900/60">
+            <p className="text-sm font-bold text-frost">
+              {locale === "en"
+                ? "Your sales are in Shopify. Your spend is in Meta. Your returns are in a spreadsheet. And none of them agree."
+                : "مبيعاتك في شوبيفاي وسلة، إنفاقك الإعلاني في ميتا وجوجل، ومرتجعاتك في جدول إكسيل.. ولا أحد منها يتطابق مع رصيدك البنكي."}
+            </p>
+            <p className="mt-1 text-xs text-frost-dim leading-relaxed">
+              {locale === "en"
+                ? "Growlab unifies multi-channel sales, live ad spend attribution, courier COD settlements, and return losses into one single source of True Net Profit."
+                : "جروولاب يوحّد بيانات مبيعاتك، الإنفاق الإعلاني الحقيقي، تحصيلات شركات الشحن، وخسائر المرتجعات في شاشة واحدة تركز على الكاش الحقيقي في جيبك."}
+            </p>
+          </div>
+
+          {/* Key Value Points */}
+          <div className="relative z-[1] mt-4 grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs text-frost-dim font-medium">
+            <div className="flex items-center gap-2 rounded-xl bg-black/5 dark:bg-white/5 px-3 py-2">
+              <span className="text-emerald-500 font-bold">✓</span>
+              <span>{locale === "en" ? "Live Cross-Platform Sync" : "مزامنة لحظية للمتاجر والإعلانات"}</span>
+            </div>
+            <div className="flex items-center gap-2 rounded-xl bg-black/5 dark:bg-white/5 px-3 py-2">
+              <span className="text-emerald-500 font-bold">✓</span>
+              <span>{locale === "en" ? "SKU-Level Profitability" : "حساب هامش الربح الصافي لكل SKU"}</span>
+            </div>
+            <div className="flex items-center gap-2 rounded-xl bg-black/5 dark:bg-white/5 px-3 py-2">
+              <span className="text-emerald-500 font-bold">✓</span>
+              <span>{locale === "en" ? "Automated Courier & RTO Audit" : "تدقيق بوليصات الشحن والمرتجعات"}</span>
+            </div>
+          </div>
+
           <div className="relative z-[1] mt-6 flex w-full flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center">
             <TourStartLink
               href={enterHref("merchant")}
@@ -91,6 +126,12 @@ export default function Hero() {
               {t("ctaMerchant")}
             </TourStartLink>
             <a
+              href="/onboarding/survey"
+              className="gl-btn-secondary min-h-12 w-full justify-center sm:w-auto border border-amber-500/40 bg-amber-500/10 text-amber-900 dark:text-amber-300 hover:bg-amber-500/20 font-bold shadow-sm transition-all flex items-center gap-2"
+            >
+              <span>{locale === "en" ? "Take AI Profit Leak Audit" : "فحص التسريبات المالية مجاناً"}</span>
+            </a>
+            <a
               href="/demo"
               className="gl-btn-ghost min-h-12 w-full justify-center sm:w-auto border border-[#111318]/20 bg-white/80 backdrop-blur font-semibold shadow-sm hover:bg-white hover:border-[#111318]/40 transition-all text-[#111318] flex items-center gap-2"
               onClick={() => track("Demo Clicked", { source: "hero-demo" })}
@@ -99,8 +140,10 @@ export default function Hero() {
               {locale === "en" ? "Try Demo" : "تجربة ديمو"}
             </a>
           </div>
-          <p className="relative z-[1] mt-4 text-start text-[15px] leading-6 text-[#3d4450]">
-            {t("hasAccount")}{" "}
+          <p className="relative z-[1] mt-3 text-start text-[13px] text-frost-dim flex items-center gap-2">
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            <span>{locale === "en" ? "No credit card required • Instant setup" : "بدون بطاقة ائتمان • إعداد فوري خلال دقيقة"}</span>
+            <span>•</span>
             <a href={SIGN_IN_HREF} className="font-medium text-frost underline-offset-2 hover:underline">
               {t("signIn")}
             </a>

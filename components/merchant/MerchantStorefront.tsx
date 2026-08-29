@@ -4,6 +4,7 @@ import type { MerchantStoreData } from "@/lib/merchant-store/load";
 import { enabledBlocks, type StoreBlockType } from "@/lib/merchant-store/layout";
 import { isPromoLive } from "@/lib/merchant-store/promo";
 import VerifiedBadge from "@/components/dashboard/VerifiedBadge";
+import { sanitizeSafeHtml } from "@/lib/security/inputSanitizer";
 
 export default function MerchantStorefront({
   store,
@@ -91,7 +92,7 @@ function BlockSection({
         {store.aboutHtml ? (
           <div
             className={`prose-store mt-6 text-[16px] leading-relaxed text-frost-dim ${centered ? "mx-auto max-w-xl" : "max-w-2xl"}`}
-            dangerouslySetInnerHTML={{ __html: store.aboutHtml }}
+            dangerouslySetInnerHTML={{ __html: sanitizeSafeHtml(store.aboutHtml) }}
           />
         ) : null}
       </section>

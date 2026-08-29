@@ -10,6 +10,7 @@ import {
   type MerchantKycKind,
 } from "@/lib/domain/enums";
 import { CONTACT_LEAK_WARNING_AR, scanForContactLeak } from "@/lib/security/antiLeak";
+import { sanitizePlainText, sanitizeUrl } from "@/lib/security/inputSanitizer";
 import { fileFromForm, removeKycFile, saveKycFile } from "@/lib/kyc/storage";
 
 async function replaceDocuments(
@@ -57,16 +58,16 @@ export async function submitMerchantKyc(formData: FormData) {
 
   const hasCommercialReg = formData.get("hasCommercialReg") !== "false";
   const businessType = hasCommercialReg ? "cr" : "freelancer";
-  const businessName = String(formData.get("businessName") ?? "").trim().slice(0, 120);
-  const projectDescription = String(formData.get("projectDescription") ?? "").trim().slice(0, 500);
+  const businessName = sanitizePlainText(String(formData.get("businessName") ?? ""), 120);
+  const projectDescription = sanitizePlainText(String(formData.get("projectDescription") ?? ""), 500);
   const commercialRegNo = hasCommercialReg
-    ? String(formData.get("commercialRegNo") ?? "").trim().slice(0, 40)
+    ? sanitizePlainText(String(formData.get("commercialRegNo") ?? ""), 40)
     : "بدون سجل تجاري (مشروع منزلي/فردي)";
-  const taxNumber = String(formData.get("taxNumber") ?? "").trim().slice(0, 40);
-  const ownerFullName = String(formData.get("ownerFullName") ?? "").trim().slice(0, 80);
-  const city = String(formData.get("city") ?? "").trim().slice(0, 60);
-  const instagramUrl = String(formData.get("instagramUrl") ?? "").trim().slice(0, 180);
-  const tiktokUrl = String(formData.get("tiktokUrl") ?? "").trim().slice(0, 180);
+  const taxNumber = sanitizePlainText(String(formData.get("taxNumber") ?? ""), 40);
+  const ownerFullName = sanitizePlainText(String(formData.get("ownerFullName") ?? ""), 80);
+  const city = sanitizePlainText(String(formData.get("city") ?? ""), 60);
+  const instagramUrl = sanitizeUrl(String(formData.get("instagramUrl") ?? ""), 180);
+  const tiktokUrl = sanitizeUrl(String(formData.get("tiktokUrl") ?? ""), 180);
 
   if (!businessName || !ownerFullName || !city) {
     throw new Error("يرجى ملء جميع الحقول الإلزامية لهوية النشاط التجاري والمالك.");
@@ -140,7 +141,7 @@ export async function submitCreatorKyc(formData: FormData) {
     throw new Error("This account is already verified.");
   }
 
-  const legalName = String(formData.get("legalName") ?? "").trim().slice(0, 80);
+  const legalName = sanitizePlainText(String(formData.get("legalName") ?? ""), 80);
   if (!legalName) throw new Error("Legal name is required.");
   if (scanForContactLeak(legalName).flagged) throw new Error(CONTACT_LEAK_WARNING_AR);
 

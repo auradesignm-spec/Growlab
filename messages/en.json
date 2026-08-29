@@ -1169,7 +1169,7 @@
         "approve": "Approve",
         "reject": "Reject",
         "markShipped": "Mark shipped",
-        "trustNote": "🔒 Coordination and shipping happen entirely through Growlab — never exchange phone numbers or external contact handles with the creator.",
+        "trustNote": "Coordination and shipping happen entirely through Growlab — never exchange phone numbers or external contact handles with the creator.",
         "shippingRef": "Shipping reference",
         "depositLabel": "Deposit held",
         "ugcDeadlineLabel": "UGC upload deadline",
@@ -1204,7 +1204,7 @@
         "variantsLabel": "Variants (comma separated)",
         "basePriceLabel": "Retail price (OMR)",
         "costPriceLabel": "Cost price",
-        "costPriceHint": "🔒 Secret — never shown to creators, used only for your own math.",
+        "costPriceHint": "Secret — never shown to creators, used only for your own math.",
         "deliveryDaysLabel": "Max delivery days",
         "deliveryDaysHint": "After prepaid checkout we hold the money for this many days. Default 4. If shipping is late, the buyer can claim a refund.",
         "shippingFeeLabel": "Buyer shipping (paid now)",
@@ -1344,7 +1344,7 @@
       },
       "samples": {
         "empty": "You haven't requested any samples yet.",
-        "trustNote": "🔒 Coordination and shipping happen entirely through Growlab — never exchange phone numbers or external contact handles with the merchant.",
+        "trustNote": "Coordination and shipping happen entirely through Growlab — never exchange phone numbers or external contact handles with the merchant.",
         "shippingRef": "Shipping reference",
         "depositLabel": "Deposit held",
         "ugcDeadlineLabel": "UGC upload deadline",
@@ -1354,8 +1354,8 @@
         "ugcVideoPlaceholder": "UGC video URL (YouTube, TikTok, Instagram...)",
         "ugcSubmitCta": "Submit video",
         "ugcSubmittedNote": "Submitted — awaiting merchant review.",
-        "ugcApprovedNote": "✅ Video approved — deposit released.",
-        "ugcForfeitedNote": "⚠️ Deadline passed with no approved video — deposit forfeited.",
+        "ugcApprovedNote": "Video approved — deposit released.",
+        "ugcForfeitedNote": "Deadline passed with no approved video — deposit forfeited.",
         "ugcRejectedHint": "The merchant asked for a resubmission — you still have time before the deadline."
       },
       "earnings": {
@@ -1696,7 +1696,7 @@
           "title": "Product",
           "merchant": "Merchant",
           "retailPrice": "Retail price",
-          "costPrice": "Cost price 🔒",
+          "costPrice": "Cost price",
           "commission": "Commission",
           "platformFee": "Platform fee",
           "merchantNet": "Merchant net"

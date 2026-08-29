@@ -1,6 +1,6 @@
 {
   "name": "Growlab",
-  "description": "Cash-on-delivery and e-commerce distribution network with creator and merchant portals.",
+  "description": "E-commerce UGC growth platform and financial intelligence reconciliation engine calculating True Net Profit across Shopify, Meta/Google ads, and couriers.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

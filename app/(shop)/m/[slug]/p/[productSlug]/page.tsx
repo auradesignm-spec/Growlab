@@ -5,6 +5,7 @@ import MerchantStoreChrome from "@/components/merchant/MerchantStoreChrome";
 import MerchantAddToCartForm from "@/components/merchant/MerchantAddToCartForm";
 import { getMerchantStoreProduct } from "@/lib/merchant-store/load";
 import { merchantCartItemCount, readMerchantCartCookie } from "@/lib/shop/merchantCart";
+import { sanitizeSafeHtml } from "@/lib/security/inputSanitizer";
 
 export default async function MerchantProductPage({
   params,
@@ -82,7 +83,7 @@ export default async function MerchantProductPage({
         {product.descriptionHtml ? (
           <article
             className="prose-store mt-12 max-w-3xl border-t border-line pt-10 text-[16px] leading-relaxed text-frost-dim"
-            dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
+            dangerouslySetInnerHTML={{ __html: sanitizeSafeHtml(product.descriptionHtml) }}
           />
         ) : null}
       </div>

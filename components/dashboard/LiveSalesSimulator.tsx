@@ -540,7 +540,6 @@ export default function LiveSalesSimulator({
                   {isAr ? "إدخال منتج جديد وتخصيص هوامشه" : "Add New Product & Test Margins"}
                 </h3>
               </div>
-              <span className="text-xl">✨</span>
             </div>
 
             {/* Quick Templates Presets */}
@@ -660,13 +659,12 @@ export default function LiveSalesSimulator({
                 type="submit"
                 className="w-full rounded-2xl bg-emerald-600 py-3 text-xs font-bold text-white shadow-lg shadow-emerald-600/20 transition-all hover:bg-emerald-500 active:scale-[0.99] flex items-center justify-center gap-2"
               >
-                <span>➕</span>
                 <span>{isAr ? "إضافة المنتج وبدء تدفق المبيعات له فوراً" : "Add Product & Trigger Live Sales"}</span>
               </button>
 
               {showProductSuccessToast && (
                 <div className="rounded-xl bg-emerald-100 border border-emerald-300 p-2.5 text-center text-xs font-bold text-emerald-800 animate-pulse">
-                  ✅ {isAr ? "تم إدراج المنتج بنجاح وتوليد طلب تجريبي فوري!" : "Product added & test order triggered!"}
+                  {isAr ? "تم إدراج المنتج بنجاح وتوليد طلب تجريبي فوري!" : "Product added & test order triggered!"}
                 </div>
               )}
             </form>

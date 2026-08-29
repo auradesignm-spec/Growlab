@@ -3,13 +3,14 @@
 import { useCallback, useEffect, useId, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { SignedIn, SignedOut } from "@clerk/nextjs";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 import GlassBubbleTrack from "@/components/GlassBubbleTrack";
 import { SIGN_IN_HREF } from "@/lib/auth/paths";
 import { track } from "@/lib/analytics";
 import TourStartLink from "@/components/TourStartLink";
 import GrowlabBrand from "@/components/brand/GrowlabBrand";
+import HeaderUserMenu from "@/components/HeaderUserMenu";
 
 const CLERK_ENABLED = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
 
@@ -23,9 +24,46 @@ const STORY_HREFS = [
 
 export default function Header() {
   const [open, setOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   const menuId = useId();
   const closeMenu = useCallback(() => setOpen(false), []);
   const t = useTranslations("nav");
+
+  useEffect(() => {
+    let lastScrollY = typeof window !== "undefined" ? Math.max(0, window.scrollY) : 0;
+    let ticking = false;
+
+    const updateScroll = () => {
+      const currentScrollY = Math.max(0, window.scrollY);
+      const delta = currentScrollY - lastScrollY;
+
+      // Always show when near the very top
+      if (currentScrollY <= 40) {
+        setIsVisible(true);
+        lastScrollY = currentScrollY;
+      } else if (Math.abs(delta) >= 8) {
+        // Significant scroll down -> hide header
+        if (delta > 0 && currentScrollY > 70) {
+          setIsVisible(false);
+        } else if (delta < 0) {
+          // Any clear scroll up -> reveal header
+          setIsVisible(true);
+        }
+        lastScrollY = currentScrollY;
+      }
+      ticking = false;
+    };
+
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(updateScroll);
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -46,7 +84,13 @@ export default function Header() {
   }, [open, closeMenu]);
 
   return (
-    <header className="fixed left-0 right-0 top-0 z-50 px-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-6">
+    <header
+      className={`fixed left-0 right-0 top-0 z-50 px-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-6 transition-all duration-300 ease-out will-change-transform ${
+        isVisible || open
+          ? "translate-y-0 opacity-100"
+          : "-translate-y-full opacity-0 pointer-events-none"
+      }`}
+    >
       <div className="gl-nav-glass mx-auto flex h-14 max-w-wrap items-center justify-between gap-3 rounded-full ps-4 pe-2 sm:ps-6 sm:pe-2.5">
         <GrowlabBrand ariaLabel={t("homeAria")} />
 
@@ -132,6 +176,31 @@ function HeaderAuth({
   stacked?: boolean;
   compact?: boolean;
 }) {
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [authChecked, setAuthChecked] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    fetch("/api/auth/session")
+      .then((res) => res.json())
+      .then((data) => {
+        if (isMounted) {
+          if (data?.authenticated && data?.user) {
+            setCurrentUser(data.user);
+          } else {
+            setCurrentUser(null);
+          }
+          setAuthChecked(true);
+        }
+      })
+      .catch(() => {
+        if (isMounted) setAuthChecked(true);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   const guest = compact ? (
     <TourStartLink
       href={SIGN_IN_HREF}
@@ -161,31 +230,23 @@ function HeaderAuth({
     </div>
   );
 
-  if (!CLERK_ENABLED) return guest;
+  // If user is authenticated via API session (e.g. Clerk or dev session)
+  if (currentUser) {
+    return <HeaderUserMenu initialUser={currentUser} compact={compact} onNavigate={onNavigate} />;
+  }
 
-  return (
-    <>
-      <SignedOut>{guest}</SignedOut>
-      <SignedIn>
-        {compact ? (
-          <Link
-            href="/dashboard"
-            data-bubble-item
-            className="relative z-[1] inline-flex min-h-11 items-center rounded-full px-3 text-[15px] font-medium"
-            style={{ color: "#111318" }}
-          >
-            {t("openDashboard")}
-          </Link>
-        ) : (
-          <div className={stacked ? "mt-4 flex items-center gap-4" : "contents"}>
-            <Link href="/dashboard" className="gl-btn-primary" onClick={onNavigate}>
-              {t("openDashboard")}
-            </Link>
-            <UserButton />
-          </div>
-        )}
-      </SignedIn>
-    </>
-  );
+  // If Clerk is enabled, handle via Clerk's SignedIn/SignedOut
+  if (CLERK_ENABLED) {
+    return (
+      <>
+        <SignedOut>{guest}</SignedOut>
+        <SignedIn>
+          <HeaderUserMenu compact={compact} onNavigate={onNavigate} />
+        </SignedIn>
+      </>
+    );
+  }
+
+  return guest;
 }
 

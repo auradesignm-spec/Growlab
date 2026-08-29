@@ -6,6 +6,7 @@ import { prisma } from "@/lib/db";
 import { computeWaterfall, type WaterfallResult } from "@/lib/ledger/waterfall";
 import type { AttributionSource } from "@/lib/domain/enums";
 import { CONTACT_LEAK_WARNING_AR, scanForContactLeak } from "@/lib/security/antiLeak";
+import { sanitizePlainText, sanitizePhone } from "@/lib/security/inputSanitizer";
 import { productVariants } from "@/lib/catalog-db";
 import {
   clearCartCookie,
@@ -153,10 +154,10 @@ export async function placeCodCheckout(input: {
   unitPriceOverrides?: Record<string, number>;
   settlementChannel?: string;
 }): Promise<PlaceCodOrderResult> {
-  const buyerName = input.buyerName.trim().slice(0, 80);
-  const buyerPhone = normalizePhone(input.buyerPhone);
-  const buyerAddress = input.buyerAddress.trim().slice(0, 200);
-  const buyerCity = input.buyerCity.trim().slice(0, 80);
+  const buyerName = sanitizePlainText(input.buyerName, 80);
+  const buyerPhone = sanitizePhone(normalizePhone(input.buyerPhone), 20);
+  const buyerAddress = sanitizePlainText(input.buyerAddress, 200);
+  const buyerCity = sanitizePlainText(input.buyerCity, 80);
 
   if (buyerName.length < 2) throw new Error("Name is required.");
   if (scanForContactLeak(buyerName).flagged) throw new Error(CONTACT_LEAK_WARNING_AR);

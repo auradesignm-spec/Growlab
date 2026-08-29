@@ -33,15 +33,15 @@ export type SurveyGoal = "stop_returns" | "pay_after_cash" | "launch_fast_store"
 export const SURVEY_MODES = [
   {
     id: "real" as const,
-    ar: "🚀 تجربة فعلية حية (Real Setup)",
-    en: "🚀 Real Production Mode",
+    ar: "تجربة فعلية حية (Real Setup)",
+    en: "Real Production Mode",
     descAr: "أريد إعداد متجري الفعلي، إضافة منتجاتي وروابط حساباتي، والبدء في البيع الفعلي واستقبال الطلبات.",
     descEn: "Setup my live store, add real products & social accounts, and start taking real customer orders.",
   },
   {
     id: "demo" as const,
-    ar: "🎮 تجربة الديمو الاستكشافية (Interactive Sandbox)",
-    en: "🎮 Interactive Demo Sandbox",
+    ar: "تجربة الديمو الاستكشافية (Interactive Sandbox)",
+    en: "Interactive Demo Sandbox",
     descAr: "أريد تجربة استكشافية تفاعلية ببيانات محاكاة حية، طلبات وهمية، وتجربة الشراء قبل إدخال بياناتي.",
     descEn: "Test the platform with simulated live orders, preloaded catalog, and interactive buyer checkout first.",
   },
@@ -50,22 +50,22 @@ export const SURVEY_MODES = [
 export const SURVEY_CR = [
   {
     id: "cr_yes" as const,
-    ar: "🏢 منشأة تجارية بسجل تجاري رسمي (CR)",
-    en: "🏢 Registered Business with Commercial Register (CR)",
+    ar: "منشأة تجارية بسجل تجاري رسمي (CR)",
+    en: "Registered Business with Commercial Register (CR)",
     descAr: "لدي سجل تجاري معتمد وشركة قائمة أريد ربطها بالمنصة مع إمكانية إصدار الفواتير الرسمية.",
     descEn: "I have an officially registered business entity with CR certificate and company bank account.",
   },
   {
     id: "cr_no" as const,
-    ar: "🎨 مشروع منزلي / عمل حر (بدون سجل تجاري)",
-    en: "🎨 Home Business / Freelancer (No CR required)",
+    ar: "مشروع منزلي / عمل حر (بدون سجل تجاري)",
+    en: "Home Business / Freelancer (No CR required)",
     descAr: "أعمل من المنزل أو بشكل حر، وأريد مسار توثيق مبسط بالبطاقة الشخصية وربط حسابات Instagram / TikTok.",
     descEn: "Home-based or indie business, using simplified ID verification and Instagram/TikTok accounts.",
   },
   {
     id: "creator" as const,
-    ar: "🎬 صانع محتوى / مسوّق بالعمولة (Creator)",
-    en: "🎬 Creator / Influencer Marketer",
+    ar: "صانع محتوى / مسوّق بالعمولة (Creator)",
+    en: "Creator / Influencer Marketer",
     descAr: "أريد استكشاف المنتجات، طلب العينات، تسويقها لمتابعيني وكسب عمولات مؤكدة بعد التحصيل.",
     descEn: "I want to discover products, request samples, promote to my audience, and earn commissions.",
   },
@@ -74,22 +74,22 @@ export const SURVEY_CR = [
 export const SURVEY_PRODUCTS = [
   {
     id: "physical" as const,
-    ar: "📦 منتجات ملموسة (عطور، أزياء، إلكترونيات، كماليات...)",
-    en: "📦 Physical Products (Fragrances, Fashion, Electronics...)",
+    ar: "منتجات ملموسة (عطور، أزياء، إلكترونيات، كماليات...)",
+    en: "Physical Products (Fragrances, Fashion, Electronics...)",
     descAr: "منتجات تحتاج شحن وتوصيل، دفع عند الاستلام (COD)، وتتبع دقيق للمندوبين.",
     descEn: "Physical goods needing shipping, Cash-on-Delivery (COD), and courier tracking.",
   },
   {
     id: "food_homemade" as const,
-    ar: "🍔 أطعمة ومخبوزات ومشروبات ومنتجات أسرية",
-    en: "🍔 Homemade Food, Bakery & Artisanal Products",
+    ar: "أطعمة ومخبوزات ومشروبات ومنتجات أسرية",
+    en: "Homemade Food, Bakery & Artisanal Products",
     descAr: "منتجات طازجة تحتاج توصيل محلي سريع وطلب مباشر وسلس من الإنستجرام.",
     descEn: "Fresh or artisanal items needing quick local delivery and fast social ordering.",
   },
   {
     id: "digital_services" as const,
-    ar: "💻 منتجات رقمية / خدمات واستشارات",
-    en: "💻 Digital Products / Consultations & Services",
+    ar: "منتجات رقمية / خدمات واستشارات",
+    en: "Digital Products / Consultations & Services",
     descAr: "تسليم رقمي فوري، دفع إلكتروني آمن، وتحصيل مباشر.",
     descEn: "Instant digital delivery, secure online payments, and direct payout.",
   },
@@ -98,22 +98,22 @@ export const SURVEY_PRODUCTS = [
 export const SURVEY_CHANNELS = [
   {
     id: "whatsapp_chat" as const,
-    ar: "💬 عبر محادثات الواتساب والإنستجرام دايركت (شات)",
-    en: "💬 WhatsApp Chat & Instagram Direct Messages",
+    ar: "عبر محادثات الواتساب والإنستجرام دايركت (شات)",
+    en: "WhatsApp Chat & Instagram Direct Messages",
     descAr: "الطلبات الحالية تضيع بين الرسائل والدفاتر وأريد صفحة منظمة تجمع الاسم والعنوان وتؤكد الدفع.",
     descEn: "Orders currently get buried in chats; I need a streamlined page capturing address & details.",
   },
   {
     id: "existing_store" as const,
-    ar: "🌐 لدي متجر إلكتروني قائم (سلة / زد / شوبيفاي)",
-    en: "🌐 Existing Online Store (Salla / Zid / Shopify...)",
+    ar: "لدي متجر إلكتروني قائم (سلة / زد / شوبيفاي)",
+    en: "Existing Online Store (Salla / Zid / Shopify...)",
     descAr: "أريد ربط منتجاتي الحالية بشبكة المسوقين ونظام الدفع الآمن دون نقل الكتالوج.",
     descEn: "I want to link my current catalog to creators and performance network without rebuilding.",
   },
   {
     id: "starting_fresh" as const,
-    ar: "✨ أبدأ من الصفر تماماً لأول مرة",
-    en: "✨ Starting fresh from scratch",
+    ar: "أبدأ من الصفر تماماً لأول مرة",
+    en: "Starting fresh from scratch",
     descAr: "أريد إنشاء متجري الأول بالذكاء الاصطناعي وتجهيز كل شيء في دقائق.",
     descEn: "I want to generate my first online store with AI and launch ready-to-sell in minutes.",
   },
@@ -122,22 +122,22 @@ export const SURVEY_CHANNELS = [
 export const SURVEY_GOALS = [
   {
     id: "stop_returns" as const,
-    ar: "🛡️ منع الإلغاءات ورفض الاستلام عند وصول المندوب (RTO)",
-    en: "🛡️ Stop cancellations and refused COD deliveries",
+    ar: "منع الإلغاءات ورفض الاستلام عند وصول المندوب (RTO)",
+    en: "Stop cancellations and refused COD deliveries",
     descAr: "نظام Growlab يطلب دفع الشحن مقدماً لضمان جدية المشتري وثمن السلعة عند الاستلام.",
     descEn: "Growlab secures upfront shipping to guarantee buyer commitment, product fee upon delivery.",
   },
   {
     id: "pay_after_cash" as const,
-    ar: "💰 زيادة المبيعات بدون هدر إعلاني (دفع بعد التحصيل فقط)",
-    en: "💰 Scale sales with zero ad waste (pay only after cash)",
+    ar: "زيادة المبيعات بدون هدر إعلاني (دفع بعد التحصيل فقط)",
+    en: "Scale sales with zero ad waste (pay only after cash)",
     descAr: "لا تدفع أي عمولة للمسوقين أو المنصة إلا بعد ما يدفع المشتري نقداً للمندوب.",
     descEn: "Never pay marketing commissions until cash is physically collected in your hands.",
   },
   {
     id: "launch_fast_store" as const,
-    ar: "🎨 متجر فائق السرعة وجذاب للهواتف يزيد معدل التحويل",
-    en: "🎨 Lightning-fast mobile store with high conversion",
+    ar: "متجر فائق السرعة وجذاب للهواتف يزيد معدل التحويل",
+    en: "Lightning-fast mobile store with high conversion",
     descAr: "صفحة طلب مخصصة تطلب فقط الاسم والهاتف والعنوان بنقرة واحدة بدون تعقيد.",
     descEn: "One-click order page asking only name, phone, and address to maximize conversion.",
   },
@@ -171,8 +171,8 @@ export function generateDiagnosticResult(answers: {
 
   if (isCreator) {
     return {
-      titleAr: "مسار صانع المحتوى والمسوّق المعتمد ✨",
-      titleEn: "Creator & Affiliate Marketer Pathway ✨",
+      titleAr: "مسار صانع المحتوى والمسوّق المعتمد",
+      titleEn: "Creator & Affiliate Marketer Pathway",
       badgeAr: "صانع محتوى",
       badgeEn: "Creator Track",
       pathDescriptionAr:
@@ -190,16 +190,16 @@ export function generateDiagnosticResult(answers: {
         "3. Receive instant notifications and payout upon successful COD delivery",
       ],
       recommendedAction: isDemo ? "launch_demo" : "start_creator",
-      actionLabelAr: isDemo ? "🎮 ابدأ جولة الديمو لصناع المحتوى" : "🚀 فتح حساب صانع محتوى",
-      actionLabelEn: isDemo ? "🎮 Launch Creator Demo Tour" : "🚀 Open Creator Account",
+      actionLabelAr: isDemo ? "ابدأ جولة الديمو لصناع المحتوى" : "فتح حساب صانع محتوى",
+      actionLabelEn: isDemo ? "Launch Creator Demo Tour" : "Open Creator Account",
       actionUrl: isDemo ? "/dashboard/browse" : "/enter?role=creator",
     };
   }
 
   if (isDemo) {
     return {
-      titleAr: "المسار الاستكشافي الشامل — جولة الديمو التفاعلية 🎮",
-      titleEn: "Comprehensive Sandbox Tour — Interactive Demo 🎮",
+      titleAr: "المسار الاستكشافي الشامل — جولة الديمو التفاعلية",
+      titleEn: "Comprehensive Sandbox Tour — Interactive Demo",
       badgeAr: "تجربة ديمو تفاعلية",
       badgeEn: "Interactive Demo",
       pathDescriptionAr:
@@ -219,8 +219,8 @@ export function generateDiagnosticResult(answers: {
         "4. Explore creator deals, verification, and instant bank payout",
       ],
       recommendedAction: "launch_demo",
-      actionLabelAr: "🚀 ابدأ الجولة التوضيحية وتجربة الديمو الآن",
-      actionLabelEn: "🚀 Start Guided Demo Tour Now",
+      actionLabelAr: "ابدأ الجولة التوضيحية وتجربة الديمو الآن",
+      actionLabelEn: "Start Guided Demo Tour Now",
       actionUrl: "/dashboard?tab=simulator",
     };
   }
@@ -228,8 +228,8 @@ export function generateDiagnosticResult(answers: {
   // Real Production Merchant Track
   if (isCR) {
     return {
-      titleAr: "مسار المنشأة التجارية المعتمدة (سجل تجاري CR) 🏢",
-      titleEn: "Certified Commercial Enterprise Pathway (CR) 🏢",
+      titleAr: "مسار المنشأة التجارية المعتمدة (سجل تجاري CR)",
+      titleEn: "Certified Commercial Enterprise Pathway (CR)",
       badgeAr: "منشأة تجارية معتمدة",
       badgeEn: "Commercial Entity",
       pathDescriptionAr:
@@ -249,16 +249,16 @@ export function generateDiagnosticResult(answers: {
         "4. Fulfill verified COD orders with automatic settlement",
       ],
       recommendedAction: "start_real_merchant",
-      actionLabelAr: "🚀 ابدأ إعداد متجرك التجاري الفعلي",
-      actionLabelEn: "🚀 Start Live Merchant Setup",
+      actionLabelAr: "ابدأ إعداد متجرك التجاري الفعلي",
+      actionLabelEn: "Start Live Merchant Setup",
       actionUrl: "/enter?role=merchant",
     };
   }
 
   // Real Home Business / Freelancer Track (No CR)
   return {
-    titleAr: "مسار المشاريع المنزلية والعمل الحر (بدون سجل تجاري) 🎨",
-    titleEn: "Home Business & Indie Brand Pathway (No CR) 🎨",
+    titleAr: "مسار المشاريع المنزلية والعمل الحر (بدون سجل تجاري)",
+    titleEn: "Home Business & Indie Brand Pathway (No CR)",
     badgeAr: "مشروع منزلي / عمل حر",
     badgeEn: "Home Business Track",
     pathDescriptionAr:
@@ -278,8 +278,8 @@ export function generateDiagnosticResult(answers: {
       "4. Collect net profits directly as soon as orders are delivered",
     ],
     recommendedAction: "start_real_merchant",
-    actionLabelAr: "🚀 ابدأ إعداد متجرك المنزلي الفوري",
-    actionLabelEn: "🚀 Launch Your Home Store Now",
+    actionLabelAr: "ابدأ إعداد متجرك المنزلي الفوري",
+    actionLabelEn: "Launch Your Home Store Now",
     actionUrl: "/enter?role=merchant",
   };
 }
