@@ -37,8 +37,8 @@ export default function ChannelScorecard({ scorecard, locale = "ar" }: Props) {
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20">
-              <ShoppingBag className="h-4 w-4" />
+            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-white/10 text-white border border-white/20">
+              <ShoppingBag className="h-4 w-4 text-white" />
             </span>
             <h3 className="text-base font-bold text-white sm:text-lg">
               {locale === "en" ? "Channel Profitability Scorecard" : "بطاقة أداء وربحية القنوات والمتاجر"}
@@ -85,7 +85,7 @@ export default function ChannelScorecard({ scorecard, locale = "ar" }: Props) {
                   : "bg-slate-800/60 text-rose-400 hover:text-rose-300"
               }`}
             >
-              <AlertTriangle className="h-3 w-3" />
+              <AlertTriangle className="h-3 w-3 text-white" />
               {locale === "en" ? "Losing Channels" : "قنوات خاسرة"} ({losingCount})
             </button>
           )}
@@ -96,7 +96,7 @@ export default function ChannelScorecard({ scorecard, locale = "ar" }: Props) {
       {topChannel && topChannel.isProfitable && (
         <div className="mt-4 flex items-center justify-between gap-3 rounded-xl border border-emerald-500/30 bg-emerald-950/30 p-3.5 text-xs text-emerald-300">
           <div className="flex items-center gap-2.5">
-            <Sparkles className="h-4 w-4 shrink-0 text-emerald-400" />
+            <Sparkles className="h-4 w-4 shrink-0 text-white" />
             <span>
               <strong>{topChannel.channel}</strong> {locale === "en" ? "is your #1 cash cow with" : "هي القناة الأعلى ربحية بهامش صافٍ"} <strong>{topChannel.marginPercentage}%</strong> ({topChannel.netProfit.toLocaleString()} ر.س صافي ربح).
             </span>

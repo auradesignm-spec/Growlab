@@ -52,7 +52,7 @@ export default function IntegrationsHub({ locale = "ar" }: Props) {
       <div className="rounded-2xl border border-slate-800 bg-slate-900/90 p-5 shadow-xl">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-white border border-white/20">
               <Zap className="h-5 w-5" />
             </span>
             <div>
@@ -66,8 +66,8 @@ export default function IntegrationsHub({ locale = "ar" }: Props) {
               </p>
             </div>
           </div>
-          <span className="flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-950/40 px-3 py-1 text-xs font-bold text-emerald-400">
-            <ShieldCheck className="h-4 w-4" />
+          <span className="flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-bold text-white">
+            <ShieldCheck className="h-4 w-4 text-white" />
             {isEn ? "Bank-Grade Encryption" : "تشفير آمن للبيانات"}
           </span>
         </div>
@@ -77,7 +77,7 @@ export default function IntegrationsHub({ locale = "ar" }: Props) {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="text-base font-bold text-white flex items-center gap-2">
-            <Globe className="h-4 w-4 text-amber-400" />
+            <Globe className="h-4 w-4 text-white" />
             {isEn ? "E-Commerce Platforms & Storefronts" : "المتاجر والمنصات الإلكترونية"}
           </h3>
         </div>
@@ -89,8 +89,8 @@ export default function IntegrationsHub({ locale = "ar" }: Props) {
               <div className="flex items-center justify-between">
                 <span className="text-sm font-bold text-white">Shopify D2C</span>
                 {shopifyConnected ? (
-                  <span className="flex items-center gap-1 rounded-full bg-emerald-500/20 px-2 py-0.5 text-[11px] font-bold text-emerald-300 border border-emerald-500/30">
-                    <CheckCircle2 className="h-3 w-3" /> {isEn ? "Connected" : "متصل"}
+                  <span className="flex items-center gap-1 rounded-full bg-white/10 px-2 py-0.5 text-[11px] font-bold text-white border border-white/20">
+                    <CheckCircle2 className="h-3 w-3 text-white" /> {isEn ? "Connected" : "متصل"}
                   </span>
                 ) : (
                   <span className="text-[11px] text-slate-500">{isEn ? "Disconnected" : "غير متصل"}</span>
@@ -102,7 +102,7 @@ export default function IntegrationsHub({ locale = "ar" }: Props) {
                   : "مزامنة فورية للطلبات، المرتجعات، بوابات الدفع، وحالات الشحن."}
               </p>
               <div className="mt-3 rounded-lg bg-slate-950/60 p-2.5 text-[11px] font-mono text-slate-300">
-                Webhook: <span className="text-amber-400">orders/create & refunds</span>
+                Webhook: <span className="text-white">orders/create & refunds</span>
               </div>
             </div>
 
@@ -111,7 +111,7 @@ export default function IntegrationsHub({ locale = "ar" }: Props) {
               <button
                 type="button"
                 onClick={() => setShopifyConnected(!shopifyConnected)}
-                className="text-xs font-bold text-amber-400 hover:text-amber-300"
+                className="text-xs font-bold text-white hover:underline"
               >
                 {shopifyConnected ? (isEn ? "Manage Settings" : "إعدادات الربط") : (isEn ? "Connect Now" : "ربط الآن")}
               </button>
@@ -124,8 +124,8 @@ export default function IntegrationsHub({ locale = "ar" }: Props) {
               <div className="flex items-center justify-between">
                 <span className="text-sm font-bold text-white">منصة سلة (Salla)</span>
                 {sallaConnected ? (
-                  <span className="flex items-center gap-1 rounded-full bg-emerald-500/20 px-2 py-0.5 text-[11px] font-bold text-emerald-300 border border-emerald-500/30">
-                    <CheckCircle2 className="h-3 w-3" /> {isEn ? "Connected" : "متصل"}
+                  <span className="flex items-center gap-1 rounded-full bg-white/10 px-2 py-0.5 text-[11px] font-bold text-white border border-white/20">
+                    <CheckCircle2 className="h-3 w-3 text-white" /> {isEn ? "Connected" : "متصل"}
                   </span>
                 ) : (
                   <span className="text-[11px] text-slate-500">{isEn ? "Disconnected" : "غير متصل"}</span>
@@ -137,7 +137,7 @@ export default function IntegrationsHub({ locale = "ar" }: Props) {
                   : "ربط رسمي عبر تطبيق سلة لمزامنة مبيعات المتاجر السعودية ومتحصلات الدفع عند الاستلام."}
               </p>
               <div className="mt-3 rounded-lg bg-slate-950/60 p-2.5 text-[11px] font-mono text-slate-300">
-                OAuth 2.0: <span className="text-emerald-400">Verified Partner</span>
+                OAuth 2.0: <span className="text-white">Verified Partner</span>
               </div>
             </div>
 
@@ -145,7 +145,7 @@ export default function IntegrationsHub({ locale = "ar" }: Props) {
               <span className="text-[11px] text-slate-500">{isEn ? "Auto Synced" : "مزامنة تلقائية"}</span>
               <button
                 type="button"
-                className="text-xs font-bold text-amber-400 hover:text-amber-300"
+                className="text-xs font-bold text-white hover:underline"
               >
                 {isEn ? "Manage" : "إدارة"}
               </button>
@@ -171,7 +171,7 @@ export default function IntegrationsHub({ locale = "ar" }: Props) {
             <div className="mt-5 pt-3 border-t border-slate-800 flex items-center justify-end">
               <button
                 type="button"
-                className="rounded-lg bg-amber-500 px-3 py-1.5 text-xs font-bold text-slate-950 hover:bg-amber-400 transition"
+                className="rounded-lg bg-white px-3 py-1.5 text-xs font-bold text-slate-950 hover:bg-slate-200 transition"
               >
                 {isEn ? "Connect Zid" : "ربط متجر زد"}
               </button>
@@ -183,7 +183,7 @@ export default function IntegrationsHub({ locale = "ar" }: Props) {
       {/* Section 2: Ad Networks (Meta, Google, TikTok, Snap) */}
       <div className="space-y-4">
         <h3 className="text-base font-bold text-white flex items-center gap-2">
-          <Sparkles className="h-4 w-4 text-amber-400" />
+          <Sparkles className="h-4 w-4 text-white" />
           {isEn ? "Ad Networks & Spend Attribution (MER & CAC)" : "المنصات الإعلانية ونسب كفاءة التسويق"}
         </h3>
 
@@ -197,8 +197,8 @@ export default function IntegrationsHub({ locale = "ar" }: Props) {
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-bold text-white">{ad.platform} Ads</span>
                   {ad.connected ? (
-                    <span className="flex items-center gap-1 rounded-full bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold text-emerald-300 border border-emerald-500/30">
-                      <CheckCircle2 className="h-2.5 w-2.5" /> {isEn ? "Live" : "مفعل"}
+                    <span className="flex items-center gap-1 rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-bold text-white border border-white/20">
+                      <CheckCircle2 className="h-2.5 w-2.5 text-white" /> {isEn ? "Live" : "مفعل"}
                     </span>
                   ) : (
                     <span className="text-[10px] text-slate-500">{isEn ? "Disconnected" : "غير مفعل"}</span>
@@ -232,15 +232,15 @@ export default function IntegrationsHub({ locale = "ar" }: Props) {
                     type="button"
                     onClick={() => handleSyncPlatform(ad.platform)}
                     disabled={syncingId === ad.platform}
-                    className="flex items-center gap-1 text-xs font-bold text-amber-400 hover:text-amber-300"
+                    className="flex items-center gap-1 text-xs font-bold text-white hover:text-slate-300"
                   >
-                    <RefreshCw className={`h-3 w-3 ${syncingId === ad.platform ? "animate-spin" : ""}`} />
+                    <RefreshCw className={`h-3 w-3 text-white ${syncingId === ad.platform ? "animate-spin" : ""}`} />
                     {syncingId === ad.platform ? (isEn ? "Syncing..." : "مزامنة...") : (isEn ? "Sync" : "مزامنة")}
                   </button>
                 ) : (
                   <button
                     type="button"
-                    className="text-xs font-bold text-amber-400 hover:text-amber-300"
+                    className="text-xs font-bold text-white hover:text-slate-300"
                   >
                     {isEn ? "Connect" : "ربط"}
                   </button>
@@ -254,8 +254,8 @@ export default function IntegrationsHub({ locale = "ar" }: Props) {
       {/* Section 3: Courier Invoices & Return CSV Import */}
       <div className="rounded-2xl border border-slate-800 bg-slate-900/95 p-5 shadow-2xl backdrop-blur-md">
         <div className="flex items-center gap-3 border-b border-slate-800 pb-4">
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
-            <Truck className="h-5 w-5" />
+          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 text-white border border-white/20">
+            <Truck className="h-5 w-5 text-white" />
           </span>
           <div>
             <h3 className="text-base font-bold text-white">

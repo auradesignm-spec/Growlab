@@ -14,6 +14,12 @@ import HeaderUserMenu from "@/components/HeaderUserMenu";
 
 const CLERK_ENABLED = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
 
+const COMPACT_AUTH_LINK_CLASS =
+  "group relative z-[1] inline-flex min-h-11 shrink-0 items-center justify-center whitespace-nowrap rounded-full px-4 text-[15px] font-medium min-w-[100px] overflow-hidden";
+
+const PRIMARY_AUTH_LINK_CLASS =
+  "group relative gl-btn-primary min-h-10 !py-2 !px-5 !text-[14px] min-w-[124px] overflow-hidden inline-flex items-center justify-center";
+
 const STORY_HREFS = [
   { href: "/#how", key: "method" },
   { href: "/#proof", key: "proof" },
@@ -210,7 +216,7 @@ function HeaderAuth({
         track("Sign In Started", { source: "header-mobile" });
         onNavigate?.();
       }}
-      className="group relative z-[1] inline-flex min-h-11 shrink-0 items-center justify-center whitespace-nowrap rounded-full px-4 text-[15px] font-medium min-w-[100px] overflow-hidden"
+      className={COMPACT_AUTH_LINK_CLASS}
     >
       {/* Normal Text */}
       <span className="transition-all duration-300 ease-out group-hover:opacity-0 group-hover:scale-75 group-hover:-translate-y-1">
@@ -251,7 +257,7 @@ function HeaderAuth({
           track("Sign In Started", { source: stacked ? "header-mobile-menu" : "header" });
           onNavigate?.();
         }}
-        className="group relative gl-btn-primary min-h-10 !py-2 !px-5 !text-[14px] min-w-[124px] overflow-hidden inline-flex items-center justify-center"
+        className={PRIMARY_AUTH_LINK_CLASS}
       >
         {/* Normal Text: Fades and scales down smoothly on hover */}
         <span className="transition-all duration-300 ease-out group-hover:opacity-0 group-hover:scale-75 group-hover:-translate-y-1 inline-block">

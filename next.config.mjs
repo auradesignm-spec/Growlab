@@ -45,9 +45,9 @@ const securityHeaders = [
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "standalone",
   reactStrictMode: true,
   poweredByHeader: false,
+  transpilePackages: ["framer-motion", "motion-dom", "motion-utils"],
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -62,7 +62,7 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: "/(.*)",
+        source: "/((?!_next/static|_next/image|favicon.ico).*)",
         headers: securityHeaders,
       },
     ];

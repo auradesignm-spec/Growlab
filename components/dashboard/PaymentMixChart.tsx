@@ -33,7 +33,7 @@ export default function PaymentMixChart({ metrics, locale = "ar" }: Props) {
       <div className="rounded-2xl border border-slate-800 bg-slate-900/95 p-5 shadow-2xl backdrop-blur-md">
         <div className="flex items-center justify-between border-b border-slate-800 pb-4">
           <div className="flex items-center gap-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20">
+            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-white/10 text-white border border-white/20">
               <Banknote className="h-4 w-4" />
             </span>
             <div>
@@ -50,12 +50,12 @@ export default function PaymentMixChart({ metrics, locale = "ar" }: Props) {
         {/* Visual Dual Progress Bar */}
         <div className="mt-5">
           <div className="flex justify-between text-xs font-bold mb-2">
-            <span className="flex items-center gap-1.5 text-emerald-400">
-              <CreditCard className="h-3.5 w-3.5" />
+            <span className="flex items-center gap-1.5 text-white">
+              <CreditCard className="h-3.5 w-3.5 text-white" />
               {isEn ? "Prepaid / Apple Pay" : "دفع إلكتروني مسبق"} ({prepaidPct}%)
             </span>
-            <span className="flex items-center gap-1.5 text-amber-400">
-              <Banknote className="h-3.5 w-3.5" />
+            <span className="flex items-center gap-1.5 text-slate-300">
+              <Banknote className="h-3.5 w-3.5 text-white" />
               {isEn ? "Cash on Delivery (COD)" : "الدفع عند الاستلام (COD)"} ({codPct}%)
             </span>
           </div>
@@ -80,7 +80,7 @@ export default function PaymentMixChart({ metrics, locale = "ar" }: Props) {
           <div className="rounded-xl border border-emerald-500/30 bg-emerald-950/20 p-4">
             <div className="flex items-center justify-between">
               <span className="text-xs font-semibold text-emerald-400">{isEn ? "Prepaid Orders" : "طلبات الدفع المسبق"}</span>
-              <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+              <CheckCircle2 className="h-4 w-4 text-white" />
             </div>
             <p className="mt-2 text-xl font-bold font-mono text-white">{prepaidOrders} <span className="text-xs font-normal text-slate-400">{isEn ? "orders" : "طلب"}</span></p>
             <div className="mt-2 pt-2 border-t border-emerald-500/20 flex items-center justify-between text-[11px]">
@@ -93,7 +93,7 @@ export default function PaymentMixChart({ metrics, locale = "ar" }: Props) {
           <div className="rounded-xl border border-amber-500/30 bg-amber-950/20 p-4">
             <div className="flex items-center justify-between">
               <span className="text-xs font-semibold text-amber-400">{isEn ? "COD Orders" : "طلبات الدفع عند الاستلام"}</span>
-              <ShieldAlert className="h-4 w-4 text-amber-400" />
+              <ShieldAlert className="h-4 w-4 text-white" />
             </div>
             <p className="mt-2 text-xl font-bold font-mono text-white">{codOrders} <span className="text-xs font-normal text-slate-400">{isEn ? "orders" : "طلب"}</span></p>
             <div className="mt-2 pt-2 border-t border-amber-500/20 flex items-center justify-between text-[11px]">
@@ -105,7 +105,7 @@ export default function PaymentMixChart({ metrics, locale = "ar" }: Props) {
 
         {/* Warning insight */}
         <div className="mt-4 rounded-xl border border-rose-500/30 bg-rose-950/30 p-3 text-xs text-rose-300 flex items-start gap-2.5">
-          <TrendingDown className="h-4 w-4 shrink-0 text-rose-400 mt-0.5" />
+          <TrendingDown className="h-4 w-4 shrink-0 text-white mt-0.5" />
           <p>
             {isEn
               ? `Estimated RTO Loss from uncollected COD orders: ${metrics.totalRtoLoss} SAR (Courier return fees + damaged packaging).`
@@ -118,8 +118,8 @@ export default function PaymentMixChart({ metrics, locale = "ar" }: Props) {
       <div className="rounded-2xl border border-slate-800 bg-slate-900/95 p-5 shadow-2xl backdrop-blur-md">
         <div className="flex items-center justify-between border-b border-slate-800 pb-4">
           <div className="flex items-center gap-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
-              <Truck className="h-4 w-4" />
+            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-white/10 text-white border border-white/20">
+              <Truck className="h-4 w-4 text-white" />
             </span>
             <div>
               <h3 className="text-base font-bold text-white">

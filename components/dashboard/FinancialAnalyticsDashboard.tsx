@@ -67,7 +67,7 @@ export default function FinancialAnalyticsDashboard({ locale = "ar" }: Props) {
       <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-800 bg-slate-900/90 p-5 shadow-xl">
         <div>
           <div className="flex items-center gap-2.5">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 text-white border border-white/20">
               <BarChart3 className="h-5 w-5" />
             </span>
             <div>
@@ -93,7 +93,7 @@ export default function FinancialAnalyticsDashboard({ locale = "ar" }: Props) {
                 onClick={() => setTimeframe(tf)}
                 className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
                   timeframe === tf
-                    ? "bg-amber-500 text-slate-950 shadow-sm"
+                    ? "bg-white text-slate-950 shadow-sm font-bold"
                     : "text-slate-400 hover:text-white"
                 }`}
               >
@@ -114,7 +114,7 @@ export default function FinancialAnalyticsDashboard({ locale = "ar" }: Props) {
             disabled={isSyncing}
             className="flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-800 px-3.5 py-2 text-xs font-bold text-slate-200 hover:bg-slate-700 active:scale-95 transition"
           >
-            <RefreshCw className={`h-3.5 w-3.5 ${isSyncing ? "animate-spin text-amber-400" : ""}`} />
+            <RefreshCw className={`h-3.5 w-3.5 ${isSyncing ? "animate-spin text-white" : "text-white"}`} />
             {isSyncing ? (isEn ? "Syncing..." : "جاري المطابقة...") : isEn ? "Reconcile Now" : "مطابقة فورية"}
           </button>
         </div>
@@ -332,7 +332,7 @@ export default function FinancialAnalyticsDashboard({ locale = "ar" }: Props) {
       <div className="rounded-2xl border border-slate-800 bg-slate-900/95 p-5 shadow-2xl backdrop-blur-md">
         <div className="flex items-center justify-between border-b border-slate-800 pb-4">
           <div className="flex items-center gap-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20">
+            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-white/10 text-white border border-white/20">
               <Layers className="h-4 w-4" />
             </span>
             <div>

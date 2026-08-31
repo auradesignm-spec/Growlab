@@ -294,7 +294,7 @@ export default function WhatIfProfitabilityOverlay({
         {/* Header Bar */}
         <div className="relative z-10 flex items-center justify-between border-b border-line bg-slate-50/80 px-6 py-4 dark:bg-slate-950/60 backdrop-blur-md">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-indigo-600/10 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-black/5 text-black dark:bg-white/10 dark:text-white border border-slate-200 dark:border-white/10">
               <Sliders className="h-5 w-5" />
             </div>
             <div>
@@ -304,7 +304,7 @@ export default function WhatIfProfitabilityOverlay({
                     ? "حاسبة التوقعات وسيناريوهات الربحية (What-If Profitability)"
                     : "What-If Profitability & Scenario Simulator"}
                 </h3>
-                <span className="rounded-full bg-indigo-500/15 px-2 py-0.5 text-[10px] font-extrabold text-indigo-600 dark:text-indigo-400">
+                <span className="rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 px-2 py-0.5 text-[10px] font-extrabold text-slate-800 dark:text-slate-200">
                   {isAr ? "تفاعلي لحظي" : "Live Real-Time"}
                 </span>
               </div>
@@ -323,7 +323,7 @@ export default function WhatIfProfitabilityOverlay({
               title={isAr ? "إعادة ضبط" : "Reset to default"}
               className="flex items-center gap-1.5 rounded-xl border border-line bg-white px-3 py-1.5 text-xs font-semibold text-frost-dim hover:bg-slate-100 hover:text-frost dark:bg-slate-800 dark:hover:bg-slate-700 transition-all"
             >
-              <RotateCcw className="h-3.5 w-3.5" />
+              <RotateCcw className="h-3.5 w-3.5 text-black dark:text-white" />
               <span className="hidden sm:inline">{isAr ? "إعادة ضبط" : "Reset"}</span>
             </button>
 
@@ -333,7 +333,7 @@ export default function WhatIfProfitabilityOverlay({
               className="flex h-9 w-9 items-center justify-center rounded-xl border border-line bg-white text-frost-dim hover:bg-slate-100 hover:text-frost dark:bg-slate-800 dark:hover:bg-slate-700 transition-all active:scale-95"
               aria-label={isAr ? "إغلاق النافذة" : "Close"}
             >
-              <X className="h-4 w-4" />
+              <X className="h-4 w-4 text-black dark:text-white" />
             </button>
           </div>
         </div>
@@ -344,7 +344,7 @@ export default function WhatIfProfitabilityOverlay({
           <div className="rounded-2xl border border-line bg-night/5 p-3 dark:bg-night/30">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
               <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-amber-500 shrink-0" />
+                <Sparkles className="h-4 w-4 text-black dark:text-white shrink-0" />
                 <span className="text-xs font-bold text-frost">
                   {isAr ? "سيناريوهات نمو وأداء جاهزة:" : "Instant Preset Scenarios:"}
                 </span>
@@ -396,8 +396,8 @@ export default function WhatIfProfitabilityOverlay({
             <div className="space-y-4 lg:col-span-5">
               <div className="rounded-2xl border border-line bg-slate-50/50 p-4 dark:bg-slate-950/40 space-y-4">
                 <div className="flex items-center justify-between border-b border-line/60 pb-2">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5">
-                    <Sliders className="h-3.5 w-3.5" />
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-black dark:text-white flex items-center gap-1.5">
+                    <Sliders className="h-3.5 w-3.5 text-black dark:text-white" />
                     <span>{isAr ? "معايير ومتغيرات المحاكاة" : "Simulation Variables"}</span>
                   </h4>
                   <span className="text-[11px] text-frost-dim font-mono">
@@ -409,10 +409,10 @@ export default function WhatIfProfitabilityOverlay({
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between text-xs">
                     <label className="font-semibold text-frost flex items-center gap-1.5">
-                      <Flame className="h-3.5 w-3.5 text-rose-500" />
+                      <Flame className="h-3.5 w-3.5 text-black dark:text-white" />
                       <span>{isAr ? "ميزانية الإعلانات الشهرية:" : "Monthly Ad Spend:"}</span>
                     </label>
-                    <span className="font-mono font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 px-2 py-0.5 rounded-lg border border-indigo-200/60 dark:border-indigo-800/40">
+                    <span className="font-mono font-bold text-black dark:text-white bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-lg border border-line">
                       {formatMoney(adSpend, "OMR")}
                     </span>
                   </div>
@@ -426,7 +426,7 @@ export default function WhatIfProfitabilityOverlay({
                       setAdSpend(Number(e.target.value));
                       setActiveScenario("custom");
                     }}
-                    className="w-full accent-indigo-600 cursor-pointer h-2 bg-slate-200 rounded-lg dark:bg-slate-700"
+                    className="w-full accent-slate-900 dark:accent-white cursor-pointer h-2 bg-slate-200 rounded-lg dark:bg-slate-700"
                   />
                   <div className="flex justify-between text-[10px] text-frost-dim font-mono">
                     <span>0 ر.ع</span>
@@ -439,7 +439,7 @@ export default function WhatIfProfitabilityOverlay({
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between text-xs">
                     <label className="font-semibold text-frost flex items-center gap-1.5">
-                      <Truck className="h-3.5 w-3.5 text-amber-500" />
+                      <Truck className="h-3.5 w-3.5 text-black dark:text-white" />
                       <span>{isAr ? "نسبة المرتجعات المتوقعة (RTO):" : "Return Rate (RTO %):"}</span>
                     </label>
                     <span
@@ -464,7 +464,7 @@ export default function WhatIfProfitabilityOverlay({
                       setReturnRate(Number(e.target.value));
                       setActiveScenario("custom");
                     }}
-                    className="w-full accent-amber-500 cursor-pointer h-2 bg-slate-200 rounded-lg dark:bg-slate-700"
+                    className="w-full accent-slate-900 dark:accent-white cursor-pointer h-2 bg-slate-200 rounded-lg dark:bg-slate-700"
                   />
                   <div className="flex justify-between text-[10px] text-frost-dim font-mono">
                     <span>0% (مثالي)</span>
@@ -477,7 +477,7 @@ export default function WhatIfProfitabilityOverlay({
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between text-xs">
                     <label className="font-semibold text-frost flex items-center gap-1.5">
-                      <Zap className="h-3.5 w-3.5 text-blue-500" />
+                      <Zap className="h-3.5 w-3.5 text-black dark:text-white" />
                       <span>{isAr ? "إجمالي حجم الطلبات الشهري:" : "Monthly Orders Volume:"}</span>
                     </label>
                     <span className="font-mono font-bold text-frost bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-lg border border-line">
@@ -494,7 +494,7 @@ export default function WhatIfProfitabilityOverlay({
                       setMonthlyOrders(Number(e.target.value));
                       setActiveScenario("custom");
                     }}
-                    className="w-full accent-blue-600 cursor-pointer h-2 bg-slate-200 rounded-lg dark:bg-slate-700"
+                    className="w-full accent-slate-900 dark:accent-white cursor-pointer h-2 bg-slate-200 rounded-lg dark:bg-slate-700"
                   />
                   <div className="flex justify-between text-[10px] text-frost-dim font-mono">
                     <span>10</span>
@@ -507,7 +507,7 @@ export default function WhatIfProfitabilityOverlay({
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between text-xs">
                     <label className="font-semibold text-frost flex items-center gap-1.5">
-                      <DollarSign className="h-3.5 w-3.5 text-emerald-500" />
+                      <DollarSign className="h-3.5 w-3.5 text-black dark:text-white" />
                       <span>{isAr ? "متوسط قيمة الطلب (AOV):" : "Avg Order Value (AOV):"}</span>
                     </label>
                     <span className="font-mono font-bold text-frost bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-lg border border-line">
@@ -524,7 +524,7 @@ export default function WhatIfProfitabilityOverlay({
                       setAov(Number(e.target.value));
                       setActiveScenario("custom");
                     }}
-                    className="w-full accent-emerald-600 cursor-pointer h-2 bg-slate-200 rounded-lg dark:bg-slate-700"
+                    className="w-full accent-slate-900 dark:accent-white cursor-pointer h-2 bg-slate-200 rounded-lg dark:bg-slate-700"
                   />
                   <div className="flex justify-between text-[10px] text-frost-dim font-mono">
                     <span>5 ر.ع</span>
@@ -803,20 +803,20 @@ export default function WhatIfProfitabilityOverlay({
               </div>
 
               {/* Break-Even Intelligence & Strategic Advice Box */}
-              <div className="rounded-2xl border border-indigo-200/80 bg-indigo-50/40 p-3.5 dark:border-indigo-900/40 dark:bg-indigo-950/20 text-xs">
+              <div className="rounded-2xl border border-line bg-slate-50/70 p-3.5 dark:bg-slate-950/40 text-xs">
                 <div className="flex items-start gap-2.5">
-                  <ShieldAlert className="h-4 w-4 text-indigo-600 dark:text-indigo-400 shrink-0 mt-0.5" />
+                  <ShieldAlert className="h-4 w-4 text-black dark:text-white shrink-0 mt-0.5" />
                   <div className="space-y-1">
-                    <p className="font-bold text-indigo-950 dark:text-indigo-200">
+                    <p className="font-bold text-frost">
                       {isAr ? "تحليل نقطة التعادل والأمان:" : "Break-Even Safety Margins:"}
                     </p>
-                    <ul className="space-y-1 text-indigo-900/90 dark:text-indigo-300/90 text-[11.5px] leading-relaxed">
+                    <ul className="space-y-1 text-frost-dim text-[11.5px] leading-relaxed">
                       <li>
                         •{" "}
                         {isAr
                           ? `أقصى نسبة مرتجعات مسموحة قبل الخسارة: `
                           : `Max Tolerable Return Rate (RTO): `}
-                        <strong className="font-mono text-indigo-700 dark:text-indigo-300">
+                        <strong className="font-mono text-frost">
                           {metrics.breakEvenRtoPct.toFixed(1)}%
                         </strong>
                         {returnRate > metrics.breakEvenRtoPct && (
@@ -830,7 +830,7 @@ export default function WhatIfProfitabilityOverlay({
                         {isAr
                           ? `الحد الأقصى للإنفاق الإعلاني المسموح به شهرياً: `
                           : `Max Tolerable Monthly Ad Budget: `}
-                        <strong className="font-mono text-indigo-700 dark:text-indigo-300">
+                        <strong className="font-mono text-frost">
                           {formatMoney(metrics.maxTolerableAdSpend, "OMR")}
                         </strong>
                       </li>
@@ -845,7 +845,7 @@ export default function WhatIfProfitabilityOverlay({
         {/* Footer Actions */}
         <div className="relative z-10 flex flex-wrap items-center justify-between gap-3 border-t border-line bg-slate-50/90 px-6 py-4 dark:bg-slate-950/80 backdrop-blur-md">
           <div className="flex items-center gap-2 text-xs text-frost-dim">
-            <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+            <CheckCircle2 className="h-4 w-4 text-black dark:text-white" />
             <span>
               {isAr
                 ? "الحسابات دقيقة وتأخذ بالاعتبار رسوم استرجاع الطلبات غير المستلمة وعمولات المنصة."
