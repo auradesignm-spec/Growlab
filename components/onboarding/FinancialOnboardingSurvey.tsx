@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import CasaMoneyRain from "@/components/effects/CasaMoneyRain";
 import {
   Sparkles,
   ArrowRight,
@@ -269,8 +270,11 @@ export default function FinancialOnboardingSurvey({ locale = "ar" }: { locale?: 
         </div>
       ) : (
         /* Diagnosis & Personalized Dashboard Setup Screen */
-        <div className="mt-8 rounded-2xl border border-slate-800 bg-slate-900/95 p-6 shadow-2xl backdrop-blur-md sm:p-8 space-y-6">
-          <div className="flex items-center gap-3 rounded-xl border border-emerald-500/30 bg-emerald-950/30 p-4 text-emerald-300">
+        <div className="mt-8 rounded-2xl border border-slate-800 bg-slate-900/95 p-6 shadow-2xl backdrop-blur-md sm:p-8 space-y-6 relative">
+          {/* La Casa de Papel Style Continuous Money Rain Effect */}
+          <CasaMoneyRain count={45} initialBurst={true} opacity={0.84} zIndex={60} />
+          
+          <div className="flex items-center gap-3 rounded-xl border border-emerald-500/30 bg-emerald-950/30 p-4 text-emerald-300 relative z-10">
             <CheckCircle2 className="h-6 w-6 shrink-0 text-emerald-400" />
             <div>
               <h3 className="text-base font-bold text-white">{isEn ? "AI Financial Diagnosis Ready" : "اكتمل تشخيص التسريبات المالية وتخصيص لوحتك"}</h3>

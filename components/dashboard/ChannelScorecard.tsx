@@ -32,19 +32,19 @@ export default function ChannelScorecard({ scorecard, locale = "ar" }: Props) {
   const topChannel = scorecard[0];
 
   return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-900/95 p-5 shadow-2xl backdrop-blur-md">
+    <div className="rounded-2xl border border-line bg-white p-6 shadow-xs">
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-4">
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-line pb-4">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-white/10 text-white border border-white/20">
-              <ShoppingBag className="h-4 w-4 text-white" />
+          <div className="flex items-center gap-2.5">
+            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-100 text-slate-700 border border-line">
+              <ShoppingBag className="h-4 w-4 text-slate-700" />
             </span>
-            <h3 className="text-base font-bold text-white sm:text-lg">
+            <h3 className="text-base font-bold text-slate-900 sm:text-lg">
               {locale === "en" ? "Channel Profitability Scorecard" : "بطاقة أداء وربحية القنوات والمتاجر"}
             </h3>
           </div>
-          <p className="mt-1 text-xs text-slate-400">
+          <p className="mt-1 text-xs text-slate-500">
             {locale === "en"
               ? "Reconciled ranking of sales channels by Net Sales, Share %, and True Net Margin %"
               : "ترتيب تدقيق القنوات حسب صافي المبيعات، الحصة السوقية، وهامش الربح الحقيقي الصافي بعد كل الخصومات"}
@@ -58,8 +58,8 @@ export default function ChannelScorecard({ scorecard, locale = "ar" }: Props) {
             onClick={() => setFilter("ALL")}
             className={`rounded-xl px-3 py-1.5 text-xs font-semibold transition ${
               filter === "ALL"
-                ? "bg-slate-700 text-white border border-slate-600"
-                : "bg-slate-800/60 text-slate-400 hover:text-slate-200"
+                ? "bg-slate-900 text-white shadow-2xs font-bold"
+                : "bg-slate-50 text-slate-600 hover:text-slate-900 border border-line"
             }`}
           >
             {locale === "en" ? "All Channels" : "كل القنوات"} ({scorecard.length})
@@ -69,148 +69,115 @@ export default function ChannelScorecard({ scorecard, locale = "ar" }: Props) {
             onClick={() => setFilter("WINNERS")}
             className={`rounded-xl px-3 py-1.5 text-xs font-semibold transition ${
               filter === "WINNERS"
-                ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
-                : "bg-slate-800/60 text-slate-400 hover:text-slate-200"
+                ? "bg-emerald-700 text-white shadow-2xs font-bold"
+                : "bg-slate-50 text-slate-600 hover:text-slate-900 border border-line"
             }`}
           >
-            {locale === "en" ? "Winning (High Margin)" : "قنوات رابحة"}
+            {locale === "en" ? "Winners (>20% Margin)" : "الرابحة (>20% هامش)"}
           </button>
-          {losingCount > 0 && (
-            <button
-              type="button"
-              onClick={() => setFilter("LOSERS")}
-              className={`rounded-xl px-3 py-1.5 text-xs font-semibold transition flex items-center gap-1.5 ${
-                filter === "LOSERS"
-                  ? "bg-rose-500/20 text-rose-300 border border-rose-500/40"
-                  : "bg-slate-800/60 text-rose-400 hover:text-rose-300"
-              }`}
-            >
-              <AlertTriangle className="h-3 w-3 text-white" />
-              {locale === "en" ? "Losing Channels" : "قنوات خاسرة"} ({losingCount})
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={() => setFilter("LOSERS")}
+            className={`rounded-xl px-3 py-1.5 text-xs font-semibold transition ${
+              filter === "LOSERS"
+                ? "bg-rose-700 text-white shadow-2xs font-bold"
+                : "bg-slate-50 text-slate-600 hover:text-slate-900 border border-line"
+            }`}
+          >
+            {locale === "en" ? "Bleeding / At Risk" : "عالية المخاطر"} ({losingCount})
+          </button>
         </div>
       </div>
 
-      {/* Top Banner Insight */}
-      {topChannel && topChannel.isProfitable && (
-        <div className="mt-4 flex items-center justify-between gap-3 rounded-xl border border-emerald-500/30 bg-emerald-950/30 p-3.5 text-xs text-emerald-300">
-          <div className="flex items-center gap-2.5">
-            <Sparkles className="h-4 w-4 shrink-0 text-white" />
-            <span>
-              <strong>{topChannel.channel}</strong> {locale === "en" ? "is your #1 cash cow with" : "هي القناة الأعلى ربحية بهامش صافٍ"} <strong>{topChannel.marginPercentage}%</strong> ({topChannel.netProfit.toLocaleString()} ر.س صافي ربح).
-            </span>
-          </div>
-          <span className="shrink-0 font-bold text-emerald-400 bg-emerald-500/20 px-2.5 py-1 rounded-lg border border-emerald-500/30">
-            {locale === "en" ? "Scale Budget" : "موصى بالتوسيع"}
-          </span>
-        </div>
-      )}
+      {/* Grid of Channels */}
+      <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {filteredData.map((ch) => {
+          const isWinner = ch.isProfitable && ch.marginPercentage >= 20;
+          const isLosing = !ch.isProfitable;
 
-      {/* Table */}
-      <div className="mt-4 overflow-x-auto">
-        <table className="w-full text-left text-xs text-slate-300 rtl:text-right">
-          <thead className="border-b border-slate-800 bg-slate-950/60 text-[11px] font-bold uppercase text-slate-400">
-            <tr>
-              <th className="px-4 py-3">{locale === "en" ? "Channel" : "القناة / المنصة"}</th>
-              <th className="px-4 py-3">{locale === "en" ? "Net Sales" : "صافي المبيعات"}</th>
-              <th className="px-4 py-3">{locale === "en" ? "Orders" : "الطلبات"}</th>
-              <th className="px-4 py-3">{locale === "en" ? "Share %" : "الحصة %"}</th>
-              <th className="px-4 py-3">{locale === "en" ? "Ad Spend" : "الإنفاق الإعلاني"}</th>
-              <th className="px-4 py-3">{locale === "en" ? "RTO / Returns" : "نسبة المرتجع RTO"}</th>
-              <th className="px-4 py-3">{locale === "en" ? "True Net Profit" : "الربح الصافي الحقيقي"}</th>
-              <th className="px-4 py-3">{locale === "en" ? "Net Margin %" : "هامش الربح %"}</th>
-              <th className="px-4 py-3">{locale === "en" ? "Recommended Action" : "الإجراء المقترح"}</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-800/70">
-            {filteredData.map((ch, idx) => {
-              const isNegative = ch.netProfit < 0 || ch.marginPercentage < 0;
-              const isHigh = ch.marginPercentage >= 40;
+          return (
+            <div
+              key={ch.channelId}
+              className={`flex flex-col justify-between rounded-2xl border p-4.5 transition-all ${
+                isLosing
+                  ? "border-rose-200 bg-rose-50/40"
+                  : isWinner
+                    ? "border-emerald-200 bg-emerald-50/30"
+                    : "border-line bg-slate-50/50"
+              }`}
+            >
+              <div>
+                {/* Top Channel Badge & Type */}
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold uppercase tracking-wider text-slate-900">
+                    {ch.channelName}
+                  </span>
+                  <span
+                    className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
+                      isLosing
+                        ? "bg-rose-100 text-rose-800 border border-rose-200"
+                        : isWinner
+                          ? "bg-emerald-100 text-emerald-800 border border-emerald-200"
+                          : "bg-slate-200 text-slate-700"
+                    }`}
+                  >
+                    {ch.isProfitable
+                      ? `${ch.marginPercentage}% هامش صافي`
+                      : "خسارة تشغيلية"}
+                  </span>
+                </div>
 
-              return (
-                <tr
-                  key={ch.channel}
-                  className={`transition hover:bg-slate-800/40 ${
-                    isNegative ? "bg-rose-950/20" : ""
-                  }`}
-                >
-                  <td className="px-4 py-3.5 font-bold text-white flex items-center gap-2">
-                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-slate-800 text-[10px] text-slate-400">
-                      {idx + 1}
+                {/* Main Metric */}
+                <div className="mt-3">
+                  <p className="text-[11px] text-slate-500">
+                    {locale === "en" ? "Net Reconciled Sales" : "صافي المبيعات المدققة"}
+                  </p>
+                  <p className="text-xl font-black font-mono text-slate-900">
+                    {ch.netSales.toLocaleString()} <span className="text-xs text-slate-500 font-normal">ر.س</span>
+                  </p>
+                </div>
+
+                {/* Submetrics Breakdown */}
+                <div className="mt-3.5 space-y-1.5 border-t border-line/60 pt-3 text-[11px]">
+                  <div className="flex justify-between text-slate-600">
+                    <span>{locale === "en" ? "Orders Delivered" : "الطلبات المستلمة"}:</span>
+                    <span className="font-mono font-semibold text-slate-900">{ch.ordersCount}</span>
+                  </div>
+                  <div className="flex justify-between text-slate-600">
+                    <span>{locale === "en" ? "Ad Spend / ROAS" : "الإنفاق الإعلاني"}:</span>
+                    <span className="font-mono text-rose-600">-{ch.adSpend.toLocaleString()} ر.س</span>
+                  </div>
+                  <div className="flex justify-between text-slate-600">
+                    <span>{locale === "en" ? "COGS & Couriers" : "البضاعة والشحن"}:</span>
+                    <span className="font-mono text-rose-600">
+                      -{(ch.cogs + ch.shippingCosts).toLocaleString()} ر.س
                     </span>
-                    {ch.channel}
-                  </td>
-                  <td className="px-4 py-3.5 font-mono font-semibold text-white">
-                    {ch.netSales.toLocaleString()} ر.س
-                  </td>
-                  <td className="px-4 py-3.5 font-mono">{ch.ordersCount}</td>
-                  <td className="px-4 py-3.5 font-mono">
-                    <div className="flex items-center gap-1.5">
-                      <div className="h-1.5 w-12 rounded-full bg-slate-800 overflow-hidden">
-                        <div
-                          className="h-full bg-amber-400 rounded-full"
-                          style={{ width: `${Math.min(100, ch.orderSharePercentage)}%` }}
-                        />
-                      </div>
-                      <span>{ch.orderSharePercentage}%</span>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3.5 font-mono text-slate-400">
-                    {ch.adSpend.toLocaleString()} ر.س
-                  </td>
-                  <td className="px-4 py-3.5 font-mono">
-                    <span
-                      className={`inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[11px] font-bold ${
-                        ch.rtoRate > 20
-                          ? "bg-rose-500/20 text-rose-300 border border-rose-500/30"
-                          : "bg-slate-800 text-slate-300"
-                      }`}
-                    >
-                      {ch.rtoRate}%
-                    </span>
-                  </td>
-                  <td className="px-4 py-3.5 font-mono font-bold">
-                    <span
-                      className={`inline-flex items-center gap-1 text-sm ${
-                        isNegative ? "text-rose-400" : "text-emerald-400"
-                      }`}
-                    >
-                      {isNegative ? (
-                        <TrendingDown className="h-4 w-4" />
-                      ) : (
-                        <TrendingUp className="h-4 w-4" />
-                      )}
-                      {ch.netProfit > 0 ? `+${ch.netProfit.toLocaleString()}` : ch.netProfit.toLocaleString()} ر.س
-                    </span>
-                  </td>
-                  <td className="px-4 py-3.5 font-mono">
-                    <span
-                      className={`inline-flex items-center rounded-lg px-2.5 py-1 text-xs font-bold ${
-                        isNegative
-                          ? "border border-rose-500/40 bg-rose-950/60 text-rose-300 animate-pulse"
-                          : isHigh
-                            ? "border border-emerald-500/40 bg-emerald-950/50 text-emerald-300"
-                            : "border border-slate-700 bg-slate-800 text-slate-300"
-                      }`}
-                    >
-                      {ch.marginPercentage > 0 ? `+${ch.marginPercentage}%` : `${ch.marginPercentage}%`}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3.5 text-[11px]">
-                    <span
-                      className={`inline-flex items-center gap-1.5 ${
-                        isNegative ? "font-semibold text-rose-300" : "text-slate-400"
-                      }`}
-                    >
-                      {ch.recommendedAction}
-                    </span>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                  </div>
+                  <div className="flex justify-between text-slate-600">
+                    <span>{locale === "en" ? "COD Return Loss" : "خسارة المرتجعات"}:</span>
+                    <span className="font-mono text-amber-700">-{ch.returnsLoss.toLocaleString()} ر.س</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bottom Card Summary */}
+              <div className="mt-4 border-t border-line/60 pt-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-slate-700">
+                    {locale === "en" ? "Net Cash Profit:" : "صافي الربح الفعلي:"}
+                  </span>
+                  <span
+                    className={`font-mono text-sm font-extrabold ${
+                      isLosing ? "text-rose-600" : "text-emerald-700"
+                    }`}
+                  >
+                    {ch.netProfit > 0 ? `+${ch.netProfit.toLocaleString()}` : ch.netProfit.toLocaleString()} ر.س
+                  </span>
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

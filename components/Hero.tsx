@@ -1,13 +1,14 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   ArrowLeft,
   ArrowRight,
   Sparkles,
   ShoppingBag,
   Coins,
+  DollarSign,
   Users,
   Check,
   TrendingUp,
@@ -17,6 +18,10 @@ import {
   BarChart3,
   Truck,
   CheckCircle2,
+  Zap,
+  MousePointerClick,
+  RefreshCw,
+  Plus,
 } from "lucide-react";
 import { enterHref, SIGN_IN_HREF } from "@/lib/auth/paths";
 import { track } from "@/lib/analytics";
@@ -26,6 +31,17 @@ export default function Hero() {
   const t = useTranslations("marketing.hero");
   const locale = useLocale();
   const isAr = locale === "ar";
+
+  const [activeCard, setActiveCard] = useState<number | null>(null);
+  const [orderPulse, setOrderPulse] = useState(18.5);
+  const [profitProgress, setProfitProgress] = useState(88);
+  const [catalogItems, setCatalogItems] = useState([
+    { id: 1, color: "bg-amber-400/90", active: true },
+    { id: 2, color: "bg-amber-500/80", active: false },
+    { id: 3, color: "bg-amber-600/90", active: true },
+  ]);
+  const [affiliateRate, setAffiliateRate] = useState(15);
+  const [badgeTrigger, setBadgeTrigger] = useState(false);
 
   const [tasks, setTasks] = useState([
     { id: 1, text: isAr ? "مراجعة طلب صلالة COD (18.5 ر.ع)" : "Salalah COD order verified (18.5 OMR)", done: true },
@@ -37,10 +53,83 @@ export default function Hero() {
     setTasks((prev) =>
       prev.map((item) => (item.id === id ? { ...item, done: !item.done } : item))
     );
+    setBadgeTrigger(true);
+    setTimeout(() => setBadgeTrigger(false), 1200);
+  };
+
+  // Micro-interactions when clicking cards
+  const handleCardClick = (cardIndex: number) => {
+    setActiveCard(cardIndex);
+    if (cardIndex === 1) {
+      // Refresh order amount
+      setOrderPulse((prev) => +(prev + 4.2).toFixed(1));
+    } else if (cardIndex === 2) {
+      // Toggle catalog item
+      setCatalogItems((prev) =>
+        prev.map((item, idx) => ({ ...item, active: idx === Math.floor(Math.random() * prev.length) }))
+      );
+    } else if (cardIndex === 3) {
+      // Boost margin
+      setProfitProgress((prev) => (prev >= 98 ? 72 : prev + 6));
+    } else if (cardIndex === 4) {
+      // Change affiliate tier
+      setAffiliateRate((prev) => (prev === 15 ? 20 : prev === 20 ? 25 : 15));
+    }
   };
 
   return (
     <section id="manifesto" className="relative overflow-x-clip scroll-mt-24 pb-14 pt-28 sm:pb-24 sm:pt-36">
+      {/* Subtle Background Floating Dollar & Currency Elements */}
+      <div className="pointer-events-none absolute inset-0 -z-0 overflow-hidden select-none" aria-hidden="true">
+        {/* Floating Dollar Icon 1 - Top Left */}
+        <div
+          className="gl-hero-bg-dollar-1 absolute top-[14%] left-[5%] sm:left-[8%] flex items-center justify-center rounded-2xl bg-emerald-500/[0.06] border border-emerald-500/15 p-2.5 sm:p-3 text-emerald-600/50 shadow-sm backdrop-blur-[1px]"
+          style={{ "--base-op": "0.45", animationDelay: "0s" } as React.CSSProperties}
+        >
+          <DollarSign className="size-4 sm:size-5" strokeWidth={2.4} />
+        </div>
+
+        {/* Floating Dollar Icon 2 - Top Right */}
+        <div
+          className="gl-hero-bg-dollar-2 absolute top-[16%] right-[6%] sm:right-[10%] flex items-center justify-center rounded-2xl bg-emerald-500/[0.06] border border-emerald-500/15 p-2 sm:p-2.5 text-emerald-600/45 shadow-sm backdrop-blur-[1px]"
+          style={{ "--base-op": "0.4", animationDelay: "1.2s" } as React.CSSProperties}
+        >
+          <DollarSign className="size-3.5 sm:size-4" strokeWidth={2.2} />
+        </div>
+
+        {/* Floating Dollar Icon 3 - Mid Right behind visual */}
+        <div
+          className="gl-hero-bg-dollar-3 absolute top-[52%] right-[3%] sm:right-[5%] flex items-center justify-center rounded-2xl bg-emerald-500/[0.07] border border-emerald-500/20 p-3 sm:p-3.5 text-emerald-600/50 shadow-sm backdrop-blur-[1px]"
+          style={{ "--base-op": "0.45", animationDelay: "2.5s" } as React.CSSProperties}
+        >
+          <DollarSign className="size-5 sm:size-6" strokeWidth={2.4} />
+        </div>
+
+        {/* Floating Dollar Icon 4 - Bottom Left */}
+        <div
+          className="gl-hero-bg-dollar-1 absolute bottom-[12%] left-[6%] sm:left-[12%] flex items-center justify-center rounded-xl bg-emerald-500/[0.05] border border-emerald-500/10 p-2 text-emerald-600/35 shadow-sm"
+          style={{ "--base-op": "0.35", animationDelay: "3.5s" } as React.CSSProperties}
+        >
+          <DollarSign className="size-3.5 sm:size-4" strokeWidth={2} />
+        </div>
+
+        {/* Floating Dollar Icon 5 - Center Top Subtle Drift */}
+        <div
+          className="gl-hero-bg-dollar-3 absolute top-[8%] left-[45%] sm:left-[48%] flex items-center justify-center rounded-xl bg-emerald-500/[0.05] border border-emerald-500/10 p-2 text-emerald-600/30 shadow-sm"
+          style={{ "--base-op": "0.3", animationDelay: "0.8s" } as React.CSSProperties}
+        >
+          <DollarSign className="size-3 sm:size-3.5" strokeWidth={2} />
+        </div>
+
+        {/* Floating Dollar Icon 6 - Bottom Center-Right */}
+        <div
+          className="gl-hero-bg-dollar-2 absolute bottom-[8%] right-[16%] sm:right-[20%] flex items-center justify-center rounded-2xl bg-emerald-500/[0.06] border border-emerald-500/15 p-2.5 text-emerald-600/40 shadow-sm"
+          style={{ "--base-op": "0.4", animationDelay: "4.2s" } as React.CSSProperties}
+        >
+          <DollarSign className="size-4 sm:size-4.5" strokeWidth={2.2} />
+        </div>
+      </div>
+
       <div className="relative z-[1] mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           
@@ -48,64 +137,30 @@ export default function Hero() {
           <div className="lg:col-span-6 flex flex-col items-start text-start">
             
             {/* Main Headline */}
-            <h1 className="gl-hero-title text-start font-semibold text-frost">
+            <h1 className="gl-hero-title text-start font-bold text-frost leading-tight">
               {isAr ? (
                 <>
-                  <span className="block">
+                  <span className="block text-emerald-600 mb-1">
                     <span className="gl-word">
-                      <span className="gl-word-inner">مبيعاتك</span>
-                    </span>{" "}
-                    <span className="gl-word">
-                      <span className="gl-word-inner">وأرباحك</span>
-                    </span>{" "}
-                    <span className="gl-word">
-                      <span className="gl-word-inner">كلها</span>
-                    </span>{" "}
-                    <span className="gl-word-cash">
-                      <span className="gl-word">
-                        <span className="gl-word-inner">في</span>
-                      </span>
+                      <span className="gl-word-inner">أوقف نزيف الكاش الضائع..</span>
                     </span>
                   </span>
-                  <span className="block mt-1 sm:mt-2">
+                  <span className="block mt-1 sm:mt-1.5 text-slate-900">
                     <span className="gl-word">
-                      <span className="gl-word-inner">مكان</span>
-                    </span>{" "}
-                    <span className="gl-word">
-                      <span className="gl-word-inner">واحد.</span>
+                      <span className="gl-word-inner">واعرف أرباحكـ الصافية بدقة تامة وضاعفها</span>
                     </span>
                   </span>
                 </>
               ) : (
                 <>
-                  <span className="block">
+                  <span className="block text-emerald-600 mb-1">
                     <span className="gl-word">
-                      <span className="gl-word-inner">Your</span>
-                    </span>{" "}
-                    <span className="gl-word">
-                      <span className="gl-word-inner">Sales</span>
-                    </span>{" "}
-                    <span className="gl-word">
-                      <span className="gl-word-inner">&amp;</span>
-                    </span>{" "}
-                    <span className="gl-word-cash">
-                      <span className="gl-word">
-                        <span className="gl-word-inner">Profits</span>
-                      </span>
+                      <span className="gl-word-inner">Stop The &apos;Lost Cash&apos; Leak..</span>
                     </span>
                   </span>
-                  <span className="block mt-1 sm:mt-2">
+                  <span className="block mt-1 sm:mt-1.5 text-slate-900">
                     <span className="gl-word">
-                      <span className="gl-word-inner">All</span>
-                    </span>{" "}
-                    <span className="gl-word">
-                      <span className="gl-word-inner">In</span>
-                    </span>{" "}
-                    <span className="gl-word">
-                      <span className="gl-word-inner">One</span>
-                    </span>{" "}
-                    <span className="gl-word">
-                      <span className="gl-word-inner">Place.</span>
+                      <span className="gl-word-inner">Know Your True Net Profits &amp; Multiply Them</span>
                     </span>
                   </span>
                 </>
@@ -113,10 +168,10 @@ export default function Hero() {
             </h1>
 
             {/* Subtitle / Lede */}
-            <p className="gl-enter-2 mt-4 max-w-xl text-[16.5px] sm:text-[18px] leading-relaxed text-frost-dim">
+            <p className="gl-enter-2 mt-4 max-w-xl text-[16.5px] sm:text-[18px] leading-relaxed text-slate-600">
               {isAr
-                ? "Growlab يجمع متجرك الإلكتروني، ومسوقيك، ومطابقة تحصيلات الدفع عند الاستلام COD وصافي أرباحك الحقيقية في منصة واحدة. بالعربية، بلا إعلانات مهدرة، وعلى متصفحك فوراً."
-                : "Growlab brings your storefront, creator affiliate network, COD courier cash reconciliation, and real net margins into one unified platform. In Arabic, without ad waste, instantly on your browser."}
+                ? "منظومة Growlab الذكية تحول بيانات مبيعاتك المتناثرة إلى رؤية مالية واضحة، لترفع كفاءة تشغيلك وتضاعف صافي أرباحك."
+                : "Growlab's intelligent system turns your scattered sales and delivery data into crystal-clear financial clarity, boosting operational efficiency and scaling your true net profits."}
             </p>
 
             {/* CTA Buttons in Theme Style */}
@@ -175,18 +230,31 @@ export default function Hero() {
             <div className="relative w-full max-w-[480px] rounded-[28px] border border-frost/15 bg-white/95 p-5 sm:p-6 shadow-[0_20px_50px_rgba(15,23,42,0.08)] backdrop-blur-xl">
               
               {/* Window Header */}
-              <div className="flex items-center justify-between border-b border-frost/10 pb-3.5 mb-4">
-                <div>
-                  <div className="text-[11px] font-semibold text-frost-dim">
-                    Growlab Commerce • {isAr ? "لوحة التاجر" : "Merchant Hub"}
+              <div className="flex flex-col gap-2 border-b border-frost/10 pb-3.5 mb-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-[11px] font-semibold text-frost-dim">
+                      Growlab Commerce • {isAr ? "لوحة التاجر" : "Merchant Hub"}
+                    </div>
+                    <h3 className="text-[17px] font-bold text-frost mt-0.5">
+                      {isAr ? "أدوات متجرك وأرباحك" : "Merchant Toolkit"}
+                    </h3>
                   </div>
-                  <h3 className="text-[17px] font-bold text-frost mt-0.5">
-                    {isAr ? "أدوات متجرك وأرباحك" : "Merchant Toolkit"}
-                  </h3>
+                  <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 text-[11.5px] font-bold">
+                    <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span>{isAr ? "مباشر" : "Live"}</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 text-[11.5px] font-bold">
-                  <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  <span>{isAr ? "مباشر" : "Live"}</span>
+
+                {/* Financial KPI Tags */}
+                <div className="flex items-center gap-2 pt-1">
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 font-bold border border-emerald-200 text-[11px]">
+                    <span className="size-1.5 rounded-full bg-emerald-500" />
+                    <span>{isAr ? "تحصيل مؤكد: 10,000 ريال" : "Verified Cash: 10,000 OMR"}</span>
+                  </div>
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-amber-50 text-amber-800 font-bold border border-amber-200 text-[11px]">
+                    <span>{isAr ? "فرق COD: 0 ريال" : "COD Discrepancy: 0 OMR"}</span>
+                  </div>
                 </div>
               </div>
 

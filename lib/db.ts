@@ -43,10 +43,12 @@ function datasourceUrl(): string {
   return fromEnv || `file:${bundled}`;
 }
 
+const url = datasourceUrl();
+
 export const prisma =
   globalForPrisma.prisma ??
   new PrismaClient({
-    datasourceUrl: datasourceUrl(),
+    datasourceUrl: url,
     log: process.env.NODE_ENV === "development" ? ["warn", "error"] : ["error"],
   });
 

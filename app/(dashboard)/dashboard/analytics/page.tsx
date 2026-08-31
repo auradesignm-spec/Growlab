@@ -11,7 +11,7 @@ export default async function FinancialAnalyticsPage() {
   const locale = await getLocale();
 
   return (
-    <div className="min-h-screen bg-slate-950 px-4 py-8 sm:px-8">
+    <div className="min-h-screen bg-[var(--paper)] px-4 py-8 sm:px-8">
       <div className="mx-auto max-w-7xl">
         <FinancialAnalyticsDashboard locale={locale} />
       </div>

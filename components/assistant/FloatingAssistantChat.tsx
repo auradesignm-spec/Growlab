@@ -348,7 +348,7 @@ export default function FloatingAssistantChat() {
         {isOpen && (
           <div
             id="growlab-ai-chat-window"
-            className="fixed inset-x-3 bottom-16 z-50 flex h-[64dvh] max-h-[440px] flex-col overflow-hidden rounded-[26px] border border-slate-200 bg-white text-black shadow-[0_20px_50px_rgba(15,23,42,0.16),0_4px_16px_rgba(15,23,42,0.06),inset_0_1px_0_rgba(255,255,255,1)] backdrop-blur-3xl ring-1 ring-black/5 sm:static sm:inset-auto sm:mb-2.5 sm:h-[420px] sm:max-h-[440px] sm:w-[345px] sm:rounded-[26px] transition-all duration-300 ease-out"
+            className="fixed inset-x-2 sm:inset-x-auto bottom-[4.5rem] sm:bottom-auto z-50 flex h-[62dvh] max-h-[460px] sm:h-[450px] sm:max-h-[480px] sm:w-[355px] flex-col overflow-hidden rounded-[22px] sm:rounded-[26px] border border-slate-200 bg-white text-black shadow-[0_20px_50px_rgba(15,23,42,0.18),0_4px_16px_rgba(15,23,42,0.08),inset_0_1px_0_rgba(255,255,255,1)] backdrop-blur-3xl ring-1 ring-black/5 sm:static sm:mb-2.5 transition-all duration-300 ease-out"
             dir="rtl"
           >
             {/* Top Specular Liquid Glass Edge */}
@@ -379,14 +379,14 @@ export default function FloatingAssistantChat() {
 
                 <div className="min-w-0">
                   <div className="flex items-center gap-1.5">
-                    <h3 className="text-[12px] font-bold text-black tracking-tight truncate">
+                    <h3 className="text-[12.5px] sm:text-[12px] font-bold text-black tracking-tight truncate">
                       مساعد Growlab الذكي
                     </h3>
                     <span className="shrink-0 rounded-full gl-iridescent-wavy-btn px-2 py-0.5 text-[8.5px] font-black text-black shadow-xs">
                       منفّذ آلي
                     </span>
                   </div>
-                  <p className="text-[9.5px] text-slate-600 font-medium truncate">
+                  <p className="text-[10px] sm:text-[9.5px] text-slate-600 font-medium truncate">
                     متصل • جاهز لإرشادك وتنفيذ المهام
                   </p>
                 </div>
@@ -435,19 +435,25 @@ export default function FloatingAssistantChat() {
                     className={`flex flex-col ${isUser ? "items-start" : "items-end"} gap-0.5`}
                   >
                     <div
-                      className={`max-w-[88%] p-2.5 text-[11.5px] leading-relaxed transition-all ${
+                      className={`max-w-[90%] sm:max-w-[88%] p-3 sm:p-2.5 text-[12.5px] sm:text-[11.5px] leading-relaxed transition-all ${
                         isUser
-                          ? "rounded-2xl rounded-tr-xs border border-slate-800 bg-slate-900 text-white font-medium shadow-[0_4px_12px_rgba(15,23,42,0.12)]"
-                          : "rounded-2xl rounded-tl-xs border border-slate-200 bg-slate-50 text-black shadow-[0_2px_8px_rgba(15,23,42,0.04),inset_0_1px_0_rgba(255,255,255,1)]"
+                          ? "rounded-2xl rounded-tr-xs border border-slate-900 bg-slate-900 text-white font-medium shadow-[0_4px_12px_rgba(15,23,42,0.12)]"
+                          : "rounded-2xl rounded-tl-xs border border-slate-200 bg-slate-50 text-slate-900 shadow-[0_2px_8px_rgba(15,23,42,0.04),inset_0_1px_0_rgba(255,255,255,1)]"
                       }`}
                     >
-                      <p className="whitespace-pre-line leading-relaxed font-normal text-black">{m.text}</p>
+                      <p
+                        className={`whitespace-pre-line leading-relaxed font-medium ${
+                          isUser ? "text-white" : "text-slate-900"
+                        }`}
+                      >
+                        {m.text}
+                      </p>
 
                       {/* Interactive Action Card if provided by Bot */}
                       {m.action && (
                         <div className="mt-2 rounded-xl border border-slate-200 bg-white p-2.5 text-black shadow-xs">
                           <div className="flex items-center justify-between gap-1.5">
-                            <span className="flex items-center gap-1 text-[10px] font-extrabold text-black">
+                            <span className="flex items-center gap-1 text-[10.5px] sm:text-[10px] font-extrabold text-black">
                               <Zap className="h-3 w-3 text-black fill-amber-400" />
                               <span>مهمة قابلة للتنفيذ</span>
                             </span>
@@ -455,16 +461,16 @@ export default function FloatingAssistantChat() {
                               فوري
                             </span>
                           </div>
-                          <p className="mt-1 text-[11px] font-extrabold text-black">
+                          <p className="mt-1 text-[11.5px] sm:text-[11px] font-extrabold text-black">
                             {m.action.titleAr}
                           </p>
-                          <p className="mt-0.5 text-[10px] text-slate-700 leading-normal">
+                          <p className="mt-0.5 text-[10.5px] sm:text-[10px] text-slate-700 leading-normal">
                             {m.action.descriptionAr}
                           </p>
                           <button
                             type="button"
                             onClick={() => handleExecuteAction(m.action!, m.id)}
-                            className="gl-shimmer-iridescent-action-btn mt-2.5 flex w-full items-center justify-center gap-1.5 rounded-xl px-2.5 py-1.5 text-[11px] font-extrabold text-black shadow-xs active:scale-[0.98] transition-all cursor-pointer"
+                            className="gl-shimmer-iridescent-action-btn mt-2.5 flex w-full items-center justify-center gap-1.5 rounded-xl px-2.5 py-2 sm:py-1.5 text-[11.5px] sm:text-[11px] font-extrabold text-black shadow-xs active:scale-[0.98] transition-all cursor-pointer"
                           >
                             <Play className="h-3 w-3 fill-black text-black" />
                             <span>تنفيذ المهمة وفتح الشاشة</span>
@@ -480,7 +486,7 @@ export default function FloatingAssistantChat() {
                               key={idx}
                               type="button"
                               onClick={() => handleSend(s)}
-                              className="gl-iridescent-wavy-chip group flex items-center justify-between gap-1.5 rounded-xl px-2.5 py-1.5 text-[10.5px] font-bold text-black shadow-xs active:scale-[0.99] transition-all text-right cursor-pointer"
+                              className="gl-iridescent-wavy-chip group flex items-center justify-between gap-1.5 rounded-xl px-3 py-2 sm:px-2.5 sm:py-1.5 text-[11px] sm:text-[10.5px] font-bold text-black shadow-xs active:scale-[0.99] transition-all text-right cursor-pointer"
                             >
                               <span className="leading-tight text-black font-semibold">{s}</span>
                               <span className="text-[10px] font-bold text-slate-700 group-hover:text-black group-hover:translate-x-0.5 transition-all">
@@ -491,7 +497,7 @@ export default function FloatingAssistantChat() {
                         </div>
                       )}
                     </div>
-                    <span className="text-[8.5px] font-mono text-slate-500 px-1">
+                    <span className="text-[9px] sm:text-[8.5px] font-mono text-slate-500 px-1">
                       {m.timestamp}
                     </span>
                   </div>
@@ -500,9 +506,9 @@ export default function FloatingAssistantChat() {
 
               {/* Interactive Embedded Net Margin Calculator */}
               {calcState.open && (
-                <div className="rounded-2xl border border-slate-200 bg-white p-2.5 text-[10.5px] text-black shadow-lg">
+                <div className="rounded-2xl border border-slate-200 bg-white p-2.5 text-[11px] sm:text-[10.5px] text-black shadow-lg">
                   <div className="flex items-center justify-between border-b border-slate-100 pb-1.5">
-                    <h4 className="font-bold text-black flex items-center gap-1 text-[11px]">
+                    <h4 className="font-bold text-black flex items-center gap-1 text-[11.5px] sm:text-[11px]">
                       <Calculator className="h-3 w-3 text-black" />
                       <span>حاسبة صافي الأرباح</span>
                     </h4>
@@ -515,7 +521,7 @@ export default function FloatingAssistantChat() {
                     </button>
                   </div>
 
-                  <div className="mt-2 grid grid-cols-2 gap-1.5 text-[10px]">
+                  <div className="mt-2 grid grid-cols-2 gap-1.5 text-[10.5px] sm:text-[10px]">
                     <div>
                       <label className="text-black font-semibold">سعر البيع (ر.ع):</label>
                       <input
@@ -527,7 +533,7 @@ export default function FloatingAssistantChat() {
                             price: Number(e.target.value) || 0,
                           }))
                         }
-                        className="mt-0.5 w-full rounded-lg border border-slate-200 bg-slate-50 px-2 py-1 text-black font-bold focus:border-slate-400 focus:bg-white focus:outline-hidden"
+                        className="mt-0.5 w-full rounded-lg border border-slate-200 bg-slate-50 px-2 py-1 text-black font-bold focus:border-slate-400 focus:bg-white focus:outline-hidden text-[16px] sm:text-xs"
                       />
                     </div>
                     <div>
@@ -541,7 +547,7 @@ export default function FloatingAssistantChat() {
                             cogs: Number(e.target.value) || 0,
                           }))
                         }
-                        className="mt-0.5 w-full rounded-lg border border-slate-200 bg-slate-50 px-2 py-1 text-black font-bold focus:border-slate-400 focus:bg-white focus:outline-hidden"
+                        className="mt-0.5 w-full rounded-lg border border-slate-200 bg-slate-50 px-2 py-1 text-black font-bold focus:border-slate-400 focus:bg-white focus:outline-hidden text-[16px] sm:text-xs"
                       />
                     </div>
                     <div>
@@ -555,7 +561,7 @@ export default function FloatingAssistantChat() {
                             ads: Number(e.target.value) || 0,
                           }))
                         }
-                        className="mt-0.5 w-full rounded-lg border border-slate-200 bg-slate-50 px-2 py-1 text-black font-bold focus:border-slate-400 focus:bg-white focus:outline-hidden"
+                        className="mt-0.5 w-full rounded-lg border border-slate-200 bg-slate-50 px-2 py-1 text-black font-bold focus:border-slate-400 focus:bg-white focus:outline-hidden text-[16px] sm:text-xs"
                       />
                     </div>
                     <div>
@@ -569,21 +575,21 @@ export default function FloatingAssistantChat() {
                             rto: Number(e.target.value) || 0,
                           }))
                         }
-                        className="mt-0.5 w-full rounded-lg border border-slate-200 bg-slate-50 px-2 py-1 text-black font-bold focus:border-slate-400 focus:bg-white focus:outline-hidden"
+                        className="mt-0.5 w-full rounded-lg border border-slate-200 bg-slate-50 px-2 py-1 text-black font-bold focus:border-slate-400 focus:bg-white focus:outline-hidden text-[16px] sm:text-xs"
                       />
                     </div>
                   </div>
 
                   <div className="mt-2 flex items-center justify-between rounded-xl gl-shimmer-iridescent-action-btn p-2">
                     <div>
-                      <p className="text-[9px] font-bold text-slate-800">صافي الربح المتوقع:</p>
-                      <p className="text-[12px] font-black text-black font-mono">
+                      <p className="text-[9.5px] sm:text-[9px] font-bold text-slate-800">صافي الربح المتوقع:</p>
+                      <p className="text-[12.5px] sm:text-[12px] font-black text-black font-mono">
                         {netMarginVal.toFixed(2)} ر.ع
                       </p>
                     </div>
                     <div className="text-left">
-                      <p className="text-[9px] font-bold text-slate-800">الهامش الصافي:</p>
-                      <p className="text-[12px] font-black text-black font-mono">
+                      <p className="text-[9.5px] sm:text-[9px] font-bold text-slate-800">الهامش الصافي:</p>
+                      <p className="text-[12.5px] sm:text-[12px] font-black text-black font-mono">
                         {netMarginPercent}%
                       </p>
                     </div>
@@ -593,7 +599,7 @@ export default function FloatingAssistantChat() {
 
               {/* Loading State */}
               {isLoading && (
-                <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white p-2 text-[11px] font-medium text-black shadow-xs w-fit">
+                <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white p-2 text-[11.5px] sm:text-[11px] font-medium text-black shadow-xs w-fit">
                   <span className="flex h-2 w-2 rounded-full bg-black animate-ping" />
                   <span>المساعد يجهز وينفذ طلبك...</span>
                 </div>
@@ -603,15 +609,15 @@ export default function FloatingAssistantChat() {
             </div>
 
             {/* Quick Action Chips Bar - Wavy Iridescent Horizontal Chips with Shimmering on Hover */}
-            <div className="relative z-10 flex items-center border-t border-slate-200 bg-slate-50/95 px-1.5 py-1.5 backdrop-blur-xl">
+            <div className="relative z-10 flex items-center border-t border-slate-200 bg-slate-50/95 px-1.5 py-2 sm:py-1.5 backdrop-blur-xl">
               {/* Left Navigation Chevron */}
               <button
                 type="button"
                 onClick={() => scrollQuickActions("left")}
-                className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-slate-600 hover:bg-slate-200 hover:text-black transition-all active:scale-90"
+                className="flex h-7 w-7 sm:h-6 sm:w-6 shrink-0 items-center justify-center rounded-md text-slate-600 hover:bg-slate-200 hover:text-black transition-all active:scale-90"
                 aria-label="تمرير لليمين"
               >
-                <ChevronRight className="h-3.5 w-3.5" />
+                <ChevronRight className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
               </button>
 
               {/* Chips Scrollable Container with Drag Support */}
@@ -623,7 +629,7 @@ export default function FloatingAssistantChat() {
                 onMouseLeave={handleMouseUpOrLeave}
                 className="flex-1 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden overscroll-x-contain cursor-grab active:cursor-grabbing select-none"
               >
-                <div className="flex items-center gap-1.5 whitespace-nowrap px-1 text-[10px]">
+                <div className="flex items-center gap-1.5 whitespace-nowrap px-1 text-[11px] sm:text-[10px]">
                   {QUICK_ACTIONS.map((action) => {
                     const Icon = action.icon;
                     return (
@@ -631,13 +637,13 @@ export default function FloatingAssistantChat() {
                         key={action.id}
                         type="button"
                         onClick={() => handleSend(action.prompt)}
-                        className={`gl-iridescent-wavy-btn flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 font-bold text-black shadow-xs active:scale-95 transition-all cursor-pointer ${
+                        className={`gl-iridescent-wavy-btn flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 sm:px-2.5 sm:py-1 font-bold text-black shadow-xs active:scale-95 transition-all cursor-pointer ${
                           action.highlight
                             ? "ring-1 ring-slate-400 font-extrabold"
                             : ""
                         }`}
                       >
-                        <Icon className="h-3 w-3 shrink-0 text-black" />
+                        <Icon className="h-3.5 w-3.5 sm:h-3 sm:w-3 shrink-0 text-black" />
                         <span className="whitespace-nowrap font-bold text-black">{action.label}</span>
                       </button>
                     );
@@ -649,39 +655,42 @@ export default function FloatingAssistantChat() {
               <button
                 type="button"
                 onClick={() => scrollQuickActions("right")}
-                className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-slate-600 hover:bg-slate-200 hover:text-black transition-all active:scale-90"
+                className="flex h-7 w-7 sm:h-6 sm:w-6 shrink-0 items-center justify-center rounded-md text-slate-600 hover:bg-slate-200 hover:text-black transition-all active:scale-90"
                 aria-label="تمرير لليسار"
               >
-                <ChevronLeft className="h-3.5 w-3.5" />
+                <ChevronLeft className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
               </button>
             </div>
 
-            {/* Input Bar Section */}
+            {/* Input Bar Section - Configured with 16px font size on mobile to prevent iOS Safari auto-zoom */}
             <form
               onSubmit={(e) => {
                 e.preventDefault();
                 handleSend();
               }}
-              className="relative z-10 flex items-center gap-1.5 border-t border-slate-200 bg-white p-2 backdrop-blur-2xl"
+              className="relative z-10 flex items-center gap-2 border-t border-slate-200 bg-white p-2.5 sm:p-2 backdrop-blur-2xl"
             >
-              <div className="relative flex flex-1 items-center rounded-xl border border-slate-200 bg-slate-50 px-3 py-1 shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)] focus-within:border-slate-400 focus-within:bg-white focus-within:ring-2 focus-within:ring-slate-900/10 transition-all">
+              <div className="relative flex flex-1 items-center rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 sm:py-1 shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)] focus-within:border-slate-400 focus-within:bg-white focus-within:ring-2 focus-within:ring-slate-900/10 transition-all">
                 <input
                   ref={inputRef}
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="اطلب أي مهمة أو اسأل..."
-                  className="w-full bg-transparent py-0.5 text-[11.5px] font-medium text-black placeholder-slate-400 focus:outline-none"
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  enterKeyHint="send"
+                  className="w-full bg-transparent py-0.5 text-[16px] sm:text-[12px] font-medium text-black placeholder-slate-400 focus:outline-none"
                 />
               </div>
               <button
                 type="submit"
                 disabled={isLoading || !input.trim()}
                 aria-label="إرسال الرسالة"
-                className="gl-shimmer-iridescent-action-btn group relative flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-xl text-black font-bold shadow-sm hover:brightness-105 disabled:opacity-30 disabled:cursor-not-allowed active:scale-95 transition-all cursor-pointer"
+                className="gl-shimmer-iridescent-action-btn group relative flex h-9 w-9 sm:h-8 sm:w-8 shrink-0 items-center justify-center overflow-hidden rounded-xl text-black font-bold shadow-sm hover:brightness-105 disabled:opacity-30 disabled:cursor-not-allowed active:scale-95 transition-all cursor-pointer"
               >
                 {isLoading ? (
-                  <span className="h-3 w-3 rounded-full border-2 border-black border-t-transparent animate-spin" />
+                  <span className="h-3.5 w-3.5 rounded-full border-2 border-black border-t-transparent animate-spin" />
                 ) : (
                   <span
                     className={`relative flex items-center justify-center transition-all duration-500 ease-out ${
@@ -690,7 +699,7 @@ export default function FloatingAssistantChat() {
                         : "translate-x-0 translate-y-0 scale-100 opacity-100 group-hover:-translate-x-0.5 group-hover:-translate-y-0.5"
                     }`}
                   >
-                    <Send className="h-3.5 w-3.5 -scale-x-100 text-black" />
+                    <Send className="h-4 w-4 sm:h-3.5 sm:w-3.5 -scale-x-100 text-black" />
                   </span>
                 )}
               </button>

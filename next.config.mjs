@@ -45,6 +45,7 @@ const securityHeaders = [
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: "standalone",
   reactStrictMode: true,
   poweredByHeader: false,
   transpilePackages: ["framer-motion", "motion-dom", "motion-utils"],

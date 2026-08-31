@@ -24,6 +24,7 @@ import { startProductTour, tourIsDone, PRODUCT_TOUR_EVENT } from "@/lib/productT
 import { useRouter } from "next/navigation";
 import { LOCALE_COOKIE, type Locale } from "@/i18n/config";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
+import CasaMoneyRain from "@/components/effects/CasaMoneyRain";
 
 const CLERK_ENABLED = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
 
@@ -46,6 +47,8 @@ function NeedSurveyDialog() {
   const titleId = useId();
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<number>(0);
+  const [showMoneyEffect, setShowMoneyEffect] = useState(false);
+  const pendingActionRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     setActiveLocale(currentLocale === "en" ? "en" : "ar");
@@ -91,11 +94,18 @@ function NeedSurveyDialog() {
         actionType,
       });
 
-      if (actionType === "tour") {
-        window.setTimeout(() => startProductTour(), 250);
-      } else if (actionType === "navigate" && targetUrl) {
-        router.push(targetUrl);
-      }
+      // Prepare callback to execute after the money swarm finishes entering the fuel button
+      const executeFinalAction = () => {
+        if (actionType === "tour") {
+          window.setTimeout(() => startProductTour(), 150);
+        } else if (actionType === "navigate" && targetUrl) {
+          router.push(targetUrl);
+        }
+      };
+
+      // Trigger the money swarm on skip or any completion
+      pendingActionRef.current = executeFinalAction;
+      setShowMoneyEffect(true);
     },
     [channel, cr, goal, mode, product, router, selectedLang],
   );
@@ -139,20 +149,39 @@ function NeedSurveyDialog() {
 
   const result = generateDiagnosticResult({ mode, cr, product, channel, goal });
 
-  if (!open) return null;
+  const handleMoneyComplete = useCallback(() => {
+    setShowMoneyEffect(false);
+    if (pendingActionRef.current) {
+      const action = pendingActionRef.current;
+      pendingActionRef.current = null;
+      action();
+    }
+  }, []);
 
   return (
-    <div className="gl-survey-scrim" role="presentation">
-      <div className="gl-survey-stage max-w-xl w-full">
-        <div
-          ref={dialogRef}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby={titleId}
-          tabIndex={-1}
-          dir={isAr ? "rtl" : "ltr"}
-          className="gl-survey-card !max-h-[92vh] !p-6 sm:!p-8 overflow-y-auto"
-        >
+    <>
+      {showMoneyEffect && (
+        <CasaMoneyRain
+          count={42}
+          fullScreen={true}
+          opacity={0.92}
+          zIndex={99999}
+          onComplete={handleMoneyComplete}
+        />
+      )}
+
+      {open && (
+        <div className="gl-survey-scrim" role="presentation">
+          <div className="gl-survey-stage max-w-xl w-full">
+            <div
+              ref={dialogRef}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby={titleId}
+              tabIndex={-1}
+              dir={isAr ? "rtl" : "ltr"}
+              className="gl-survey-card !max-h-[92vh] !p-6 sm:!p-8 overflow-y-auto"
+            >
           {/* Header Bar: LocaleSwitcher (ع / EN) shown starting from Step 2 */}
           <div className="flex items-center justify-between gap-2 border-b border-line/60 pb-3 min-h-[44px]">
             <div className="flex items-center">
@@ -510,8 +539,8 @@ function NeedSurveyDialog() {
 
           {/* Step 6: Smart Diagnostic Forecast & Actionable Roadmap */}
           {step === 6 && (
-            <div className="mt-2 space-y-5">
-              <div className="rounded-2xl bg-gradient-to-br from-emerald-50 via-slate-50 to-teal-50/50 p-5 border border-emerald-200/60">
+            <div className="mt-2 space-y-5 relative">
+              <div className="rounded-2xl bg-gradient-to-br from-emerald-50 via-slate-50 to-teal-50/50 p-5 border border-emerald-200/60 relative z-10">
                 <div className="flex items-center gap-2">
                   <span className="rounded-full bg-emerald-600 px-2.5 py-0.5 text-[11px] font-bold text-white uppercase">
                     {isAr ? result.badgeAr : result.badgeEn}
@@ -607,6 +636,8 @@ function NeedSurveyDialog() {
         </div>
       </div>
     </div>
+  )}
+</>
   );
 }
 
