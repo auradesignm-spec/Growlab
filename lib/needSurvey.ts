@@ -28,7 +28,12 @@ export type SurveyMode = "real" | "demo";
 export type SurveyCR = "cr_yes" | "cr_no" | "creator";
 export type SurveyProduct = "physical" | "food_homemade" | "digital_services";
 export type SurveyChannel = "whatsapp_chat" | "existing_store" | "starting_fresh";
-export type SurveyGoal = "stop_returns" | "pay_after_cash" | "launch_fast_store";
+export type SurveyGoal =
+  | "competitor_radar"
+  | "silent_leaks"
+  | "stop_returns"
+  | "pay_after_cash"
+  | "launch_fast_store";
 
 export const SURVEY_MODES = [
   {
@@ -121,6 +126,20 @@ export const SURVEY_CHANNELS = [
 
 export const SURVEY_GOALS = [
   {
+    id: "competitor_radar" as const,
+    ar: "رادار المنافسين واستخبارات الإعلانات الرابحة في الخليج",
+    en: "Competitor Radar & GCC Ad Intelligence",
+    descAr: "كشف إعلانات المنافسين النشطة لأكثر من 30 يوماً، مؤشر التهديد، صياد نقاط الضعف، وخطة الهجوم المضاد.",
+    descEn: "Track rival ads active for 30+ days, Threat Scores, Weakness Hunter, and generate counter-attack battleplans.",
+  },
+  {
+    id: "silent_leaks" as const,
+    ar: "كشف تسريبات الأرباح الصامتة وتدقيق كشوفات الشحن و COD",
+    en: "Uncover Silent Profit Leaks & Audit COD Logistics",
+    descAr: "معرفة صافي الربح الحقيقي لكل منتج، رصد الحملات الخاسرة، ومطابقة بوالص الشحن غير المحولة.",
+    descEn: "Calculate true unit net margins, kill bleeding ad campaigns, and reconcile unremitted courier cash.",
+  },
+  {
     id: "stop_returns" as const,
     ar: "منع الإلغاءات ورفض الاستلام عند وصول المندوب (RTO)",
     en: "Stop cancellations and refused COD deliveries",
@@ -152,7 +171,7 @@ export interface SurveySummaryResult {
   pathDescriptionEn: string;
   keyStepsAr: string[];
   keyStepsEn: string[];
-  recommendedAction: "launch_demo" | "start_real_merchant" | "start_creator";
+  recommendedAction: "launch_demo" | "start_real_merchant" | "start_creator" | "launch_radar";
   actionLabelAr: string;
   actionLabelEn: string;
   actionUrl: string;
@@ -168,6 +187,8 @@ export function generateDiagnosticResult(answers: {
   const isDemo = answers.mode === "demo";
   const isCR = answers.cr === "cr_yes";
   const isCreator = answers.cr === "creator";
+  const isCompetitorRadar = answers.goal === "competitor_radar";
+  const isSilentLeaks = answers.goal === "silent_leaks";
 
   if (isCreator) {
     return {
@@ -196,6 +217,64 @@ export function generateDiagnosticResult(answers: {
     };
   }
 
+  if (isCompetitorRadar) {
+    return {
+      titleAr: "مسار استخبارات المنافسين ورادار الإعلانات في الخليج",
+      titleEn: "GCC Competitor Radar & Ad Intelligence Pathway",
+      badgeAr: "رادار المنافسين",
+      badgeEn: "Competitor Radar",
+      pathDescriptionAr:
+        "تشخيص استراتيجي فوري: تم تهيئة رادار الاستخبارات لمراقبة منافسيك في دول الخليج، كشف الحملات الإعلانية الصامدة لأكثر من 30 يوماً، واقتناص نقاط الضعف وصياغة خطة هجوم مضاد فورية.",
+      pathDescriptionEn:
+        "Instant strategic diagnostics: Ad Intelligence Radar is primed to monitor GCC rivals, detect winning campaigns active for 30+ days, exploit competitor weaknesses, and deploy counter-strategy battleplans.",
+      keyStepsAr: [
+        "1. فحص إعلانات المنافسين المستمرة ومعدل الصمود (Days Active > 30 Days)",
+        "2. تحليل مؤشر التهديد (Threat Score) ونقاط ضعف الشحن والتسعير",
+        "3. توليد خطة هجوم مضاد (Counter-Strategy) وخطافات إعلانية تتفوق عليهم",
+        "4. اقتناص الفرص السوقية المتاحة (White Spaces) قبل تشبع السوق",
+      ],
+      keyStepsEn: [
+        "1. Audit active rival campaigns & longevity index (Days Active > 30 Days)",
+        "2. Analyze Threat Scores, shipping friction, and price gaps",
+        "3. Generate Counter-Strategy Battleplans with high-converting hooks",
+        "4. Capitalize on unexploited market white spaces across the GCC",
+      ],
+      recommendedAction: "launch_radar",
+      actionLabelAr: "دخول رادار استخبارات المنافسين الآن",
+      actionLabelEn: "Launch Competitor Radar Hub",
+      actionUrl: "/dashboard/competitor-radar",
+    };
+  }
+
+  if (isSilentLeaks) {
+    return {
+      titleAr: "مسار كشف تسريبات الأرباح وتدقيق صافي الربح الحقيقي",
+      titleEn: "True Net Margin & Silent Leak Audit Pathway",
+      badgeAr: "كشف التسريبات",
+      badgeEn: "Leak Detection",
+      pathDescriptionAr:
+        "تشخيص مالي مخصص: ربط وتدقيق كافة معادلات صافي الربح الحقيقي (COGS + الإعلانات + الشحن + مرتجعات RTO + تسوية COD)، مع ضمان بدون اكتشاف بدون رسوم.",
+      pathDescriptionEn:
+        "Tailored financial diagnostic: audit unit economics (COGS + Ads + Shipping + RTO Returns + COD reconciliation) backed by our No-Find No-Fee guarantee.",
+      keyStepsAr: [
+        "1. إدخال تكلفة المنتج وحساب صافي الربح الحقيقي في الجيب",
+        "2. رصد وتوقيف الحملات الإعلانية ذات العائد الخاسر على الصافي",
+        "3. تدقيق كشوفات الشحن واسترداد المبالغ غير المحولة من المندوبين",
+        "4. تفعيل نظام حماية الأرباح الصافية بضمان استرجاع الأموال",
+      ],
+      keyStepsEn: [
+        "1. Calculate true unit net margins beyond gross vanity GMV",
+        "2. Halt bleeding ad sets operating at negative true net return",
+        "3. Reconcile courier COD waybills and recover unremitted payouts",
+        "4. Activate net margin guard with No-Find No-Fee guarantee",
+      ],
+      recommendedAction: isDemo ? "launch_demo" : "start_real_merchant",
+      actionLabelAr: isDemo ? "تجربة محاكي الأرباح والتسريبات" : "بدء الفحص واسترجاع الأموال",
+      actionLabelEn: isDemo ? "Try Profit Leak Simulator" : "Start Audit & Recover Cash",
+      actionUrl: isDemo ? "/dashboard?tab=simulator" : "/enter?role=merchant",
+    };
+  }
+
   if (isDemo) {
     return {
       titleAr: "المسار الاستكشافي الشامل — جولة الديمو التفاعلية",
@@ -203,20 +282,20 @@ export function generateDiagnosticResult(answers: {
       badgeAr: "تجربة ديمو تفاعلية",
       badgeEn: "Interactive Demo",
       pathDescriptionAr:
-        "سنأخذك في جولة توضيحية حية خطوة بخطوة: نضيء لك الأزرار ونوضح أين تضغط بالتحديد لتجربة محاكي المبيعات، بناء متجرك بالبلوكات، وتجربة الشراء كزبون مع فحص الأرباح الصافية حتى آخر نقطة في المنصة!",
+        "سنأخذك في جولة توضيحية حية خطوة بخطوة: نضيء لك الأزرار ونوضح أين تضغط بالتحديد لتجربة محاكي المبيعات، بناء متجرك بالبلوكات، رادار المنافسين، وتجربة الشراء كزبون مع فحص الأرباح الصافية حتى آخر نقطة في المنصة!",
       pathDescriptionEn:
-        "We will guide you step-by-step with interactive spotlights and click hints to test live sales simulator, visual store block builder, test customer COD order, and full profit engine!",
+        "We will guide you step-by-step with interactive spotlights and click hints to test live sales simulator, visual store block builder, competitor ad intelligence, and full profit engine!",
       keyStepsAr: [
         "1. تجربة محاكي المبيعات اللحظية واحتساب صافي الربح الحقيقي",
-        "2. تجربة محرر وتخصيص المتجر الذكي بالبلوكات",
-        "3. تنفيذ طلب شراء تجريبي كعميل وفحص سرعة استقبال الطلب",
-        "4. استكشاف شبكة المسوقين والتحقق وضمان السيولة المالية",
+        "2. استكشاف رادار المنافسين وتحليل إعلانات الخليج الرابحة",
+        "3. تجربة محرر وتخصيص المتجر الذكي بالبلوكات",
+        "4. تنفيذ طلب شراء تجريبي كعميل وفحص سرعة استقبال الطلب",
       ],
       keyStepsEn: [
         "1. Test the live order stream simulator & real net margin hub",
-        "2. Customize storefront with smart visual blocks",
-        "3. Place a simulated COD order and see instant dashboard notification",
-        "4. Explore creator deals, verification, and instant bank payout",
+        "2. Explore Competitor Radar & winning GCC ad hooks",
+        "3. Customize storefront with smart visual blocks",
+        "4. Place a simulated COD order and see instant dashboard notification",
       ],
       recommendedAction: "launch_demo",
       actionLabelAr: "ابدأ الجولة التوضيحية وتجربة الديمو الآن",
@@ -233,19 +312,19 @@ export function generateDiagnosticResult(answers: {
       badgeAr: "منشأة تجارية معتمدة",
       badgeEn: "Commercial Entity",
       pathDescriptionAr:
-        "خطة مخصصة لشركتك: إعداد متجر رسمي متكامل، تفعيل مسار التحقق للسجلات التجارية مع شارة التوثيق الزرقاء، ربط الحساب البنكي التجاري، وتفعيل حماية الأرباح الصافية وإعلانات Meta.",
+        "خطة مخصصة لشركتك: إعداد متجر رسمي متكامل، تفعيل مسار التحقق للسجلات التجارية مع شارة التوثيق الزرقاء، ربط الحساب البنكي التجاري، وتفعيل حماية الأرباح الصافية وإعلانات Meta ورادار المنافسين.",
       pathDescriptionEn:
-        "Tailored plan for your registered enterprise: complete store setup, CR verification with Blue Badge, corporate bank link, and Brandstack AI profit protection.",
+        "Tailored plan for your registered enterprise: complete store setup, CR verification with Blue Badge, corporate bank link, Brandstack AI profit protection, and Competitor Radar.",
       keyStepsAr: [
         "1. إدخال اسم المنشأة ورفع رقم السجل التجاري للاعتماد السريع",
         "2. إعداد كتالوج المنتجات وتحديد تكلفة البضاعة وهامش الربح المطلوب",
-        "3. إطلاق الحملة التسويقية وربط حملات Meta والمسوقين",
+        "3. إطلاق الحملة التسويقية وتفعيل رادار مراقبة المنافسين وحماية الميزانية",
         "4. استقبال طلبات COD مؤكدة مع تحصيل المبالغ آلياً لحسابك",
       ],
       keyStepsEn: [
         "1. Submit business details & CR number for fast SLA verification",
         "2. Setup product catalog, COGS, and targeted profit margin",
-        "3. Launch marketing campaigns with Meta Ads Guard and creators",
+        "3. Launch marketing campaigns with Competitor Radar and budget guards",
         "4. Fulfill verified COD orders with automatic settlement",
       ],
       recommendedAction: "start_real_merchant",
@@ -262,9 +341,9 @@ export function generateDiagnosticResult(answers: {
     badgeAr: "مشروع منزلي / عمل حر",
     badgeEn: "Home Business Track",
     pathDescriptionAr:
-      "مسار فوري وسهل مصمم خصيصاً لمشروعك: لا تحتاج سجل تجاري معقد! سنوثق حسابك بالبطاقة الشخصية ومسح الوجه، ونربط حسابات Instagram و TikTok لتجهيز صفحة طلبات احترافية تمنع الإلغاءات.",
+      "مسار فوري وسهل مصمم خصيصاً لمشروعك: لا تحتاج سجل تجاري معقد! سنوثق حسابك بالبطاقة الشخصية ومسح الوجه، ونربط حسابات Instagram و TikTok لتجهيز صفحة طلبات احترافية تمنع الإلغاءات مع رادار معرفة الإعلانات الأكثر مبيعاً في السوق.",
     pathDescriptionEn:
-      "Fast & streamlined path for home brands: no CR needed! Verify with national ID and face scan, connect Instagram/TikTok, and launch a frictionless order page.",
+      "Fast & streamlined path for home brands: no CR needed! Verify with national ID and face scan, connect Instagram/TikTok, launch a frictionless order page, and track winning market trends.",
     keyStepsAr: [
       "1. توثيق الهوية السريع (بطاقة شخصية + مسح بيومتري + رابط Instagram)",
       "2. إعداد صفحة طلب سريعة بالذكاء الاصطناعي باسم مشروعك",

@@ -43,6 +43,7 @@ model User {
   merchantProfile MerchantProfile?
   creatorProfile  CreatorProfile?
   kycDocuments    KycDocument[]
+  competitorProjects CompetitorProject[]
 }
 
 // Platform admin is NOT stored here — it is an env-config allowlist of Clerk
@@ -877,3 +878,143 @@ model AttributionEvent {
   @@index([chainId])
   @@index([createdAt])
 }
+
+// ---------------------------------------------------------------------------
+// Competitor Radar & Market Intelligence Models
+// ---------------------------------------------------------------------------
+
+model CompetitorProject {
+  id             String              @id @default(cuid())
+  userId         String
+  user           User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name           String
+  productKeyword String
+  targetMarket   String              @default("OM")
+  niche          String              @default("")
+  platforms      String              @default("meta,tiktok")
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+
+  competitors    Competitor[]
+  opportunities  MarketOpportunity[]
+
+  @@index([userId])
+  @@index([productKeyword])
+  @@index([targetMarket])
+}
+
+model Competitor {
+  id              String               @id @default(cuid())
+  projectId       String
+  project         CompetitorProject    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  name            String
+  domain          String?
+  brandHandle     String?
+  logoUrl         String?
+  market          String               @default("OM")
+  threatScore     Int                  @default(50)
+  relevanceScore  Int                  @default(50)
+  activityScore   Int                  @default(50)
+  creativeScore   Int                  @default(50)
+  offerScore      Int                  @default(50)
+  confidenceScore Int                  @default(80)
+  tier            String               @default("direct") // "direct" | "potential" | "weak"
+  activeAdsCount  Int                  @default(0)
+  platforms       String               @default("meta,tiktok")
+  primaryOffer    String               @default("")
+  priceRange      String               @default("")
+  shippingOffer   String               @default("")
+  guaranteeOffer  String               @default("")
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+
+  ads             CompetitorAd[]
+  analyses        CompetitorAnalysis[]
+  weaknesses      CompetitorWeakness[]
+
+  @@index([projectId])
+  @@index([threatScore])
+  @@index([tier])
+}
+
+model CompetitorAd {
+  id             String      @id @default(cuid())
+  competitorId   String
+  competitor     Competitor  @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+  platform       String      @default("meta")
+  adLibraryId    String?
+  format         String      @default("video") // "video" | "image" | "carousel" | "story"
+  headline       String      @default("")
+  bodyCopy       String      @default("")
+  hook           String      @default("")
+  painPoint      String      @default("")
+  promise        String      @default("")
+  proof          String      @default("")
+  offer          String      @default("")
+  cta            String      @default("")
+  firstSeenAt    DateTime?
+  lastSeenAt     DateTime?
+  daysActive     Int         @default(1)
+  isActive       Boolean     @default(true)
+  spendVelocity  String      @default("medium") // "high" | "medium" | "low"
+  mediaUrl       String?
+  thumbnailUrl   String?
+  sourceUrl      String?
+  createdAt      DateTime    @default(now())
+
+  @@index([competitorId])
+  @@index([platform])
+  @@index([daysActive])
+  @@index([isActive])
+}
+
+model CompetitorAnalysis {
+  id                 String     @id @default(cuid())
+  competitorId       String
+  competitor         Competitor @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+  creativeStrategy   String     @default("")
+  offerStrategy      String     @default("")
+  positioning        String     @default("")
+  strengthsJson      String     @default("[]")
+  counterAnglesJson  String     @default("[]")
+  estimatedVelocity  String     @default("stable")
+  aiSummary          String     @default("")
+  updatedAt          DateTime   @updatedAt
+
+  @@index([competitorId])
+}
+
+model CompetitorWeakness {
+  id                 String     @id @default(cuid())
+  competitorId       String
+  competitor         Competitor @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+  type               String     @default("offer") // "creative" | "offer" | "trust" | "positioning" | "shipping"
+  title              String
+  description        String
+  evidence           String
+  confidence         String     @default("high") // "high" | "medium" | "low"
+  exploitationAngle  String
+  createdAt          DateTime   @default(now())
+
+  @@index([competitorId])
+  @@index([type])
+}
+
+model MarketOpportunity {
+  id                   String            @id @default(cuid())
+  projectId            String
+  project              CompetitorProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  type                 String            @default("white_space") // "white_space" | "unserved_angle" | "offer_gap" | "creative_gap"
+  title                String
+  description          String
+  opportunityScore     Int               @default(75) // 0-100
+  competitionLevel     String            @default("low") // "low" | "medium" | "high"
+  recommendedDirection String
+  suggestedHooksJson   String            @default("[]")
+  suggestedOffersJson  String            @default("[]")
+  createdAt            DateTime          @default(now())
+
+  @@index([projectId])
+  @@index([opportunityScore])
+}
+

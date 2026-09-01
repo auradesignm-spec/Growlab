@@ -1,6 +1,7 @@
 {
   "name": "Growlab",
-  "description": "E-commerce UGC growth platform and financial intelligence reconciliation engine calculating True Net Profit across Shopify, Meta/Google ads, and couriers.",
+  "description": "منصة SaaS للتجارة الإلكترونية في عُمان والخليج لمعرفة صافي الربح الحقيقي، رادار المنافسين واستخبارات الإعلانات، واكتشاف تسريبات الأموال الصامتة (الإعلانات الخاسرة، هوامش المنتجات السالبة، وتسوية شحن الدفع عند الاستلام COD) بضمان بدون اكتشاف بدون رسوم.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
+

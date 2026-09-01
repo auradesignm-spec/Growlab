@@ -270,29 +270,34 @@
       ]
     },
     "compare": {
-      "eyebrow": "Compare",
-      "lede": "When does a rial leave?",
-      "merchantHeading": "Growlab versus ads you pay before the cash",
+      "eyebrow": "Compare & Outperform",
+      "lede": "How does Growlab differ from vanity reports and blind ad spend?",
+      "merchantHeading": "Growlab versus manual spreadsheets & blind ad guessing",
       "merchantPoints": [
         {
-          "title": "The click",
-          "us": "Free. No commission.",
-          "them": "You pay for reach before cash arrives"
+          "title": "Competitor Radar & Ad Intelligence",
+          "us": "Continuous monitoring of rival ads running 30+ days in GCC, Threat Scores, and instant AI counter-strategy hooks.",
+          "them": "Running ads blindly with huge budget waste without knowing what already converts in the market."
         },
         {
-          "title": "Pay on delivery",
-          "us": "Cash to the courier. You confirm.",
-          "them": "Reports with no cash in the till"
+          "title": "True Net Margin in Pocket",
+          "us": "Calculated accurately after COGS, actual shipping, RTO returns, and ad cost per unit.",
+          "them": "Vanity dashboards reporting top-line GMV or deceptive ROAS that masks real cash losses."
         },
         {
-          "title": "Share commission",
-          "us": "Taken after pay on delivery or after you OK a reel.",
-          "them": "A monthly bill even with no cash"
+          "title": "Silent Profit Leak Detection",
+          "us": "Instant alerts for losing campaigns, negative margin products, and courier remittance slippage.",
+          "them": "Sifting through complex Excel sheets manually weeks after cash is already lost."
         },
         {
-          "title": "Spend cap",
-          "us": "A max. Empty, campaign stops.",
-          "them": "A vague cap that never stops"
+          "title": "COD Courier Reconciliation",
+          "us": "Automated matching of every waybill with courier manifests to recover unremitted payouts.",
+          "them": "Relying on courier invoices without verifying missing waybills or unwarranted deductions."
+        },
+        {
+          "title": "No-Find No-Fee Guarantee",
+          "us": "Nominal base subscription + 10% performance fee on recovered funds with full guarantee.",
+          "them": "Hefty fixed subscriptions billed regardless of whether your business profits or loses."
         }
       ]
     },
@@ -528,57 +533,56 @@
       "items": [
         {
           "q": "Who is this for?",
-          "a": "Growlab is for anyone selling pay-on-delivery. No store: an order page. Already have a store: we import the product and run the campaign on top — you do not move the catalog. Same loop after collection. Business papers and owner ID before go-live."
+          "a": "Growlab is for any merchant or e-commerce business in Oman and the GCC (whether using Salla, Zid, Shopify, Instagram, or WhatsApp; with Cash-on-Delivery, Card payments, or Bank transfer)."
         },
         {
-          "q": "When does a rial leave?",
-          "a": "After you confirm pay on delivery. Share commission on a sale from the link, and on a reel after you OK it. Clicks are free."
+          "q": "What is the Competitor Radar & GCC Ad Intelligence?",
+          "a": "An intelligence engine that tracks rival ad campaigns active for 30+ days in the GCC, calculates Threat Scores, analyzes weaknesses, and crafts winning counter-strategy hooks."
         },
         {
-          "q": "What if nothing sells?",
-          "a": "No commission on empty clicks. The spend cap stops the campaign. Pro is not cap money."
+          "q": "How does Growlab calculate True Net Profit?",
+          "a": "Net Profit = Total Revenue - (COGS + Ad Spend + Actual Courier Fees + RTO Return Losses + Payment Gateway Fees)."
         },
         {
-          "q": "Must buyers film?",
-          "a": "No. Sharing the link is enough. Reels are optional. Commission only after you OK."
+          "q": "What is the No-Find No-Fee Guarantee?",
+          "a": "You pay a nominal monthly subscription for full access, and performance fees (10%) are calculated only on actual leaked funds identified and recovered. If no leaks are found, you pay zero performance fees."
         },
         {
-          "q": "Do buyers need an account to order?",
-          "a": "No. COD needs phone and address. They claim a share link after purchase with a simple sign-in."
-        },
-        {
-          "q": "We are bigger than a shop?",
-          "a": "Same loop: spend cap, commission, campaign. A storefront if you have none, or import if you do. Pro raises product and cap limits. Book a 15-minute consult before you top up."
+          "q": "Do I need complex API integrations?",
+          "a": "No, you can input numbers easily or upload Excel/CSV courier statements. Our engine automatically structures and matches the data."
         }
       ]
     },
     "pricing": {
-      "eyebrow": "Pricing",
-      "title": "Start with no signup fee. Grow when it works",
-      "lede": "Free: store, up to 3 products, one campaign with a 100 OMR spend cap. Pro for a bigger catalog and a higher cap.",
+      "eyebrow": "Pricing & Guarantee",
+      "title": "Base subscription + performance fee on recovered funds only",
+      "lede": "Our model is built on fair alignment: transparent financial visibility + GCC Competitor Radar + 10% performance fee only on what we detect and recover for you.",
       "cta": "Start here",
-      "freeTitle": "Free",
-      "freeSubtitle": "Test the store and campaign on a real product",
+      "freeTitle": "Free Tier",
+      "freeSubtitle": "Audit your profits and uncover leaks instantly",
       "freeStat": "0 OMR/mo",
-      "freeStatNote": "No signup fee",
-      "proTitle": "Pro",
-      "proSubtitle": "For a company distributing more than one line",
+      "freeStatNote": "Instant free profit & leak audit",
+      "proTitle": "Pro Growth Tier",
+      "proSubtitle": "For merchants wanting full leak recovery & ad intelligence",
       "proStat": "15 OMR/mo",
-      "proStatNote": "Cancel anytime",
-      "performanceNote": "The subscription is one thing. Spend-cap money is another. Share commission after pay on delivery or after you OK a reel. Clicks are free.",
+      "proStatNote": "+ 10% performance fee on recovered funds only",
+      "performanceNote": "No-Find, No-Fee Guarantee: If the first audit detects zero profit leaks, you pay no performance fee for that month.",
       "freeFeatures": [
-        "Up to 3 products",
-        "1 active campaign",
-        "Spend cap up to 100 OMR",
-        "Manual store editor",
-        "8 media assets per product"
+        "Instant free profit leak scanner",
+        "Net margin breakdown up to 3 products",
+        "Competitor Radar preview in GCC",
+        "Estimated Tier-2 leak alerts",
+        "Anonymous market benchmarks",
+        "AI guided onboarding assistant"
       ],
       "proFeatures": [
-        "Unlimited products",
-        "Unlimited active campaigns",
-        "Spend cap up to 2,000 OMR",
-        "AI assistant + store offers",
-        "Unlimited media per product"
+        "Comprehensive Competitor Radar & GCC Ad Intelligence",
+        "AI Counter-Strategy Battleplan hook generator",
+        "Unlimited products and ad campaigns",
+        "Full Tier-1 Confirmed leak detection",
+        "COD courier waybill matching & dispute exports",
+        "Complete audit trail and WhatsApp weekly digests",
+        "No-Find No-Fee performance guarantee"
       ]
     },
     "founders": {

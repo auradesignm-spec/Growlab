@@ -813,8 +813,197 @@ async function main() {
     },
   });
 
+  // ---------------------------------------------------------------------
+  // Competitor Radar sample project & competitors for Demo Merchant
+  // ---------------------------------------------------------------------
+  const frankincenseProject = await prisma.competitorProject.create({
+    data: {
+      userId: attarUser.id,
+      name: "عطور ولبان حوجري عماني",
+      productKeyword: "عطور لبان",
+      targetMarket: "OM",
+      niche: "العطور واللبان الفاخر",
+      platforms: "meta,tiktok",
+      competitors: {
+        create: [
+          {
+            name: "دار الأريج للعطور الفاخرة",
+            domain: "alareej-perfumes.com",
+            brandHandle: "@alareej_om",
+            market: "OM",
+            threatScore: 88,
+            relevanceScore: 94,
+            activityScore: 82,
+            creativeScore: 78,
+            offerScore: 70,
+            confidenceScore: 90,
+            tier: "direct",
+            activeAdsCount: 9,
+            platforms: "meta,tiktok",
+            primaryOffer: "خصم 20% عند شراء زجاجتين",
+            priceRange: "28 - 45 ر.ع.",
+            shippingOffer: "توصيل خلال 4-5 أيام (رسوم 2 ر.ع.)",
+            guaranteeOffer: "استرجاع خلال 3 أيام فقط",
+            ads: {
+              create: [
+                {
+                  platform: "meta",
+                  format: "video",
+                  headline: "سر الفخامة العمانية برائحة اللبان الحوجري الملكي",
+                  bodyCopy: "مستخلص من أجود أشجار لبان ظفار بتركيز وثبات يدوم 48 ساعة. اطلب الآن مع التوصيل لكل المحافظات.",
+                  hook: "هل جربت لبان ظفار الحقيقي مع العود الملكي؟",
+                  painPoint: "العطور التجارية تفقد رائحتها بعد ساعتين",
+                  promise: "ثبات وفواحان ملكي مضمون ليومين كاملين",
+                  proof: "تقييم 4.9 نجوم من أكثر من 1,200 عميل في مسقط",
+                  offer: "احصل على عينة مجانية مع كل طلب",
+                  cta: "تسوق الآن عبر الرابط",
+                  daysActive: 42,
+                  isActive: true,
+                  spendVelocity: "high",
+                },
+                {
+                  platform: "tiktok",
+                  format: "video",
+                  headline: "فتح صندوق (Unboxing) عطر لبان حوجري",
+                  bodyCopy: "شوفوا كيف التغليف الفاخر! هدية تليق بالمناسبات الرسمية.",
+                  hook: "هذا العطر خلا كل من يقابلني يسألني وش ريحتك!",
+                  painPoint: "صعوبة العثور على هدية فاخرة بسعر مناسب",
+                  promise: "تغليف هدايا ملكي مجاني",
+                  proof: "فيديو UGC حقيقي بمشاهدات تجاوزت 180 ألف",
+                  offer: "توصيل مجاني للطلبات فوق 30 ر.ع.",
+                  cta: "اطلب الآن قبل نفاد الكمية",
+                  daysActive: 28,
+                  isActive: true,
+                  spendVelocity: "high",
+                },
+              ],
+            },
+            weaknesses: {
+              create: [
+                {
+                  type: "shipping",
+                  title: "بطء التوصيل ورسوم إضافية على المحافظات",
+                  description: "المنافس يفرض رسوم توصيل 2 ر.ع. ويستغرق 4-5 أيام للوصول لصلالة والشرقية.",
+                  evidence: "مراجعات العملاء وتفاصيل صفحة الدفع تؤكد تأخر التسليم.",
+                  confidence: "high",
+                  exploitationAngle: "اعرض 'توصيل فوري خلال 24 ساعة ومجاناً عند الدفع عند الاستلام'.",
+                },
+                {
+                  type: "trust",
+                  title: "سياسة استرجاع معقدة وقصيرة جداً (3 أيام)",
+                  description: "عدم إتاحة تجربة العينة قبل فتح العلبة الأساسية يولد تردداً كبيراً لدى المشتري الجديد.",
+                  evidence: "صفحة الشروط والأحكام الخاصة بمتجرهم تمنع إرجاع العطور المفتوحة.",
+                  confidence: "high",
+                  exploitationAngle: "قدّم 'ضمان الاسترجاع الذهبي 14 يوماً مع عينة تجربة مجانية خارجية'.",
+                },
+              ],
+            },
+            analyses: {
+              create: {
+                creativeStrategy: "التركيز على الفخامة والتراث العماني مع مقاطع تصوير بطيء للبان الحوجري المشتعل.",
+                offerStrategy: "خصومات كميات تقليدية دون عروض باقات ذكية أو هدايا استثنائية.",
+                positioning: "عطور مناسبات فخمة وراقية.",
+                strengthsJson: JSON.stringify(["جودة عالية في إنتاج الفيديو الإعلاني", "استمرارية الصرف على نفس الخطاف لأكثر من شهر"]),
+                counterAnglesJson: JSON.stringify(["زاوية الاستخدام اليومي المنعش", "ضمان الثبات بالتجربة المجانية"]),
+                estimatedVelocity: "scaling",
+                aiSummary: "منافس مباشر قوي في جودة التصوير، لكنه يعاني من فجوة في سرعة الشحن وسهولة الضمان.",
+              },
+            },
+          },
+          {
+            name: "عبير الأصالة للعود واللبان",
+            domain: "abeer-alasala.om",
+            brandHandle: "@abeer_om",
+            market: "OM",
+            threatScore: 72,
+            relevanceScore: 86,
+            activityScore: 68,
+            creativeScore: 62,
+            offerScore: 75,
+            confidenceScore: 85,
+            tier: "direct",
+            activeAdsCount: 5,
+            platforms: "meta",
+            primaryOffer: "اشتر 1 واحصل على الثاني بنصف السعر",
+            priceRange: "22 - 38 ر.ع.",
+            shippingOffer: "توصيل عادي 3 ر.ع.",
+            guaranteeOffer: "لا يوجد ضمان استرجاع صريح",
+            ads: {
+              create: [
+                {
+                  platform: "meta",
+                  format: "carousel",
+                  headline: "باقة اللبان الظفاري اليومية",
+                  bodyCopy: "3 روائح مميزة تناسب صباحك ومساءك. عطور أصيلة من قلب عمان.",
+                  hook: "ليش تشتري عطر واحد إذا تقدر تاخذ الباقة كاملة؟",
+                  painPoint: "الحيرة في اختيار الرائحة المناسبة",
+                  promise: "تشكيلة متكاملة تناسب كل الأوقات",
+                  proof: "شهادات عملاء في ستوري الانستغرام",
+                  offer: "خصم 30% على المجموعة الكاملة",
+                  cta: "شاهد المجموعة",
+                  daysActive: 19,
+                  isActive: true,
+                  spendVelocity: "medium",
+                },
+              ],
+            },
+            weaknesses: {
+              create: [
+                {
+                  type: "creative",
+                  title: "إعلانات صور ثابتة وغير تفاعلية (Creative Fatigue)",
+                  description: "يعتمد بشكل مفرط على صور ثابتة وتصاميم كانفا دون مقاطع فيديو UGC حقيقية.",
+                  evidence: "مكتبة إعلانات Meta تظهر 80% صور بدون حركة أو سرد قصصي.",
+                  confidence: "high",
+                  exploitationAngle: "استخدم إعلانات فيديو تفاعلية وسريعة الإيقاع تظهر فوحان الرائحة وردود الأفعال الحية.",
+                },
+              ],
+            },
+          },
+        ],
+      },
+      opportunities: {
+        create: [
+          {
+            type: "white_space",
+            title: "عطر اللبان الحوجري اليومي الخفيف للعمل والدوام",
+            description: "كل المنافسين يركزون على 'المناسبات الثقيلة والليلية'. هناك فراغ تسويقي كبير لعطر لبان منعش وخفيف للاستخدام المكتبي واليومي.",
+            opportunityScore: 92,
+            competitionLevel: "low",
+            recommendedDirection: "إطلاق حملة تستهدف الموظفين ورواد الأعمال بزاوية 'فخامة وانتعاش يدوم معك طوال ساعات العمل'.",
+            suggestedHooksJson: JSON.stringify([
+              "عطر الدوام اللي ما يصدع راسك بريحته القوية!",
+              "كيف تبدأ يومك بانتعاش اللبان الحوجري الطبيعي 100%؟",
+              "عطر فخم ومريح للاجتماعات الطويلة بدون إزعاج.",
+            ]),
+            suggestedOffersJson: JSON.stringify([
+              "باقة الدوام: زجاجة للمكتب + زجاجة ميني للجيب والسيارة",
+              "عينة تجربة مجانية تصل قبل فتح الزجاجة الرئيسية",
+            ]),
+          },
+          {
+            type: "offer_gap",
+            title: "باقة الهدايا الملكية مع التوصيل المباشر للمهدى إليه",
+            description: "المنافسون لا يقدمون خدمة كتابة بطاقة إهداء مخصصة وشحن مباشر كهدية مغلفة.",
+            opportunityScore: 85,
+            competitionLevel: "low",
+            recommendedDirection: "إضافة خيار 'أرسلها كهدية' مع كرت إهداء فاخر وتغليف ملكي بدون فواتير سعرية.",
+            suggestedHooksJson: JSON.stringify([
+              "تبي تهدي شخص غالي هدية ترفع الراس بدون ما تطلع من بيتك؟",
+              "أجمل هدية عمانية توصل لباب بيته مغلفة وجاهزة.",
+            ]),
+            suggestedOffersJson: JSON.stringify([
+              "تغليف هدية مجاني + كرت إهداء بخط يدوي فاخر",
+            ]),
+          },
+        ],
+      },
+    },
+  });
+
   console.log("Seed complete:");
   console.log(`  Merchants: 3 (2 verified, 1 pending)`);
+  console.log(`  Competitor Radar Project: ${frankincenseProject.name}`);
   console.log(`  Creators: 6 (+ demo-buyer for interactive demo)`);
   console.log(`  Products: 8 across attar/dates/home`);
   console.log(`  Deals: 7 + merchant_store deals for Muttrah Attars`);

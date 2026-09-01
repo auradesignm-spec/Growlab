@@ -1,5 +1,8 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
+import FreeLeakScanner from "@/components/FreeLeakScanner";
+import CompetitorRadarShowcase from "@/components/CompetitorRadarShowcase";
+import AnonymizedBenchmark from "@/components/AnonymizedBenchmark";
 import TrustProof from "@/components/TrustProof";
 import HowItWorks from "@/components/HowItWorks";
 import Compare from "@/components/Compare";
@@ -17,6 +20,11 @@ export default function MarketingHome() {
     <main>
       <Header />
       <Hero />
+      <section className="relative px-4 sm:px-6 lg:px-8 -mt-6 sm:-mt-10 mb-16">
+        <FreeLeakScanner />
+      </section>
+      <CompetitorRadarShowcase />
+      <AnonymizedBenchmark />
       <HowItWorks />
       <TrustProof />
       <Gallery />
@@ -31,3 +39,4 @@ export default function MarketingHome() {
     </main>
   );
 }
+

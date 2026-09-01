@@ -16,6 +16,7 @@ import {
   Building,
   Volume2,
   Sparkles,
+  Radar,
 } from "lucide-react";
 import { track } from "@/lib/analytics";
 
@@ -441,6 +442,23 @@ function HeaderUserMenuContent({
                 <span className="font-medium text-slate-900">لوحة التحكم (Dashboard)</span>
               </div>
               <span className="text-[10px] text-slate-400 font-mono">⌘D</span>
+            </Link>
+
+            <Link
+              href="/dashboard/competitor-radar"
+              onClick={() => {
+                setIsOpen(false);
+                onNavigate?.();
+              }}
+              className="flex items-center justify-between rounded-xl px-3 py-2 text-slate-800 hover:bg-indigo-50/70 hover:text-indigo-950 transition-colors group"
+            >
+              <div className="flex items-center gap-2.5">
+                <Radar className="h-4 w-4 text-indigo-600 group-hover:scale-110 transition-transform" />
+                <span className="font-medium text-slate-900">رادار المنافسين (Ad Intelligence)</span>
+              </div>
+              <span className="rounded-full bg-indigo-100 px-1.5 py-0.5 text-[9px] font-bold text-indigo-800">
+                PRO
+              </span>
             </Link>
 
             <Link

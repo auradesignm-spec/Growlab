@@ -39,6 +39,7 @@ import {
 } from "@/lib/reconciliationEngine";
 import ChannelScorecard from "./ChannelScorecard";
 import PaymentMixChart from "./PaymentMixChart";
+import ProfitLeakCenter from "./ProfitLeakCenter";
 
 interface Props {
   locale?: string;
@@ -62,9 +63,13 @@ export default function FinancialAnalyticsDashboard({ locale = "ar" }: Props) {
   };
 
   return (
-    <div className="space-y-8 text-slate-900">
-      {/* Top Bar / Header */}
+    <div className="space-y-10 text-slate-900">
+      {/* 1. Core Multi-Tier Profit Leak Center Engine */}
+      <ProfitLeakCenter locale={locale} />
+
+      {/* 2. Top Bar / Financial Analytics Deep Dive */}
       <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-line bg-white p-5 sm:p-6 shadow-xs">
+
         <div>
           <div className="flex items-center gap-3">
             <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200">
