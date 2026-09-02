@@ -134,7 +134,7 @@ export default function FinancialOnboardingSurvey({ locale = "ar" }: { locale?: 
               <div className="grid gap-3 sm:grid-cols-2">
                 {[
                   { id: "Shopify", name: "Shopify D2C", desc: "متجر شوبيفاي مع بوابات دفع عالمية/محلية" },
-                  { id: "Salla", name: "منصة سلة (Salla)", desc: "سلة للتجارة الإلكترونية في السعودية" },
+                  { id: "OmanStore", name: "متجر عُمان المحلي (Oman Store)", desc: "متجر محلي مسجل بالسجل التجاري العُماني" },
                   { id: "Zid", name: "منصة زد (Zid)", desc: "حلول تجارة التجزئة والمتاجر المتكاملة" },
                   { id: "WooCommerce", name: "WooCommerce / Custom", desc: "ووردبريس أو منصة مخصصة خاصة" },
                 ].map((p) => (

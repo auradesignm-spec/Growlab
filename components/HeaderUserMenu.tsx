@@ -88,9 +88,9 @@ function HeaderUserMenuContent({
   const climaxIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const router = useRouter();
 
-  // Helper to spawn a floating dollar particle
+  // Helper to spawn a floating particle
   const spawnDollarParticle = useCallback((customText?: string) => {
-    const symbols = ["+$", "$$", "+$$$", "💸", "+$500", "⚡$$", "+100%", "+$1,200"];
+    const symbols = ["+ر.ع", "100%", "+ر.ع 50", "امتثال", "+ر.ع 250", "+100%", "+ر.ع 500"];
     const text = customText || symbols[Math.floor(Math.random() * symbols.length)];
     const newPopup = {
       id: Date.now() + Math.random(),
@@ -307,7 +307,7 @@ function HeaderUserMenuContent({
           >
             <div className="flex items-center gap-1 rounded-full bg-slate-950/95 border border-emerald-400 px-2.5 py-0.5 text-[10px] font-black text-emerald-300 shadow-[0_4px_16px_rgba(16,185,129,0.5)] backdrop-blur-md">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-ping" />
-              <span>⚡ خزان السيولة 100% | +$2,500</span>
+              <span>مؤشر الامتثال 100% | حماية مفعلة</span>
             </div>
           </div>
         )}

@@ -37,22 +37,22 @@ const INITIAL_MESSAGES: MessageItem[] = [
   {
     id: "welcome-1",
     role: "assistant",
-    text: "مرحباً بك في **Growlab**! 👋 أنا مستشارك التجاري والمساعد الذكي للتنفيذ الفوري.\n\nأنا هنا لشرح فكرة المنصة الفريدة، مقارنتها بالبدائل التقليدية، وإرشادك للباقة المناسبة لمتجرك (المجانية 0 ر.ع. أو باقة Pro المدفوعة بـ 15 ر.ع./شهر)، أو تنفيذ مهامك كبناء المتجر بالبلوكات واحتساب صافي الأرباح.",
+    text: "مرحباً بك في Growlab (مساعد ريادة للامتثال). أنا وكيلك الذكي لمتابعة اللوائح، التراخيص، ونسب التعمين في سلطنة عُمان.\n\nأنا هنا لحساب نسبة التعمين لقطاعك، تتبع مواعيد تجديد السجل التجاري ورخص البلدية، وتنبيهك استباقياً قبل وقوع أي غرامات عبر واتساب ولوحة التحكم.",
     action: {
-      type: "open_free_plan",
-      titleAr: "البدء مجاناً وتجربة المنصة (0 ر.ع.)",
-      titleEn: "Start for Free (0 OMR)",
-      descriptionAr: "إنشاء حسابك وتجربة المتجر والحملات بدون أي رسوم تسجيل",
-      descriptionEn: "Create free account and test platform features",
-      targetUrl: "/enter/merchant",
+      type: "open_quiz",
+      titleAr: "بدء فحص الامتثال السريع (مجاناً)",
+      titleEn: "Start Free Compliance Audit",
+      descriptionAr: "فحص فوري خلال دقيقة لنسب التعمين، التراخيص، والغرامات المحتملة",
+      descriptionEn: "Instant 1-minute audit for quotas and permits",
+      targetUrl: "/quiz",
     },
     suggestions: [
-      "ايش فكرة المنصة وكيف تختلف عن سلة وشوبيفاي؟",
-      "ما الفرق بين الباقة المجانية وباقة Pro؟",
-      "أريد الاشتراك في الباقة المجانية (0 ر.ع.)",
-      "أريد الترقية إلى باقة Pro (15 ر.ع./شهر)",
-      "كيف أضيف منتج جديد لمتجري؟",
-      "احسب صافي أرباح حملة إعلانية",
+      "كيف أحسب نسبة التعمين المطلوبة لنشاطي؟",
+      "ما هي غرامات تأخر تجديد السجل التجاري والبلدية؟",
+      "افتح حاسبة التعمين والغرامات الفورية",
+      "ما هي باقات الاشتراك والأسعار في Growlab؟",
+      "كيف تعمل تنبيهات واتساب الاستباقية؟",
+      "استعراض لوحة تحكم الامتثال",
     ],
     timestamp: "الآن",
   },
@@ -60,22 +60,22 @@ const INITIAL_MESSAGES: MessageItem[] = [
 
 const QUICK_ACTIONS = [
   {
-    id: "concept",
-    label: "فكرة المنصة ومقارنتها",
-    prompt: "ايش فكرة المنصة هذه وليش اختاركم بدل سلة وشوبيفاي؟",
-    icon: Sparkles,
+    id: "audit",
+    label: "فحص الامتثال السريع",
+    prompt: "أريد إجراء فحص شامل لامتثال مؤسستي وحساب الغرامات المحتملة",
+    icon: ShieldCheck,
     highlight: true,
   },
   {
-    id: "free_plan",
-    label: "الباقة المجانية (0 ر.ع.)",
-    prompt: "أريد الاشتراك في الباقة المجانية",
-    icon: Zap,
+    id: "calc",
+    label: "حاسبة التعمين والغرامات",
+    prompt: "افتح حاسبة التعمين والغرامات في المحادثة",
+    icon: Calculator,
   },
   {
-    id: "pro_plan",
-    label: "باقة Pro (15 ر.ع.)",
-    prompt: "أريد الترقية إلى باقة Pro المدفوعة",
+    id: "dashboard",
+    label: "لوحة تحكم الامتثال",
+    prompt: "استعرض لوحة تحكم الامتثال",
     icon: TrendingUp,
   },
   {
@@ -85,33 +85,21 @@ const QUICK_ACTIONS = [
     icon: CreditCard,
   },
   {
-    id: "sim",
-    label: "محاكي المبيعات",
-    prompt: "شغّل محاكي المبيعات وضف طلب تجريبي",
+    id: "whatsapp",
+    label: "تنبيهات واتساب",
+    prompt: "كيف تعمل تنبيهات واتساب الاستباقية قبل 60 يوماً؟",
     icon: Zap,
   },
   {
-    id: "store",
-    label: "محرر المتجر بالبلوكات",
-    prompt: "ابنِ لي متجر جديد بالبلوكات",
-    icon: Store,
+    id: "tawteen",
+    label: "منصة توطين والحماية",
+    prompt: "ما هي شروط منصة توطين وصندوق الحماية الاجتماعية لتوثيق العقود؟",
+    icon: Sparkles,
   },
   {
-    id: "calc",
-    label: "حاسبة صافي الربح",
-    prompt: "احسب صافي الأرباح",
-    icon: Calculator,
-  },
-  {
-    id: "kyc",
-    label: "التوثيق والشارة الزرقاء",
-    prompt: "وجّهني لتوثيق الهوية والشارة الزرقاء",
-    icon: ShieldCheck,
-  },
-  {
-    id: "samples",
-    label: "كتالوج عينات المسوقين",
-    prompt: "استعرض كتالوج عينات المسوقين المجانية",
+    id: "tax",
+    label: "الفوترة الإلكترونية والضرائب",
+    prompt: "ما هي متطلبات الفوترة الضريبية لتفادي غرامات جهاز الضرائب؟",
     icon: Package,
   },
 ];
@@ -125,19 +113,19 @@ export default function FloatingAssistantChat() {
   const [messages, setMessages] = useState<MessageItem[]>(INITIAL_MESSAGES);
   const [soundEnabled, setSoundEnabled] = useState(true);
 
-  // Profit mini calculator state if open in chat
+  // Omanisation & Fine mini-calculator state in chat
   const [calcState, setCalcState] = useState<{
     open: boolean;
-    price: number;
-    cogs: number;
-    ads: number;
-    rto: number;
+    sector: string;
+    targetQuota: number;
+    totalStaff: number;
+    omaniStaff: number;
   }>({
     open: false,
-    price: 25,
-    cogs: 7,
-    ads: 5,
-    rto: 1.5,
+    sector: "تجارة وتجزئة (35%)",
+    targetQuota: 35,
+    totalStaff: 8,
+    omaniStaff: 1,
   });
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -215,18 +203,16 @@ export default function FloatingAssistantChat() {
 
     playChime();
 
-    if (action.type === "calculate_profit") {
-      setCalcState((prev) => ({ ...prev, open: true }));
-      scrollToBottom();
+    if (action.type === "open_quiz" || action.targetUrl === "/quiz") {
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("open-compliance-quiz"));
+      }
       return;
     }
 
-    if (action.type === "trigger_simulation") {
-      if (typeof window !== "undefined") {
-        window.location.href = "/dashboard?tab=simulator#simulator";
-      } else {
-        router.push("/dashboard?tab=simulator");
-      }
+    if (action.type === "calculate_omanisation" || action.type === "calculate_profit") {
+      setCalcState((prev) => ({ ...prev, open: true }));
+      scrollToBottom();
       return;
     }
 
@@ -242,6 +228,11 @@ export default function FloatingAssistantChat() {
     // Trigger paper airplane flight animation
     setIsFlying(true);
     setTimeout(() => setIsFlying(false), 500);
+
+    // Auto open calculator if user asks for it
+    if (textToSend.includes("حاسبة") || textToSend.includes("احسب")) {
+      setCalcState((prev) => ({ ...prev, open: true }));
+    }
 
     setInput("");
     const userMsg: MessageItem = {
@@ -280,7 +271,7 @@ export default function FloatingAssistantChat() {
       const botMsg: MessageItem = {
         id: `b-${Date.now()}`,
         role: "assistant",
-        text: data.text || "تم استلام طلبك بنجاح وسأقوم بتنفيذه فوراً!",
+        text: data.text || "تم تحليل استفسارك التنظيمي بنجاح.",
         action: data.action,
         suggestions: data.suggestions,
         timestamp: new Date().toLocaleTimeString("ar-OM", {
@@ -300,14 +291,14 @@ export default function FloatingAssistantChat() {
       const botMsg: MessageItem = {
         id: `b-${Date.now()}`,
         role: "assistant",
-        text: "حاضر! قمت بجدولة وتنفيذ العملية المطلوبة فوراً. يمكنك الضغط على الزر أدناه للانتقال المباشر.",
+        text: "أهلاً بك. يمكنك إجراء فحص شامل لنسب التعمين والتراخيص مجاناً أو استعراض لوحة التحكم لحماية مؤسستك من الغرامات.",
         action: {
-          type: "navigate",
-          titleAr: "الانتقال إلى لوحة التحكم",
-          titleEn: "Go to Dashboard",
-          descriptionAr: "متابعة التنفيذ واستكشاف الميزات",
-          descriptionEn: "Continue to dashboard",
-          targetUrl: "/dashboard?tab=simulator",
+          type: "open_quiz",
+          titleAr: "بدء فحص الامتثال السريع (مجاناً)",
+          titleEn: "Start Compliance Audit",
+          descriptionAr: "فحص فوري خلال دقيقة لنسب التعمين والتراخيص وتحديد الغرامات المحتملة",
+          descriptionEn: "Instant 1-minute audit",
+          targetUrl: "/quiz",
         },
         timestamp: "الآن",
       };
@@ -322,12 +313,16 @@ export default function FloatingAssistantChat() {
     setCalcState((prev) => ({ ...prev, open: false }));
   };
 
-  const netMarginVal = Math.max(
-    0,
-    calcState.price - calcState.cogs - calcState.ads - calcState.rto
+  const currentQuota =
+    calcState.totalStaff > 0
+      ? Math.round((calcState.omaniStaff / calcState.totalStaff) * 100)
+      : 0;
+  const requiredOmanis = Math.ceil(
+    (calcState.targetQuota / 100) * calcState.totalStaff
   );
-  const netMarginPercent =
-    calcState.price > 0 ? Math.round((netMarginVal / calcState.price) * 100) : 0;
+  const missingOmanis = Math.max(0, requiredOmanis - calcState.omaniStaff);
+  const estimatedMonthlyFine = missingOmanis * 250;
+  const isCompliant = missingOmanis === 0;
 
   return (
     <aside
@@ -380,14 +375,14 @@ export default function FloatingAssistantChat() {
                 <div className="min-w-0">
                   <div className="flex items-center gap-1.5">
                     <h3 className="text-[12.5px] sm:text-[12px] font-bold text-black tracking-tight truncate">
-                      مساعد Growlab الذكي
+                      مساعد Growlab للامتثال
                     </h3>
                     <span className="shrink-0 rounded-full gl-iridescent-wavy-btn px-2 py-0.5 text-[8.5px] font-black text-black shadow-xs">
-                      منفّذ آلي
+                      وكيل معتمد
                     </span>
                   </div>
                   <p className="text-[10px] sm:text-[9.5px] text-slate-600 font-medium truncate">
-                    متصل • جاهز لإرشادك وتنفيذ المهام
+                    مستشارك الذكي للأنظمة واللوائح العُمانية
                   </p>
                 </div>
               </div>
@@ -504,13 +499,13 @@ export default function FloatingAssistantChat() {
                 );
               })}
 
-              {/* Interactive Embedded Net Margin Calculator */}
+              {/* Interactive Embedded Omanisation & Fine Calculator */}
               {calcState.open && (
-                <div className="rounded-2xl border border-slate-200 bg-white p-2.5 text-[11px] sm:text-[10.5px] text-black shadow-lg">
-                  <div className="flex items-center justify-between border-b border-slate-100 pb-1.5">
-                    <h4 className="font-bold text-black flex items-center gap-1 text-[11.5px] sm:text-[11px]">
-                      <Calculator className="h-3 w-3 text-black" />
-                      <span>حاسبة صافي الأرباح</span>
+                <div className="rounded-2xl border border-slate-200 bg-white p-3 text-[11px] sm:text-[10.5px] text-black shadow-lg">
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                    <h4 className="font-bold text-black flex items-center gap-1.5 text-[12px] sm:text-[11.5px]">
+                      <Calculator className="h-3.5 w-3.5 text-emerald-600" />
+                      <span>حاسبة التعمين والغرامات الفورية</span>
                     </h4>
                     <button
                       type="button"
@@ -521,78 +516,125 @@ export default function FloatingAssistantChat() {
                     </button>
                   </div>
 
-                  <div className="mt-2 grid grid-cols-2 gap-1.5 text-[10.5px] sm:text-[10px]">
+                  <div className="mt-2.5 space-y-2">
                     <div>
-                      <label className="text-black font-semibold">سعر البيع (ر.ع):</label>
-                      <input
-                        type="number"
-                        value={calcState.price}
-                        onChange={(e) =>
+                      <label className="text-black font-semibold text-[10.5px]">قطاع النشاط التجاري:</label>
+                      <select
+                        value={calcState.sector}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          let quota = 25;
+                          if (val.includes("35%")) quota = 35;
+                          else if (val.includes("20%")) quota = 20;
+                          else if (val.includes("30%")) quota = 30;
+                          else if (val.includes("25%")) quota = 25;
                           setCalcState((p) => ({
                             ...p,
-                            price: Number(e.target.value) || 0,
-                          }))
-                        }
-                        className="mt-0.5 w-full rounded-lg border border-slate-200 bg-slate-50 px-2 py-1 text-black font-bold focus:border-slate-400 focus:bg-white focus:outline-hidden text-[16px] sm:text-xs"
-                      />
+                            sector: val,
+                            targetQuota: quota,
+                          }));
+                        }}
+                        className="mt-0.5 w-full rounded-lg border border-slate-200 bg-slate-50 px-2 py-1.5 text-black font-bold focus:border-slate-400 focus:bg-white focus:outline-hidden text-xs"
+                      >
+                        <option value="تجارة وتجزئة (35%)">تجارة وتجزئة (المستهدف: 35%)</option>
+                        <option value="خدمات ومطاعم واستشارات (30%)">خدمات ومطاعم واستشارات (المستهدف: 30%)</option>
+                        <option value="صناعة وورش (25%)">صناعة وورش (المستهدف: 25%)</option>
+                        <option value="مقاولات وإنشاءات (20%)">مقاولات وإنشاءات (المستهدف: 20%)</option>
+                        <option value="أنشطة وقطاعات أخرى (25%)">أنشطة عامة أخرى (المستهدف: 25%)</option>
+                      </select>
                     </div>
-                    <div>
-                      <label className="text-black font-semibold">تكلفة البضاعة:</label>
-                      <input
-                        type="number"
-                        value={calcState.cogs}
-                        onChange={(e) =>
-                          setCalcState((p) => ({
-                            ...p,
-                            cogs: Number(e.target.value) || 0,
-                          }))
-                        }
-                        className="mt-0.5 w-full rounded-lg border border-slate-200 bg-slate-50 px-2 py-1 text-black font-bold focus:border-slate-400 focus:bg-white focus:outline-hidden text-[16px] sm:text-xs"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-black font-semibold">الإعلانات لكل طلب:</label>
-                      <input
-                        type="number"
-                        value={calcState.ads}
-                        onChange={(e) =>
-                          setCalcState((p) => ({
-                            ...p,
-                            ads: Number(e.target.value) || 0,
-                          }))
-                        }
-                        className="mt-0.5 w-full rounded-lg border border-slate-200 bg-slate-50 px-2 py-1 text-black font-bold focus:border-slate-400 focus:bg-white focus:outline-hidden text-[16px] sm:text-xs"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-black font-semibold">حماية المرتجع RTO:</label>
-                      <input
-                        type="number"
-                        value={calcState.rto}
-                        onChange={(e) =>
-                          setCalcState((p) => ({
-                            ...p,
-                            rto: Number(e.target.value) || 0,
-                          }))
-                        }
-                        className="mt-0.5 w-full rounded-lg border border-slate-200 bg-slate-50 px-2 py-1 text-black font-bold focus:border-slate-400 focus:bg-white focus:outline-hidden text-[16px] sm:text-xs"
-                      />
-                    </div>
-                  </div>
 
-                  <div className="mt-2 flex items-center justify-between rounded-xl gl-shimmer-iridescent-action-btn p-2">
-                    <div>
-                      <p className="text-[9.5px] sm:text-[9px] font-bold text-slate-800">صافي الربح المتوقع:</p>
-                      <p className="text-[12.5px] sm:text-[12px] font-black text-black font-mono">
-                        {netMarginVal.toFixed(2)} ر.ع
-                      </p>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label className="text-black font-semibold text-[10.5px]">إجمالي القوى العاملة:</label>
+                        <input
+                          type="number"
+                          min={1}
+                          max={999}
+                          value={calcState.totalStaff}
+                          onChange={(e) =>
+                            setCalcState((p) => ({
+                              ...p,
+                              totalStaff: Math.max(1, Number(e.target.value) || 1),
+                            }))
+                          }
+                          className="mt-0.5 w-full rounded-lg border border-slate-200 bg-slate-50 px-2 py-1 text-black font-bold focus:border-slate-400 focus:bg-white focus:outline-hidden text-xs font-mono"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-black font-semibold text-[10.5px]">عدد الموظفين العُمانيين:</label>
+                        <input
+                          type="number"
+                          min={0}
+                          max={999}
+                          value={calcState.omaniStaff}
+                          onChange={(e) =>
+                            setCalcState((p) => ({
+                              ...p,
+                              omaniStaff: Math.max(0, Number(e.target.value) || 0),
+                            }))
+                          }
+                          className="mt-0.5 w-full rounded-lg border border-slate-200 bg-slate-50 px-2 py-1 text-black font-bold focus:border-slate-400 focus:bg-white focus:outline-hidden text-xs font-mono"
+                        />
+                      </div>
                     </div>
-                    <div className="text-left">
-                      <p className="text-[9.5px] sm:text-[9px] font-bold text-slate-800">الهامش الصافي:</p>
-                      <p className="text-[12.5px] sm:text-[12px] font-black text-black font-mono">
-                        {netMarginPercent}%
+
+                    {/* Result Summary Box */}
+                    <div
+                      className={`mt-2 rounded-xl p-2.5 border ${
+                        isCompliant
+                          ? "bg-emerald-50 border-emerald-200 text-emerald-950"
+                          : "bg-rose-50 border-rose-200 text-rose-950"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-[10.5px]">
+                          نسبتك الحالية: {currentQuota}% (المطلوب {calcState.targetQuota}%)
+                        </span>
+                        <span
+                          className={`px-2 py-0.5 rounded-full text-[9px] font-black ${
+                            isCompliant
+                              ? "bg-emerald-200 text-emerald-900"
+                              : "bg-rose-200 text-rose-900"
+                          }`}
+                        >
+                          {isCompliant ? "مستوفٍ للنسبة" : "عجز في التعمين"}
+                        </span>
+                      </div>
+
+                      <p className="mt-1 text-[10.5px] leading-relaxed">
+                        {isCompliant
+                          ? "وضعك التنظيمي سليم، ولا توجد قيود على استخراج المأذونيات حالياً."
+                          : `مطلوب تعيين ${missingOmanis} موظف عُماني لتفادي حظر المأذونيات والغرامات الشهرية.`}
                       </p>
+
+                      {!isCompliant && (
+                        <div className="mt-2 pt-1.5 border-t border-rose-200/70 flex items-center justify-between text-[10px]">
+                          <span className="font-semibold text-rose-800">مخاطر الغرامات التقديرية:</span>
+                          <span className="font-black text-rose-950 font-mono">
+                            ~{estimatedMonthlyFine} ر.ع / شهرياً
+                          </span>
+                        </div>
+                      )}
                     </div>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleExecuteAction({
+                          type: "open_quiz",
+                          titleAr: "بدء فحص الامتثال الشامل",
+                          titleEn: "Start Compliance Audit",
+                          descriptionAr: "فحص متقدم لكافة التراخيص",
+                          descriptionEn: "Full audit",
+                          targetUrl: "/quiz",
+                        })
+                      }
+                      className="w-full mt-1.5 py-1.5 px-3 rounded-xl bg-slate-900 hover:bg-black text-white font-bold text-[11px] flex items-center justify-center gap-1.5 transition-all shadow-xs"
+                    >
+                      <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
+                      <span>بدء فحص الامتثال الشامل للمؤسسة</span>
+                    </button>
                   </div>
                 </div>
               )}

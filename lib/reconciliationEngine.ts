@@ -2,7 +2,7 @@
  * Brandstack-Inspired Financial Intelligence & Reconciliation Engine for Growlab
  * 
  * Unifies fragmented data across:
- * - E-Commerce Storefronts (Shopify, Salla, Zid, WooCommerce)
+ * - E-Commerce Storefronts (Shopify, Direct Store, Zid, WooCommerce)
  * - Ad Networks (Meta Marketing API, Google Ads, TikTok Ads)
  * - Logistics & Couriers (Aramex, SMSA, J&T Express, DHL)
  * - Payment Mix (Cash on Delivery vs Prepaid / Apple Pay)
@@ -15,7 +15,7 @@
 export interface UnifiedOrder {
   id: string;
   orderId: string;
-  channel: "Shopify D2C" | "Salla" | "Zid" | "Amazon" | "TikTok Shop" | "Noon";
+  channel: "Shopify D2C" | "Direct Store" | "Zid" | "Amazon" | "TikTok Shop" | "Noon";
   sku: string;
   productTitle: string;
   grossSales: number;
@@ -202,7 +202,7 @@ let unifiedOrdersStore: UnifiedOrder[] = [
   {
     id: "un-005",
     orderId: "SAL-32910",
-    channel: "Salla",
+    channel: "Direct Store",
     sku: "GROW-HAIR-05",
     productTitle: "زيت إنبات الشعر العضوي المركز",
     grossSales: 320,

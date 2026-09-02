@@ -1,6 +1,6 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata, Viewport } from "next";
-import { IBM_Plex_Sans_Arabic, IBM_Plex_Mono, Plus_Jakarta_Sans } from "next/font/google";
+import { Cairo, Tajawal, IBM_Plex_Sans_Arabic, IBM_Plex_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { dirForLocale, isLocale, type Locale } from "@/i18n/config";
@@ -8,6 +8,20 @@ import PwaRegister from "@/components/PwaRegister";
 import FloatingAssistantChat from "@/components/assistant/FloatingAssistantChat";
 import OfflineSyncStatus from "@/components/common/OfflineSyncStatus";
 import "./globals.css";
+
+const cairo = Cairo({
+  subsets: ["arabic", "latin"],
+  weight: ["600", "700", "800"],
+  variable: "--font-cairo",
+  display: "swap",
+});
+
+const tajawal = Tajawal({
+  subsets: ["arabic", "latin"],
+  weight: ["400", "500", "700"],
+  variable: "--font-tajawal",
+  display: "swap",
+});
 
 const plexArabic = IBM_Plex_Sans_Arabic({
   subsets: ["arabic"],
@@ -80,7 +94,7 @@ export default async function RootLayout({
   );
 
   return (
-    <html lang={locale} dir={dir} className={`${plexArabic.variable} ${plexMono.variable} ${plusJakarta.variable}`}>
+    <html lang={locale} dir={dir} className={`${cairo.variable} ${tajawal.variable} ${plexArabic.variable} ${plexMono.variable} ${plusJakarta.variable}`}>
       <body className="font-body antialiased">
         <PwaRegister />
         {clerkPublishableKey ? (

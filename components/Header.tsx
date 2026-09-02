@@ -194,7 +194,7 @@ function HeaderAuth({
   const guestClimaxIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const spawnGuestParticle = useCallback((customText?: string) => {
-    const symbols = ["+$", "$$", "+$$$", "💸", "+$500", "⚡$$", "+100%", "+$2,500"];
+    const symbols = ["+OMR", "OMR", "+OMR 50", "+OMR 100", "+100%", "+OMR 500"];
     const text = customText || symbols[Math.floor(Math.random() * symbols.length)];
     const newPop = {
       id: Date.now() + Math.random(),
@@ -295,7 +295,7 @@ function HeaderAuth({
         >
           <div className="flex items-center gap-1 rounded-full bg-slate-950/95 border border-emerald-400 px-2.5 py-0.5 text-[10px] font-black text-emerald-300 shadow-[0_4px_16px_rgba(16,185,129,0.5)] backdrop-blur-md">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-ping" />
-            <span>⚡ 100% FUELLED</span>
+            <span>100% FUELLED</span>
           </div>
         </div>
       )}
@@ -378,7 +378,7 @@ function HeaderAuth({
         >
           <div className="flex items-center gap-1 rounded-full bg-slate-950/95 border border-emerald-400 px-2.5 py-0.5 text-[10px] font-black text-emerald-300 shadow-[0_4px_16px_rgba(16,185,129,0.5)] backdrop-blur-md">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-ping" />
-            <span>⚡ خزان السيولة 100% | +$2,500</span>
+            <span>خزان الامتثال 100% | حماية شاملة</span>
           </div>
         </div>
       )}

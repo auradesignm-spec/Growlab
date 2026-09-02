@@ -877,10 +877,10 @@ export function NeedSurveyDialog({
                     <p className="text-[11px] text-white/50">
                       {diagnostic.missingOmaniCount > 0
                         ? isAr
-                          ? `⚠️ مطلوب تعيين ${diagnostic.missingOmaniCount} موظف عُماني لتفادي حظر المأذونيات.`
+                          ? `مطلوب تعيين ${diagnostic.missingOmaniCount} موظف عُماني لتفادي حظر المأذونيات.`
                           : `Need to hire ${diagnostic.missingOmaniCount} Omani staff.`
                         : isAr
-                        ? "✅ مستوفٍ لنسبة التعمين المقررة لقطاعك."
+                        ? "مستوفٍ لنسبة التعمين المقررة لقطاعك."
                         : "Fully compliant with quota."}
                     </p>
                   </div>
