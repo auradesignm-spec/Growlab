@@ -40,8 +40,8 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Growlab",
-  description: "شبكة توزيع بالدفع عند الاستلام — حد صرف، وعمولة بعد التأكيد.",
+  title: "مساعد ريادة — وكيل امتثال ذكي بالذكاء الاصطناعي للمؤسسات العُمانية",
+  description: "وكيل امتثال ذكي بالذكاء الاصطناعي للمؤسسات الصغيرة والمتوسطة في سلطنة عُمان لتتبع التراخيص، نسب التعمين، الضرائب، والتنبيه التلقائي قبل الغرامات عبر واتساب ولوحة التحكم.",
   metadataBase: new URL("https://growlab.om"),
   robots: { index: true, follow: true },
   manifest: "/manifest.webmanifest",
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
   },
   appleWebApp: {
     capable: true,
-    title: "Growlab",
+    title: "مساعد ريادة",
     statusBarStyle: "default",
   },
 };

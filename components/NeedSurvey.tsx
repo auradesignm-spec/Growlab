@@ -4,27 +4,38 @@ import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { useLocale } from "next-intl";
 import { useUser } from "@clerk/nextjs";
 import { motion, AnimatePresence } from "framer-motion";
-import { track } from "@/lib/analytics";
 import {
-  markSurveyDone,
-  generateDiagnosticResult,
-  surveyIsDone,
-  SURVEY_MODES,
-  SURVEY_CR,
-  SURVEY_PRODUCTS,
-  SURVEY_CHANNELS,
-  SURVEY_GOALS,
-  type SurveyMode,
-  type SurveyCR,
-  type SurveyProduct,
-  type SurveyChannel,
-  type SurveyGoal,
+  SECTOR_OPTIONS,
+  generateComplianceDiagnostic,
+  saveQuizResult,
+  getSectorTarget,
+  type SectorType,
+  type YesNoUnknown,
+  type ComplianceSurveyAnswers,
+  type ComplianceDiagnosticResult,
 } from "@/lib/needSurvey";
-import { startProductTour, tourIsDone, PRODUCT_TOUR_EVENT } from "@/lib/productTour";
 import { useRouter } from "next/navigation";
-import { LOCALE_COOKIE, type Locale } from "@/i18n/config";
-import LocaleSwitcher from "@/components/LocaleSwitcher";
-import CasaMoneyRain from "@/components/effects/CasaMoneyRain";
+import {
+  ShieldAlert,
+  ShieldCheck,
+  AlertTriangle,
+  Building2,
+  Users,
+  UserCheck,
+  Calendar,
+  FileText,
+  Receipt,
+  ArrowRight,
+  ArrowLeft,
+  CheckCircle2,
+  Sparkles,
+  Zap,
+  TrendingDown,
+  Lock,
+  ChevronRight,
+  RefreshCw,
+  X,
+} from "lucide-react";
 
 const CLERK_ENABLED = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
 
@@ -39,606 +50,892 @@ function NeedSurveyWhenGuest() {
   return <NeedSurveyDialog />;
 }
 
-function NeedSurveyDialog() {
+export function NeedSurveyDialog({
+  isOpen,
+  onClose,
+  standalone = false,
+}: {
+  isOpen?: boolean;
+  onClose?: () => void;
+  standalone?: boolean;
+}) {
   const currentLocale = useLocale();
-  const [activeLocale, setActiveLocale] = useState<"ar" | "en">(currentLocale === "en" ? "en" : "ar");
-  const isAr = activeLocale !== "en";
+  const isAr = currentLocale !== "en";
   const router = useRouter();
   const titleId = useId();
-  const [open, setOpen] = useState(false);
+
+  const [open, setOpen] = useState(standalone ? true : false);
   const [step, setStep] = useState<number>(0);
-  const [showMoneyEffect, setShowMoneyEffect] = useState(false);
-  const pendingActionRef = useRef<(() => void) | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Form State for 6 compliance questions
+  const [sector, setSector] = useState<SectorType | null>("retail");
+  const [totalEmployees, setTotalEmployees] = useState<number>(5);
+  const [omaniEmployees, setOmaniEmployees] = useState<number>(1);
+  const [knowsCrExpiry, setKnowsCrExpiry] = useState<"yes" | "unknown" | null>(null);
+  const [crExpiryDate, setCrExpiryDate] = useState<string>("");
+  const [isRegisteredTawteen, setIsRegisteredTawteen] = useState<YesNoUnknown | null>(null);
+  const [hasEInvoicing, setHasEInvoicing] = useState<YesNoUnknown | null>(null);
+
+  // Computed Diagnostic
+  const [diagnostic, setDiagnostic] = useState<ComplianceDiagnosticResult | null>(null);
+
+  const advanceTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Handle external trigger or URL hash
   useEffect(() => {
-    setActiveLocale(currentLocale === "en" ? "en" : "ar");
-  }, [currentLocale]);
-
-  // Survey answers
-  const [selectedLang, setSelectedLang] = useState<"ar" | "en" | null>(null);
-  const [hoveredLang, setHoveredLang] = useState<"ar" | "en" | null>(null);
-  const [mode, setMode] = useState<SurveyMode | null>(null);
-  const [cr, setCr] = useState<SurveyCR | null>(null);
-  const [product, setProduct] = useState<SurveyProduct | null>(null);
-  const [channel, setChannel] = useState<SurveyChannel | null>(null);
-  const [goal, setGoal] = useState<SurveyGoal | null>(null);
-
-  const dialogRef = useRef<HTMLDivElement>(null);
-
-  const TOTAL_STEPS = 7; // 1 language question + 5 domain questions + 1 diagnostic summary
-
-  const handleLanguageSelect = (next: "ar" | "en") => {
-    setSelectedLang(next);
-  };
-
-  const handleNext = () => {
-    if (step === 0 && selectedLang) {
-      setActiveLocale(selectedLang);
-      document.cookie = `${LOCALE_COOKIE}=${selectedLang}; path=/; max-age=31536000; samesite=lax`;
-      router.refresh();
+    if (typeof isOpen === "boolean") {
+      setOpen(isOpen);
+      return;
     }
-    setStep((s) => s + 1);
-  };
-
-  const finish = useCallback(
-    (actionType: "tour" | "navigate" | "skip", targetUrl?: string) => {
-      markSurveyDone();
-      setOpen(false);
-      track("Need Survey Completed", {
-        language: selectedLang,
-        mode: mode ?? "none",
-        cr: cr ?? "none",
-        product: product ?? "none",
-        channel: channel ?? "none",
-        goal: goal ?? "none",
-        actionType,
-      });
-
-      // Prepare callback to execute after the money swarm finishes entering the fuel button
-      const executeFinalAction = () => {
-        if (actionType === "tour") {
-          window.setTimeout(() => startProductTour(), 150);
-        } else if (actionType === "navigate" && targetUrl) {
-          router.push(targetUrl);
-        }
-      };
-
-      // Trigger the money swarm on skip or any completion
-      pendingActionRef.current = executeFinalAction;
-      setShowMoneyEffect(true);
-    },
-    [channel, cr, goal, mode, product, router, selectedLang],
-  );
-
-  useEffect(() => {
-    // Show survey every visit for unauthenticated users (unless tour is active)
-    if (tourIsDone()) return;
-    const id = window.setTimeout(() => setOpen(true), 400);
-    return () => window.clearTimeout(id);
-  }, []);
-
-  useEffect(() => {
-    const hide = () => setOpen(false);
-    window.addEventListener(PRODUCT_TOUR_EVENT, hide);
-    return () => window.removeEventListener(PRODUCT_TOUR_EVENT, hide);
-  }, []);
-
-  useEffect(() => {
-    if (!open) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    dialogRef.current?.focus();
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") finish("skip");
+    const handleHash = () => {
+      if (window.location.hash === "#quiz" || window.location.hash === "#audit") {
+        setOpen(true);
+      }
     };
-    document.addEventListener("keydown", onKey);
+    handleHash();
+    window.addEventListener("hashchange", handleHash);
+    
+    // Custom event listener for buttons across page
+    const openHandler = () => setOpen(true);
+    window.addEventListener("open-compliance-quiz", openHandler);
+
     return () => {
-      document.body.style.overflow = prev;
-      document.removeEventListener("keydown", onKey);
+      window.removeEventListener("hashchange", handleHash);
+      window.removeEventListener("open-compliance-quiz", openHandler);
     };
-  }, [finish, open]);
+  }, [isOpen]);
 
-  const canNext =
-    (step === 0 && selectedLang != null) ||
-    (step === 1 && mode != null) ||
-    (step === 2 && cr != null) ||
-    (step === 3 && product != null) ||
-    (step === 4 && channel != null) ||
-    (step === 5 && goal != null) ||
-    step === 6;
-
-  const result = generateDiagnosticResult({ mode, cr, product, channel, goal });
-
-  const handleMoneyComplete = useCallback(() => {
-    setShowMoneyEffect(false);
-    if (pendingActionRef.current) {
-      const action = pendingActionRef.current;
-      pendingActionRef.current = null;
-      action();
+  const autoAdvance = useCallback((nextStep: number, delayMs = 260) => {
+    if (advanceTimerRef.current) {
+      clearTimeout(advanceTimerRef.current);
     }
+    advanceTimerRef.current = setTimeout(() => {
+      setStep(nextStep);
+      advanceTimerRef.current = null;
+    }, delayMs);
   }, []);
+
+  useEffect(() => {
+    return () => {
+      if (advanceTimerRef.current) {
+        clearTimeout(advanceTimerRef.current);
+      }
+    };
+  }, []);
+
+  const handleSectorSelect = (sec: SectorType) => {
+    setSector(sec);
+    autoAdvance(1, 240);
+  };
+
+  const handleTotalEmployeesSubmit = () => {
+    // If omani employees exceed total, adjust automatically
+    if (omaniEmployees > totalEmployees) {
+      setOmaniEmployees(totalEmployees);
+    }
+    autoAdvance(2, 100);
+  };
+
+  const handleOmaniEmployeesSubmit = () => {
+    autoAdvance(3, 100);
+  };
+
+  const handleCrOption = (option: "yes" | "unknown") => {
+    setKnowsCrExpiry(option);
+    if (option === "unknown") {
+      autoAdvance(4, 240);
+    }
+  };
+
+  const handleCrDateSubmit = () => {
+    autoAdvance(4, 100);
+  };
+
+  const handleTawteenSelect = (val: YesNoUnknown) => {
+    setIsRegisteredTawteen(val);
+    autoAdvance(5, 240);
+  };
+
+  const handleEInvoicingSelect = async (val: YesNoUnknown) => {
+    setHasEInvoicing(val);
+    setIsSubmitting(true);
+
+    const answers: ComplianceSurveyAnswers = {
+      sector,
+      totalEmployees,
+      omaniEmployees,
+      knowsCrExpiry,
+      crExpiryDate: knowsCrExpiry === "yes" ? crExpiryDate : undefined,
+      isRegisteredTawteen,
+      hasEInvoicing: val,
+    };
+
+    const result = generateComplianceDiagnostic(answers);
+    setDiagnostic(result);
+    saveQuizResult(answers, result);
+
+    // Send asynchronously to backend webhook
+    try {
+      fetch("/api/quiz/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(answers),
+      }).catch((e) => console.warn("Background webhook sync:", e));
+    } catch {
+      /* ignore */
+    }
+
+    setIsSubmitting(false);
+    setStep(6); // Go to Diagnostic Result Screen
+  };
+
+  const handleBack = () => {
+    if (advanceTimerRef.current) {
+      clearTimeout(advanceTimerRef.current);
+      advanceTimerRef.current = null;
+    }
+    setStep((s) => Math.max(0, s - 1));
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    if (onClose) onClose();
+  };
+
+  const handleRegister = () => {
+    handleClose();
+    router.push("/sign-up");
+  };
+
+  const handleGoDashboard = () => {
+    handleClose();
+    router.push("/dashboard");
+  };
+
+  if (!open && !standalone) return null;
+
+  const TOTAL_QUESTIONS = 6;
+  const progressPercent = step <= 5 ? Math.round(((step + 1) / TOTAL_QUESTIONS) * 100) : 100;
+  const targetRateForSelectedSector = getSectorTarget(sector);
+  const liveOmanisationPct = totalEmployees > 0 ? Math.round((omaniEmployees / totalEmployees) * 100) : 100;
 
   return (
-    <>
-      {showMoneyEffect && (
-        <CasaMoneyRain
-          count={42}
-          fullScreen={true}
-          opacity={0.92}
-          zIndex={99999}
-          onComplete={handleMoneyComplete}
-        />
-      )}
-
-      {open && (
-        <div className="gl-survey-scrim" role="presentation">
-          <div className="gl-survey-stage max-w-xl w-full">
-            <div
-              ref={dialogRef}
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby={titleId}
-              tabIndex={-1}
-              dir={isAr ? "rtl" : "ltr"}
-              className="gl-survey-card !max-h-[92vh] !p-6 sm:!p-8 overflow-y-auto"
-            >
-          {/* Header Bar: LocaleSwitcher (ع / EN) shown starting from Step 2 */}
-          <div className="flex items-center justify-between gap-2 border-b border-line/60 pb-3 min-h-[44px]">
-            <div className="flex items-center">
-              {step >= 1 ? (
-                <LocaleSwitcher
-                  compact
-                  onLocaleChange={(loc) => {
-                    setSelectedLang(loc);
-                    setActiveLocale(loc);
-                  }}
-                />
-              ) : (
-                <div className="h-9" aria-hidden="true" />
-              )}
+    <div
+      role={standalone ? "region" : "dialog"}
+      aria-modal={standalone ? undefined : "true"}
+      aria-labelledby={titleId}
+      className={
+        standalone
+          ? "w-full max-w-2xl mx-auto my-4 font-body"
+          : "fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-md animate-in fade-in duration-200 font-body"
+      }
+    >
+      <div
+        className="relative w-full max-w-2xl overflow-hidden rounded-2xl bg-[#0E131F] border border-white/10 shadow-2xl text-white font-body"
+        dir={isAr ? "rtl" : "ltr"}
+      >
+        {/* Top Header Bar */}
+        <div className="flex items-center justify-between border-b border-white/10 px-5 py-4 bg-white/[0.02]">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+              <ShieldCheck className="h-4 w-4" />
             </div>
-            <div className="flex items-center gap-1">
-              {Array.from({ length: TOTAL_STEPS }, (_, index) => (
-                <span
-                  key={index}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${
-                    index === step
-                      ? "w-6 bg-slate-900"
-                      : index < step
-                      ? "w-3 bg-emerald-500"
-                      : "w-1.5 bg-slate-200"
-                  }`}
-                />
-              ))}
+            <div>
+              <span id={titleId} className="text-sm font-semibold text-white block leading-tight">
+                {isAr ? "فاحص الامتثال الذكي للمؤسسات العُمانية" : "Oman SME Compliance Audit"}
+              </span>
+              <span className="text-[11px] text-white/50">
+                {step < 6
+                  ? isAr
+                    ? `السؤال ${step + 1} من ${TOTAL_QUESTIONS}`
+                    : `Question ${step + 1} of ${TOTAL_QUESTIONS}`
+                  : isAr
+                  ? "تقرير الامتثال المباشر"
+                  : "Instant Compliance Result"}
+              </span>
             </div>
           </div>
 
-          <p className="mt-3 text-xs font-semibold text-frost-dim">
-            {isAr
-              ? `الخطوة ${step + 1} من ${TOTAL_STEPS}`
-              : `Step ${step + 1} of ${TOTAL_STEPS}`}
-          </p>
+          {!standalone && (
+            <button
+              onClick={handleClose}
+              className="rounded-lg p-1.5 text-white/50 hover:bg-white/10 hover:text-white transition-colors"
+              aria-label="Close"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          )}
+        </div>
 
-          {/* Question 0: Language Selection */}
-          {step === 0 && (
-            <div className="mt-2 space-y-4">
-              <div>
-                <h2 id={titleId} className="space-y-1.5">
-                  <span className="block text-xl sm:text-2xl font-bold text-frost leading-tight" dir="rtl">
-                    ما هي لغة العرض المفضلة لديك؟
-                  </span>
-                  <span className="block text-base sm:text-lg font-medium text-frost/70 leading-normal" dir="ltr">
-                    What is your preferred language?
-                  </span>
-                </h2>
-              </div>
+        {/* Progress Line */}
+        {step < 6 && (
+          <div className="h-1 w-full bg-white/5">
+            <motion.div
+              className="h-full bg-gradient-to-r from-emerald-500 to-teal-400"
+              initial={{ width: "0%" }}
+              animate={{ width: `${progressPercent}%` }}
+              transition={{ duration: 0.3 }}
+            />
+          </div>
+        )}
 
-              <div 
-                className="relative grid grid-cols-2 gap-3 pt-2"
-                onMouseLeave={() => setHoveredLang(null)}
+        {/* Body Content */}
+        <div className="p-5 sm:p-7 min-h-[420px] flex flex-col justify-between">
+          <AnimatePresence mode="wait">
+            {/* QUESTION 1: Sector */}
+            {step === 0 && (
+              <motion.div
+                key="step-0"
+                initial={{ opacity: 0, x: isAr ? 20 : -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: isAr ? -20 : 20 }}
+                transition={{ duration: 0.2 }}
+                className="space-y-4"
               >
-                <motion.button
-                  type="button"
-                  whileTap={{ scale: 0.98 }}
-                  onMouseEnter={() => setHoveredLang("ar")}
-                  onFocus={() => setHoveredLang("ar")}
-                  onClick={() => handleLanguageSelect("ar")}
-                  className={`relative z-10 w-full rounded-2xl px-4 py-4 text-center font-bold text-[15px] transition-colors duration-200 border border-slate-200/80 bg-white/75 overflow-hidden ${
-                    (hoveredLang === "ar" || (!hoveredLang && selectedLang === "ar"))
-                      ? "text-white"
-                      : "text-gray-600 hover:text-white"
-                  }`}
-                >
-                  <AnimatePresence>
-                    {(hoveredLang === "ar" || (!hoveredLang && selectedLang === "ar")) && (
-                      <motion.div
-                        layoutId="ios26-lang-bubble"
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        className="absolute inset-0 z-[-1] bg-black shadow-[0_10px_25px_-5px_rgba(0,0,0,0.35),0_4px_10px_rgba(0,0,0,0.2)] rounded-2xl"
-                        transition={{
-                          type: "spring",
-                          stiffness: 450,
-                          damping: 30,
-                          mass: 0.7,
-                        }}
-                      >
-                        {/* iOS dynamic fluid sheen */}
-                        <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-transparent to-white/5 pointer-events-none rounded-2xl" />
-                        <div className="absolute -top-6 -left-6 size-24 bg-white/10 rounded-full blur-xl pointer-events-none" />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                  <span className="relative z-10 block">العربية (Arabic)</span>
-                </motion.button>
-
-                <motion.button
-                  type="button"
-                  whileTap={{ scale: 0.98 }}
-                  onMouseEnter={() => setHoveredLang("en")}
-                  onFocus={() => setHoveredLang("en")}
-                  onClick={() => handleLanguageSelect("en")}
-                  className={`relative z-10 w-full rounded-2xl px-4 py-4 text-center font-bold text-[15px] transition-colors duration-200 border border-slate-200/80 bg-white/75 overflow-hidden ${
-                    (hoveredLang === "en" || (!hoveredLang && selectedLang === "en"))
-                      ? "text-white"
-                      : "text-gray-600 hover:text-white"
-                  }`}
-                >
-                  <AnimatePresence>
-                    {(hoveredLang === "en" || (!hoveredLang && selectedLang === "en")) && (
-                      <motion.div
-                        layoutId="ios26-lang-bubble"
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        className="absolute inset-0 z-[-1] bg-black shadow-[0_10px_25px_-5px_rgba(0,0,0,0.35),0_4px_10px_rgba(0,0,0,0.2)] rounded-2xl"
-                        transition={{
-                          type: "spring",
-                          stiffness: 450,
-                          damping: 30,
-                          mass: 0.7,
-                        }}
-                      >
-                        {/* iOS dynamic fluid sheen */}
-                        <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-transparent to-white/5 pointer-events-none rounded-2xl" />
-                        <div className="absolute -top-6 -left-6 size-24 bg-white/10 rounded-full blur-xl pointer-events-none" />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                  <span className="relative z-10 block">English</span>
-                </motion.button>
-              </div>
-            </div>
-          )}
-
-          {/* Question 1: Mode Preference */}
-          {step === 1 && (
-            <div className="mt-2 space-y-4">
-              <div>
-                <h2 id={titleId} className="text-xl sm:text-2xl font-bold text-frost leading-snug">
-                  {isAr
-                    ? "هل تفضل تجربة فعلية للمنصة أو تجربة ديمو تفاعلية؟"
-                    : "Do you prefer a Real Platform Setup or an Interactive Demo?"}
-                </h2>
-                <p className="mt-1 text-sm text-frost-dim">
-                  {isAr
-                    ? "اختر طريقتك المفضلة لبدء استخدام واستكشاف Growlab"
-                    : "Select your preferred way to explore and start with Growlab"}
-                </p>
-              </div>
-
-              <div className="grid gap-3 pt-2">
-                {SURVEY_MODES.map((option) => {
-                  const isSelected = mode === option.id;
-                  return (
-                    <button
-                      key={option.id}
-                      type="button"
-                      onClick={() => setMode(option.id)}
-                      className={`w-full rounded-2xl p-4 text-start transition-all border ${
-                        isSelected
-                          ? "border-slate-900 bg-slate-900 text-white shadow-lg scale-[1.01]"
-                          : "border-line bg-white/70 hover:bg-white hover:border-slate-300 text-frost"
-                      }`}
-                    >
-                      <p className="font-bold text-[15px]">{isAr ? option.ar : option.en}</p>
-                      <p
-                        className={`mt-1 text-xs leading-relaxed ${
-                          isSelected ? "text-slate-300" : "text-frost-dim"
-                        }`}
-                      >
-                        {isAr ? option.descAr : option.descEn}
-                      </p>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* Question 2: Commercial Registration (CR vs Home / Freelancer vs Creator) */}
-          {step === 2 && (
-            <div className="mt-2 space-y-4">
-              <div>
-                <h2 id={titleId} className="text-xl sm:text-2xl font-bold text-frost leading-snug">
-                  {isAr
-                    ? "ما هو نوع نشاطك؟ وهل لديك سجل تجاري رسمي؟"
-                    : "What is your business type? Do you hold a Commercial Register (CR)?"}
-                </h2>
-                <p className="mt-1 text-sm text-frost-dim">
-                  {isAr
-                    ? "نخصص لك مسار التوثيق المناسب؛ أصحاب المشاريع المنزلية لا يحتاجون سجل تجاري!"
-                    : "We tailor the verification track; home businesses do not require a CR!"}
-                </p>
-              </div>
-
-              <div className="grid gap-3 pt-2">
-                {SURVEY_CR.map((option) => {
-                  const isSelected = cr === option.id;
-                  return (
-                    <button
-                      key={option.id}
-                      type="button"
-                      onClick={() => setCr(option.id)}
-                      className={`w-full rounded-2xl p-4 text-start transition-all border ${
-                        isSelected
-                          ? "border-slate-900 bg-slate-900 text-white shadow-lg scale-[1.01]"
-                          : "border-line bg-white/70 hover:bg-white hover:border-slate-300 text-frost"
-                      }`}
-                    >
-                      <p className="font-bold text-[15px]">{isAr ? option.ar : option.en}</p>
-                      <p
-                        className={`mt-1 text-xs leading-relaxed ${
-                          isSelected ? "text-slate-300" : "text-frost-dim"
-                        }`}
-                      >
-                        {isAr ? option.descAr : option.descEn}
-                      </p>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* Question 3: Product Type */}
-          {step === 3 && (
-            <div className="mt-2 space-y-4">
-              <div>
-                <h2 id={titleId} className="text-xl sm:text-2xl font-bold text-frost leading-snug">
-                  {isAr
-                    ? "ما هو نوع المنتجات أو الخدمات التي تقدمها؟"
-                    : "What type of products or services do you offer?"}
-                </h2>
-                <p className="mt-1 text-sm text-frost-dim">
-                  {isAr
-                    ? "يساعدنا ذلك في ضبط دورة الشحن، الدفع عند الاستلام، وتوصيل المندوبين"
-                    : "Helps configure your shipping loop, COD settlement, and delivery dispatch"}
-                </p>
-              </div>
-
-              <div className="grid gap-3 pt-2">
-                {SURVEY_PRODUCTS.map((option) => {
-                  const isSelected = product === option.id;
-                  return (
-                    <button
-                      key={option.id}
-                      type="button"
-                      onClick={() => setProduct(option.id)}
-                      className={`w-full rounded-2xl p-4 text-start transition-all border ${
-                        isSelected
-                          ? "border-slate-900 bg-slate-900 text-white shadow-lg scale-[1.01]"
-                          : "border-line bg-white/70 hover:bg-white hover:border-slate-300 text-frost"
-                      }`}
-                    >
-                      <p className="font-bold text-[15px]">{isAr ? option.ar : option.en}</p>
-                      <p
-                        className={`mt-1 text-xs leading-relaxed ${
-                          isSelected ? "text-slate-300" : "text-frost-dim"
-                        }`}
-                      >
-                        {isAr ? option.descAr : option.descEn}
-                      </p>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* Question 4: Sales Channels */}
-          {step === 4 && (
-            <div className="mt-2 space-y-4">
-              <div>
-                <h2 id={titleId} className="text-xl sm:text-2xl font-bold text-frost leading-snug">
-                  {isAr
-                    ? "كيف تبيع وتستقبل طلبات الزبائن حالياً؟"
-                    : "How do you currently capture and fulfill orders?"}
-                </h2>
-                <p className="mt-1 text-sm text-frost-dim">
-                  {isAr
-                    ? "سنبين لك كيف تربط قنواتك الحالية وتوقف ضياع الطلبات بين الرسائل"
-                    : "We will demonstrate how to connect your channels and prevent lost chat orders"}
-                </p>
-              </div>
-
-              <div className="grid gap-3 pt-2">
-                {SURVEY_CHANNELS.map((option) => {
-                  const isSelected = channel === option.id;
-                  return (
-                    <button
-                      key={option.id}
-                      type="button"
-                      onClick={() => setChannel(option.id)}
-                      className={`w-full rounded-2xl p-4 text-start transition-all border ${
-                        isSelected
-                          ? "border-slate-900 bg-slate-900 text-white shadow-lg scale-[1.01]"
-                          : "border-line bg-white/70 hover:bg-white hover:border-slate-300 text-frost"
-                      }`}
-                    >
-                      <p className="font-bold text-[15px]">{isAr ? option.ar : option.en}</p>
-                      <p
-                        className={`mt-1 text-xs leading-relaxed ${
-                          isSelected ? "text-slate-300" : "text-frost-dim"
-                        }`}
-                      >
-                        {isAr ? option.descAr : option.descEn}
-                      </p>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* Question 5: Primary Goal / Pain Point */}
-          {step === 5 && (
-            <div className="mt-2 space-y-4">
-              <div>
-                <h2 id={titleId} className="text-xl sm:text-2xl font-bold text-frost leading-snug">
-                  {isAr
-                    ? "ما هو التحدي الأكبر أو الهدف الرئيسي الذي تريد تحقيقه؟"
-                    : "What is your main challenge or primary objective to solve?"}
-                </h2>
-                <p className="mt-1 text-sm text-frost-dim">
-                  {isAr
-                    ? "لنركز لك في الجولة التوضيحية على الأداة التي تحل هذا التحدي بالذات"
-                    : "So our tour spotlights the exact tool that solves this primary challenge"}
-                </p>
-              </div>
-
-              <div className="grid gap-3 pt-2">
-                {SURVEY_GOALS.map((option) => {
-                  const isSelected = goal === option.id;
-                  return (
-                    <button
-                      key={option.id}
-                      type="button"
-                      onClick={() => setGoal(option.id)}
-                      className={`w-full rounded-2xl p-4 text-start transition-all border ${
-                        isSelected
-                          ? "border-slate-900 bg-slate-900 text-white shadow-lg scale-[1.01]"
-                          : "border-line bg-white/70 hover:bg-white hover:border-slate-300 text-frost"
-                      }`}
-                    >
-                      <p className="font-bold text-[15px]">{isAr ? option.ar : option.en}</p>
-                      <p
-                        className={`mt-1 text-xs leading-relaxed ${
-                          isSelected ? "text-slate-300" : "text-frost-dim"
-                        }`}
-                      >
-                        {isAr ? option.descAr : option.descEn}
-                      </p>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* Step 6: Smart Diagnostic Forecast & Actionable Roadmap */}
-          {step === 6 && (
-            <div className="mt-2 space-y-5 relative">
-              <div className="rounded-2xl bg-gradient-to-br from-emerald-50 via-slate-50 to-teal-50/50 p-5 border border-emerald-200/60 relative z-10">
-                <div className="flex items-center gap-2">
-                  <span className="rounded-full bg-emerald-600 px-2.5 py-0.5 text-[11px] font-bold text-white uppercase">
-                    {isAr ? result.badgeAr : result.badgeEn}
-                  </span>
-                  <span className="text-xs font-semibold text-emerald-900">
-                    {isAr ? "تحليل الذكاء الاصطناعي لاحتياجك" : "AI Needs Assessment"}
-                  </span>
+                <div className="space-y-1.5">
+                  <div className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
+                    <Building2 className="h-3.5 w-3.5" />
+                    <span>{isAr ? "الخطوة الأولى: تحديد النشاط" : "Step 1: Business Sector"}</span>
+                  </div>
+                  <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+                    {isAr ? "ما نوع نشاطك التجاري في سلطنة عُمان؟" : "What is your business sector in Oman?"}
+                  </h3>
+                  <p className="text-sm text-white/60">
+                    {isAr
+                      ? "تختلف نسب التعمين والاشتراطات البلدية بحسب القطاع الاقتصادي المعتمد."
+                      : "Omanisation quotas and permits vary based on your sector."}
+                  </p>
                 </div>
 
-                <h2 id={titleId} className="mt-2 text-xl font-bold text-slate-900 leading-snug">
-                  {isAr ? result.titleAr : result.titleEn}
-                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2">
+                  {SECTOR_OPTIONS.map((opt) => {
+                    const isSelected = sector === opt.id;
+                    return (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        onClick={() => handleSectorSelect(opt.id)}
+                        className={`group relative flex items-start gap-3 p-3.5 rounded-xl border text-start transition-all ${
+                          isSelected
+                            ? "border-emerald-500/60 bg-emerald-500/10 shadow-lg shadow-emerald-500/5 ring-1 ring-emerald-500/30"
+                            : "border-white/10 bg-white/[0.03] hover:border-white/20 hover:bg-white/[0.06]"
+                        }`}
+                      >
+                        <div
+                          className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border transition-colors ${
+                            isSelected
+                              ? "border-emerald-500/40 bg-emerald-500/20 text-emerald-400"
+                              : "border-white/10 bg-white/5 text-white/60 group-hover:text-white"
+                          }`}
+                        >
+                          <Building2 className="h-4 w-4" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between">
+                            <span className="font-semibold text-sm text-white">{isAr ? opt.ar : opt.en}</span>
+                            <span className="text-[11px] font-mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">
+                              {opt.targetOmanisation}% {isAr ? "تعمين" : "target"}
+                            </span>
+                          </div>
+                          <p className="text-xs text-white/50 mt-1 leading-relaxed line-clamp-2">
+                            {isAr ? opt.descAr : opt.descEn}
+                          </p>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </motion.div>
+            )}
 
-                <p className="mt-2 text-[13px] leading-relaxed text-slate-700">
-                  {isAr ? result.pathDescriptionAr : result.pathDescriptionEn}
-                </p>
-              </div>
+            {/* QUESTION 2: Total Employees */}
+            {step === 1 && (
+              <motion.div
+                key="step-1"
+                initial={{ opacity: 0, x: isAr ? 20 : -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: isAr ? -20 : 20 }}
+                transition={{ duration: 0.2 }}
+                className="space-y-6"
+              >
+                <div className="space-y-1.5">
+                  <div className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
+                    <Users className="h-3.5 w-3.5" />
+                    <span>{isAr ? "الخطوة الثانية: القوى العاملة" : "Step 2: Workforce Size"}</span>
+                  </div>
+                  <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+                    {isAr ? "كم إجمالي عدد الموظفين في مؤسستك؟" : "How many total employees do you have?"}
+                  </h3>
+                  <p className="text-sm text-white/60">
+                    {isAr
+                      ? "يشمل ذلك جميع الموظفين (عُمانيين ووافدين) المسجلين في المؤسسة."
+                      : "Includes all registered staff (Omani nationals & expatriates)."}
+                  </p>
+                </div>
 
-              {/* Step by step tour preview */}
-              <div className="space-y-2.5">
-                <p className="text-xs font-bold text-slate-800 uppercase tracking-wider">
-                  {isAr ? "المحطات التي سنرشدك لتجربتها خطوة بخطوة:" : "Key stops you will explore:"}
-                </p>
-                <div className="space-y-2">
-                  {(isAr ? result.keyStepsAr : result.keyStepsEn).map((st, i) => (
-                    <div
-                      key={i}
-                      className="flex items-start gap-2.5 rounded-xl border border-line bg-white/80 p-3 text-xs text-slate-800 shadow-sm"
+                <div className="p-6 rounded-2xl bg-white/[0.03] border border-white/10 flex flex-col items-center justify-center space-y-4">
+                  <div className="flex items-center gap-4">
+                    <button
+                      type="button"
+                      onClick={() => setTotalEmployees((n) => Math.max(1, n - 1))}
+                      className="h-12 w-12 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xl flex items-center justify-center border border-white/10 transition-all active:scale-95"
                     >
-                      <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-slate-900 font-bold text-[10px] text-white">
-                        {i + 1}
+                      -
+                    </button>
+                    <div className="text-center px-4">
+                      <span className="font-mono text-5xl font-extrabold text-white tracking-tight">
+                        {totalEmployees}
                       </span>
-                      <span className="font-medium leading-relaxed">{st}</span>
+                      <span className="block text-xs text-white/50 mt-1">
+                        {isAr ? "موظف مسجل" : "Registered staff"}
+                      </span>
                     </div>
+                    <button
+                      type="button"
+                      onClick={() => setTotalEmployees((n) => n + 1)}
+                      className="h-12 w-12 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xl flex items-center justify-center border border-white/10 transition-all active:scale-95"
+                    >
+                      +
+                    </button>
+                  </div>
+
+                  {/* Quick Select Buttons */}
+                  <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
+                    {[1, 3, 5, 10, 20, 50].map((num) => (
+                      <button
+                        key={num}
+                        type="button"
+                        onClick={() => setTotalEmployees(num)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium border transition-all ${
+                          totalEmployees === num
+                            ? "bg-emerald-500 text-black border-emerald-400 font-bold"
+                            : "bg-white/5 text-white/70 border-white/10 hover:bg-white/10 hover:text-white"
+                        }`}
+                      >
+                        {num} {isAr ? "موظف" : "staff"}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex justify-between items-center pt-2">
+                  <button
+                    type="button"
+                    onClick={handleBack}
+                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-white/10 bg-white/5 text-white/70 hover:bg-white/10 text-sm font-medium transition-all"
+                  >
+                    {isAr ? <ArrowRight className="h-4 w-4" /> : <ArrowLeft className="h-4 w-4" />}
+                    <span>{isAr ? "السابق" : "Back"}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleTotalEmployeesSubmit}
+                    className="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-sm font-bold shadow-lg shadow-emerald-500/20 transition-all active:scale-95"
+                  >
+                    <span>{isAr ? "متابعة" : "Continue"}</span>
+                    {isAr ? <ArrowLeft className="h-4 w-4" /> : <ArrowRight className="h-4 w-4" />}
+                  </button>
+                </div>
+              </motion.div>
+            )}
+
+            {/* QUESTION 3: Omani Employees */}
+            {step === 2 && (
+              <motion.div
+                key="step-2"
+                initial={{ opacity: 0, x: isAr ? 20 : -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: isAr ? -20 : 20 }}
+                transition={{ duration: 0.2 }}
+                className="space-y-6"
+              >
+                <div className="space-y-1.5">
+                  <div className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
+                    <UserCheck className="h-3.5 w-3.5" />
+                    <span>{isAr ? "الخطوة الثالثة: التعمين" : "Step 3: Omanisation"}</span>
+                  </div>
+                  <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+                    {isAr ? "كم عدد الموظفين العُمانيين من ضمنهم؟" : "How many of them are Omani nationals?"}
+                  </h3>
+                  <p className="text-sm text-white/60">
+                    {isAr
+                      ? `النسبة الإلزامية لنشاط ${SECTOR_OPTIONS.find((s) => s.id === sector)?.ar || "نشاطك"} هي ${targetRateForSelectedSector}%.`
+                      : `Mandatory target is ${targetRateForSelectedSector}%.`}
+                  </p>
+                </div>
+
+                <div className="p-6 rounded-2xl bg-white/[0.03] border border-white/10 flex flex-col items-center justify-center space-y-4">
+                  <div className="flex items-center gap-4">
+                    <button
+                      type="button"
+                      onClick={() => setOmaniEmployees((n) => Math.max(0, n - 1))}
+                      className="h-12 w-12 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xl flex items-center justify-center border border-white/10 transition-all active:scale-95"
+                    >
+                      -
+                    </button>
+                    <div className="text-center px-4">
+                      <span className="font-mono text-5xl font-extrabold text-white tracking-tight">
+                        {omaniEmployees}
+                      </span>
+                      <span className="block text-xs text-white/50 mt-1">
+                        {isAr ? "موظف عُماني" : "Omani staff"}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setOmaniEmployees((n) => Math.min(totalEmployees, n + 1))}
+                      className="h-12 w-12 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xl flex items-center justify-center border border-white/10 transition-all active:scale-95"
+                    >
+                      +
+                    </button>
+                  </div>
+
+                  {/* Live Omanisation Indicator */}
+                  <div className="w-full max-w-sm rounded-xl p-3 bg-white/[0.04] border border-white/10 flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-2">
+                      <span className="text-white/60">{isAr ? "نسبة التعمين الحالية:" : "Current Rate:"}</span>
+                      <span
+                        className={`font-mono font-bold ${
+                          liveOmanisationPct >= targetRateForSelectedSector ? "text-emerald-400" : "text-amber-400"
+                        }`}
+                      >
+                        {liveOmanisationPct}%
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-white/40">{isAr ? "المستهدف:" : "Target:"}</span>
+                      <span className="font-mono font-semibold text-white/80">{targetRateForSelectedSector}%</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex justify-between items-center pt-2">
+                  <button
+                    type="button"
+                    onClick={handleBack}
+                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-white/10 bg-white/5 text-white/70 hover:bg-white/10 text-sm font-medium transition-all"
+                  >
+                    {isAr ? <ArrowRight className="h-4 w-4" /> : <ArrowLeft className="h-4 w-4" />}
+                    <span>{isAr ? "السابق" : "Back"}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleOmaniEmployeesSubmit}
+                    className="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-sm font-bold shadow-lg shadow-emerald-500/20 transition-all active:scale-95"
+                  >
+                    <span>{isAr ? "متابعة" : "Continue"}</span>
+                    {isAr ? <ArrowLeft className="h-4 w-4" /> : <ArrowRight className="h-4 w-4" />}
+                  </button>
+                </div>
+              </motion.div>
+            )}
+
+            {/* QUESTION 4: CR Expiry Date */}
+            {step === 3 && (
+              <motion.div
+                key="step-3"
+                initial={{ opacity: 0, x: isAr ? 20 : -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: isAr ? -20 : 20 }}
+                transition={{ duration: 0.2 }}
+                className="space-y-5"
+              >
+                <div className="space-y-1.5">
+                  <div className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
+                    <Calendar className="h-3.5 w-3.5" />
+                    <span>{isAr ? "الخطوة الرابعة: السجل التجاري" : "Step 4: Commercial Registry"}</span>
+                  </div>
+                  <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+                    {isAr ? "هل تعرف تاريخ انتهاء سجلك التجاري؟" : "Do you know your CR expiration date?"}
+                  </h3>
+                  <p className="text-sm text-white/60">
+                    {isAr
+                      ? "انتهاء السجل التجاري أو رخصة البلدية يسبب غرامات تراكمية وتوقف المعاملات الحكومية."
+                      : "Expired CR or permits cause recurring penalties."}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => handleCrOption("yes")}
+                    className={`flex items-center gap-3 p-4 rounded-xl border text-start transition-all ${
+                      knowsCrExpiry === "yes"
+                        ? "border-emerald-500 bg-emerald-500/10 ring-1 ring-emerald-500/30"
+                        : "border-white/10 bg-white/[0.03] hover:border-white/20 hover:bg-white/[0.06]"
+                    }`}
+                  >
+                    <CheckCircle2
+                      className={`h-5 w-5 shrink-0 ${knowsCrExpiry === "yes" ? "text-emerald-400" : "text-white/40"}`}
+                    />
+                    <div>
+                      <span className="font-semibold text-sm text-white block">
+                        {isAr ? "نعم — سأدخل التاريخ" : "Yes — I will enter date"}
+                      </span>
+                      <span className="text-xs text-white/50">{isAr ? "لضبط عداد التنبيهات" : "To set reminder"}</span>
+                    </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleCrOption("unknown")}
+                    className={`flex items-center gap-3 p-4 rounded-xl border text-start transition-all ${
+                      knowsCrExpiry === "unknown"
+                        ? "border-amber-500/60 bg-amber-500/10 ring-1 ring-amber-500/30"
+                        : "border-white/10 bg-white/[0.03] hover:border-white/20 hover:bg-white/[0.06]"
+                    }`}
+                  >
+                    <AlertTriangle
+                      className={`h-5 w-5 shrink-0 ${
+                        knowsCrExpiry === "unknown" ? "text-amber-400" : "text-white/40"
+                      }`}
+                    />
+                    <div>
+                      <span className="font-semibold text-sm text-white block">{isAr ? "لا أعرف بدقة" : "I am not sure"}</span>
+                      <span className="text-xs text-white/50">{isAr ? "سيتم التنبيه لمراجعته" : "Audit needed"}</span>
+                    </div>
+                  </button>
+                </div>
+
+                {knowsCrExpiry === "yes" && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    className="p-4 rounded-xl bg-white/[0.04] border border-white/10 space-y-2"
+                  >
+                    <label className="block text-xs font-medium text-white/80">
+                      {isAr ? "حدد تاريخ انتهاء السجل التجاري:" : "CR Expiry Date:"}
+                    </label>
+                    <div className="flex gap-2">
+                      <input
+                        type="date"
+                        value={crExpiryDate}
+                        onChange={(e) => setCrExpiryDate(e.target.value)}
+                        className="flex-1 rounded-lg bg-white/10 border border-white/20 px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-400"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleCrDateSubmit}
+                        className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-xs rounded-lg transition-all"
+                      >
+                        {isAr ? "تأكيد والتالي" : "Confirm & Next"}
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+
+                <div className="flex justify-between items-center pt-2">
+                  <button
+                    type="button"
+                    onClick={handleBack}
+                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-white/10 bg-white/5 text-white/70 hover:bg-white/10 text-sm font-medium transition-all"
+                  >
+                    {isAr ? <ArrowRight className="h-4 w-4" /> : <ArrowLeft className="h-4 w-4" />}
+                    <span>{isAr ? "السابق" : "Back"}</span>
+                  </button>
+                </div>
+              </motion.div>
+            )}
+
+            {/* QUESTION 5: Tawteen & Social Security */}
+            {step === 4 && (
+              <motion.div
+                key="step-4"
+                initial={{ opacity: 0, x: isAr ? 20 : -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: isAr ? -20 : 20 }}
+                transition={{ duration: 0.2 }}
+                className="space-y-5"
+              >
+                <div className="space-y-1.5">
+                  <div className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
+                    <FileText className="h-3.5 w-3.5" />
+                    <span>{isAr ? "الخطوة الخامسة: منصة توطين" : "Step 5: Tawteen Platform"}</span>
+                  </div>
+                  <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+                    {isAr
+                      ? "هل مؤسستك مسجلة في منصة توطين وصندوق الحماية الاجتماعية؟"
+                      : "Is your business registered on Tawteen platform?"}
+                  </h3>
+                  <p className="text-sm text-white/60">
+                    {isAr
+                      ? "التسجيل في توطين شرط أساسي لاحتساب نسب التعمين الرسمية وتفادي غرامات القوى العاملة."
+                      : "Required for official quota validation."}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                  {[
+                    { val: "yes" as const, ar: "نعم، مسجلة ومحدثة", en: "Yes, registered", icon: CheckCircle2, color: "emerald" },
+                    { val: "no" as const, ar: "لا، غير مسجلة", en: "No, not registered", icon: X, color: "red" },
+                    { val: "unknown" as const, ar: "لا أعرف / لست متأكداً", en: "Not sure", icon: AlertTriangle, color: "amber" },
+                  ].map((opt) => (
+                    <button
+                      key={opt.val}
+                      type="button"
+                      onClick={() => handleTawteenSelect(opt.val)}
+                      className={`flex flex-col items-center text-center p-4 rounded-xl border transition-all ${
+                        isRegisteredTawteen === opt.val
+                          ? "border-emerald-500 bg-emerald-500/10 ring-1 ring-emerald-500/30"
+                          : "border-white/10 bg-white/[0.03] hover:border-white/20 hover:bg-white/[0.06]"
+                      }`}
+                    >
+                      <opt.icon
+                        className={`h-6 w-6 mb-2 ${
+                          opt.color === "emerald"
+                            ? "text-emerald-400"
+                            : opt.color === "red"
+                            ? "text-red-400"
+                            : "text-amber-400"
+                        }`}
+                      />
+                      <span className="font-semibold text-sm text-white">{isAr ? opt.ar : opt.en}</span>
+                    </button>
                   ))}
                 </div>
-              </div>
-            </div>
-          )}
 
-          {/* Dialog Action Buttons */}
-          <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-line/60 pt-4">
-            <div className="flex items-center gap-2">
-              {step > 0 && (
-                <button
-                  type="button"
-                  onClick={() => setStep((s) => s - 1)}
-                  className="gl-survey-btn-ghost text-xs flex items-center gap-1.5"
-                >
-                  {isAr ? "السابق →" : "← Back"}
-                </button>
-              )}
-              <button
-                type="button"
-                onClick={() => finish("skip")}
-                className="text-xs text-frost-dim underline-offset-2 hover:underline hover:text-frost px-2"
-              >
-                {isAr ? "تخطي الاستبيان" : "Skip Survey"}
-              </button>
-            </div>
-
-            <div className="flex items-center gap-2">
-              {step < 6 ? (
-                <button
-                  type="button"
-                  disabled={!canNext}
-                  onClick={handleNext}
-                  className="gl-survey-btn-ink font-bold px-6 text-sm disabled:opacity-40"
-                >
-                  {isAr ? "متابعة ←" : "Next →"}
-                </button>
-              ) : (
-                <div className="flex flex-wrap items-center gap-2">
+                <div className="flex justify-between items-center pt-2">
                   <button
                     type="button"
-                    onClick={() => finish("tour")}
-                    className="gl-btn-primary !min-h-10 !py-2 !px-5 !text-xs"
+                    onClick={handleBack}
+                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-white/10 bg-white/5 text-white/70 hover:bg-white/10 text-sm font-medium transition-all"
                   >
-                    <span>{isAr ? "بدء الجولة التوضيحية الفورية" : "Launch Interactive Tour"}</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => finish("navigate", result.actionUrl)}
-                    className="gl-btn-secondary !min-h-10 !py-2 !px-5 !text-xs"
-                  >
-                    <span>{isAr ? result.actionLabelAr : result.actionLabelEn}</span>
+                    {isAr ? <ArrowRight className="h-4 w-4" /> : <ArrowLeft className="h-4 w-4" />}
+                    <span>{isAr ? "السابق" : "Back"}</span>
                   </button>
                 </div>
-              )}
-            </div>
-          </div>
+              </motion.div>
+            )}
+
+            {/* QUESTION 6: E-Invoicing & VAT */}
+            {step === 5 && (
+              <motion.div
+                key="step-5"
+                initial={{ opacity: 0, x: isAr ? 20 : -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: isAr ? -20 : 20 }}
+                transition={{ duration: 0.2 }}
+                className="space-y-5"
+              >
+                <div className="space-y-1.5">
+                  <div className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
+                    <Receipt className="h-3.5 w-3.5" />
+                    <span>{isAr ? "الخطوة السادسة: الفوترة والضرائب" : "Step 6: E-Invoicing & Tax"}</span>
+                  </div>
+                  <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+                    {isAr
+                      ? "هل تصدر فواتير إلكترونية حالياً متوافقة مع متطلبات جهاز الضرائب؟"
+                      : "Do you issue compliant e-invoices for tax authority?"}
+                  </h3>
+                  <p className="text-sm text-white/60">
+                    {isAr
+                      ? "جهاز الضرائب يفرض غرامات تصل لـ 5,000 ر.ع في حال عدم إصدار فواتير ضريبية نظامية."
+                      : "Non-compliant tax invoicing incurs penalties up to 5,000 OMR."}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                  {[
+                    { val: "yes" as const, ar: "نعم، نظامية ومتوافقة", en: "Yes, compliant", icon: CheckCircle2, color: "emerald" },
+                    { val: "no" as const, ar: "لا / فواتير ورقية عادية", en: "No / Manual only", icon: X, color: "red" },
+                    { val: "unknown" as const, ar: "لا أعرف الشروط", en: "Not sure", icon: AlertTriangle, color: "amber" },
+                  ].map((opt) => (
+                    <button
+                      key={opt.val}
+                      type="button"
+                      disabled={isSubmitting}
+                      onClick={() => handleEInvoicingSelect(opt.val)}
+                      className={`flex flex-col items-center text-center p-4 rounded-xl border transition-all ${
+                        hasEInvoicing === opt.val
+                          ? "border-emerald-500 bg-emerald-500/10 ring-1 ring-emerald-500/30"
+                          : "border-white/10 bg-white/[0.03] hover:border-white/20 hover:bg-white/[0.06]"
+                      }`}
+                    >
+                      <opt.icon
+                        className={`h-6 w-6 mb-2 ${
+                          opt.color === "emerald"
+                            ? "text-emerald-400"
+                            : opt.color === "red"
+                            ? "text-red-400"
+                            : "text-amber-400"
+                        }`}
+                      />
+                      <span className="font-semibold text-sm text-white">{isAr ? opt.ar : opt.en}</span>
+                    </button>
+                  ))}
+                </div>
+
+                <div className="flex justify-between items-center pt-2">
+                  <button
+                    type="button"
+                    onClick={handleBack}
+                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-white/10 bg-white/5 text-white/70 hover:bg-white/10 text-sm font-medium transition-all"
+                  >
+                    {isAr ? <ArrowRight className="h-4 w-4" /> : <ArrowLeft className="h-4 w-4" />}
+                    <span>{isAr ? "السابق" : "Back"}</span>
+                  </button>
+                </div>
+              </motion.div>
+            )}
+
+            {/* STEP 6: INSTANT DIAGNOSTIC RESULT SCREEN */}
+            {step === 6 && diagnostic && (
+              <motion.div
+                key="step-result"
+                initial={{ opacity: 0, scale: 0.96 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3 }}
+                className="space-y-6"
+              >
+                {/* Result Header Badge & Gauge */}
+                <div
+                  className={`p-5 rounded-2xl border ${
+                    diagnostic.status === "red"
+                      ? "bg-red-500/10 border-red-500/30"
+                      : diagnostic.status === "yellow"
+                      ? "bg-amber-500/10 border-amber-500/30"
+                      : "bg-emerald-500/10 border-emerald-500/30"
+                  }`}
+                >
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold ${
+                            diagnostic.status === "red"
+                              ? "bg-red-500 text-white"
+                              : diagnostic.status === "yellow"
+                              ? "bg-amber-500 text-black"
+                              : "bg-emerald-500 text-black"
+                          }`}
+                        >
+                          {diagnostic.status === "red" ? (
+                            <ShieldAlert className="h-3.5 w-3.5" />
+                          ) : diagnostic.status === "yellow" ? (
+                            <AlertTriangle className="h-3.5 w-3.5" />
+                          ) : (
+                            <ShieldCheck className="h-3.5 w-3.5" />
+                          )}
+                          {isAr ? diagnostic.statusLabelAr : diagnostic.statusLabelEn}
+                        </span>
+                        <span className="text-xs text-white/50">
+                          {isAr ? `نشاط: ${diagnostic.sectorLabelAr}` : "Audit Result"}
+                        </span>
+                      </div>
+                      <h3 className="text-lg sm:text-xl font-bold text-white">
+                        {isAr ? diagnostic.statusDescriptionAr : diagnostic.statusDescriptionEn}
+                      </h3>
+                    </div>
+
+                    <div className="flex items-center gap-3 sm:border-s sm:border-white/10 sm:ps-5 shrink-0">
+                      <div className="text-center">
+                        <span className="block font-mono text-3xl font-extrabold text-white">
+                          {diagnostic.score}%
+                        </span>
+                        <span className="text-[11px] text-white/50">{isAr ? "مؤشر الامتثال" : "Compliance"}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Estimated Fines & Omanisation Breakdown */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="p-4 rounded-xl bg-white/[0.04] border border-white/10 space-y-2">
+                    <span className="text-xs text-white/60 flex items-center gap-1.5">
+                      <TrendingDown className="h-3.5 w-3.5 text-rose-400" />
+                      {isAr ? "تقدير الغرامات المحتملة المعرض لها:" : "Estimated Fine Exposure:"}
+                    </span>
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="font-mono text-2xl font-extrabold text-rose-400">
+                        {diagnostic.totalEstimatedFine.toLocaleString()}
+                      </span>
+                      <span className="text-xs font-semibold text-rose-300/80">{isAr ? "ريال عُماني" : "OMR"}</span>
+                    </div>
+                    <p className="text-[11px] text-white/40">
+                      {isAr ? "يمكن تفادي 100% من هذه المبالغ بضبط التراخيص والتعمين." : "100% preventable via proactive compliance."}
+                    </p>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-white/[0.04] border border-white/10 space-y-2">
+                    <span className="text-xs text-white/60 flex items-center gap-1.5">
+                      <Users className="h-3.5 w-3.5 text-emerald-400" />
+                      {isAr ? "مؤشر التعمين الحالي:" : "Omanisation Status:"}
+                    </span>
+                    <div className="flex items-baseline gap-2">
+                      <span className="font-mono text-2xl font-extrabold text-white">
+                        {diagnostic.currentOmanisationRate}%
+                      </span>
+                      <span className="text-xs text-white/50">
+                        {isAr
+                          ? `(المطلوب: ${diagnostic.requiredOmanisationRate}%)`
+                          : `(Target: ${diagnostic.requiredOmanisationRate}%)`}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-white/50">
+                      {diagnostic.missingOmaniCount > 0
+                        ? isAr
+                          ? `⚠️ مطلوب تعيين ${diagnostic.missingOmaniCount} موظف عُماني لتفادي حظر المأذونيات.`
+                          : `Need to hire ${diagnostic.missingOmaniCount} Omani staff.`
+                        : isAr
+                        ? "✅ مستوفٍ لنسبة التعمين المقررة لقطاعك."
+                        : "Fully compliant with quota."}
+                    </p>
+                  </div>
+                </div>
+
+                {/* 2-3 Tailored Recommendations */}
+                <div className="space-y-2">
+                  <span className="text-xs font-semibold text-white/70 block">
+                    {isAr ? "التوصيات الفورية المقترحة لمنشأتك:" : "Instant Recommended Actions:"}
+                  </span>
+                  <div className="space-y-2">
+                    {diagnostic.recommendations.slice(0, 3).map((rec) => (
+                      <div
+                        key={rec.id}
+                        className="p-3 rounded-xl bg-white/[0.03] border border-white/10 flex items-start gap-2.5 text-xs text-white/80"
+                      >
+                        <Zap className="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" />
+                        <div>
+                          <span className="font-semibold text-white block mb-0.5">
+                            {isAr ? rec.titleAr : rec.titleEn}
+                          </span>
+                          <span className="text-white/60 leading-relaxed block">
+                            {isAr ? rec.descAr : rec.descEn}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Motivational Register & Dashboard Buttons */}
+                <div className="pt-2 border-t border-white/10 flex flex-col sm:flex-row gap-2.5">
+                  <button
+                    type="button"
+                    onClick={handleRegister}
+                    className="flex-1 inline-flex items-center justify-center gap-2 py-3 px-5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-sm font-bold shadow-lg shadow-emerald-500/20 transition-all active:scale-95"
+                  >
+                    <Sparkles className="h-4 w-4" />
+                    <span>{isAr ? "سجّل مجاناً لحفظ التقرير ومنع الغرامات" : "Register Free to Save Report"}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleGoDashboard}
+                    className="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-white/15 bg-white/5 hover:bg-white/10 text-white text-sm font-medium transition-all"
+                  >
+                    <span>{isAr ? "معاينة لوحة التحكم" : "View Dashboard Demo"}</span>
+                    {isAr ? <ArrowLeft className="h-4 w-4" /> : <ArrowRight className="h-4 w-4" />}
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </div>
-  )}
-</>
   );
 }
-
-

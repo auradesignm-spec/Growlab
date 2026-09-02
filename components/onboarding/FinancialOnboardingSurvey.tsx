@@ -37,6 +37,23 @@ export default function FinancialOnboardingSurvey({ locale = "ar" }: { locale?: 
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
 
+  const selectAndAdvance = (update: Partial<SurveyState>, nextStep: number) => {
+    setSurvey((prev) => ({ ...prev, ...update }));
+    if (nextStep <= 4) {
+      setTimeout(() => {
+        setStep(nextStep);
+      }, 200);
+    } else {
+      setTimeout(() => {
+        setIsAnalyzing(true);
+        setTimeout(() => {
+          setIsAnalyzing(false);
+          setIsCompleted(true);
+        }, 1200);
+      }, 200);
+    }
+  };
+
   const handleNext = () => {
     if (step < 4) {
       setStep(step + 1);
@@ -124,7 +141,7 @@ export default function FinancialOnboardingSurvey({ locale = "ar" }: { locale?: 
                   <button
                     key={p.id}
                     type="button"
-                    onClick={() => setSurvey({ ...survey, platform: p.id })}
+                    onClick={() => selectAndAdvance({ platform: p.id }, 2)}
                     className={`rounded-xl border p-4 text-right transition ${
                       survey.platform === p.id
                         ? "border-amber-500 bg-amber-500/10 ring-1 ring-amber-500"
@@ -155,7 +172,7 @@ export default function FinancialOnboardingSurvey({ locale = "ar" }: { locale?: 
                   <button
                     key={c.id}
                     type="button"
-                    onClick={() => setSurvey({ ...survey, adChannel: c.id })}
+                    onClick={() => selectAndAdvance({ adChannel: c.id }, 3)}
                     className={`rounded-xl border p-4 text-right transition ${
                       survey.adChannel === c.id
                         ? "border-amber-500 bg-amber-500/10 ring-1 ring-amber-500"
@@ -186,7 +203,7 @@ export default function FinancialOnboardingSurvey({ locale = "ar" }: { locale?: 
                   <button
                     key={m.id}
                     type="button"
-                    onClick={() => setSurvey({ ...survey, trackingMethod: m.id })}
+                    onClick={() => selectAndAdvance({ trackingMethod: m.id }, 4)}
                     className={`rounded-xl border p-4 text-right transition ${
                       survey.trackingMethod === m.id
                         ? "border-amber-500 bg-amber-500/10 ring-1 ring-amber-500"
@@ -217,7 +234,7 @@ export default function FinancialOnboardingSurvey({ locale = "ar" }: { locale?: 
                   <button
                     key={pt.id}
                     type="button"
-                    onClick={() => setSurvey({ ...survey, painPoint: pt.id })}
+                    onClick={() => selectAndAdvance({ painPoint: pt.id }, 5)}
                     className={`rounded-xl border p-4 text-right transition ${
                       survey.painPoint === pt.id
                         ? "border-amber-500 bg-amber-500/10 ring-1 ring-amber-500"

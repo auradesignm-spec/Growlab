@@ -61,6 +61,7 @@ const config: Config = {
         },
       },
       fontFamily: {
+        sans: ["var(--font-plex-arabic)", "sans-serif"],
         display: ["var(--font-plex-arabic)", "sans-serif"],
         body: ["var(--font-plex-arabic)", "sans-serif"],
         west: ["var(--font-plex-arabic)", "sans-serif"],

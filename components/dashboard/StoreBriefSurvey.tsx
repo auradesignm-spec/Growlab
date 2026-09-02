@@ -74,7 +74,10 @@ export default function StoreBriefSurvey({ initialName = "" }: { initialName?: s
                 type="button"
                 aria-pressed={audienceId === row.id}
                 className={`gl-survey-option${audienceId === row.id ? " is-on" : ""}`}
-                onClick={() => setAudienceId(row.id)}
+                onClick={() => {
+                  setAudienceId(row.id);
+                  setTimeout(() => setStep(2), 200);
+                }}
               >
                 {ar ? row.ar : row.en}
               </button>

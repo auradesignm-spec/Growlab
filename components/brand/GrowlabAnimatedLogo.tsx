@@ -169,18 +169,18 @@ export default function GrowlabAnimatedLogo({
           className="relative z-10 overflow-hidden pl-1"
         >
           <span
-            className={`block whitespace-nowrap text-[20px] font-brand tracking-tight leading-none ${
+            className={`block whitespace-nowrap text-[19px] font-bold tracking-tight leading-none ${
               isDark ? "text-white" : "text-[#111318]"
             } ${textClassName}`}
-            style={{ letterSpacing: "-0.035em" }}
+            style={{ letterSpacing: "-0.02em" }}
           >
-            <span className="font-extrabold">Grow</span>
+            <span className="font-extrabold text-emerald-600 dark:text-emerald-400 me-1">مساعد</span>
             <span
-              className={`font-normal ${
-                isDark ? "text-white/90" : "text-[#111318]"
+              className={`font-bold ${
+                isDark ? "text-white" : "text-[#111318]"
               }`}
             >
-              lab
+              ريادة
             </span>
           </span>
         </motion.div>

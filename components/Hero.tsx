@@ -1,394 +1,296 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
-import { useState, useEffect } from "react";
+import { useLocale } from "next-intl";
+import { useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
+  ShieldCheck,
+  ShieldAlert,
+  AlertTriangle,
   Sparkles,
-  ShoppingBag,
-  Coins,
-  DollarSign,
   Users,
-  Check,
-  TrendingUp,
-  Package,
-  Play,
-  Layers,
-  BarChart3,
-  Truck,
+  Building2,
+  Calendar,
+  Receipt,
   CheckCircle2,
+  BellRing,
   Zap,
-  MousePointerClick,
-  RefreshCw,
-  Plus,
+  Play,
+  TrendingDown,
+  MessageCircle,
 } from "lucide-react";
-import { enterHref, SIGN_IN_HREF } from "@/lib/auth/paths";
-import { track } from "@/lib/analytics";
-import TourStartLink from "@/components/TourStartLink";
+import Link from "next/link";
 
 export default function Hero() {
-  const t = useTranslations("marketing.hero");
   const locale = useLocale();
-  const isAr = locale === "ar";
+  const isAr = locale !== "en";
 
-  const [activeCard, setActiveCard] = useState<number | null>(null);
-  const [orderPulse, setOrderPulse] = useState(18.5);
-  const [profitProgress, setProfitProgress] = useState(88);
-  const [catalogItems, setCatalogItems] = useState([
-    { id: 1, color: "bg-amber-400/90", active: true },
-    { id: 2, color: "bg-amber-500/80", active: false },
-    { id: 3, color: "bg-amber-600/90", active: true },
-  ]);
-  const [affiliateRate, setAffiliateRate] = useState(15);
-  const [badgeTrigger, setBadgeTrigger] = useState(false);
+  // Interactive micro-state for visual simulation
+  const [selectedSector, setSelectedSector] = useState<"retail" | "contracting" | "services">("retail");
+  const [staffCount, setStaffCount] = useState<number>(6);
+  const [omaniCount, setOmaniCount] = useState<number>(2);
 
-  const [tasks, setTasks] = useState([
-    { id: 1, text: isAr ? "مراجعة طلب صلالة COD (18.5 ر.ع)" : "Salalah COD order verified (18.5 OMR)", done: true },
-    { id: 2, text: isAr ? "تسوية نقد مسقط مع شركة الشحن" : "Muscat cash courier handover confirmed", done: true },
-    { id: 3, text: isAr ? "تفعيل عمولة المسوق لعطر اللبان" : "Frankincense creator link live (15%)", done: true },
-  ]);
-
-  const toggleTask = (id: number) => {
-    setTasks((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, done: !item.done } : item))
-    );
-    setBadgeTrigger(true);
-    setTimeout(() => setBadgeTrigger(false), 1200);
+  const sectorRates = {
+    retail: { name: isAr ? "تجارة وتجزئة" : "Retail", target: 35 },
+    contracting: { name: isAr ? "مقاولات وبناء" : "Contracting", target: 20 },
+    services: { name: isAr ? "خدمات واستشارات" : "Services", target: 30 },
   };
 
-  // Micro-interactions when clicking cards
-  const handleCardClick = (cardIndex: number) => {
-    setActiveCard(cardIndex);
-    if (cardIndex === 1) {
-      // Refresh order amount
-      setOrderPulse((prev) => +(prev + 4.2).toFixed(1));
-    } else if (cardIndex === 2) {
-      // Toggle catalog item
-      setCatalogItems((prev) =>
-        prev.map((item, idx) => ({ ...item, active: idx === Math.floor(Math.random() * prev.length) }))
-      );
-    } else if (cardIndex === 3) {
-      // Boost margin
-      setProfitProgress((prev) => (prev >= 98 ? 72 : prev + 6));
-    } else if (cardIndex === 4) {
-      // Change affiliate tier
-      setAffiliateRate((prev) => (prev === 15 ? 20 : prev === 20 ? 25 : 15));
-    }
+  const currentRate = Math.round((omaniCount / staffCount) * 100);
+  const targetRate = sectorRates[selectedSector].target;
+  const isCompliant = currentRate >= targetRate;
+  const missingOmanis = Math.max(0, Math.ceil((targetRate / 100) * staffCount) - omaniCount);
+  const estimatedFine = missingOmanis * 600 + (isCompliant ? 0 : 250);
+
+  const openQuiz = () => {
+    window.dispatchEvent(new CustomEvent("open-compliance-quiz"));
   };
 
   return (
     <section id="manifesto" className="relative overflow-x-clip scroll-mt-24 pb-14 pt-28 sm:pb-24 sm:pt-36">
-      {/* Subtle Background Floating Dollar & Currency Elements */}
+      {/* Background Decorative Ambient Elements */}
       <div className="pointer-events-none absolute inset-0 -z-0 overflow-hidden select-none" aria-hidden="true">
-        {/* Floating Dollar Icon 1 - Top Left */}
-        <div
-          className="gl-hero-bg-dollar-1 absolute top-[14%] left-[5%] sm:left-[8%] flex items-center justify-center rounded-2xl bg-emerald-500/[0.06] border border-emerald-500/15 p-2.5 sm:p-3 text-emerald-600/50 shadow-sm backdrop-blur-[1px]"
-          style={{ "--base-op": "0.45", animationDelay: "0s" } as React.CSSProperties}
-        >
-          <DollarSign className="size-4 sm:size-5" strokeWidth={2.4} />
-        </div>
-
-        {/* Floating Dollar Icon 2 - Top Right */}
-        <div
-          className="gl-hero-bg-dollar-2 absolute top-[16%] right-[6%] sm:right-[10%] flex items-center justify-center rounded-2xl bg-emerald-500/[0.06] border border-emerald-500/15 p-2 sm:p-2.5 text-emerald-600/45 shadow-sm backdrop-blur-[1px]"
-          style={{ "--base-op": "0.4", animationDelay: "1.2s" } as React.CSSProperties}
-        >
-          <DollarSign className="size-3.5 sm:size-4" strokeWidth={2.2} />
-        </div>
-
-        {/* Floating Dollar Icon 3 - Mid Right behind visual */}
-        <div
-          className="gl-hero-bg-dollar-3 absolute top-[52%] right-[3%] sm:right-[5%] flex items-center justify-center rounded-2xl bg-emerald-500/[0.07] border border-emerald-500/20 p-3 sm:p-3.5 text-emerald-600/50 shadow-sm backdrop-blur-[1px]"
-          style={{ "--base-op": "0.45", animationDelay: "2.5s" } as React.CSSProperties}
-        >
-          <DollarSign className="size-5 sm:size-6" strokeWidth={2.4} />
-        </div>
-
-        {/* Floating Dollar Icon 4 - Bottom Left */}
-        <div
-          className="gl-hero-bg-dollar-1 absolute bottom-[12%] left-[6%] sm:left-[12%] flex items-center justify-center rounded-xl bg-emerald-500/[0.05] border border-emerald-500/10 p-2 text-emerald-600/35 shadow-sm"
-          style={{ "--base-op": "0.35", animationDelay: "3.5s" } as React.CSSProperties}
-        >
-          <DollarSign className="size-3.5 sm:size-4" strokeWidth={2} />
-        </div>
-
-        {/* Floating Dollar Icon 5 - Center Top Subtle Drift */}
-        <div
-          className="gl-hero-bg-dollar-3 absolute top-[8%] left-[45%] sm:left-[48%] flex items-center justify-center rounded-xl bg-emerald-500/[0.05] border border-emerald-500/10 p-2 text-emerald-600/30 shadow-sm"
-          style={{ "--base-op": "0.3", animationDelay: "0.8s" } as React.CSSProperties}
-        >
-          <DollarSign className="size-3 sm:size-3.5" strokeWidth={2} />
-        </div>
-
-        {/* Floating Dollar Icon 6 - Bottom Center-Right */}
-        <div
-          className="gl-hero-bg-dollar-2 absolute bottom-[8%] right-[16%] sm:right-[20%] flex items-center justify-center rounded-2xl bg-emerald-500/[0.06] border border-emerald-500/15 p-2.5 text-emerald-600/40 shadow-sm"
-          style={{ "--base-op": "0.4", animationDelay: "4.2s" } as React.CSSProperties}
-        >
-          <DollarSign className="size-4 sm:size-4.5" strokeWidth={2.2} />
+        <div className="gl-mesh pointer-events-none absolute inset-0 opacity-60" aria-hidden>
+          <span className="gl-mesh-orb gl-mesh-lime" />
+          <span className="gl-mesh-orb gl-mesh-cyan" />
+          <span className="gl-mesh-orb gl-mesh-sun" />
         </div>
       </div>
 
-      <div className="relative z-[1] mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+      <div className="mx-auto max-w-wrap px-5 sm:px-8 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
           
-          {/* RIGHT COLUMN IN RTL (Text & Actions) */}
-          <div className="lg:col-span-6 flex flex-col items-start text-start">
-            
-            {/* Main Headline */}
-            <h1 className="gl-hero-title text-start font-bold text-frost leading-tight">
-              {isAr ? (
-                <>
-                  <span className="block text-emerald-600 mb-1">
-                    <span className="gl-word">
-                      <span className="gl-word-inner">أوقف نزيف الكاش الضائع..</span>
-                    </span>
-                  </span>
-                  <span className="block mt-1 sm:mt-1.5 text-slate-900">
-                    <span className="gl-word">
-                      <span className="gl-word-inner">واعرف أرباحكـ الصافية بدقة تامة وضاعفها</span>
-                    </span>
-                  </span>
-                </>
-              ) : (
-                <>
-                  <span className="block text-emerald-600 mb-1">
-                    <span className="gl-word">
-                      <span className="gl-word-inner">Stop The &apos;Lost Cash&apos; Leak..</span>
-                    </span>
-                  </span>
-                  <span className="block mt-1 sm:mt-1.5 text-slate-900">
-                    <span className="gl-word">
-                      <span className="gl-word-inner">Know Your True Net Profits &amp; Multiply Them</span>
-                    </span>
-                  </span>
-                </>
-              )}
-            </h1>
-
-            {/* Subtitle / Lede */}
-            <p className="gl-enter-2 mt-4 max-w-xl text-[16.5px] sm:text-[18px] leading-relaxed text-slate-600">
-              {isAr
-                ? "منظومة Growlab الذكية تحول بيانات مبيعاتك المتناثرة إلى رؤية مالية واضحة، لترفع كفاءة تشغيلك وتضاعف صافي أرباحك."
-                : "Growlab's intelligent system turns your scattered sales and delivery data into crystal-clear financial clarity, boosting operational efficiency and scaling your true net profits."}
-            </p>
-
-            {/* CTA Buttons in Theme Style */}
-            <div className="gl-enter-3 mt-7 flex w-full flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-              <TourStartLink
-                href={enterHref("merchant")}
-                guide="open-account"
-                source="hero-merchant"
-                className="gl-iridescent-secondary-btn group min-h-12 w-full sm:w-auto px-7 rounded-full inline-flex items-center justify-center gap-2 font-semibold text-frost text-[15px] !border-frost/25 !bg-white/95"
-              >
-                <span>{t("ctaMerchant")}</span>
-                {isAr ? (
-                  <ArrowLeft className="size-4 transition-transform duration-200 group-hover:-translate-x-1" />
-                ) : (
-                  <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-1" />
-                )}
-              </TourStartLink>
-
-              <a
-                href="/demo"
-                className="gl-iridescent-secondary-btn group min-h-12 w-full sm:w-auto px-6 rounded-full inline-flex items-center justify-center gap-2.5 font-medium text-frost text-[15px]"
-                onClick={() => track("Demo Clicked", { source: "hero-demo" })}
-              >
-                <Play className="size-3.5 fill-frost/80 text-frost/80 transition-transform duration-200 group-hover:scale-110" />
-                <span>{isAr ? "ديمو تفاعلي فوري" : "Interactive Demo"}</span>
-              </a>
-
-              <a
-                href="/onboarding/survey"
-                className="gl-iridescent-secondary-btn group min-h-12 w-full sm:w-auto px-6 rounded-full inline-flex items-center justify-center gap-2 font-medium text-frost text-[14px]"
-              >
-                <Sparkles className="size-4 text-frost transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110" />
-                <span>{isAr ? "فحص التسريبات المالية" : "AI Profit Leak Audit"}</span>
-              </a>
+          {/* Main Text Content (Left / Right depending on RTL) */}
+          <div className="lg:col-span-7 space-y-6 text-start">
+            {/* Omani SME Badge */}
+            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3.5 py-1.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+              <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>{isAr ? "وكيل الذكاء الاصطناعي الأول للامتثال في سلطنة عُمان 🇴🇲" : "AI Compliance Agent for Oman SMEs 🇴🇲"}</span>
             </div>
 
-            {/* Trust Footer */}
-            <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-frost-dim">
-              <span className="flex items-center gap-1.5">
-                <span className="size-1.5 rounded-full bg-emerald-500" />
-                {isAr ? "بدون بطاقة ائتمان" : "No credit card required"}
+            {/* Pain-focused Big Title */}
+            <h1 className="gl-heading text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-frost leading-[1.15]">
+              {isAr ? "اعرف غرامتك المحتملة قبل أن تصلك" : "Know Your Potential Fine Before It Hits You"}
+            </h1>
+
+            {/* Clear, Actionable Subtitle */}
+            <p className="gl-lede text-base sm:text-lg text-frost-dim leading-relaxed max-w-2xl">
+              {isAr
+                ? "وكيل ذكاء اصطناعي للمؤسسات الصغيرة والمتوسطة في سلطنة عُمان يراقب التراخيص، نسب التعمين، الضرائب، والتصاريح، وينبهك استباقياً قبل أي غرامة عبر واتساب ولوحة تحكم موحدة."
+                : "An AI agent that monitors commercial licenses, Omanisation quotas, municipal permits, and VAT compliance for Omani SMEs—alerting you on WhatsApp before costly fines occur."}
+            </p>
+
+            {/* Key Value Bullets */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 text-xs sm:text-sm text-frost-dim">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
+                <span>{isAr ? "تتبع فوري لنسب التعمين وقرارات وزارة العمل" : "Real-time Omanisation tracking"}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
+                <span>{isAr ? "تنبيهات تلقائية عبر واتساب قبل انتهاء التراخيص" : "WhatsApp alerts before permit expiry"}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
+                <span>{isAr ? "فحص متطلبات الفوترة الإلكترونية وضريبة القيمة المضافة" : "VAT & e-invoicing audit"}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
+                <span>{isAr ? "تقارير شهرية جاهزة للاستشارات ومكاتب سند" : "Ready monthly compliance reports"}</span>
+              </div>
+            </div>
+
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-4">
+              <button
+                type="button"
+                onClick={openQuiz}
+                className="gl-btn-primary inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-xl font-bold text-base shadow-xl shadow-emerald-500/15 hover:shadow-emerald-500/25 transition-all active:scale-95"
+              >
+                <Sparkles className="h-4 w-4" />
+                <span>{isAr ? "ابدأ الفحص المجاني الآن" : "Start Free Compliance Audit"}</span>
+                {isAr ? <ArrowLeft className="h-4 w-4" /> : <ArrowRight className="h-4 w-4" />}
+              </button>
+
+              <Link
+                href="/dashboard"
+                className="gl-btn-ghost inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-semibold text-sm border border-line hover:border-frost-faint transition-all"
+              >
+                <span>{isAr ? "تجربة لوحة التحكم" : "Explore Dashboard Demo"}</span>
+              </Link>
+            </div>
+
+            {/* Micro Social Proof Under CTA */}
+            <div className="flex items-center gap-4 pt-2 text-xs text-frost-dim">
+              <span className="flex items-center gap-1.5 font-medium">
+                <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                {isAr ? "فحص فوري خلال ٦٠ ثانية" : "60-second instant check"}
               </span>
               <span className="text-frost-faint">•</span>
-              <span>{isAr ? "إعداد فوري في 60 ثانية" : "Instant 60s setup"}</span>
+              <span>{isAr ? "بدون بطاقة بنكية" : "No credit card required"}</span>
               <span className="text-frost-faint">•</span>
-              <a href={SIGN_IN_HREF} className="font-medium text-frost underline-offset-2 hover:underline">
-                {t("signIn")}
-              </a>
+              <span>{isAr ? "متوافق مع أنظمة سلطنة عُمان" : "100% Oman regulation compliant"}</span>
             </div>
           </div>
 
-          {/* LEFT COLUMN IN RTL (Platform Showcase Device) */}
-          <div className="lg:col-span-6 relative flex flex-col items-center justify-center pt-2 sm:pt-0">
-            
-            {/* Main Showcase Container */}
-            <div className="relative w-full max-w-[480px] rounded-[28px] border border-frost/15 bg-white/95 p-5 sm:p-6 shadow-[0_20px_50px_rgba(15,23,42,0.08)] backdrop-blur-xl">
+          {/* Interactive Compliance Radar Visual Card (Right / Left) */}
+          <div className="lg:col-span-5">
+            <div className="gl-tile relative rounded-2xl p-5 sm:p-6 border border-line bg-[#0D121F]/90 shadow-2xl backdrop-blur-md text-white space-y-5">
               
-              {/* Window Header */}
-              <div className="flex flex-col gap-2 border-b border-frost/10 pb-3.5 mb-4">
-                <div className="flex items-center justify-between">
+              {/* Card Header & Simulated Live Status */}
+              <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400">
+                    <ShieldCheck className="h-5 w-5" />
+                  </div>
                   <div>
-                    <div className="text-[11px] font-semibold text-frost-dim">
-                      Growlab Commerce • {isAr ? "لوحة التاجر" : "Merchant Hub"}
-                    </div>
-                    <h3 className="text-[17px] font-bold text-frost mt-0.5">
-                      {isAr ? "أدوات متجرك وأرباحك" : "Merchant Toolkit"}
-                    </h3>
-                  </div>
-                  <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 text-[11.5px] font-bold">
-                    <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                    <span>{isAr ? "مباشر" : "Live"}</span>
+                    <span className="text-xs font-mono uppercase tracking-wider text-white/50 block">
+                      {isAr ? "محاكي رادار الامتثال" : "Compliance Radar"}
+                    </span>
+                    <span className="text-sm font-bold text-white">
+                      {isAr ? "مؤسسة تجارية (مسقط)" : "Commercial Entity (Muscat)"}
+                    </span>
                   </div>
                 </div>
 
-                {/* Financial KPI Tags */}
-                <div className="flex items-center gap-2 pt-1">
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 font-bold border border-emerald-200 text-[11px]">
-                    <span className="size-1.5 rounded-full bg-emerald-500" />
-                    <span>{isAr ? "تحصيل مؤكد: 10,000 ريال" : "Verified Cash: 10,000 OMR"}</span>
-                  </div>
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-amber-50 text-amber-800 font-bold border border-amber-200 text-[11px]">
-                    <span>{isAr ? "فرق COD: 0 ريال" : "COD Discrepancy: 0 OMR"}</span>
-                  </div>
-                </div>
+                <span
+                  className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${
+                    isCompliant ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30" : "bg-amber-500/20 text-amber-300 border border-amber-500/30"
+                  }`}
+                >
+                  {isCompliant ? (
+                    <>
+                      <CheckCircle2 className="h-3.5 w-3.5" />
+                      <span>{isAr ? "امتثال آمن" : "Safe Zone"}</span>
+                    </>
+                  ) : (
+                    <>
+                      <AlertTriangle className="h-3.5 w-3.5" />
+                      <span>{isAr ? "خطر غرامة" : "Fine Risk"}</span>
+                    </>
+                  )}
+                </span>
               </div>
 
-              {/* 2x2 Feature Grid matching the sketch layout tailored strictly for Growlab */}
-              <div className="grid grid-cols-2 gap-3.5">
-                
-                {/* 1. SKY BLUE CARD: الطلبات والتوصيل COD */}
-                <div className="flex flex-col justify-between rounded-[20px] bg-[#e0f2fe]/90 border border-sky-200/60 p-3.5 text-center min-h-[142px]">
-                  <div className="flex flex-col items-center">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-sky-200/80 text-sky-700 mb-1.5 shadow-2xs">
-                      <Truck className="size-4 text-sky-700" />
-                    </div>
-                    <div className="text-[13px] font-bold text-slate-900">
-                      {isAr ? "الطلبات والتوصيل" : "Orders & COD"}
-                    </div>
-                    <div className="text-[10px] text-slate-600 mt-0.5">
-                      {isAr ? "متابعة الشحن والدفع عند الاستلام" : "Courier handover tracking"}
-                    </div>
-                  </div>
-
-                  <div className="mt-2 flex items-center justify-center">
-                    <div className="w-20 h-7 rounded-md bg-sky-200/70 p-1 flex items-center justify-between px-2">
-                      <div className="h-1.5 w-8 rounded-full bg-sky-500/80" />
-                      <span className="text-[9px] font-bold text-sky-800">18.5 ر.ع</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* 2. WARM SAND CARD: المتجر والمنتجات */}
-                <div className="flex flex-col justify-between rounded-[20px] bg-[#fef3c7]/90 border border-amber-200/60 p-3.5 text-center min-h-[142px]">
-                  <div className="flex flex-col items-center">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-amber-200/80 text-amber-800 mb-1.5 shadow-2xs">
-                      <ShoppingBag className="size-4 text-amber-800" />
-                    </div>
-                    <div className="text-[13px] font-bold text-slate-900">
-                      {isAr ? "المتجر والكتالوج" : "Store & Catalog"}
-                    </div>
-                    <div className="text-[10px] text-slate-600 mt-0.5">
-                      {isAr ? "إدارة المنتجات والمخزون" : "Products & storefront"}
-                    </div>
-                  </div>
-
-                  <div className="mt-2 flex items-center justify-center">
-                    <div className="w-20 h-7 rounded-md bg-amber-200/70 p-1 grid grid-cols-3 gap-1 items-center px-1.5">
-                      <div className="h-4 rounded-xs bg-amber-400/60" />
-                      <div className="h-4 rounded-xs bg-amber-400/40" />
-                      <div className="h-4 rounded-xs bg-amber-400/80" />
-                    </div>
-                  </div>
-                </div>
-
-                {/* 3. SOFT ROSE CARD: صافي الأرباح والتسوية */}
-                <div className="flex flex-col justify-between rounded-[20px] bg-[#ffe4e6]/90 border border-rose-200/60 p-3.5 text-center min-h-[142px]">
-                  <div className="flex flex-col items-center">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-rose-200/80 text-rose-700 mb-1.5 shadow-2xs">
-                      <Coins className="size-4 text-rose-700" />
-                    </div>
-                    <div className="text-[13px] font-bold text-slate-900">
-                      {isAr ? "صافي الأرباح" : "Net Margin"}
-                    </div>
-                    <div className="text-[10px] text-slate-600 mt-0.5">
-                      {isAr ? "حساب هوامش الربح بدقة" : "Real profit calculation"}
-                    </div>
-                  </div>
-
-                  <div className="mt-2 flex items-center justify-center">
-                    <div className="w-20 h-7 rounded-md bg-rose-200/70 p-1 flex items-end justify-between px-2 pb-0.5">
-                      <div className="w-2.5 h-2.5 rounded-t-xs bg-rose-400/50" />
-                      <div className="w-2.5 h-4 rounded-t-xs bg-rose-400/70" />
-                      <div className="w-2.5 h-5.5 rounded-t-xs bg-rose-500/90" />
-                    </div>
-                  </div>
-                </div>
-
-                {/* 4. SOFT MINT CARD: شبكة المسوقين والعمولات */}
-                <div className="flex flex-col justify-between rounded-[20px] bg-[#dcfce7]/90 border border-emerald-200/60 p-3.5 text-center min-h-[142px]">
-                  <div className="flex flex-col items-center">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-200/80 text-emerald-800 mb-1.5 shadow-2xs">
-                      <Users className="size-4 text-emerald-800" />
-                    </div>
-                    <div className="text-[13px] font-bold text-slate-900">
-                      {isAr ? "شبكة المسوقين" : "Creator Network"}
-                    </div>
-                    <div className="text-[10px] text-slate-600 mt-0.5">
-                      {isAr ? "روابط تتبع العمولات الذكية" : "Affiliate track links"}
-                    </div>
-                  </div>
-
-                  <div className="mt-2 flex items-center justify-center">
-                    <div className="w-20 h-7 rounded-md bg-emerald-200/70 p-1 flex items-center justify-center gap-1.5">
-                      <div className="h-4 w-4 rounded-full bg-emerald-500 flex items-center justify-center text-[8px] font-bold text-white">
-                        %
-                      </div>
-                      <div className="w-7 h-1.5 rounded-full bg-emerald-500/60" />
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-
-              {/* Floating Today's Tasks Widget (Matching reference image precisely) */}
-              <div className="absolute -bottom-6 -left-3 sm:-bottom-8 sm:-left-6 z-30 w-[220px] sm:w-[245px] rounded-[22px] border border-slate-200/80 bg-white/95 p-3.5 shadow-[0_14px_30px_rgba(15,23,42,0.10)] backdrop-blur-md">
-                <div className="text-[13px] font-bold text-slate-900 mb-2.5 text-start">
-                  {isAr ? "مهام اليوم" : "Today's Tasks"}
-                </div>
-
-                <div className="space-y-2">
-                  {tasks.map((task) => (
-                    <div
-                      key={task.id}
-                      onClick={() => toggleTask(task.id)}
-                      className="flex items-center justify-between gap-2.5 cursor-pointer text-start transition-opacity hover:opacity-80 select-none"
+              {/* Sector Quick Toggle */}
+              <div className="space-y-2">
+                <span className="text-xs text-white/60 block">{isAr ? "اختر نوع النشاط:" : "Select Sector:"}</span>
+                <div className="grid grid-cols-3 gap-1.5 p-1 rounded-xl bg-white/5 border border-white/10">
+                  {(["retail", "contracting", "services"] as const).map((sec) => (
+                    <button
+                      key={sec}
+                      type="button"
+                      onClick={() => setSelectedSector(sec)}
+                      className={`py-1.5 px-2 rounded-lg text-xs font-medium transition-all ${
+                        selectedSector === sec
+                          ? "bg-emerald-500 text-black font-bold shadow-md"
+                          : "text-white/70 hover:text-white"
+                      }`}
                     >
-                      <span
-                        className={`text-[11.5px] leading-snug ${
-                          task.done ? "line-through text-slate-600" : "text-slate-900 font-medium"
-                        }`}
-                      >
-                        {task.text}
-                      </span>
-                      <div className="shrink-0 flex items-center justify-center">
-                        <CheckCircle2
-                          className={`size-4 transition-colors ${
-                            task.done ? "text-slate-900" : "text-slate-300"
-                          }`}
-                        />
-                      </div>
-                    </div>
+                      {sectorRates[sec].name}
+                    </button>
                   ))}
                 </div>
               </div>
 
-            </div>
+              {/* Live Staff Sliders */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="p-3 rounded-xl bg-white/[0.03] border border-white/10">
+                  <div className="flex items-center justify-between text-xs text-white/60 mb-1">
+                    <span>{isAr ? "إجمالي العمالة" : "Total Staff"}</span>
+                    <span className="font-mono font-bold text-white">{staffCount}</span>
+                  </div>
+                  <input
+                    type="range"
+                    min={2}
+                    max={20}
+                    value={staffCount}
+                    onChange={(e) => {
+                      const val = Number(e.target.value);
+                      setStaffCount(val);
+                      if (omaniCount > val) setOmaniCount(val);
+                    }}
+                    className="w-full accent-emerald-400 cursor-pointer h-1.5 bg-white/20 rounded-lg"
+                  />
+                </div>
 
+                <div className="p-3 rounded-xl bg-white/[0.03] border border-white/10">
+                  <div className="flex items-center justify-between text-xs text-white/60 mb-1">
+                    <span>{isAr ? "الكوادر العُمانية" : "Omanis"}</span>
+                    <span className="font-mono font-bold text-emerald-400">{omaniCount}</span>
+                  </div>
+                  <input
+                    type="range"
+                    min={0}
+                    max={staffCount}
+                    value={omaniCount}
+                    onChange={(e) => setOmaniCount(Number(e.target.value))}
+                    className="w-full accent-emerald-400 cursor-pointer h-1.5 bg-white/20 rounded-lg"
+                  />
+                </div>
+              </div>
+
+              {/* Real-time Calculation Gauges */}
+              <div className="p-4 rounded-xl bg-white/[0.04] border border-white/10 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-white/70">{isAr ? "نسبة التعمين المحققة:" : "Omanisation Rate:"}</span>
+                  <div className="flex items-baseline gap-1.5">
+                    <span className={`font-mono text-xl font-extrabold ${isCompliant ? "text-emerald-400" : "text-amber-400"}`}>
+                      {currentRate}%
+                    </span>
+                    <span className="text-[11px] text-white/50">
+                      ({isAr ? "المستهدف:" : "Target:"} {targetRate}%)
+                    </span>
+                  </div>
+                </div>
+
+                {/* Progress bar */}
+                <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden">
+                  <div
+                    className={`h-full transition-all duration-300 ${
+                      isCompliant ? "bg-emerald-500" : "bg-amber-400"
+                    }`}
+                    style={{ width: `${Math.min(100, currentRate)}%` }}
+                  />
+                </div>
+
+                <div className="flex items-center justify-between pt-1 border-t border-white/10 text-xs">
+                  <span className="text-white/60">{isAr ? "تقدير الغرامات المحتملة:" : "Estimated Fine Risk:"}</span>
+                  <span className="font-mono font-bold text-rose-400 text-sm">
+                    {estimatedFine.toLocaleString()} {isAr ? "ر.ع" : "OMR"}
+                  </span>
+                </div>
+              </div>
+
+              {/* WhatsApp Notification Simulator Bubble */}
+              <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/25 flex items-start gap-2.5 text-xs text-white">
+                <div className="h-6 w-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
+                  <MessageCircle className="h-3.5 w-3.5" />
+                </div>
+                <div className="space-y-0.5 flex-1">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-emerald-400">{isAr ? "وكيل ريادة على واتساب" : "Riyada WhatsApp"}</span>
+                    <span className="text-[10px] text-white/40">{isAr ? "الآن" : "Just now"}</span>
+                  </div>
+                  <p className="text-white/80 text-[11px] leading-relaxed">
+                    {isAr
+                      ? `⚠️ تنبيه: متبقي ${missingOmanis > 0 ? `تعيين ${missingOmanis} موظف عُماني لتفادي حظر المعاملات` : "18 يوماً لتجديد رخصة البلدية — تجنّب غرامة 100 ر.ع."}`
+                      : "Regulatory alert received via WhatsApp."}
+                  </p>
+                </div>
+              </div>
+
+              {/* Card Action Button */}
+              <button
+                type="button"
+                onClick={openQuiz}
+                className="w-full py-2.5 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-md active:scale-95"
+              >
+                <Sparkles className="h-3.5 w-3.5" />
+                <span>{isAr ? "فحص شامل لكافة التراخيص والضرائب مجاناً" : "Audit All Permits & Taxes Free"}</span>
+              </button>
+            </div>
           </div>
 
         </div>
@@ -396,5 +298,3 @@ export default function Hero() {
     </section>
   );
 }
-
-
