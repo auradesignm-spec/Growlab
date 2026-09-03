@@ -1,1 +1,6 @@
-{}
+{
+  "installCommand": "npm install --legacy-peer-deps",
+  "buildCommand": "node scripts/vercel-build.mjs",
+  "framework": "nextjs",
+  "regions": ["iad1"]
+}
