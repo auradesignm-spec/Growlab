@@ -55,7 +55,7 @@
     overflow-x: clip;
     max-width: 100%;
     width: 100%;
-    font-family: var(--font-plex-arabic), system-ui, sans-serif;
+    font-family: var(--font-cairo), system-ui, sans-serif;
     @apply font-body text-[16px];
   }
 
