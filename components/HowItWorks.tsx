@@ -60,8 +60,8 @@ export default function HowItWorks() {
   };
 
   return (
-    <section id="how" className="relative scroll-mt-24 py-section">
-      <div className="mx-auto max-w-wrap px-5 sm:px-8">
+    <section id="how" className="relative scroll-mt-16 py-section">
+      <div className="mx-auto max-w-wrap px-4 sm:px-6 md:px-8">
         <Reveal>
           <div className="text-center max-w-2xl mx-auto space-y-3">
             <p className="gl-eyebrow text-emerald-700 font-semibold">
@@ -78,13 +78,13 @@ export default function HowItWorks() {
           </div>
         </Reveal>
 
-        <StageGlow className="mt-12" tone="cyan" place="center">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+        <StageGlow className="mt-8 sm:mt-12" tone="cyan" place="center">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
             {steps.map((step, idx) => {
               const Icon = step.icon;
               return (
                 <Reveal key={step.n} delay={idx * 60}>
-                  <div className="relative flex h-full flex-col justify-between p-6 rounded-2xl border border-slate-200/90 bg-white hover:border-emerald-400 hover:shadow-md transition-all shadow-sm group">
+                  <div className="relative flex h-full flex-col justify-between p-4 sm:p-5 md:p-6 rounded-2xl border border-slate-200/90 bg-white hover:border-emerald-400 hover:shadow-md transition-all shadow-sm group">
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
                         <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white transition-colors">

@@ -91,13 +91,13 @@ export default function Header() {
 
   return (
     <header
-      className={`fixed left-0 right-0 top-0 z-50 px-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-6 transition-all duration-300 ease-out will-change-transform ${
+      className={`fixed left-0 right-0 top-0 z-50 px-2 xs:px-3 pt-[max(0.5rem,env(safe-area-inset-top))] sm:px-6 transition-all duration-300 ease-out will-change-transform ${
         isVisible || open
           ? "translate-y-0 opacity-100"
           : "-translate-y-full opacity-0 pointer-events-none"
       }`}
     >
-      <div className="gl-nav-glass mx-auto flex h-14 max-w-wrap items-center justify-between gap-3 rounded-full ps-4 pe-2 sm:ps-6 sm:pe-2.5">
+      <div className="gl-nav-glass mx-auto flex h-12 sm:h-14 max-w-wrap items-center justify-between gap-2 sm:gap-3 rounded-full ps-3 pe-1.5 sm:ps-6 sm:pe-2.5">
         <GrowlabBrand ariaLabel={t("homeAria")} />
 
         <GlassBubbleTrack className="hidden items-center md:flex" aria-label={t("mainNav")}>
@@ -144,7 +144,7 @@ export default function Header() {
           />
           <nav
             id={menuId}
-            className="gl-nav-glass gl-nav-sheet relative z-50 mx-auto mt-2 w-full max-w-wrap rounded-3xl px-4 py-4 md:hidden"
+            className="gl-nav-glass gl-nav-sheet relative z-50 mx-auto mt-2 w-full max-w-wrap rounded-2xl sm:rounded-3xl px-3 sm:px-4 py-3 sm:py-4 md:hidden"
             aria-label={t("mobileNav")}
           >
             <GlassBubbleTrack persistPressed className="flex flex-col">

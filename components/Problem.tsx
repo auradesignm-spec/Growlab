@@ -52,8 +52,8 @@ export default function Problem() {
   ];
 
   return (
-    <section id="problem" className="relative scroll-mt-24 py-section border-y border-slate-200/80 bg-slate-50/50">
-      <div className="mx-auto max-w-wrap px-5 sm:px-8">
+    <section id="problem" className="relative scroll-mt-16 py-section border-y border-slate-200/80 bg-slate-50/50">
+      <div className="mx-auto max-w-wrap px-4 sm:px-6 md:px-8">
         <Reveal>
           <div className="text-center max-w-3xl mx-auto space-y-3">
             <p className="gl-eyebrow text-rose-600 font-semibold">
@@ -70,11 +70,11 @@ export default function Problem() {
           </div>
         </Reveal>
 
-        <StageGlow className="mt-12" tone="sun" place="center">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <StageGlow className="mt-8 sm:mt-12" tone="sun" place="center">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
             {problems.map((prob, idx) => (
               <Reveal key={prob.num} delay={idx * 60}>
-                <div className="relative p-6 rounded-2xl border border-slate-200/90 bg-white hover:border-rose-300 hover:shadow-md transition-all space-y-3 shadow-sm">
+                <div className="relative p-4 sm:p-5 md:p-6 rounded-2xl border border-slate-200/90 bg-white hover:border-rose-300 hover:shadow-md transition-all space-y-3 shadow-sm">
                   <div className="flex items-center justify-between">
                     <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-rose-50 border border-rose-100 text-rose-600">
                       <AlertOctagon className="h-5 w-5" />
@@ -97,8 +97,8 @@ export default function Problem() {
 
         {/* The Solution Banner */}
         <Reveal delay={160}>
-          <div className="mt-10 p-6 sm:p-8 rounded-2xl border border-emerald-700/40 bg-gradient-to-r from-emerald-950 via-teal-950 to-slate-950 shadow-xl text-white">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="mt-8 sm:mt-10 p-4 sm:p-6 md:p-8 rounded-2xl border border-emerald-700/40 bg-gradient-to-r from-emerald-950 via-teal-950 to-slate-950 shadow-xl text-white">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6">
               <div className="space-y-2.5 text-start">
                 <div className="inline-flex items-center gap-2 text-xs font-bold text-emerald-300 bg-emerald-500/20 px-3 py-1 rounded-full border border-emerald-500/30">
                   <ShieldCheck className="h-4 w-4" />

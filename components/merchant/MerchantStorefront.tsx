@@ -65,7 +65,7 @@ function BlockSection({
     if (!promoLive || !store.promo.headline) return null;
     const ends = store.promo.endsAt ? new Date(store.promo.endsAt) : null;
     return (
-      <div className="border-b border-line px-5 py-3 text-center text-[14px]" style={{ backgroundColor: `${accent}14` }}>
+      <div className="border-b border-line px-4 py-2.5 text-center text-[13px] sm:text-[14px]" style={{ backgroundColor: `${accent}14` }}>
         <strong style={{ color: accent }}>{store.promo.headline}</strong>
         {store.promo.body ? <span className="ms-2 text-frost-dim">{store.promo.body}</span> : null}
         {ends && Number.isFinite(ends.getTime()) ? (
@@ -79,7 +79,7 @@ function BlockSection({
 
   if (type === "intro") {
     return (
-      <section className={`mx-auto max-w-wrap px-5 py-12 sm:px-8 ${centered ? "text-center" : ""}`}>
+      <section className={`mx-auto max-w-wrap px-4 py-8 sm:px-6 sm:py-12 md:px-8 ${centered ? "text-center" : ""}`}>
         <p className="gl-eyebrow">{store.city || "Growlab"}</p>
         <div className={`mt-2 flex flex-wrap items-center gap-3 ${centered ? "justify-center" : ""}`}>
           <h1 className={`text-display-lg font-semibold ${centered ? "max-w-2xl" : "max-w-3xl"}`}>
@@ -102,7 +102,7 @@ function BlockSection({
   if (type === "hero") {
     if (!store.heroProduct) return null;
     return (
-      <section className="mx-auto max-w-wrap px-5 pb-12 sm:px-8">
+      <section className="mx-auto max-w-wrap px-4 pb-8 sm:px-6 sm:pb-12 md:px-8">
         <HeroCard
           storeSlug={store.slug}
           product={store.heroProduct}
@@ -117,9 +117,9 @@ function BlockSection({
   if (type === "catalog") {
     if (store.products.length === 0) return null;
     return (
-      <section className="mx-auto max-w-wrap px-5 pb-16 sm:px-8">
-        <h2 className={`text-[20px] font-semibold ${centered ? "text-center" : ""}`}>{productsHeading}</h2>
-        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <section className="mx-auto max-w-wrap px-4 pb-10 sm:px-6 sm:pb-16 md:px-8">
+        <h2 className={`text-[17px] sm:text-[19px] md:text-[20px] font-semibold ${centered ? "text-center" : ""}`}>{productsHeading}</h2>
+        <div className="mt-4 sm:mt-6 grid grid-cols-1 xs:grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
           {store.products.map((product) => (
             <HeroCard key={product.id} storeSlug={store.slug} product={product} accent={accent} />
           ))}
@@ -130,9 +130,9 @@ function BlockSection({
 
   // contact
   return (
-    <section className={`mx-auto max-w-wrap border-t border-line px-5 py-12 sm:px-8 ${centered ? "text-center" : ""}`}>
-      <h2 className="text-[20px] font-semibold">{contactHeading}</h2>
-      <p className={`mt-3 text-[15px] leading-relaxed text-frost-dim ${centered ? "mx-auto max-w-md" : "max-w-lg"}`}>
+    <section className={`mx-auto max-w-wrap border-t border-line px-4 py-8 sm:px-6 sm:py-12 md:px-8 ${centered ? "text-center" : ""}`}>
+      <h2 className="text-[17px] sm:text-[19px] md:text-[20px] font-semibold">{contactHeading}</h2>
+      <p className={`mt-2 sm:mt-3 text-[13px] sm:text-[14px] md:text-[15px] leading-relaxed text-frost-dim ${centered ? "mx-auto max-w-md" : "max-w-lg"}`}>
         {contactLede}
       </p>
       <p className="mt-4 text-[14px] text-frost">
@@ -169,13 +169,13 @@ function HeroCard({
           <div className="absolute inset-0 flex items-center justify-center text-frost-faint">—</div>
         )}
       </div>
-      <div className={`p-5 ${centered ? "text-center" : ""}`}>
-        <p className="text-[12px] text-frost-faint">{product.category}</p>
-        <h3 className="mt-1 text-[18px] font-semibold">{product.title}</h3>
+      <div className={`p-3 sm:p-4 md:p-5 ${centered ? "text-center" : ""}`}>
+        <p className="text-[11px] sm:text-[12px] text-frost-faint">{product.category}</p>
+        <h3 className="mt-1 text-[15px] sm:text-[17px] md:text-[18px] font-semibold">{product.title}</h3>
         {product.shortDescription ? (
-          <p className="mt-2 line-clamp-2 text-[14px] text-frost-dim">{product.shortDescription}</p>
+          <p className="mt-1.5 sm:mt-2 line-clamp-2 text-[12px] sm:text-[13px] md:text-[14px] text-frost-dim">{product.shortDescription}</p>
         ) : null}
-        <p className="mt-4 font-mono text-[18px]" style={{ color: accent }}>
+        <p className="mt-3 sm:mt-4 font-mono text-[15px] sm:text-[17px] md:text-[18px]" style={{ color: accent }}>
           {product.price.toFixed(2)} {product.currency}
         </p>
       </div>

@@ -91,7 +91,7 @@ export default function MerchantDashboard({
 
       <StockAlertToast products={data.products} locale={locale} onNavigateTab={changeTab} />
 
-      <div className="relative z-[1] mx-auto max-w-wrap px-4 pb-16 pt-6 sm:px-8 sm:pt-8">
+      <div className="relative z-[1] mx-auto max-w-wrap px-3 pb-16 pt-5 sm:px-6 sm:pt-7 md:px-8 md:pt-8">
         <header className="mb-6">
           <div className="flex items-center gap-3">
             <div className="relative">

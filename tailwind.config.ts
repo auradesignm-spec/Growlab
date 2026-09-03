@@ -73,12 +73,24 @@ const config: Config = {
         brand: ["var(--font-brand)", "system-ui", "sans-serif"],
       },
       fontSize: {
-        "display-xl": ["clamp(1.75rem,4.2vw,3.5rem)", { lineHeight: "1.1", letterSpacing: "-0.02em" }],
-        "display-lg": ["clamp(1.5rem,2.4vw,2rem)", { lineHeight: "1.2" }],
-        "display-md": ["clamp(1.25rem,2vw,1.5rem)", { lineHeight: "1.25" }],
+        "display-xl": ["clamp(1.6rem,5vw,3.5rem)", { lineHeight: "1.1", letterSpacing: "-0.02em" }],
+        "display-lg": ["clamp(1.35rem,3.5vw,2rem)", { lineHeight: "1.2" }],
+        "display-md": ["clamp(1.1rem,2.5vw,1.5rem)", { lineHeight: "1.25" }],
+        "display-sm": ["clamp(0.95rem,2vw,1.125rem)", { lineHeight: "1.4" }],
       },
       maxWidth: {
         wrap: "1200px",
+        "wrap-sm": "640px",
+        "wrap-md": "768px",
+        "wrap-lg": "1024px",
+      },
+      screens: {
+        xs: "400px",
+        sm: "640px",
+        md: "768px",
+        lg: "1024px",
+        xl: "1280px",
+        "2xl": "1536px",
       },
       borderRadius: {
         none: "0",
@@ -91,7 +103,8 @@ const config: Config = {
         1200: "1200ms",
       },
       spacing: {
-        section: "clamp(3.25rem, 8vw, 7.5rem)",
+        section: "clamp(2.5rem, 7vw, 7rem)",
+        "section-sm": "clamp(1.5rem, 5vw, 4rem)",
       },
       boxShadow: {
         overlay: "0 1px 2px rgba(15,23,42,0.05)",

@@ -53,8 +53,8 @@ export default function Compare() {
   ];
 
   return (
-    <section id="compare" className="relative scroll-mt-24 py-section">
-      <div className="mx-auto max-w-wrap px-5 sm:px-8">
+    <section id="compare" className="relative scroll-mt-16 py-section">
+      <div className="mx-auto max-w-wrap px-4 sm:px-6 md:px-8">
         <Reveal>
           <div className="text-center max-w-2xl mx-auto space-y-3">
             <p className="gl-eyebrow text-emerald-700 font-semibold">
@@ -71,11 +71,11 @@ export default function Compare() {
           </div>
         </Reveal>
 
-        <StageGlow className="mt-12" tone="cyan" place="center">
+        <StageGlow className="mt-8 sm:mt-12" tone="cyan" place="center">
           <div className="overflow-x-auto">
-            <div className="min-w-[640px] rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+              <div className="min-w-[560px] rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
               {/* Table Header */}
-              <div className="grid grid-cols-12 border-b border-slate-200 bg-slate-50/80 p-4 text-xs sm:text-sm font-bold text-slate-900">
+              <div className="grid grid-cols-12 border-b border-slate-200 bg-slate-50/80 p-3 sm:p-4 text-xs sm:text-sm font-bold text-slate-900">
                 <div className="col-span-4">{isAr ? "المعيار والخدمة" : "Feature / Standard"}</div>
                 <div className="col-span-4 text-emerald-700 flex items-center gap-1.5">
                   <ShieldCheck className="h-4 w-4 text-emerald-600" />
@@ -87,7 +87,7 @@ export default function Compare() {
               {/* Table Rows */}
               <div className="divide-y divide-slate-100">
                 {rows.map((row) => (
-                  <div key={row.titleAr} className="grid grid-cols-12 p-4 text-xs sm:text-sm items-start gap-3 hover:bg-slate-50/50 transition-colors">
+                  <div key={row.titleAr} className="grid grid-cols-12 p-2.5 sm:p-4 text-xs items-start gap-2 sm:gap-3 hover:bg-slate-50/50 transition-colors">
                     <div className="col-span-4 font-bold text-slate-900 pt-2">
                       {isAr ? row.titleAr : row.titleEn}
                     </div>

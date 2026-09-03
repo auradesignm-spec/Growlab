@@ -100,8 +100,8 @@ export default function TrustProof() {
   ];
 
   return (
-    <section id="proof" className="relative scroll-mt-24 py-section">
-      <div className="mx-auto max-w-wrap px-5 sm:px-8">
+    <section id="proof" className="relative scroll-mt-16 py-section">
+      <div className="mx-auto max-w-wrap px-4 sm:px-6 md:px-8">
         <Reveal>
           <div className="text-center max-w-2xl mx-auto space-y-3">
             <p className="gl-eyebrow text-emerald-700 font-semibold">
@@ -119,13 +119,13 @@ export default function TrustProof() {
         </Reveal>
 
         {/* Stats Grid */}
-        <StageGlow className="mt-12" tone="cyan" place="center">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <StageGlow className="mt-8 sm:mt-12" tone="cyan" place="center">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             {stats.map((stat, idx) => {
               const Icon = stat.icon;
               return (
                 <Reveal key={stat.labelAr} delay={idx * 60}>
-                  <div className="p-5 sm:p-6 rounded-2xl border border-slate-200/90 bg-white text-center space-y-2 shadow-sm hover:shadow-md transition-shadow">
+                  <div className="p-3 sm:p-4 md:p-5 lg:p-6 rounded-2xl border border-slate-200/90 bg-white text-center space-y-1 sm:space-y-2 shadow-sm hover:shadow-md transition-shadow">
                     <div className="flex h-10 w-10 mx-auto items-center justify-center rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-600">
                       <Icon className="h-5 w-5" />
                     </div>
@@ -146,7 +146,7 @@ export default function TrustProof() {
         </StageGlow>
 
         {/* Testimonials */}
-        <div className="mt-16">
+        <div className="mt-10 sm:mt-16">
           <Reveal>
             <div className="text-center mb-8">
               <h3 className="text-xl font-bold text-slate-900">
@@ -155,10 +155,10 @@ export default function TrustProof() {
             </div>
           </Reveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
             {testimonials.map((t, idx) => (
               <Reveal key={t.id} delay={idx * 60}>
-                <div className="flex flex-col justify-between p-6 rounded-2xl border border-slate-200/90 bg-white shadow-sm hover:shadow-md transition-shadow space-y-4">
+                <div className="flex flex-col justify-between p-4 sm:p-5 md:p-6 rounded-2xl border border-slate-200/90 bg-white shadow-sm hover:shadow-md transition-shadow space-y-3 sm:space-y-4">
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <div className="flex text-amber-400">

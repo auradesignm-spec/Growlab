@@ -100,7 +100,7 @@ export default function Hero() {
   return (
     <section
       id="manifesto"
-      className="relative overflow-x-clip scroll-mt-24 min-h-[calc(100svh-4rem)] lg:min-h-screen flex flex-col justify-center pt-28 pb-20 sm:pt-32 sm:pb-24 lg:pt-36 lg:pb-28 bg-[#fafcf9]"
+      className="relative overflow-x-clip scroll-mt-16 min-h-[calc(100svh-4rem)] lg:min-h-screen flex flex-col justify-center pt-20 pb-12 sm:pt-28 sm:pb-20 lg:pt-36 lg:pb-28 bg-[#fafcf9]"
     >
       {/* Subtle Light-to-Yellow-to-Green Ambient Gradient Background */}
       <div className="pointer-events-none absolute inset-0 -z-0 overflow-hidden select-none" aria-hidden="true">
@@ -118,12 +118,12 @@ export default function Hero() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-[1280px] px-6 sm:px-8 lg:px-12 relative z-10 w-full my-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 xl:gap-16 items-center">
+      <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-12 relative z-10 w-full my-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-10 lg:gap-14 xl:gap-16 items-center">
           
           {/* Main Text Content (Hero Content - Right column in RTL, Left in LTR) */}
           <motion.div
-            className="lg:col-span-7 space-y-6 sm:space-y-8 text-start"
+            className="lg:col-span-7 space-y-4 sm:space-y-6 md:space-y-8 text-start"
             initial="hidden"
             animate="visible"
             variants={{
@@ -148,7 +148,7 @@ export default function Hero() {
             {/* Word-by-Word Rising Title Animation (انيميشن الظهور كلمة كلمة تصعد) */}
             <motion.h1
               variants={titleContainerVariants}
-              className="font-heading text-4xl sm:text-5xl lg:text-[52px] xl:text-[60px] font-black tracking-tight text-[#0e1726] leading-[1.18] sm:leading-[1.16]"
+              className="font-heading text-3xl xs:text-4xl sm:text-5xl lg:text-[52px] xl:text-[60px] font-black tracking-tight text-[#0e1726] leading-[1.18] sm:leading-[1.16]"
             >
               <span className="sr-only">
                 {isAr ? "احمِ تجارتك من الغرامات التنظيمية بذكاء" : "Protect Your Business From Fines With Intelligence"}
@@ -172,7 +172,7 @@ export default function Hero() {
             {/* Clear, Actionable Subtitle with Generous Line Spacing & Balanced Weight */}
             <motion.p
               variants={itemFadeUpVariants}
-              className="font-body text-base sm:text-lg lg:text-[19px] text-[#3c4a42] font-normal leading-[1.8] max-w-xl"
+              className="font-body text-sm sm:text-base md:text-lg lg:text-[19px] text-[#3c4a42] font-normal leading-[1.75] sm:leading-[1.8] max-w-xl"
             >
               {isAr
                 ? "مساعد ريادة هو وكيلك الذكي للامتثال المؤسسي في سلطنة عُمان. تتبع التراخيص، نسب التعمين، وتجنب غرامات الضرائب والبلديات قبل وقوع المخالفة."
@@ -182,24 +182,24 @@ export default function Hero() {
             {/* Call-to-Action Buttons (Green Primary & Dark Secondary) */}
             <motion.div
               variants={itemFadeUpVariants}
-              className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2 sm:pt-4"
+              className="flex flex-col xs:flex-row items-stretch xs:items-center gap-3 sm:gap-4 pt-1 sm:pt-2 md:pt-4"
             >
               {/* Primary Green CTA */}
               <button
                 type="button"
                 onClick={openQuiz}
-                className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full font-bold text-sm sm:text-base text-white bg-[#10b981] hover:bg-[#006c49] shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/35 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2"
+                className="inline-flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 py-3 sm:py-4 rounded-full font-bold text-sm sm:text-base text-white bg-[#10b981] hover:bg-[#006c49] shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/35 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2"
               >
                 <span>{isAr ? "ابدأ الفحص المجاني الآن" : "Start Free Audit Now"}</span>
-                {isAr ? <ArrowLeft className="h-5 w-5" /> : <ArrowRight className="h-5 w-5" />}
+                {isAr ? <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5" /> : <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />}
               </button>
 
               {/* Dark Secondary CTA */}
               <Link
                 href="/dashboard"
-                className="inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-full font-bold text-sm sm:text-base text-white bg-[#0e1726] hover:bg-[#1a293f] border border-[#1a293f] shadow-md shadow-slate-900/10 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2"
+                className="inline-flex items-center justify-center gap-2 sm:gap-2.5 px-6 sm:px-8 py-3 sm:py-4 rounded-full font-bold text-sm sm:text-base text-white bg-[#0e1726] hover:bg-[#1a293f] border border-[#1a293f] shadow-md shadow-slate-900/10 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2"
               >
-                <LayoutDashboard className="h-5 w-5 text-slate-300" />
+                <LayoutDashboard className="h-4 w-4 sm:h-5 sm:w-5 text-slate-300" />
                 <span>{isAr ? "تجربة لوحة التحكم" : "Explore Dashboard"}</span>
               </Link>
             </motion.div>
@@ -207,7 +207,7 @@ export default function Hero() {
             {/* Micro Social Proof Under CTA adhering strictly to 8-pt Grid System */}
             <motion.div
               variants={itemFadeUpVariants}
-              className="flex flex-wrap items-center gap-6 sm:gap-8 pt-2 text-xs sm:text-sm text-[#4b5860] font-medium"
+              className="flex flex-wrap items-center gap-3 sm:gap-5 md:gap-8 pt-1 text-xs sm:text-sm text-[#4b5860] font-medium"
             >
               <span className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-[#10b981] stroke-[2.5]" />
@@ -226,7 +226,7 @@ export default function Hero() {
 
           {/* Interactive Compliance Radar Visual Card (Left column in RTL, Right in LTR) */}
           <motion.div
-            className="lg:col-span-5 relative mt-8 lg:mt-0 max-w-[480px] mx-auto lg:max-w-none w-full"
+            className="lg:col-span-5 relative mt-4 sm:mt-6 lg:mt-0 max-w-[480px] mx-auto lg:max-w-none w-full"
             initial={{ opacity: 0, y: 32, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}

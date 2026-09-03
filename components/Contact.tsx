@@ -73,17 +73,17 @@ export default function Contact() {
   }
 
   return (
-    <section id="contact" className="relative scroll-mt-24 py-section">
-      <div className="mx-auto max-w-wrap px-5 sm:px-8">
+    <section id="contact" className="relative scroll-mt-16 py-section">
+      <div className="mx-auto max-w-wrap px-4 sm:px-6 md:px-8">
         <Reveal>
           <p className="gl-eyebrow">{t("eyebrow")}</p>
           <h2 className="gl-heading mt-2 text-display-lg">{t("title")}</h2>
           <p className="gl-lede mt-4">{t("lede")}</p>
         </Reveal>
 
-        <div className="mt-11 grid grid-cols-1 items-start gap-8 md:grid-cols-2">
+        <div className="mt-8 sm:mt-11 grid grid-cols-1 items-start gap-5 sm:gap-8 md:grid-cols-2">
           <Reveal>
-          <form onSubmit={handleSubmit} noValidate aria-label={t("formAria")} className="gl-stage p-6 sm:p-8">
+          <form onSubmit={handleSubmit} noValidate aria-label={t("formAria")} className="gl-stage p-4 sm:p-6 md:p-8">
             <Field
               id="name"
               label={t("name")}
