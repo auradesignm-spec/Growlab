@@ -395,11 +395,24 @@ function HeaderUserMenuContent({
 
       {/* Sleek High-End Dropdown Menu */}
       {isOpen && (
-        <div
-          id="header-user-menu-dropdown"
-          className="absolute left-0 mt-2 w-64 origin-top-left rounded-2xl border border-slate-200/90 bg-white p-2 shadow-[0_20px_50px_rgba(15,23,42,0.14)] ring-1 ring-black/5 z-50 animate-in fade-in zoom-in-95 duration-150"
-          dir="rtl"
-        >
+        <>
+          {/* Mobile overlay backdrop */}
+          <div
+            className="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-sm sm:hidden"
+            onClick={() => setIsOpen(false)}
+            aria-hidden="true"
+          />
+
+          {/* Dropdown — bottom-sheet on mobile, floating on desktop */}
+          <div
+            id="header-user-menu-dropdown"
+            className="fixed bottom-0 inset-x-0 z-50 bg-white p-2 rounded-t-3xl border border-slate-200/90 shadow-[0_-8px_32px_rgba(15,23,42,0.14)] ring-1 ring-black/5 max-h-[85dvh] overflow-y-auto animate-in fade-in slide-in-from-bottom-4 duration-200 sm:fixed-[unset] sm:absolute sm:bottom-auto sm:inset-x-auto sm:left-0 sm:mt-2 sm:w-64 sm:origin-top-left sm:rounded-2xl sm:shadow-[0_20px_50px_rgba(15,23,42,0.14)] sm:max-h-none sm:overflow-y-visible sm:slide-in-from-bottom-0"
+            dir="rtl"
+          >
+            {/* Mobile drag handle */}
+            <div className="flex justify-center pb-2 pt-1 sm:hidden">
+              <div className="h-1 w-10 rounded-full bg-slate-200" />
+            </div>
           {/* User Info Header Block */}
           <div className="flex items-center gap-3 border-b border-slate-100 px-3 py-2.5 pb-3">
             <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-900 text-white font-bold shadow-sm border border-slate-200">
@@ -546,7 +559,11 @@ function HeaderUserMenuContent({
               </div>
             </button>
           </div>
+
+          {/* Mobile safe area bottom padding */}
+          <div className="h-[env(safe-area-inset-bottom,0px)] sm:hidden" />
         </div>
+        </>
       )}
     </div>
   );
