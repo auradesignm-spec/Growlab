@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 import GlassBubbleTrack from "@/components/GlassBubbleTrack";
 import { SIGN_IN_HREF } from "@/lib/auth/paths";
@@ -11,8 +10,6 @@ import { track } from "@/lib/analytics";
 import TourStartLink from "@/components/TourStartLink";
 import GrowlabBrand from "@/components/brand/GrowlabBrand";
 import HeaderUserMenu from "@/components/HeaderUserMenu";
-
-const CLERK_ENABLED = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
 
 const COMPACT_AUTH_LINK_CLASS =
   "group relative z-[1] inline-flex min-h-11 shrink-0 items-center justify-center whitespace-nowrap rounded-full px-4 text-[15px] font-medium min-w-[100px] overflow-hidden";
@@ -451,18 +448,12 @@ function HeaderAuth({
     return <HeaderUserMenu initialUser={currentUser} compact={compact} onNavigate={onNavigate} />;
   }
 
-  // If Clerk is enabled, handle via Clerk's SignedIn/SignedOut
-  if (CLERK_ENABLED) {
-    return (
-      <>
-        <SignedOut>{guest}</SignedOut>
-        <SignedIn>
-          <HeaderUserMenu compact={compact} onNavigate={onNavigate} />
-        </SignedIn>
-      </>
-    );
-  }
-
+  // Always render the sign-in CTA right away. Gating it behind Clerk's
+  // <SignedOut> made the header button vanish whenever the Clerk client
+  // never resolved in the visitor's browser (publishable key baked in at
+  // build time but unreachable/invalid at runtime), leaving the header
+  // with no CTA at all. The session fetch above already swaps in the user
+  // menu for signed-in users, so the Clerk gate added nothing but risk.
   return guest;
 }
 
