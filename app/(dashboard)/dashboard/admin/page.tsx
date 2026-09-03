@@ -46,6 +46,15 @@ export default async function AdminPage() {
           <p className="gl-eyebrow">{t("kicker")}</p>
           <h1 className="mt-4 font-display text-display-lg">{t("title")}</h1>
           <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-frost-dim">{t("lede")}</p>
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            <Link
+              href="/admin/knowledge-base"
+              className="inline-flex items-center gap-2 rounded-xl bg-emerald-500/20 px-4 py-2 text-xs font-bold text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500/30 transition shadow-sm shadow-emerald-500/10"
+            >
+              <span>قاعدة المعرفة التشريعية (Document Versioning)</span>
+              <span>←</span>
+            </Link>
+          </div>
         </div>
       </section>
       <AdminDashboard data={data} />

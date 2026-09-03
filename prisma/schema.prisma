@@ -1018,3 +1018,28 @@ model MarketOpportunity {
   @@index([opportunityScore])
 }
 
+// Knowledge Base documents (Omani Laws, Decrees & Executive Regulations) with Versioning
+model KnowledgeBaseFile {
+  id               String   @id @default(cuid())
+  fileName         String   @map("file_name")
+  fileSize         Int      @default(0) @map("file_size")
+  fileType         String   @default("application/pdf") @map("file_type")
+  fileUrl          String   @default("") @map("file_url")
+  storagePath      String   @default("") @map("storage_path")
+  contentHash      String   @map("content_hash")
+  documentCategory String   @default("VAT_LAW") @map("document_category") // 'VAT_LAW' | 'LABOR_LAW' | 'EXECUTIVE_REGULATIONS' | etc.
+  versionNumber    Int      @default(1) @map("version_number")
+  isActive         Boolean  @default(true) @map("is_active")
+  extractedText    String?  @map("extracted_text")
+  summary          String?
+  uploadedBy       String?  @map("uploaded_by")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  @@map("knowledge_base_files")
+  @@index([documentCategory, isActive])
+  @@index([contentHash])
+  @@index([isActive])
+}
+
+

@@ -33,10 +33,12 @@ import {
   HelpCircle,
   Search,
   Filter,
+  Zap,
 } from "lucide-react";
 import { getSavedQuizData, type ComplianceSurveyAnswers, type ComplianceDiagnosticResult } from "@/lib/needSurvey";
+import InstantComplianceTools from "./InstantComplianceTools";
 
-type DashboardTab = "overview" | "timeline" | "alerts" | "chat" | "reports" | "settings";
+type DashboardTab = "overview" | "tools" | "timeline" | "alerts" | "chat" | "reports" | "settings";
 
 interface TimelineItem {
   id: string;
@@ -330,6 +332,7 @@ export default function ComplianceDashboard() {
         <div className="max-w-7xl mx-auto flex items-center gap-1 sm:gap-2 overflow-x-auto py-2.5 no-scrollbar">
           {[
             { id: "overview" as const, labelAr: "نظرة عامة والامتثال", labelEn: "Overview", icon: ShieldCheck },
+            { id: "tools" as const, labelAr: "أدوات الامتثال الفورية", labelEn: "Instant Compliance Tools", icon: Zap, badge: "AI" },
             { id: "timeline" as const, labelAr: "جدول المواعيد والتجديدات", labelEn: "Timeline", icon: Calendar, badge: "18d" },
             { id: "alerts" as const, labelAr: "التنبيهات النشطة", labelEn: "Alerts", icon: Bell, badge: missingOmanis > 0 ? "1" : undefined },
             { id: "chat" as const, labelAr: "وكيل ريادة الذكي (AI)", labelEn: "AI Advisor Chat", icon: MessageCircle },
@@ -369,6 +372,39 @@ export default function ComplianceDashboard() {
         {activeTab === "overview" && (
           <div className="space-y-6 animate-in fade-in duration-200">
             
+            {/* Quick Access Card for Killer Features */}
+            <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-emerald-500/15 via-[#0E1528] to-[#0E1424] border border-emerald-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500 text-black flex items-center justify-center font-bold shrink-0 shadow-lg shadow-emerald-500/20">
+                  <Zap className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-sm text-white">
+                      {isAr ? "جديد: أدوات الامتثال الفورية ومحاكي الغرامات" : "New: Instant Compliance & Penalty Tools"}
+                    </span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">
+                      5 ميزات حصرية
+                    </span>
+                  </div>
+                  <p className="text-xs text-white/60 mt-0.5">
+                    {isAr
+                      ? "محاكي الغرامات 'ماذا لو؟' • مدقق الفواتير بالرؤية الحاسوبية • مصنف السلع 5% أو 0% • تنبيهات الواتساب"
+                      : "Penalty Simulator • AI Invoice Auditor • Tax Classifier • WhatsApp Alerts"}
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setActiveTab("tools")}
+                className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold transition-all shadow-md shadow-emerald-500/10 shrink-0 flex items-center justify-center gap-1.5 self-start sm:self-auto"
+              >
+                <span>{isAr ? "فتح أدوات الامتثال الفورية" : "Launch Instant Tools"}</span>
+                <ChevronRight className={`w-3.5 h-3.5 ${isAr ? "rotate-180" : ""}`} />
+              </button>
+            </div>
+
             {/* Top Stat Summary Grid */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               
@@ -662,6 +698,17 @@ export default function ComplianceDashboard() {
                 </div>
               </div>
             </div>
+          </div>
+        )}
+
+        {/* ==================== INSTANT COMPLIANCE TOOLS TAB ==================== */}
+        {activeTab === "tools" && (
+          <div className="animate-in fade-in duration-200">
+            <InstantComplianceTools
+              businessName={businessName}
+              crNumber={crNumber}
+              initialWhatsapp={whatsappNumber}
+            />
           </div>
         )}
 
