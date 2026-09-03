@@ -72,10 +72,10 @@ export default async function DashboardLayout({
         <DevRoleSwitcher users={devUsers} currentUserId={viewer?.id ?? null} />
       ) : null}
       <header className="relative z-40 border-b border-line bg-white pt-[env(safe-area-inset-top,0px)]">
-        <div className="mx-auto flex max-w-wrap items-stretch justify-between px-4 sm:px-8">
+        <div className="mx-auto flex max-w-wrap items-stretch justify-between px-3 sm:px-5 md:px-8">
           <Link
             href={isAdmin ? "/dashboard/admin" : isVerifiedCreator ? "/dashboard/browse" : "/"}
-            className="flex min-h-11 items-center py-3 text-[15px] font-medium text-frost sm:py-5"
+            className="flex min-h-10 items-center py-2.5 text-[13px] sm:text-[14px] md:text-[15px] font-medium text-frost sm:py-5"
             aria-label={nav("homeAria")}
           >
             {nav("brand")}
@@ -88,7 +88,7 @@ export default async function DashboardLayout({
             {isAdmin && (
               <Link
                 href="/dashboard/admin"
-                className="gl-web-only hidden items-center border-s border-white/10 px-5 text-[14px] text-frost-dim sm:inline-flex sm:px-7"
+                className="gl-web-only hidden items-center border-s border-white/10 px-3 text-[13px] text-frost-dim sm:inline-flex sm:px-5 md:px-7"
               >
                 {nav("admin")}
               </Link>
@@ -98,11 +98,11 @@ export default async function DashboardLayout({
             </div>
             <Link
               href="/"
-              className="gl-web-only gl-nav-link hidden items-center border-s border-white/10 px-5 sm:inline-flex sm:px-7"
+              className="gl-web-only gl-nav-link hidden items-center border-s border-white/10 px-3 sm:inline-flex sm:px-5 md:px-7"
             >
               {nav("backHome")}
             </Link>
-            <div className="flex items-center border-s border-white/10 px-4 sm:px-5">
+            <div className="flex items-center border-s border-white/10 px-2.5 sm:px-4 md:px-5">
               <div className="flex items-center gap-1.5">
                 {viewer ? (
                   <HeaderUserMenu

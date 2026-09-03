@@ -1,6 +1,6 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata, Viewport } from "next";
-import { Cairo, Tajawal, IBM_Plex_Sans_Arabic, IBM_Plex_Mono, Plus_Jakarta_Sans } from "next/font/google";
+import { Cairo } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { dirForLocale, isLocale, type Locale } from "@/i18n/config";
@@ -11,36 +11,8 @@ import "./globals.css";
 
 const cairo = Cairo({
   subsets: ["arabic", "latin"],
-  weight: ["600", "700", "800"],
+  weight: ["400", "600", "700", "900"],
   variable: "--font-cairo",
-  display: "swap",
-});
-
-const tajawal = Tajawal({
-  subsets: ["arabic", "latin"],
-  weight: ["400", "500", "700"],
-  variable: "--font-tajawal",
-  display: "swap",
-});
-
-const plexArabic = IBM_Plex_Sans_Arabic({
-  subsets: ["arabic"],
-  weight: ["400", "500", "600"],
-  variable: "--font-plex-arabic",
-  display: "swap",
-});
-
-const plexMono = IBM_Plex_Mono({
-  subsets: ["latin"],
-  weight: ["400"],
-  variable: "--font-plex-mono",
-  display: "swap",
-});
-
-const plusJakarta = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-  variable: "--font-brand",
   display: "swap",
 });
 
@@ -94,7 +66,7 @@ export default async function RootLayout({
   );
 
   return (
-    <html lang={locale} dir={dir} className={`${cairo.variable} ${tajawal.variable} ${plexArabic.variable} ${plexMono.variable} ${plusJakarta.variable}`}>
+    <html lang={locale} dir={dir} className={cairo.variable}>
       <body className="font-body antialiased">
         <PwaRegister />
         {clerkPublishableKey ? (
@@ -113,7 +85,7 @@ export default async function RootLayout({
                 colorInputText: "#111318",
                 colorTextSecondary: "#5C6573",
                 borderRadius: "24px",
-                fontFamily: "var(--font-plex-arabic), sans-serif",
+                fontFamily: "var(--font-cairo), sans-serif",
               },
               elements: {
                 card: {

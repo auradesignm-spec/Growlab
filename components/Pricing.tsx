@@ -109,8 +109,8 @@ export default function Pricing() {
   ];
 
   return (
-    <section id="pricing" className="relative scroll-mt-24 py-section">
-      <div className="mx-auto max-w-wrap px-5 sm:px-8">
+    <section id="pricing" className="relative scroll-mt-16 py-section">
+      <div className="mx-auto max-w-wrap px-4 sm:px-6 md:px-8">
         <Reveal>
           <div className="text-center max-w-2xl mx-auto space-y-3">
             <p className="gl-eyebrow text-emerald-700 font-semibold">
@@ -166,14 +166,14 @@ export default function Pricing() {
           </div>
         </Reveal>
 
-        <StageGlow className="mt-12" tone="sun" place="center">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <StageGlow className="mt-8 sm:mt-12" tone="sun" place="center">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
             {plans.map((plan, idx) => {
               const currentPrice = isAnnual ? plan.priceAnnual : plan.priceMonthly;
               return (
                 <Reveal key={plan.id} delay={idx * 60}>
                   <div
-                    className={`relative flex h-full flex-col justify-between p-6 sm:p-7 rounded-2xl border transition-all ${
+                    className={`relative flex h-full flex-col justify-between p-5 sm:p-6 md:p-7 rounded-2xl border transition-all ${
                       plan.highlight
                         ? "border-2 border-emerald-500 bg-white shadow-xl shadow-emerald-500/10 ring-4 ring-emerald-500/10"
                         : "border-slate-200/90 bg-white shadow-sm hover:border-slate-300 hover:shadow-md"
@@ -192,7 +192,7 @@ export default function Pricing() {
                       </div>
 
                       <div className="pt-2 flex items-baseline gap-1.5">
-                        <span className="font-mono text-4xl font-extrabold text-slate-900">{currentPrice}</span>
+                        <span className="font-mono text-3xl sm:text-4xl font-extrabold text-slate-900">{currentPrice}</span>
                         <span className="text-xs text-slate-500 font-medium">
                           {isAr ? plan.periodAr : plan.periodEn}
                         </span>

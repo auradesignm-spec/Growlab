@@ -55,8 +55,8 @@ export default function Faq() {
   };
 
   return (
-    <section id="faq" className="relative scroll-mt-24 py-section border-t border-slate-200/80 bg-slate-50/50">
-      <div className="mx-auto max-w-wrap px-5 sm:px-8">
+    <section id="faq" className="relative scroll-mt-16 py-section border-t border-slate-200/80 bg-slate-50/50">
+      <div className="mx-auto max-w-wrap px-4 sm:px-6 md:px-8">
         <Reveal>
           <div className="text-center max-w-2xl mx-auto space-y-3">
             <p className="gl-eyebrow text-emerald-700 font-semibold">
@@ -73,7 +73,7 @@ export default function Faq() {
           </div>
         </Reveal>
 
-        <StageGlow className="mt-12" tone="cyan" place="center">
+        <StageGlow className="mt-8 sm:mt-12" tone="cyan" place="center">
           <div className="max-w-3xl mx-auto space-y-3">
             {faqs.map((faq, idx) => {
               const isOpen = openIndex === idx;
@@ -89,7 +89,7 @@ export default function Faq() {
                     <button
                       type="button"
                       onClick={() => toggleFaq(idx)}
-                      className="w-full p-5 sm:p-6 flex items-center justify-between text-start gap-4 focus:outline-none"
+                      className="w-full p-4 sm:p-5 md:p-6 flex items-center justify-between text-start gap-3 sm:gap-4 focus:outline-none"
                     >
                       <span className="font-bold text-sm sm:text-base text-slate-900">
                         {isAr ? faq.qAr : faq.qEn}
@@ -102,7 +102,7 @@ export default function Faq() {
                     </button>
 
                     {isOpen && (
-                      <div className="px-5 pb-5 sm:px-6 sm:pb-6 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
+                      <div className="px-4 pb-4 sm:px-5 sm:pb-5 md:px-6 md:pb-6 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
                         <p>{isAr ? faq.aAr : faq.aEn}</p>
                       </div>
                     )}
@@ -115,8 +115,8 @@ export default function Faq() {
 
         {/* WhatsApp Support CTA */}
         <Reveal delay={200}>
-          <div className="mt-12 text-center p-6 rounded-2xl bg-emerald-50/70 border border-emerald-200/80 max-w-xl mx-auto shadow-sm">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="mt-8 sm:mt-12 text-center p-4 sm:p-5 md:p-6 rounded-2xl bg-emerald-50/70 border border-emerald-200/80 max-w-xl mx-auto shadow-sm">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
               <div className="flex items-center gap-3 text-start">
                 <div className="h-10 w-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-sm">
                   <MessageCircle className="h-5 w-5" />
