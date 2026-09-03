@@ -28,6 +28,7 @@
     --mesh-lime: #86efac;
     --mesh-sun: #fde68a;
     --mesh-coral: #fdba74;
+    --font-cairo: "Cairo", system-ui, sans-serif;
   }
 
   html {

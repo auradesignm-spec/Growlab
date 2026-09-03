@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenAI } from "@google/genai";
 import { sanitizePlainText } from "@/lib/security/inputSanitizer";
+import type { AssistantActionPayload } from "@/lib/assistant/types";
+
+export type { AssistantActionPayload, AssistantChatResponse } from "@/lib/assistant/types";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -8,33 +11,6 @@ export const runtime = "nodejs";
 interface ChatMessage {
   role: "user" | "model" | "assistant";
   content: string;
-}
-
-export interface AssistantActionPayload {
-  type:
-    | "navigate"
-    | "open_quiz"
-    | "open_dashboard"
-    | "open_timeline"
-    | "open_alerts"
-    | "calculate_omanisation"
-    | "open_pricing"
-    | "open_whatsapp_setup"
-    | "custom_task";
-  titleAr: string;
-  titleEn: string;
-  descriptionAr: string;
-  descriptionEn: string;
-  targetUrl?: string;
-  targetTab?: string;
-  autoExecute?: boolean;
-  metadata?: Record<string, unknown>;
-}
-
-export interface AssistantChatResponse {
-  text: string;
-  action?: AssistantActionPayload | null;
-  suggestions?: string[];
 }
 
 const SYSTEM_PROMPT = `

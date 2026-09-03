@@ -45,7 +45,9 @@ const securityHeaders = [
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "standalone",
+  // Vercel traces the app itself. `standalone` is for Docker / self-host only
+  // and has caused empty-output failures on Hobby deploys.
+  ...(process.env.VERCEL ? {} : { output: "standalone" }),
   reactStrictMode: true,
   poweredByHeader: false,
   transpilePackages: ["framer-motion", "motion-dom", "motion-utils"],

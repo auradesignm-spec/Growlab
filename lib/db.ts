@@ -7,6 +7,9 @@ import { PrismaClient } from "@prisma/client";
  *
  * Postgres (Neon) is used when DATABASE_URL is a postgres URL.
  * SQLite /tmp copy is only for leftover Vercel sqlite deploys — not durable.
+ *
+ * Client construction is lazy so `next build` can collect page data without
+ * requiring a generated engine at import time.
  */
 
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
@@ -43,15 +46,24 @@ function datasourceUrl(): string {
   return fromEnv || `file:${bundled}`;
 }
 
-const url = datasourceUrl();
-
-export const prisma =
-  globalForPrisma.prisma ??
-  new PrismaClient({
-    datasourceUrl: url,
+function createPrismaClient(): PrismaClient {
+  return new PrismaClient({
+    datasourceUrl: datasourceUrl(),
     log: process.env.NODE_ENV === "development" ? ["warn", "error"] : ["error"],
   });
-
-if (process.env.NODE_ENV !== "production") {
-  globalForPrisma.prisma = prisma;
 }
+
+function getPrisma(): PrismaClient {
+  if (!globalForPrisma.prisma) {
+    globalForPrisma.prisma = createPrismaClient();
+  }
+  return globalForPrisma.prisma;
+}
+
+export const prisma = new Proxy({} as PrismaClient, {
+  get(_target, prop, _receiver) {
+    const client = getPrisma();
+    const value = Reflect.get(client, prop, client);
+    return typeof value === "function" ? value.bind(client) : value;
+  },
+});
