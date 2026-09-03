@@ -21,7 +21,7 @@ import {
   ChevronRight,
   ChevronLeft,
 } from "lucide-react";
-import { AssistantActionPayload } from "@/app/api/assistant/chat/route";
+import type { AssistantActionPayload } from "@/lib/assistant/types";
 
 interface MessageItem {
   id: string;

@@ -1,6 +1,5 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata, Viewport } from "next";
-import { Cairo } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { dirForLocale, isLocale, type Locale } from "@/i18n/config";
@@ -8,13 +7,6 @@ import PwaRegister from "@/components/PwaRegister";
 import FloatingAssistantChat from "@/components/assistant/FloatingAssistantChat";
 import OfflineSyncStatus from "@/components/common/OfflineSyncStatus";
 import "./globals.css";
-
-const cairo = Cairo({
-  subsets: ["arabic", "latin"],
-  weight: ["400", "600", "700", "900"],
-  variable: "--font-cairo",
-  display: "swap",
-});
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -66,7 +58,15 @@ export default async function RootLayout({
   );
 
   return (
-    <html lang={locale} dir={dir} className={cairo.variable}>
+    <html lang={locale} dir={dir}>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap"
+        />
+      </head>
       <body className="font-body antialiased">
         <PwaRegister />
         {clerkPublishableKey ? (

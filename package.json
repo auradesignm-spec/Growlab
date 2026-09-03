@@ -2,7 +2,6 @@
   "name": "ogp-website",
   "version": "1.0.0",
   "private": true,
-  "packageManager": "npm@10.9.8",
   "engines": {
     "node": ">=18.17.0"
   },
@@ -16,7 +15,7 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:reset": "prisma migrate reset --skip-seed --force && tsx prisma/seed.ts",
     "smoke:onboarding": "node scripts/smoke-onboarding.mjs",
-    "postinstall": "prisma generate",
+    "postinstall": "prisma generate || echo \"prisma generate skipped\"",
     "vercel-build": "node scripts/vercel-build.mjs",
     "coach:setup": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/setup-local-coach.ps1",
     "coach:vision": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/setup-local-vision.ps1",
@@ -35,8 +34,10 @@
     "next": "14.2.35",
     "next-intl": "^3.26.5",
     "papaparse": "^5.7.0",
+    "prisma": "^5.22.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-is": "^18.3.1",
     "recharts": "^3.10.1",
     "sharp": "^0.35.4",
     "xlsx": "^0.18.5"
@@ -50,7 +51,6 @@
     "eslint": "^8.57.0",
     "eslint-config-next": "14.2.35",
     "postcss": "^8.4.40",
-    "prisma": "^5.22.0",
     "tailwindcss": "^3.4.7",
     "tsx": "^4.23.12",
     "typescript": "^5.5.4"
