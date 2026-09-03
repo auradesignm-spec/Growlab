@@ -270,7 +270,7 @@ export default function IntegrationsHub({ locale = "ar" }: Props) {
               <div className="mt-3 rounded-xl bg-slate-50 p-2.5 border border-slate-100">
                 <span className="text-[11px] text-slate-500">البريد المعتمد:</span>
                 <span className="block font-mono text-xs font-bold text-slate-900 mt-0.5" dir="ltr">
-                  compliance@growlab-sme.om
+                  compliance@riyada-assistant.om
                 </span>
               </div>
             </div>

@@ -272,7 +272,7 @@ export default function ProfitLeakCenter({ locale = "ar" }: { locale?: string })
 
   // Generate Weekly WhatsApp Digest Text
   const weeklyDigestText = useMemo(() => {
-    return `📊 *تقرير أرباحك الأسبوعي من Growlab*
+    return `📊 *تقرير أرباحك الأسبوعي من مساعد ريادة*
 🗓️ التاريخ: ${new Date().toLocaleDateString(isAr ? "ar-OM" : "en-US")}
 
 💰 *صافي الربح الحقيقي:* ${overview.netProfit.toFixed(2)} ${currency} (هامش ${overview.netMarginPercent.toFixed(1)}%)
@@ -287,7 +287,7 @@ export default function ProfitLeakCenter({ locale = "ar" }: { locale?: string })
 
 ✅ *المبالغ المسترجعة حتى الآن:* ${overview.totalRecoveredAmount.toFixed(2)} ${currency}
 
-👉 راجع كافة التفاصيل وسد التسريبات من لوحتك: https://growlab.om/dashboard`;
+👉 راجع كافة التفاصيل وسد التسريبات من لوحتك: /dashboard`;
   }, [overview, leaks, currency, isAr]);
 
   return (
@@ -1138,12 +1138,12 @@ export default function ProfitLeakCenter({ locale = "ar" }: { locale?: string })
                   <input
                     type="text"
                     readOnly
-                    value="https://growlab.om/enter/merchant?ref=GL-MTR-8820"
+                    value="https://riyada-assistant.om/enter?ref=RYD-8820"
                     className="gl-input font-mono text-xs"
                   />
                   <button
                     onClick={() => {
-                      navigator.clipboard.writeText("https://growlab.om/enter/merchant?ref=GL-MTR-8820");
+                      navigator.clipboard.writeText("https://riyada-assistant.om/enter?ref=RYD-8820");
                       alert(isAr ? "تم نسخ رابط الإحالة!" : "Referral link copied!");
                     }}
                     className="gl-btn-primary py-2.5 px-4 text-xs font-bold shrink-0"

@@ -175,8 +175,8 @@ export default function Hero() {
               className="font-body text-base sm:text-lg lg:text-[19px] text-[#3c4a42] font-normal leading-[1.8] max-w-xl"
             >
               {isAr
-                ? "تقنين هو مساعدك الذكي للامتثال. تتبع التراخيص، نسب التعمين، والمواعيد الضريبية بشكل استباقي قبل وقوع المخالفة."
-                : "Your smart compliance assistant. Track commercial permits, Omanisation quotas, and tax obligations proactively before penalties occur."}
+                ? "مساعد ريادة هو وكيلك الذكي للامتثال المؤسسي في سلطنة عُمان. تتبع التراخيص، نسب التعمين، وتجنب غرامات الضرائب والبلديات قبل وقوع المخالفة."
+                : "Riyada Assistant is your AI corporate compliance partner in Oman. Track commercial permits, Omanisation quotas, and tax obligations proactively before penalties occur."}
             </motion.p>
 
             {/* Call-to-Action Buttons (Green Primary & Dark Secondary) */}

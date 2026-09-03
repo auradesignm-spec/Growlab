@@ -372,7 +372,7 @@ export default function LiveSalesSimulator({
             <div className="flex items-center gap-2">
               <span className="flex size-3 rounded-full bg-emerald-400 animate-ping" />
               <span className="rounded-full bg-emerald-500/20 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider text-emerald-300 border border-emerald-500/30">
-                {isAr ? "محاكي المبيعات الحية المباشر" : "Live Real-Time Sales Simulator"}
+                {isAr ? "محاكي رادار الامتثال والرصد المباشر" : "Live Compliance & Risk Simulator"}
               </span>
               <span className="rounded-full bg-white/10 px-2 py-0.5 text-[11px] font-mono text-slate-300">
                 {isPlaying ? (isAr ? "البث نشط" : "Stream Active") : (isAr ? "متوقف" : "Paused")}
@@ -380,13 +380,13 @@ export default function LiveSalesSimulator({
             </div>
             <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
               {isAr
-                ? "لوحة تحكم التاجر التفاعلية — إدخال منتج ومتابعة المبيعات لحظة بلحظة"
-                : "Interactive Merchant Engine — Product Inserter & Real-Time Sales Stream"}
+                ? "لوحة محاكاة الامتثال التفاعلية — تدفق المعاملات وفحص نسب التعمين والغرامات"
+                : "Interactive Compliance Engine — Real-Time Transaction & Quota Stream"}
             </h2>
             <p className="max-w-2xl text-xs sm:text-sm text-slate-300 leading-relaxed">
               {isAr
-                ? "جرّب بنفسك إضافة منتج جديد، وشاهد محاكاة تدفق الطلبات الحية من عُمان والخليج مع احتساب صافي الربح البنكي اللحظي بعد خصم التكاليف والعمولات."
-                : "Experience adding new products and watching simulated live orders roll in from the GCC with instant true net profit calculations."}
+                ? "جرّب بنفسك محاكاة تسجيل المعاملات والتوظيف، وشاهد الرصد اللحظي لنسب التعمين وحماية المنشأة من الغرامات التراكمية في سلطنة عُمان."
+                : "Simulate corporate transactions and workforce hires, monitoring real-time Omanisation quotas and penalty protection across the Sultanate."}
             </p>
           </div>
 

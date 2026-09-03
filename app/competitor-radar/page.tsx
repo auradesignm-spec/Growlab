@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import CompetitorRadarView from "@/components/radar/CompetitorRadarView";
 
 export const metadata = {
-  title: "Competitor Radar & Ad Intelligence | Growlab",
+  title: "رادار المنافسين ومؤشرات السوق | مساعد ريادة",
   description: "Track competitor ad campaigns, creative hooks, offer weaknesses, and market opportunities in the GCC.",
 };
 

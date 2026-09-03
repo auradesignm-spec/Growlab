@@ -86,7 +86,7 @@ export default function GrowlabAnimatedLogo({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       className={`group relative inline-flex items-center select-none cursor-pointer p-1 rounded-xl focus:outline-none ${className}`}
-      aria-label="Growlab"
+      aria-label="مساعد ريادة"
     >
       {/* Container holding both Logo Icon (Left) and Text (Right) in strict LTR order */}
       <div dir="ltr" className="relative inline-flex items-center">
@@ -136,7 +136,7 @@ export default function GrowlabAnimatedLogo({
             ) : (
               <Image
                 src={isDark ? "/logo-footer.png" : "/logo-header.png"}
-                alt="Growlab Icon"
+                alt="شعار مساعد ريادة"
                 width={iconSize * 2}
                 height={iconSize * 2}
                 quality={100}

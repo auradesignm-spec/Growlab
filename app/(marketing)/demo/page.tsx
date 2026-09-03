@@ -5,7 +5,7 @@ import DemoTourGuide from "@/components/demo/DemoTourGuide";
 import { DEMO_STORE_SLUG } from "@/lib/dev/demo";
 
 export const metadata: Metadata = {
-  title: "Growlab — تجربة ديمو",
+  title: "مساعد ريادة — تجربة ديمو تفاعلية",
   robots: { index: true, follow: true },
 };
 

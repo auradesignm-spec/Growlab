@@ -56,7 +56,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: "مساعد ريادة — وكيل امتثال ذكي بالذكاء الاصطناعي للمؤسسات العُمانية",
   description: "وكيل امتثال ذكي بالذكاء الاصطناعي للمؤسسات الصغيرة والمتوسطة في سلطنة عُمان لتتبع التراخيص، نسب التعمين، الضرائب، والتنبيه التلقائي قبل الغرامات عبر واتساب ولوحة التحكم.",
-  metadataBase: new URL("https://growlab.om"),
+  metadataBase: new URL("https://riyada-assistant.om"),
   robots: { index: true, follow: true },
   manifest: "/manifest.webmanifest",
   icons: {

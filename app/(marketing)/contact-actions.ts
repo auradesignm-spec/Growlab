@@ -30,7 +30,7 @@ export async function submitContactLead(input: ContactFormData): Promise<{ ok: t
         body: JSON.stringify({
           from,
           to: [from],
-          subject: `Growlab lead — ${sanitized.biz}`,
+          subject: `مساعد ريادة — استفسار جديد: ${sanitized.biz}`,
           text: `${sanitized.name}\n${sanitized.biz}\n${sanitized.phone}\n\n${sanitized.msg}`,
         }),
       });

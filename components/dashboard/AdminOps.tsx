@@ -432,7 +432,7 @@ function CreatorAuditCard({
       <div className="flex flex-wrap items-start justify-between gap-3 border-b border-line pb-4">
         <div>
           <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-bold text-emerald-700 dark:text-emerald-300">
-            صانع محتوى / مؤثر
+            مدير الموارد البشرية / شريك الامتثال
           </span>
           <h3 className="mt-1.5 text-lg font-bold text-frost sm:text-xl">@{creator.username}</h3>
           <p className="text-xs text-frost-dim">

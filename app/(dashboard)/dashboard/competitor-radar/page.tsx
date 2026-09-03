@@ -3,8 +3,8 @@ import { getLocale } from "next-intl/server";
 import CompetitorRadarView from "@/components/radar/CompetitorRadarView";
 
 export const metadata = {
-  title: "Competitor Radar & Creative Intelligence | Growlab",
-  description: "Track competitor ad campaigns, creative hooks, offer weaknesses, and market opportunities in the GCC.",
+  title: "رادار التعمين والامتثال الذكي | Omanization & Compliance Radar",
+  description: "متابعة نسب التعمين والامتثال التنظيمي للأنشطة والمهن في سلطنة عمان وتفادي الغرامات",
 };
 
 export default async function DashboardCompetitorRadarPage() {

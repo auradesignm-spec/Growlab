@@ -220,7 +220,7 @@ function HeaderUserMenuContent({
     user.merchantProfile?.businessName ||
     user.creatorProfile?.username ||
     user.email?.split("@")[0] ||
-    "مستخدم Growlab";
+    "مستخدم مساعد ريادة";
 
   const userInitial = displayName.charAt(0).toUpperCase();
   const avatarUrl = user.creatorProfile?.avatarUrl;
@@ -229,10 +229,10 @@ function HeaderUserMenuContent({
     user.creatorProfile?.verificationStatus === "verified";
   const userRole =
     user.role === "merchant"
-      ? "تاجر / متجر"
+      ? "صاحب منشأة / رائد أعمال"
       : user.role === "creator"
-      ? "صانع محتوى / مسوق"
-      : "عضو المنصة";
+      ? "مدير الموارد البشرية والتعمين"
+      : "مستشار مالي ومحاسبي";
 
   if (compact) {
     return (
@@ -420,8 +420,8 @@ function HeaderUserMenuContent({
               </div>
               <span className="text-[11px] text-slate-500 truncate">{user.email || userRole}</span>
               {user.merchantProfile?.plan && (
-                <span className="mt-1 w-fit rounded-full bg-slate-900 px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wide text-white">
-                  {user.merchantProfile.plan} PLAN
+                <span className="mt-1 w-fit rounded-full bg-slate-900 px-2 py-0.5 text-[9px] font-extrabold tracking-wide text-white">
+                  باقة {user.merchantProfile.plan === "pro" ? "المحترفين" : user.merchantProfile.plan}
                 </span>
               )}
             </div>
@@ -439,9 +439,8 @@ function HeaderUserMenuContent({
             >
               <div className="flex items-center gap-2.5">
                 <LayoutDashboard className="h-4 w-4 text-slate-700 group-hover:text-slate-950 group-hover:scale-110 transition-transform" />
-                <span className="font-medium text-slate-900">لوحة التحكم (Dashboard)</span>
+                <span className="font-medium text-slate-900">لوحة التحكم</span>
               </div>
-              <span className="text-[10px] text-slate-400 font-mono">⌘D</span>
             </Link>
 
             <Link
@@ -450,15 +449,12 @@ function HeaderUserMenuContent({
                 setIsOpen(false);
                 onNavigate?.();
               }}
-              className="flex items-center justify-between rounded-xl px-3 py-2 text-slate-800 hover:bg-indigo-50/70 hover:text-indigo-950 transition-colors group"
+              className="flex items-center justify-between rounded-xl px-3 py-2 text-slate-800 hover:bg-emerald-50/70 hover:text-emerald-950 transition-colors group"
             >
               <div className="flex items-center gap-2.5">
-                <Radar className="h-4 w-4 text-indigo-600 group-hover:scale-110 transition-transform" />
-                <span className="font-medium text-slate-900">رادار المنافسين (Ad Intelligence)</span>
+                <Radar className="h-4 w-4 text-emerald-600 group-hover:scale-110 transition-transform" />
+                <span className="font-medium text-slate-900">رادار التعمين</span>
               </div>
-              <span className="rounded-full bg-indigo-100 px-1.5 py-0.5 text-[9px] font-bold text-indigo-800">
-                PRO
-              </span>
             </Link>
 
             <Link
@@ -470,7 +466,7 @@ function HeaderUserMenuContent({
               className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-slate-800 hover:bg-slate-50 hover:text-slate-950 transition-colors group"
             >
               <User className="h-4 w-4 text-slate-700 group-hover:text-slate-950 group-hover:scale-110 transition-transform" />
-              <span className="font-medium text-slate-900">الملف الشخصي (Profile)</span>
+              <span className="font-medium text-slate-900">الملف الشخصي</span>
             </Link>
 
             <Link
@@ -482,7 +478,7 @@ function HeaderUserMenuContent({
               className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-slate-800 hover:bg-slate-50 hover:text-slate-950 transition-colors group"
             >
               <Building className="h-4 w-4 text-slate-700 group-hover:text-slate-950 group-hover:scale-110 transition-transform" />
-              <span className="font-medium text-slate-900">بيانات المتجر وفريق العمل</span>
+              <span className="font-medium text-slate-900">بيانات المنشأة وفريق العمل</span>
             </Link>
 
             <Link
@@ -495,11 +491,8 @@ function HeaderUserMenuContent({
             >
               <div className="flex items-center gap-2.5">
                 <CreditCard className="h-4 w-4 text-slate-700 group-hover:text-slate-950 group-hover:scale-110 transition-transform" />
-                <span className="font-medium text-slate-900">الاشتراك والفوترة (Billing)</span>
+                <span className="font-medium text-slate-900">الاشتراك والباقات</span>
               </div>
-              <span className="rounded-full bg-slate-100 px-1.5 py-0.5 text-[9px] font-bold text-slate-900">
-                PRO
-              </span>
             </Link>
 
             <Link
@@ -511,7 +504,7 @@ function HeaderUserMenuContent({
               className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-slate-800 hover:bg-slate-50 hover:text-slate-950 transition-colors group"
             >
               <BarChart3 className="h-4 w-4 text-slate-700 group-hover:text-slate-950 group-hover:scale-110 transition-transform" />
-              <span className="font-medium text-slate-900">الاستهلاك والتحليلات (Usage)</span>
+              <span className="font-medium text-slate-900">مؤشرات الامتثال</span>
             </Link>
 
             <Link
@@ -549,7 +542,7 @@ function HeaderUserMenuContent({
             >
               <div className="flex items-center gap-2.5">
                 <LogOut className="h-4 w-4 text-slate-600 group-hover:text-rose-600 group-hover:-translate-x-0.5 transition-transform" />
-                <span className="font-medium">تسجيل الخروج (Sign Out)</span>
+                <span className="font-medium">تسجيل الخروج</span>
               </div>
             </button>
           </div>

@@ -152,16 +152,16 @@ export default function CompetitorRadarView() {
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
-                  {isAr ? "رادار المنافسين والاستخبارات الإعلانية" : "Competitor Radar & Ad Intelligence"}
+                  {isAr ? "رادار التعمين والامتثال الذكي" : "Omanization & Compliance Radar"}
                 </h1>
-                <span className="rounded-md bg-indigo-100 text-indigo-800 text-[10px] font-bold px-2 py-0.5 uppercase tracking-wide">
+                <span className="rounded-md bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 uppercase tracking-wide">
                   PRO
                 </span>
               </div>
               <p className="text-xs sm:text-sm text-slate-500 mt-1">
                 {isAr
-                  ? "اكتشف إعلانات المنافسين النشطة، نقاط ضعف عروضهم، والفرص السوقية غير المستغلة في الخليج"
-                  : "Track active rival ad campaigns, exploit offer weaknesses, and capture underserved market angles"}
+                  ? "متابعة نسب التعمين والامتثال التنظيمي، رصد الأنشطة المحظورة وتفادي الغرامات الوزارية بذكاء"
+                  : "Track Omanization quotas, monitor regulatory compliance, identify restricted activities, and prevent fines"}
               </p>
             </div>
           </div>

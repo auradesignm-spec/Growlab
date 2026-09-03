@@ -60,7 +60,7 @@ export default function SettingsClientHub({ initialData, initialTab = "profile" 
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   // Workspace form states
-  const [businessName, setBusinessName] = useState(data.merchant?.businessName || data.store?.name || "متجري في Growlab");
+  const [businessName, setBusinessName] = useState(data.merchant?.businessName || data.store?.name || "منشأتي في مساعد ريادة");
   const [city, setCity] = useState(data.merchant?.city || data.creator?.city || "مسقط");
   const [instagramUrl, setInstagramUrl] = useState(data.merchant?.instagramUrl || data.creator?.instagramUrl || "");
   const [tiktokUrl, setTiktokUrl] = useState(data.merchant?.tiktokUrl || data.creator?.tiktokUrl || "");
@@ -68,9 +68,9 @@ export default function SettingsClientHub({ initialData, initialTab = "profile" 
 
   // Preferences: AI Vocabulary
   const [vocabList, setVocabList] = useState<Array<{ id: string; word: string; phonetic: string; notes: string }>>([
-    { id: "1", word: "Growlab", phonetic: "جروولاب", notes: "اسم المنصة الرسمي" },
-    { id: "2", word: "Oman COD", phonetic: "الدفع عند الاستلام في عُمان", notes: "خدمة التوصيل السريع" },
-    { id: "3", word: "Omnichannel Ads", phonetic: "إعلانات متعددة القنوات", notes: "ميتا وتيك توك وسناب" },
+    { id: "1", word: "مساعد ريادة", phonetic: "مساعد ريادة", notes: "اسم المنصة الرسمي" },
+    { id: "2", word: "التعمين", phonetic: "توطين الوظائف في عُمان", notes: "نسب القوى العاملة الوطنية" },
+    { id: "3", word: "جهاز الضرائب", phonetic: "الفوترة الإلكترونية وضريبة القيمة المضافة", notes: "الامتثال الضريبي" },
   ]);
   const [newWord, setNewWord] = useState("");
   const [newPhonetic, setNewPhonetic] = useState("");
@@ -155,13 +155,13 @@ export default function SettingsClientHub({ initialData, initialTab = "profile" 
   };
 
   const tabsConfig = [
-    { id: "profile" as SettingsTab, label: "الملف الشخصي", labelEn: "Profile", icon: User, desc: "بياناتك الشخصية والصورة" },
-    { id: "workspace" as SettingsTab, label: "مساحة العمل والمتجر", labelEn: "Workspace", icon: Building, desc: "اسم المتجر، النطاق المخصص" },
-    { id: "subscription" as SettingsTab, label: "الاشتراك والفوترة", labelEn: "Subscription", icon: CreditCard, desc: "الباقات، الفواتير، الحصص" },
-    { id: "payouts" as SettingsTab, label: "المدفوعات والمحفظة", labelEn: "Payouts & Bank", icon: Wallet, desc: "الحساب البنكي، السحوبات" },
-    { id: "usage" as SettingsTab, label: "الاستهلاك والتحليلات", labelEn: "Usage & Limits", icon: BarChart3, desc: "استهلاك الـ API والخدمات" },
-    { id: "preferences" as SettingsTab, label: "التفضيلات والذكاء الاصطناعي", labelEn: "Preferences & AI", icon: Sliders, desc: "المظهر، قاموس النطق، الصوت" },
-    { id: "legal" as SettingsTab, label: "المستندات والشروط", labelEn: "Legal & Docs", icon: Scale, desc: "الشروط، الخصوصية، التوثيق" },
+    { id: "profile" as SettingsTab, label: "الملف الشخصي", labelEn: "البيانات والصورة", icon: User, desc: "بياناتك الشخصية والصورة" },
+    { id: "workspace" as SettingsTab, label: "بيانات المنشأة وفريق العمل", labelEn: "السجل التجاري وفريق العمل", icon: Building, desc: "اسم المنشأة، السجل التجاري، فريق العمل" },
+    { id: "subscription" as SettingsTab, label: "الاشتراك والباقات", labelEn: "الباقات والفواتير", icon: CreditCard, desc: "الباقات، الفواتير، الحصص" },
+    { id: "payouts" as SettingsTab, label: "المدفوعات والمحفظة", labelEn: "الحساب البنكي", icon: Wallet, desc: "الحساب البنكي، السحوبات" },
+    { id: "usage" as SettingsTab, label: "مؤشرات الامتثال", labelEn: "التعمين والتراخيص", icon: BarChart3, desc: "نسب التعمين، السجلات، وتفادي الغرامات" },
+    { id: "preferences" as SettingsTab, label: "التفضيلات والذكاء الاصطناعي", labelEn: "المظهر وقاموس النطق", icon: Sliders, desc: "المظهر، قاموس النطق، الصوت" },
+    { id: "legal" as SettingsTab, label: "المستندات والشروط", labelEn: "الوثائق واللوائح", icon: Scale, desc: "الشروط، الخصوصية، التوثيق" },
   ];
 
   return (
@@ -202,11 +202,11 @@ export default function SettingsClientHub({ initialData, initialTab = "profile" 
                   مركز الحساب والإعدادات
                 </h1>
                 <span className="rounded-full bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[10px] font-bold text-emerald-700">
-                  Account Hub
+                  إعدادات الحساب
                 </span>
               </div>
               <p className="text-[11px] text-slate-500 hidden sm:block">
-                إدارة ملفك الشخصي، تفاصيل المتجر، اشتراك باقة Pro، ومفردات الذكاء الاصطناعي
+                إدارة ملفك الشخصي، بيانات المنشأة، اشتراك الباقات، ومؤشرات الامتثال
               </p>
             </div>
           </div>
@@ -309,7 +309,7 @@ export default function SettingsClientHub({ initialData, initialTab = "profile" 
                   <div className="border-b border-line pb-4 mb-6">
                     <h2 className="text-lg font-bold text-slate-900">الملف الشخصي والبيانات الأساسية</h2>
                     <p className="text-xs text-slate-500 mt-0.5">
-                      تحكم في معلوماتك الشخصية وصورتك التعريفية الظاهرة في منصة Growlab.
+                      تحكم في معلوماتك الشخصية وصورتك التعريفية الظاهرة في منصة مساعد ريادة.
                     </p>
                   </div>
 
@@ -436,9 +436,9 @@ export default function SettingsClientHub({ initialData, initialTab = "profile" 
               <div className="space-y-6 animate-in fade-in duration-200">
                 <div className="rounded-2xl border border-line bg-white p-6 sm:p-8 shadow-xs">
                   <div className="border-b border-line pb-4 mb-6">
-                    <h2 className="text-lg font-bold text-slate-900">إعدادات مساحة العمل والمتجر</h2>
+                    <h2 className="text-lg font-bold text-slate-900">بيانات المنشأة وفريق العمل</h2>
                     <p className="text-xs text-slate-500 mt-0.5">
-                      تخصيص الهوية التجارية للمتجر، النطاق المخصص، وروابط حسابات التواصل.
+                      تخصيص بيانات المنشأة، السجل التجاري، فريق العمل، وروابط التواصل.
                     </p>
                   </div>
 
@@ -585,7 +585,7 @@ export default function SettingsClientHub({ initialData, initialTab = "profile" 
               <div className="space-y-6 animate-in fade-in duration-200">
                 <div className="rounded-2xl border border-line bg-white p-6 sm:p-8 shadow-xs">
                   <div className="border-b border-line pb-4 mb-6">
-                    <h2 className="text-lg font-bold text-slate-900">الاشتراك والفوترة (Subscription & Billing)</h2>
+                    <h2 className="text-lg font-bold text-slate-900">الاشتراك والباقات</h2>
                     <p className="text-xs text-slate-500 mt-0.5">
                       تفاصيل الباقة الحالية، الفواتير السابقة، وتحديث طرق الدفع.
                     </p>
@@ -605,10 +605,10 @@ export default function SettingsClientHub({ initialData, initialTab = "profile" 
                           </span>
                         </div>
                         <h3 className="text-xl font-bold text-slate-900 mt-1.5">
-                          {data.merchant?.plan === "pro" ? "باقة المحترفين (Growlab Pro)" : "الباقة الأساسية (Free Starter)"}
+                          {data.merchant?.plan === "pro" ? "باقة المحترفين (Riyada Pro)" : "باقة النمو والامتثال (Growth Plan)"}
                         </h3>
                         <p className="text-xs text-slate-600 mt-1 max-w-md leading-relaxed">
-                          تشمل إطلاق حملات إعلانية متعددة القنوات، وإدارة شبكة المسوقين، وتحليلات الذكاء الاصطناعي الفورية.
+                          تشمل رصد نسب التعمين، وتنبيهات مواعيد السجل التجاري والبلديات عبر واتساب، واستشارات الذكاء الاصطناعي الفورية.
                         </p>
                       </div>
 
@@ -767,7 +767,7 @@ export default function SettingsClientHub({ initialData, initialTab = "profile" 
               <div className="space-y-6 animate-in fade-in duration-200">
                 <div className="rounded-2xl border border-line bg-white p-6 sm:p-8 shadow-xs">
                   <div className="border-b border-line pb-4 mb-6">
-                    <h2 className="text-lg font-bold text-slate-900">الاستهلاك والحصص (Analytics & Quota Usage)</h2>
+                    <h2 className="text-lg font-bold text-slate-900">مؤشرات الامتثال والحصص</h2>
                     <p className="text-xs text-slate-500 mt-0.5">
                       تتبع استخدام الخدمات، طلبات الـ API، وسعة التخزين المستهلكة لمتجرك.
                     </p>
@@ -876,7 +876,7 @@ export default function SettingsClientHub({ initialData, initialTab = "profile" 
                           </label>
                           <input
                             type="text"
-                            placeholder="مثال: Growlab أو لبان حوجري"
+                            placeholder="مثال: ريادة للأعمال أو لبان حوجري"
                             value={newWord}
                             onChange={(e) => setNewWord(e.target.value)}
                             className="w-full rounded-xl border border-line bg-white px-3 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/10"
@@ -941,10 +941,10 @@ export default function SettingsClientHub({ initialData, initialTab = "profile" 
                         <div>
                           <div className="flex items-center gap-2">
                             <Sparkles className="h-4 w-4 text-emerald-600" />
-                            <h4 className="text-xs font-bold text-slate-900">برنامج الشركاء والمؤثرين (Growlab Impact Program)</h4>
+                            <h4 className="text-xs font-bold text-slate-900">برنامج شركاء مساعد ريادة للامتثال</h4>
                           </div>
                           <p className="text-[11px] text-slate-600 mt-0.5">
-                            اكسب عمولة مستمرة 20% على كل متجر أو صانع محتوى ينضم عبر رابط إحالتك الخاص.
+                            شارك المنصة مع المنشآت ورواد الأعمال في سلطنة عُمان لحماية أعمالهم من الغرامات التنظيمية.
                           </p>
                         </div>
                         <button
@@ -967,7 +967,7 @@ export default function SettingsClientHub({ initialData, initialTab = "profile" 
               <div className="space-y-6 animate-in fade-in duration-200">
                 <div className="rounded-2xl border border-line bg-white p-6 sm:p-8 shadow-xs">
                   <div className="border-b border-line pb-4 mb-6">
-                    <h2 className="text-lg font-bold text-slate-900">المستندات والامتثال القانوني (Resources & Legal)</h2>
+                    <h2 className="text-lg font-bold text-slate-900">المستندات والامتثال القانوني</h2>
                     <p className="text-xs text-slate-500 mt-0.5">
                       شروط الاستخدام، سياسة الخصوصية، وتراخيص الامتثال في سلطنة عمان.
                     </p>

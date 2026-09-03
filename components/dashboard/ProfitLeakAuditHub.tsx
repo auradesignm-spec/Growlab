@@ -314,8 +314,8 @@ export default function ProfitLeakAuditHub({
 
             <p className="text-xs text-frost-dim max-w-lg leading-relaxed">
               {isAr
-                ? "مجموع المبالغ التي ساعدك Growlab في استردادها من فروقات شركات الشحن ووقف هدر الحملات الإعلانية الخاسرة حتى اليوم."
-                : "Total money Growlab helped you recover from courier discrepancies and stop leaking into losing ad campaigns."}
+                ? "مجموع المبالغ التي ساعدك مساعد ريادة في حمايتها من الغرامات وفروقات الفوترة والامتثال حتى اليوم."
+                : "Total funds Riyada Assistant helped you protect from fines, tax audit penalties, and compliance risks to date."}
             </p>
           </div>
 

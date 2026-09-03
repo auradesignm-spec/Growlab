@@ -11,7 +11,7 @@ export default function GlobalError({
     <html lang="ar" dir="rtl">
       <body className="bg-[#0b0c10] px-6 py-16 text-[#f4f4f5]">
         <main className="mx-auto max-w-lg">
-          <p className="text-sm uppercase tracking-widest text-white/40">Growlab</p>
+          <p className="text-sm uppercase tracking-widest text-white/40">مساعد ريادة</p>
           <h1 className="mt-3 text-2xl font-semibold">حدث خطأ غير متوقع</h1>
           <p className="mt-2 text-sm text-white/60">
             أعد المحاولة. إن استمر الخطأ تواصل مع الدعم.

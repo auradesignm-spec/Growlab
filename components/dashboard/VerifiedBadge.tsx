@@ -15,7 +15,7 @@ export default function VerifiedBadge({
   label = "موثق رسمياً",
   showLabel = false,
   className = "",
-  tooltip = "حساب موثق ومطابق رسمياً في منصة Growlab",
+  tooltip = "حساب موثق ومطابق رسمياً في منصة مساعد ريادة",
 }: VerifiedBadgeProps) {
   const pixelMap = {
     sm: { px: 14, class: "w-[14px] h-[14px] min-w-[14px] min-h-[14px] max-w-[14px] max-h-[14px]", text: "text-[10px]", pad: "py-0.5 px-1.5" },

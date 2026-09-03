@@ -304,7 +304,7 @@ export default function FreeLeakScanner() {
 
                   <div className="rounded-xl border border-emerald-500/30 bg-emerald-950/30 p-3.5 text-right rtl:text-left">
                     <p className="text-[11px] font-semibold text-emerald-400">
-                      {isAr ? "قابلة للاسترداد فوراً" : "Recoverable with Growlab"}
+                      {isAr ? "قابلة للحماية فوراً" : "Recoverable with Riyada Assistant"}
                     </p>
                     <p className="text-xl font-bold font-mono text-emerald-300 mt-0.5">
                       +{calculations.recoverablePotential.toLocaleString()} {currencySymbol}

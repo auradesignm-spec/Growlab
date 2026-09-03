@@ -36,7 +36,7 @@ export default function ActivationModal({
           ×
         </button>
         <p className="text-end text-[20px] font-semibold" style={{ color: ODOO_PURPLE }}>
-          Growlab
+          مساعد ريادة
         </p>
         <h2 className="mt-6 text-[18px] font-semibold text-[#18181B]" style={{ letterSpacing: "normal" }}>
           {labels.title}

@@ -512,7 +512,7 @@ export default function MerchantStoreEditorFlow({
   if (phase === "building") {
     return (
       <StoreBuildingScreen
-        brand="Growlab"
+        brand="مساعد ريادة"
         title={t("odoo.build.title")}
         titleFinale={t("odoo.build.titleFinale")}
         steps={buildSteps}

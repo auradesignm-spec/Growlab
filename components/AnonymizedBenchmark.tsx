@@ -265,7 +265,7 @@ export default function AnonymizedBenchmark() {
                   {/* After */}
                   <div className="space-y-1.5">
                     <div className="flex justify-between text-xs font-mono text-frost-dim">
-                      <span className="text-emerald-400 font-bold">{isAr ? "بعد تدقيق Growlab ومطابقة الشحن" : "After Growlab Reconciliation"}</span>
+                      <span className="text-emerald-400 font-bold">{isAr ? "بعد تدقيق مساعد ريادة وتصحيح الامتثال" : "After Riyada Assistant Compliance Audit"}</span>
                       <span className="text-emerald-400 font-bold">{current.marginAfter}</span>
                     </div>
                     <div className="h-3 w-full rounded-full bg-surface border border-line overflow-hidden">

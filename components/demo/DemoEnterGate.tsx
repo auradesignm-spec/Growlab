@@ -17,7 +17,7 @@ export default function DemoEnterGate({ storeSlug }: { storeSlug: string }) {
     startTransition(async () => {
       const fd = new FormData();
       fd.set("role", role);
-      fd.set("email", email.trim() || "demo@growlab.om");
+      fd.set("email", email.trim() || "demo@riyada-assistant.om");
       await startDemoExperience(fd);
     });
   }
@@ -32,10 +32,10 @@ export default function DemoEnterGate({ storeSlug }: { storeSlug: string }) {
       <p className="text-sm font-semibold text-emerald-700">محاكاة تفاعلية فورية — بدون تسجيل مسبق</p>
 
       <h1 className="mt-3 text-display-md font-semibold text-frost">
-        جرب منصة Growlab الحقيقية وتعلّم كيف تعمل
+        جرّب بيئة مساعد ريادة وتعلّم كيف تحمي منشأتك
       </h1>
       <p className="gl-lede mt-2 text-[15px] text-frost-dim">
-        أدخل بريدك الإلكتروني فقط للبدء في بيئة تفاعلية حية كاملة الميزات — استكشف إعداد المنتجات، محفظة العمولات، محاكي المبيعات، ومسار التوثيق بدون أي كلمات مرور أو تعقيد.
+        أدخل بريدك الإلكتروني للبدء في بيئة تفاعلية حية — استكشف رصد التراخيص، نسب التعمين، وتنبيهات الغرامات الاستباقية بدون أي كلمات مرور أو تعقيد.
       </p>
 
       {/* Email Entry Card */}
@@ -57,7 +57,7 @@ export default function DemoEnterGate({ storeSlug }: { storeSlug: string }) {
               />
               <button
                 type="button"
-                onClick={() => setEmail("demo.partner@growlab.om")}
+                onClick={() => setEmail("demo.partner@riyada-assistant.om")}
                 className="gl-btn-secondary !min-h-9 !py-1.5 !px-3 !text-xs whitespace-nowrap"
               >
                 استخدام بريد تجريبي
@@ -71,7 +71,7 @@ export default function DemoEnterGate({ storeSlug }: { storeSlug: string }) {
           {/* Role selector */}
           <div className="pt-2">
             <p className="text-xs font-bold uppercase tracking-wider text-frost-faint mb-3">
-              اختر دورك الافتراضي في المحاكاة:
+              اختر دورك المؤسسي في محاكاة الامتثال:
             </p>
             <div className="grid gap-3 sm:grid-cols-2">
               <button
@@ -84,10 +84,10 @@ export default function DemoEnterGate({ storeSlug }: { storeSlug: string }) {
                 }`}
               >
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-frost text-sm">تاجر / صاحب متجر</span>
+                  <span className="font-bold text-frost text-sm">صاحب منشأة / رائد أعمال</span>
                 </div>
                 <p className="mt-2 text-xs text-frost-dim leading-relaxed">
-                  تجربة إضافة المنتجات، شحن محفظة العمولات، ومحاكاة طلبات COD اللحظية.
+                  تجربة متابعة التراخيص وسريان السجل التجاري ورخص البلدية وتلقي إنذارات الغرامات الاستباقية.
                 </p>
               </button>
 
@@ -101,10 +101,10 @@ export default function DemoEnterGate({ storeSlug }: { storeSlug: string }) {
                 }`}
               >
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-frost text-sm">مسوّق / صانع محتوى</span>
+                  <span className="font-bold text-frost text-sm">مدير الموارد البشرية والتعمين</span>
                 </div>
                 <p className="mt-2 text-xs text-frost-dim leading-relaxed">
-                  تصفح المنتجات، إنشاء روابط التتبع، وتجربة كسب العمولات عند التسليم.
+                  تجربة حاسبة نسب التعمين، رصد مأذونيات العمل، ومطابقة متطلبات منصة توطين ووزارة العمل.
                 </p>
               </button>
             </div>
@@ -121,7 +121,7 @@ export default function DemoEnterGate({ storeSlug }: { storeSlug: string }) {
                 جاري إطلاق البيئة الافتراضية...
               </span>
             ) : (
-              <span>دخول المحاكاة التفاعلية الآن ←</span>
+              <span>دخول محاكاة الامتثال التفاعلية الآن ←</span>
             )}
           </button>
         </div>
@@ -130,20 +130,20 @@ export default function DemoEnterGate({ storeSlug }: { storeSlug: string }) {
       {/* Learning roadmap highlight */}
       <div className="mt-8 rounded-3xl border border-line bg-slate-50/80 p-6">
         <h2 className="text-xs font-bold uppercase tracking-wider text-frost-dim">
-          ماذا ستتعلم داخل المحاكاة الافتراضية؟
+          ماذا ستستكشف داخل لوحة محاكاة مساعد ريادة؟
         </h2>
         <div className="mt-4 grid gap-3 sm:grid-cols-3 text-xs text-frost-dim">
           <div className="rounded-2xl border border-line bg-white p-3.5">
-            <p className="font-bold text-frost">1. حماية الميزانية</p>
-            <p className="mt-1 text-frost-faint">كيف يمنع سقف المحفظة الهدر الإعلاني ويضمن الصرف على المبيعات المحصّلة فقط.</p>
+            <p className="font-bold text-frost">1. حماية التراخيص والسجل</p>
+            <p className="mt-1 text-frost-faint">تنبيهات استباقية قبل 60 و30 و7 أيام تمنع غرامات تأخير تجديد السجل التجاري ورخص البلدية.</p>
           </div>
           <div className="rounded-2xl border border-line bg-white p-3.5">
-            <p className="font-bold text-frost">2. شحن مسبق الدفع</p>
-            <p className="mt-1 text-frost-faint">كيف يقلل دفع رسوم التوصيل مسبقاً نسبة الإلغاءات والمرتجعات إلى أدنى مستوى.</p>
+            <p className="font-bold text-frost">2. رادار نسب التعمين</p>
+            <p className="mt-1 text-frost-faint">حساب دقيق لنسبة الكوادر العمانية المطلوبة لنشاطك لتفادي تجميد المأذونيات وتجنب الغرامات الدورية.</p>
           </div>
           <div className="rounded-2xl border border-line bg-white p-3.5">
-            <p className="font-bold text-frost">3. تسوية فورية للعمولات</p>
-            <p className="mt-1 text-frost-faint">توزيع الأرباح ودفتر الحسابات المشفر عند استلام الزبون للطلب.</p>
+            <p className="font-bold text-frost">3. تدقيق الضرائب والفوترة</p>
+            <p className="mt-1 text-frost-faint">مطابقة متطلبات الفوترة الإلكترونية وإقرارات ضريبة القيمة المضافة لضمان الامتثال مع جهاز الضرائب.</p>
           </div>
         </div>
       </div>

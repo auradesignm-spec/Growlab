@@ -11,7 +11,7 @@ interface GrowlabBrandProps {
 }
 
 export default function GrowlabBrand({
-  ariaLabel = "Growlab Home",
+  ariaLabel = "مساعد ريادة — الرئيسية",
   className = "",
   theme = "light",
   trigger = "entrance",

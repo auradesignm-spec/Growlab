@@ -6,8 +6,8 @@ import { loadAccountSettings } from "../settings-actions";
 import SettingsClientHub from "./SettingsClientHub";
 
 export const metadata: Metadata = {
-  title: "إعدادات الحساب ومساحة العمل | Growlab Settings",
-  description: "إدارة الحساب، الاشتراك، مساحة العمل، قاموس النطق وتفضيلات الذكاء الاصطناعي",
+  title: "إعدادات الحساب والمنشأة | Growlab Settings",
+  description: "إدارة الحساب، الاشتراك والباقات، بيانات المنشأة، مؤشرات الامتثال وتفضيلات الذكاء الاصطناعي",
   robots: { index: false, follow: false },
 };
 
